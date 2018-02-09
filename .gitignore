@@ -1,0 +1,9 @@
+# Generic files to ignore
+*~
+/build
+/doc
+*.egg
+*.egg-info
+
+# Python specific
+*.pyc
