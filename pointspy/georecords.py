@@ -1,7 +1,6 @@
 import numpy as np
 from collections import defaultdict
 
-import nptools
 import projection
 from indexkd import IndexKD
 from extent import Extent
@@ -13,7 +12,7 @@ class GeoRecords(np.recarray, object):
         self._proj = proj
         if T is None:
             self._T = np.eye(self.dim + 1, dtype=float)
-            self._T[0:self.dim, self.dim] = self.extent().minCorner
+            self._T[0:self.dim, self.dim] = self.extent().min_corner
 
     def __new__(cls, proj, npRecarray, T=None):
         # np.racarray needed

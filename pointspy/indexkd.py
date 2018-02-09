@@ -1,12 +1,8 @@
 import numpy as np
 from scipy.spatial import cKDTree
-from sklearn.neighbors import KDTree as sKDTree
 
 import rtree.index as RT
 from rtree import Rtree as RTree
-
-import scipy
-import sklearn
 
 from . import transformation
 import bisect
