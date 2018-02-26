@@ -1,59 +1,112 @@
 import numpy as np
-from numpy.lib.recfunctions import merge_arrays
-from numpy.lib.recfunctions import stack_arrays
-from numpy.lib.recfunctions import append_fields
-from numpy.lib import recfunctions
-import pandas
-import warnings
 
+# TODO module description
 
-def addField(A, B, name):
-    B = np.array(B)
+def add_field(A, B, name):
+    """Adds field to array.
+    
+    Parameters
+    ----------
+    A: `numpy.ndarray`
+        Numpy array to add field to.
+    B: `array_like`
+        Field attributes.
+    name: `str`
+        Name of new field.
+    
+    Returns
+    -------
+    recarray: `numpy.recarray`
+        Record array similar to A, but with additional field B.    
+    """
+    assert isinstance(A, np.ndarray)
+    if not isinstance(B, np.ndarray):
+        B = np.array(B)
     dtype = A.dtype.descr
     dtype.append((name, B.dtype))
-    arr = np.recarray(A.shape, dtype=dtype)
+    recarray = np.recarray(A.shape, dtype=dtype)
     for colName in A.dtype.names:
-        arr[colName] = A[colName]
-    arr[name] = B
-    return arr
-    # shape=A.shape
-    # return
-    # recfunctions.rec_append_fields(A.flatten(),(name),B.flatten()).reshape(shape)
+        recarray[colName] = A[colName]
+    recarray[name] = B
+    return recarray
 
 
 def fuse(A, B):
+    """Fuses two numpy record arrays to one array.
+    
+    Parameters
+    ----------
+    A: `numpy.recarray`
+        Numpy recarray to fuse.
+    B: `numpy.recarray`
+        Numpy recarray to fuse.
+        
+    Returns
+    -------
+    recarray: `numpy.recarray`
+        Record array with same fields as A and B.    
+    """
+    assert isinstance(A, np.recarray)
+    assert isinstance(B, np.recarray)
+    assert A.shape == B.shape
+    
     dtype = A.dtype.descr
     dtype.extend(B.dtype.descr)
 
-    retArray = np.recarray(A.shape, dtype=dtype)
+    fused = np.recarray(A.shape, dtype=dtype)
     for name in A.dtype.names:
-        retArray[name] = A[name]
+        fused[name] = A[name]
     for name in B.dtype.names:
-        retArray[name] = B[name]
+        fused[name] = B[name]
 
-    return retArray
+    return fused
 
 
 def merge(arrays):
+    """Merges multiple arrays.
+    
+    Parameters
+    ----------
+    arrays: `array_like`
+        List of numpy.ndarrays to merge.
+    
+    Returns
+    -------
+    merged: `numpy.ndarray`
+        Merged numpy record array.
+    """
+    assert hasattr(arrays,'__getitem__')
     return arrays[0].__array_wrap__(np.hstack(arrays))
 
 
-def mergeCols(arrays, dtype=None):
-    array = np.hstack(arrays)
-    if dtype is not None:
-        array = array.astype(dtype)
-    return array.view(np.recarray)
-
-
-def flattenDtypes(npDtypes):
+def flatten_dtypes(np_dtypes):
+    """Exract name, datatype and shape information from numpy data type.
+    
+    Parameters
+    ----------
+    np_dtypes: `numpy.dtype`
+        Numpy data types to flatten.
+    
+    Returns
+    -------
+    names: `list of str`
+        Names of fields.
+    dtypes: `list of dtypes`
+        Data types of fields.
+    shapes: `list of tuples`
+        Shapes of fields.
+    """
+    
+    # ensure data type
+    np_dtypes = np.dtype(np_dtypes)
 
     dtypes = []
     shapes = []
-    names = npDtypes.names
+    names = np_dtypes.names
 
     for name in names:
 
-        dtype = npDtypes[name]
+        dtype = np_dtypes[name]
         shape = 0
 
         subDtype = dtype.subdtype
@@ -67,86 +120,143 @@ def flattenDtypes(npDtypes):
     return names, dtypes, shapes
 
 
-def loadCsv(fileName, dtype, skip=0, sep=';', cols=None, bulk=500000):
-    data = None
-    with warnings.catch_warnings():
-        warnings.filterwarnings('error')
-        while True:
-            try:
-                records = np.genfromtxt(
-                    fileName,
-                    usecols=cols,
-                    delimiter=sep,
-                    skip_header=skip,
-                    max_rows=bulk,
-                    dtype=dtype,
-                    invalid_raise=True).view(
-                    np.recarray)
-            except (Warning, StopIteration):
-                break
-            if len(records.shape) == 0:
-                records = np.array([records], dtype=dtype).view(np.recarray)
-
-            if data is None:
-                data = records
-            else:
-                data = merge([data, records])
-
-            skip += bulk
-
-    return data
-
-
-def map(func, npArray, dtypes=None):
-    args = np.broadcast(None, npArray)
+def map(func, ndarray, dtypes=None):
+    """Maps a function to each cell of a numpy array.
+    
+    Parameters
+    ----------
+    func: `function`
+        Function to apply to each cell.
+    ndarray: `numpy.ndarray`
+        Numpy array to map function to.
+    dtypes: optional, `numpy.dtype`
+        Desired data type of return array.
+    
+    Returns
+    -------
+    recarray: `numpy.recarray`
+        Record array similar to input array, but with function applied to.
+    """
+    assert hasattr(func,'__call__')
+    assert hasattr(ndarray,np.ndarray)
+    dtypes = np.dtype(dtypes)
+    
+    args = np.broadcast(None, ndarray)
     values = [func(*arg[1:]) for arg in args]
     res = np.array(
         values,
-        dtype=dtypes).reshape(
-        npArray.shape).view(
-            np.recarray)
-    return res
+        dtype=dtypes)
+    res = res.reshape(ndarray.shape)
+    return res.view(np.recarray)
 
 
 def aggregate(gen, func, dtype=None):
+    """Aggregates TODO
+    
+    Parameters
+    ----------
+    gen: `iterable`
+        Iterable object.
+    func: `function
+        Function which aggregates the fields.
+    dtype: optional, `numpy.dtype`
+        Desired data type of return array.
+    
+    Returns
+    -------
+    recarray: `numpy.recarray`
+        Record array similar to input array, but with function applied to.
+    """
+    assert hasattr(gen,'__iter__')
+    assert hasattr(func,'__call__')
+    
     values = [func(item) for item in gen]
     return np.array(values, dtype=dtype).view(np.recarray)
 
 
 def recarray(dataDict, dtype=[]):
+    """Converts a dictionary of array like objects to a numpy record array. 
+    
+    Parameters
+    ----------
+    dataDict: `numpy.recarray`
+        Dictionary of array like objects to convert to a numpy record array.
+    dtype: optional, `numpy.dtype`
+        Describes the desired data type of specific fields.
+    
+    Returns
+    -------
+    recarray: `numpy.recarray`
+        Numpy record array build from input dictionary.
+        
+        
+    Example:
+    --------
+    dataDict = {
+        'coords': [ (3,4), (3,2), (0,2), (5,2)],
+        'text': ['lol','asdasd','dasdas','addsa'],
+        'numeric':  [1,3,1,2],
+        'missingvalues':  [None,None,'str',None],
+    }
+    recarray(dataDict)
+    """
+    # TODO haskeys
+    assert hasattr(dataDict,'__getitem__')
+    
+    # check data types
     dtype = np.dtype(dtype)
-
     for colName in dtype.names:
-        assert colName in dataDict.keys(), 'column "%s" of npDtypes not found!' % colName
+        assert colName in dataDict.keys(), 'column "%s" not found!' % colName
 
     # get datatypes
     outDtypes = []
     for colName in dataDict.keys():
+        
         if colName not in dtype.names:
-
-            # Find not empty row
-            for i in range(len(dataDict[colName])):
-                row = dataDict[colName][i]
+            dt = np.object_ 
+            outDtype = (colName, dt) # default data type
+            # Find non empty row
+            for row in dataDict[colName]:
                 if row is not None:
+                    row = np.array(row)
+                    s = row.shape
+                    if not np.issubdtype(row.dtype, np.str):
+                        dt = row.dtype
+                    outDtype = (colName, dt, s)
                     break
-            row = np.array(row)
-            s = row.shape
-            s = s if len(s) > 0 else 1
-            dt = row.dtype
-            if np.issubdtype(dt, np.str):
-                dt = np.object_
-            outDtype = (colName, dt, s)
         else:
             dt = dtype[colName]
             outDtype = (colName, dt)
         outDtypes.append(outDtype)
-
     recarray = np.rec.array(zip(*dataDict.values()),
                             names=dataDict.keys(), dtype=outDtypes)
     return recarray
 
+dataDict = {
+    'coords': [ (3,4), (3,2), (0,2), (5,2)],
+    'text': ['lol','asdasd','dasdas','addsa'],
+    'numeric':  [1,3,1,2],
+    'missingvalues':  [None,None,'str',None],
+}
+a = recarray(dataDict)
+print a
+print a.dtype.names
 
 def unnest(recarray):
+    """Unnest a numpy record array. Recursively adds each named field to a list. 
+    
+    Parameters
+    ----------
+    recarray: `numpy.recarray`
+        Numpy record array to unnest.
+    
+    Returns
+    -------
+    unnested: `list`
+        List of unnested fields.
+    """
+    assert isinstance(data,np.recarray), 'Numpy.recarray required.'
+    
     if recarray.dtype.names is None:
         return [recarray]
     else:
@@ -156,36 +266,22 @@ def unnest(recarray):
         return ret
 
 
-def mergeColumns(recarray, dtype=None):
-
-    if recarray.dtype.names is None:
-        ret = np.copy(recarray)
-        if dtype is not None:
-            ret = ret.astype(dtype)
-        return ret
-
-    # Shape
-    s = 0
-    for name in recarray.dtype.names:
-        shape = recarray.dtype[name].shape
-        s = s + 1 if len(shape) == 0 else s + shape[0]
-
-    ret = np.empty((len(recarray), s), dtype=dtype)
-    k = 0
-    for name in recarray.dtype.names:
-        shape = recarray.dtype[name].shape
-        if len(shape) == 0:
-            ret[:, k] = recarray[name]
-            k += 1
-        else:
-            j = k + shape[0]
-            ret[:, k:j] = recarray[name]
-            k = j
-
-    return ret
-
-
-def isMissing(data):
+def missing(data):
+    """Find missing values.
+    
+    Parameters
+    ----------
+    data: `numpy.ndarray`
+        Numpy ndarray to search missing values for. Missing values are either
+        None or NAN values.
+    
+    Returns
+    -------
+    missing: `numpy.recarray`
+        Boolean array which indicates missing values.
+    """
+    assert isinstance(data,np.ndarray), 'Numpy.ndarray required.'
+    
     mask = np.equal(data, None)
     try:
         mask[np.isnan(data)] = True
