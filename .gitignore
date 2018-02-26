@@ -2,6 +2,7 @@
 *~
 /build
 /doc
+/venv
 *.egg
 *.egg-info
 
