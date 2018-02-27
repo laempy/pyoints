@@ -9,7 +9,7 @@ from . import projection
 # TODO module description
 
 class GeoRecords(np.recarray, object):
-    """Abstraction class ease handling of point sets as well as structured 
+    """Abstraction class to ease handling of point sets as well as structured 
     matrices of point like objects. This gives the oportunity to handle
     unstructured point sets the same way like rasters or voxels. The class also
     provides a IndexKD object on demand to speed up neigbourhod analyzes.
@@ -20,8 +20,8 @@ class GeoRecords(np.recarray, object):
         Projection object provides the geograpic projection of the points.
     npRecarray: (n,), `numpy.recarray`
         A numpy record array provides coordinates and attributes of n points.
-        Field "coords" representing coordinates with k dimensions is 
-        strictly required.
+        The field "coords" is required and represents coordinates of k 
+        dimensions.
     T: optional, (k+1,k+1), `array_like`
         Optional linear transformation matrix to transform the coordinates.
         This eases handling of structured point sets like rasters or voxels.
