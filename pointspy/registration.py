@@ -5,24 +5,39 @@ from .IndexKD import IndexKD
 from . import distance
 
 
-def optRotoTranslation(coordsA, coordsB):
+def get_rototranslation(A, B):
+    """Finds the optimal roto-translation matrix `M` between two point sets.
+    Each point of point set `A` is associated with exactly one point in point
+    set `B`. 
 
+    Parameters
+    ----------
+    A: (n,k), `numpy.ndarray`
+        Array representing n reference points with k dimensions.
+    B: (n,k), `numpy.ndarray`
+        Array representing n points with k dimensions.
+        
+    Returns
+    -------
+    M: (n,k), `numpy.matrix`
+        Roto-translation matrix which maps `B` to `A` with `A = B * M.T`.
+    """
+
+    #TODO
     # http://nghiaho.com/?page_id=671
     # http://nghiaho.com/uploads/code/rigid_transform_3D.py_
     # Zhang_2016a
 
-    assert coordsA.shape[0] == coordsB.shape[0] and coordsA.shape[1] == coordsB.shape[1], 'dimensions do not match!'
+    assert A.shape == B.shape, 'dimensions do not match!'
 
-    dim = coordsA.shape[1]
+    cA = A.mean(0)
+    cB = B.mean(0)
 
-    cA = coordsA.mean(0)
-    cB = coordsB.mean(0)
-
-    A = np.matrix(transformation.homogenious(coordsA - cA, value=0))
-    B = np.matrix(transformation.homogenious(coordsB - cB, value=0))
+    mA = np.matrix(transformation.homogenious(A - cA, value=0))
+    mB = np.matrix(transformation.homogenious(B - cB, value=0))
 
     # Find rotation matrix
-    H = np.transpose(A) * B
+    H = np.transpose(mA) * mB
     USV = np.linalg.svd(H)
     R = USV[0] * USV[2]
 
@@ -34,41 +49,82 @@ def optRotoTranslation(coordsA, coordsB):
     # Create transformation matrix
     T1 = transformation.tMatrix(-cB)
     M = (R * T1)
-    M[0:dim, dim] += np.matrix(cA).T
+    
+    # TODO mit translationsmatrix!
+    M[:-2, -2] += np.matrix(cA).T
 
     return M
 
 
-def optTransformation(coordsA, coordsB):
+def get_transformation(A, B):
+    """Finds the optimal (non-rigid) transformation matrix `M` between two point
+    sets. Each point of point set `A` is associated with exactly one point in 
+    point set `B`. 
 
-    assert coordsA.shape[0] == coordsB.shape[0] and coordsA.shape[1] == coordsB.shape[1], 'dimensions do not match!'
+    Parameters
+    ----------
+    A: (n,k), `numpy.ndarray`
+        Array representing n reference points with k dimensions.
+    B: (n,k), `numpy.ndarray`
+        Array representing n points with k dimensions.
+        
+    Returns
+    -------
+    M: (n,k), `numpy.matrix`
+        Tranformation matrix which maps `B` to `A` with A = `B * M.T`.
+    """
 
-    b = homogenious(coordsA)
-    A = homogenious(coordsB)
+    assert A.shape == B.shape, 'dimensions do not match!'
+    
+    b = homogenious(A)
+    mA = homogenious(B)
 
-    x = np.linalg.lstsq(A, b)[0]
+    x = np.linalg.lstsq(mA, b)[0]
     M = np.matrix(x).T
 
     return M
 
 
-def networkBalancing(coordsDict, pairs, sWeights=1, oWeights={}):
+def get_rototranslations(coordsDict, pairs, sWeights=1, oWeights={}):
+    """Finds the optimal roto-translation matrices between multiple point sets.
+    The algorithm assumes infinitissimal rotations between the point sets.
 
+    Parameters
+    ----------
+    coordsDict: `dict`
+        Dictionary of point sets.
+    pairs: `dict`
+        Dictionary of point pairs
+    sWeights: optional, `TODO`
+        Weights for sum of translations and rotations
+    oWeights: optional, `TODO`
+        Weights try to keep the original location and orientation TOOD
+        
+    Returns
+    -------
+    M: `dict`
+        Dictionary of roto-translation matrices with `B` to `A` with A = `B * M.T`.
+    """
+    
     # basics: http://geomatica.como.polimi.it/corsi/def_monitoring/roto-translationsb.pdf
     # Zhang_2016a
     '''
-    coordsDict = { 'A': coordsA, 'B': coordsB, 'C': coordsC, 'D': coordsD }
+    coordsDict = { 'A': A, 'B': B, 'C': C, 'D': D }
     pairs = {
             'A': { 'B': pairsAB, 'C': pairsAC, 'D': pairsAD },
             'B': { 'A': pairsBA, 'B': pairsBC },
             'C': { 'B': pairsBC },
-            'D': { 'D': pairsAD},
+            'D': { 'D': pairsAD },
         }
     pairsAB = np.recarray(dtype=[('A',int),('B',int),('weights',float)])
     #pairsAB=[(idA0,idB0),(idA1,idB1),(idA2,idB2)] or
     #pairsAB=[(idA0,idB0,w0),(idA1,idB1,w1),(idA2,idB2,w2)]
     '''
-    pairsDtype = [('A', int), ('B', int), ('weights', float)]
+
+    # TODO asserts
+    # TODO 2D? 
+
+    k = len(coordsDict)  # number of point clouds
 
     # check dimensions
     dim = None
@@ -76,8 +132,6 @@ def networkBalancing(coordsDict, pairs, sWeights=1, oWeights={}):
         if dim is None:
             dim = coordsDict[key].shape[1]
         assert coordsDict[key].shape[1] == dim, 'Dimensions do not match!'
-
-    k = len(coordsDict)  # number of point clouds
 
     # pairs
     wPairs = {}
@@ -88,22 +142,20 @@ def networkBalancing(coordsDict, pairs, sWeights=1, oWeights={}):
             if len(p) < 3:
                 w = np.ones(len(p[0]))
             n = p[0].shape[0]
-            assigned = np.recarray(n, dtype=pairsDtype)
+            assigned = np.recarray(n, dtype=[('A', int), ('B', int), ('weights', float)])
             assigned.A = p[0]
             assigned.B = p[1]
             assigned.weights = 1
 
             wPairs[keyA][keyB] = assigned
 
-    # set weights
-
-    # sum of translations and rotations close to zero
+    # try to keep the sum of translations and rotations close to zero
     if hasattr(sWeights, '__len__'):
         assert len(sWeights) == 2 * dim
-    else:
+    else:    
         sWeights = np.repeat(sWeights, 2 * dim)
 
-    # keep original location and orientation
+    # try to keep the original location and orientation
     if isinstance(oWeights, dict):
         for iA, keyA in enumerate(coordsDict):
             if keyA not in oWeights:
@@ -111,7 +163,8 @@ def networkBalancing(coordsDict, pairs, sWeights=1, oWeights={}):
             oWeights[keyA] = np.array(oWeights[keyA], dtype=float)
 
     # helper function
-    def subM(coords):
+    # TODO n-dimensional
+    def get_equations(coords):
         N, dim = coords.shape
 
         Mx = np.zeros((N, 2 * dim))
@@ -131,32 +184,34 @@ def networkBalancing(coordsDict, pairs, sWeights=1, oWeights={}):
 
         return np.vstack((Mx, My, Mz))
 
-    # build linear equation system B=A*M
-    A = []
-    B = []
+    # build linear equation system mA = mB * M
+    mA = []
+    mB = []
     for iA, keyA in enumerate(coordsDict):
         if keyA in pairs:
 
             for iB, keyB in enumerate(coordsDict):
                 if keyB in pairs[keyA]:
 
-                    # get pairs of coordinates
+                    # get pairs of points
                     p = wPairs[keyA][keyB]
-                    coordsA = coordsDict[keyA][p.A, :]
-                    coordsB = coordsDict[keyB][p.B, :]
+                    A = coordsDict[keyA][p.A, :]
+                    B = coordsDict[keyB][p.B, :]
 
-                    a = np.zeros((coordsA.shape[0] * dim, k * dim * 2))
-                    a[:, iA * dim * 2:(iA + 1) * dim * 2] = subM(coordsA)
-                    a[:, iB * dim * 2:(iB + 1) * dim * 2] = -subM(coordsB)
+                    # set equations
+                    a = np.zeros((A.shape[0] * dim, k * dim * 2))
+                    a[:, iA * dim * 2:(iA + 1) * dim * 2] = get_equations(A)
+                    a[:, iB * dim * 2:(iB + 1) * dim * 2] = -get_equations(B)
 
-                    b = coordsB.T.flatten() - coordsA.T.flatten()
+                    b = B.T.flatten() - A.T.flatten()
 
+                    # weighting
                     w = np.tile(p.weights, dim)
                     a = (a.T * w).T
                     b = b * w
 
-                    A.append(a)
-                    B.append(b)
+                    mA.append(a)
+                    mB.append(b)
 
     # try to keep the sum of translations and rotations close to zero
     a = np.tile(np.eye(dim * 2 * k, dim * 2), k)
@@ -166,8 +221,8 @@ def networkBalancing(coordsDict, pairs, sWeights=1, oWeights={}):
     a = (a.T * w).T
     b = b * w
 
-    A.append(a)
-    B.append(b)
+    mA.append(a)
+    mB.append(b)
 
     # try to keep the original locations and orientations
     for iA, keyA in enumerate(coordsDict):
@@ -179,13 +234,13 @@ def networkBalancing(coordsDict, pairs, sWeights=1, oWeights={}):
         a = (a.T * w).T
         b = b * w
 
-        A.append(a)
-        B.append(b)
+        mA.append(a)
+        mB.append(b)
 
     # solve linear equation system
-    A = np.vstack(A)
-    B = np.hstack(B)
-    M = np.linalg.lstsq(A, B)[0]
+    mA = np.vstack(mA)
+    mB = np.hstack(mB)
+    M = np.linalg.lstsq(mA, mB)[0]
 
     # Extract roto-transformation matrices
     res = {}
@@ -197,7 +252,10 @@ def networkBalancing(coordsDict, pairs, sWeights=1, oWeights={}):
 
 
 def ICP(coordsDict, maxDist, k=1, p=2, maxIter=10):
+    # TODO docu
+    
     # iterative closest point
+    
 
     assert k > 0
     assert isinstance(coordsDict, dict)
