@@ -14,7 +14,7 @@ setup (
 	    'scipy>=1.0.0',
 	    'scikit-learn>=0.19.1',
 	    'pyproj>=1.9.5.1',
-	    'gdal>=1.11.3',
+	    'gdal>=1.11.2', # gdal==1.11.2
 	    'pandas>=0.22.0',
 	    'configobj>=5.0.6',
 	    'pyyaml>=3.12'
