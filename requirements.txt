@@ -1,6 +1,22 @@
-virtualenv venv --python=python2.7
-python2.7.12
-python-gdal
-libgdal-dev>=1.11.3
-pip2 install gdal --global-option=build_ext --global-option="-I/usr/include/gdal/"
-libspatialindex-dev (for rtree)
+numpy
+rtree
+liblas
+laspy
+scipy
+scikit-learn
+pyproj
+gdal --global-option=build_ext --global-option="-I/usr/include/gdal/"
+pandas
+configobj
+pyyaml
+psycopg2-binary
+Sphinx
+sphinxcontrib-napoleon
+
+
+#virtualenv venv --python=python2.7pip 
+#python2.7.12
+#python-gdal
+#libgdal-dev>=1.11.3
+#pip2 install gdal --global-option=build_ext --global-option="-I/usr/include/gdal/"
+#libspatialindex-dev (for rtree)
