@@ -1,6 +1,6 @@
 import numpy as np
-from IndexKD import IndexKD
-from interpolate import LinearInterpolator
+from .indexkd import IndexKD
+from .interpolate import LinearInterpolator
 
 
 def extrema(indexKD, attributes, r=1, inverse=False):

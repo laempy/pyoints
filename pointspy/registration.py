@@ -1,7 +1,7 @@
 import numpy as np
 
+from .indexkd import IndexKD
 from . import transformation
-from .IndexKD import IndexKD
 from . import distance
 
 

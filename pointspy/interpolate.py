@@ -1,10 +1,12 @@
 import numpy as np
-from scipy.interpolate import LinearNDInterpolator, NearestNDInterpolator
+from scipy.interpolate import (
+    LinearNDInterpolator,
+    #NearestNDInterpolator
+)
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression
 
-from IndexKD import IndexKD
 
 
 class Interpolator:
