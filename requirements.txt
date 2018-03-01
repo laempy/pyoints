@@ -7,6 +7,8 @@ laspy
 scipy
 scikit-learn
 pyproj
+affine
+dill
 gdal --global-option=build_ext --global-option="-I/usr/include/gdal/"
 pandas
 configobj

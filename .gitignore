@@ -1,7 +1,6 @@
 # Generic files to ignore
 *~
 /build
-/docs
 /venv
 *.egg
 *.egg-info
@@ -9,3 +8,7 @@
 # Python specific
 *.pyc
 
+
+# Docs
+/docs
+#!/docs/conf.py

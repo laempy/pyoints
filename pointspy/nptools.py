@@ -157,7 +157,7 @@ def aggregate(gen, func, dtype=None):
     ----------
     gen: `iterable`
         Iterable object.
-    func: `function
+    func: `function`
         Function which aggregates the fields.
     dtype: optional, `numpy.dtype`
         Desired data type of return array.
@@ -167,6 +167,7 @@ def aggregate(gen, func, dtype=None):
     recarray: `numpy.recarray`
         Record array similar to input array, but with function applied to.
     """
+    
     assert hasattr(gen,'__iter__')
     assert hasattr(func,'__call__')
     
@@ -210,8 +211,8 @@ def recarray(dataDict, dtype=[]):
     >>> rec[0]
     ('text1', [3, 4], 1, None)
     """
-    # TODO haskeys
-    assert hasattr(dataDict,'__getitem__')
+
+    assert hasattr(dataDict,'__getitem__') and hasattr(dataDict,'keys')
     
     # check data types
     dtype = np.dtype(dtype)

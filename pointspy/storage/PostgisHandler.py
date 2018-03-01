@@ -5,7 +5,7 @@ import subprocess
 import psycopg2
 
 from .. import nptools
-from .extent import Extent
+from .. extent import Extent
 
 
 # Postgis

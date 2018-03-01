@@ -2,7 +2,7 @@ import numpy as np
 from sklearn import ensemble
 from sklearn import preprocessing
 
-from . import npTools
+from . import nptools
 from . import imputation
 from .misc import *
 
@@ -41,7 +41,7 @@ class RandomForestClassifier(CART, ensemble.RandomForestClassifier):
             Y = np.ravel(Y)
 
         #print [X[name] for name in X.dtype.names]
-        x = npTools.mergeColumns(X, dtype=float)
+        x = nptools.mergeColumns(X, dtype=float)
 
         # Imputation
         self._imputationFunction = imputation
@@ -76,7 +76,7 @@ class RandomForestClassifier(CART, ensemble.RandomForestClassifier):
         self.checkFitted()
 
         # Preparation
-        x = npTools.mergeColumns(X, dtype=float)
+        x = nptools.mergeColumns(X, dtype=float)
         x = self._imputationFunction(x)
 
         tic()
@@ -107,7 +107,7 @@ class RandomForestRegressor(CART, ensemble.RandomForestRegressor):
     def fit(self, X, y, **kwargs):
         self._pDtype = y.dtype
         self._fDtype = X.dtype
-        x = npTools.fuse(X, dtype=float)
+        x = nptools.fuse(X, dtype=float)
         super(
             ensemble.RandomForestRegressor,
             self).fit(
@@ -118,7 +118,7 @@ class RandomForestRegressor(CART, ensemble.RandomForestRegressor):
     def predict(self, X):
         self.checkFitted()
 
-        x = npTools.mergeColumns(X, dtype=float)
+        x = nptools.mergeColumns(X, dtype=float)
         rawPred = super(self.__class__, self).predict(x)
         if len(self.pDtype.names) == 1:
             rawPred = np.array([rawPred]).T
@@ -126,7 +126,7 @@ class RandomForestRegressor(CART, ensemble.RandomForestRegressor):
         predDict = {}
         for i, name in enumerate(self.pDtype.names):
             predDict[name] = rawPred[:, i]
-        pred = npTools.recarray(predDict, dtype=self.outDtype)
+        pred = nptools.recarray(predDict, dtype=self.outDtype)
 
         return pred
 

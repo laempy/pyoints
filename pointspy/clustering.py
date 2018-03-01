@@ -21,7 +21,7 @@ def clustering(indexKD,
     indexKD: `IndexKD`
         Spatial index with `n` points.
     r: positive, `float`
-        Radius to select the cluster ids of neighboured points. # TODO Wort Klassenzugehörigkeit
+        Radius to select the cluster ids of neighboured points. # TODO Wort Klassenzugehoerigkeit
     get_class: `function`
         Function to define the cluster id of a point. Recieves a list of
         cluster ids of neigboured points to define the cluster id of a point. 
@@ -29,7 +29,7 @@ def clustering(indexKD,
     order: optional, `array_like`
         TODO
         If not defined the order is defined by decreasing point density.
-    clusters: optional, `array_like of ints` # TODO wie ausdrücken
+    clusters: optional, `array_like of ints` # TODO wie ausdruecken
         List of `n` integers. Each element represents the preliminary cluster id
         of a point in `indexKD`. A cluster id is a positive integer. If a 
         cluster id of `-1` represents no class. If None, each element is set 

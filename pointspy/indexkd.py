@@ -22,13 +22,17 @@ class IndexKD(object):
     transform: (k+1,k+1) `array_like`, optional
         Represents any kind of transformation matrix applied to the coordinates 
         before index computation.
+    leafsize: optional, positive, int
+        Leaf size of KD-Tree.
     """
 
-    LEAFSIZE = 20
 
-    def __init__(self, coords, transform=None):
+    def __init__(self, coords, transform=None, leafsize=20):
         assert hasattr(coords, '__len__')
         assert len(coords) > 0, 'Empty coordinate lists are not allowed.'
+        assert isinstance(leafsize,int) and leafsize > 0
+        
+        self._leafsize = leafsize
         
         if transform is None:
             self._transform = transformation.i_matrix(coords.shape[1])
@@ -37,6 +41,7 @@ class IndexKD(object):
             self._transform = np.matrix(transform)
             self._coords = transformation.transform(
                 np.copy(coords), self.transform)
+        
 
     def __len__(self):
         """Number of points."""
@@ -134,7 +139,7 @@ class IndexKD(object):
         kdTree: `cKDTree`
 	"""
         if not hasattr(self, '_kdTree'):
-            self._kdTree = cKDTree(self.coords, leafsize=self.LEAFSIZE)
+            self._kdTree = cKDTree(self.coords, leafsize=self._leafsize)
         return self._kdTree
 
     @property
