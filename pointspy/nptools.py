@@ -208,7 +208,7 @@ def recarray(dataDict, dtype=[]):
            [0, 2],
            [5, 2]])
     >>> rec[0]
-    ('text1', array([3, 4]), 1, None)
+    ('text1', [3, 4], 1, None)
     """
     # TODO haskeys
     assert hasattr(dataDict,'__getitem__')

@@ -31,8 +31,8 @@ class Extent(np.recarray, object):
     def dim(self):
         """Dimension of the coordinate system.
         
-        Returns:
-        --------
+        Returns
+        -------
         dim: `int`
             Number of coordinate axes.
         """
