@@ -1,18 +1,16 @@
 import numpy as np
-
-from osgeo import gdal
-from osgeo import osr
 from affine import Affine
+from osgeo import (
+    gdal,
+    osr,
+)
 
-from spatialCloud import grid
-
-from spatialCloud import (
+from .BaseGeoHandler import GeoFile
+from .. import (
     grid,
     projection,
     Extent,
 )
-
-from .BaseGeoHandler import GeoFile
 
 
 class RasterReader(GeoFile):

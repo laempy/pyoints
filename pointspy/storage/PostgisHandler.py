@@ -4,8 +4,8 @@ import numpy as np
 import subprocess
 import psycopg2
 
-from spatialCloud import npTools
-from spatialCloud import Extent
+from .. import nptools
+from .extent import Extent
 
 
 # Postgis
@@ -305,7 +305,7 @@ class PostgisHandler(psycopg2._psycopg.connection):
             dataDict[colName]=col
         
         # Using pandas for record-array generation
-        return npTools.recarray(dataDict,dtype=npDtypes)
+        return nptools.recarray(dataDict,dtype=npDtypes)
         
         
     def importShape(self,fileName,epsg,schema='public',bulk=500,outTable=None):

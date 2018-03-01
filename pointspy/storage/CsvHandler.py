@@ -1,6 +1,6 @@
 import numpy as np
 
-from spatialCloud import npTools
+from .. import nptools
 
 
 def writeCsv(data,fileName,sep=';',header=None):
@@ -28,5 +28,5 @@ def loadCsv(fileName,sep=';',bulk=1000000,dtype=None,header=True):
     #records=np.loadtxt(fileName,delimiter=sep,skiprows=1,names=names).view(np.recarray)
     #records=np.genfromtxt(fileName,delimiter=sep,skip_header=1,names=names).view(np.recarray)
     #records=np.genfromtxt(fileName,delimiter=sep,names=True).view(np.recarray)
-    records=npTools.loadCsv(fileName,dtype,skip=skip,bulk=bulk,sep=sep)
+    records=nptools.loadCsv(fileName,dtype,skip=skip,bulk=bulk,sep=sep)
     return records

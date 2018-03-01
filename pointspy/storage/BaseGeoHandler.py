@@ -1,6 +1,5 @@
 import os
 
-
     
 class GeoHandler:
     

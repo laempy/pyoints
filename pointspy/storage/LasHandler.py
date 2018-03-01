@@ -3,11 +3,10 @@ import numpy as np
 import liblas
 import laspy
 
-from spatialCloud import (
-    GeoRecords,
-    Extent,
-    projection,
-)
+from .. georecords import GeoRecords
+from .. extent import Extent
+from .. import projection
+
 
 from .BaseGeoHandler import GeoFile
 

@@ -1,10 +1,10 @@
 import numpy as np
 
-from spatialCloud import (
-    npTools,
+from .. georecords import GeoRecords
+from .. import (
+    nptools,
     projection,
     transformation,
-    GeoRecords,
 )
 
 
@@ -21,7 +21,7 @@ def loadPtx(fileName,sep=' ',proj=None,bulk=500000):
     dtypes=[('coords',np.float,3),('intensity',float)]
     cols=[0,1,2,3]
 
-    records=npTools.loadCsv(fileName,dtypes,skip=10,cols=cols,sep=sep,bulk=bulk) 
+    records=nptools.loadCsv(fileName,dtypes,skip=10,cols=cols,sep=sep,bulk=bulk) 
     records['coords']=transformation.transform(records['coords'],T2)
     records['intensity']=records['intensity']*100
     
