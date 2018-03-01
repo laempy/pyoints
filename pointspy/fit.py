@@ -2,7 +2,7 @@ import numpy as np
 from scipy.optimize import leastsq
 
 from . import transformation
-from . import distance
+
 
 
 def ball(coords, weights=1):

@@ -34,7 +34,7 @@ class IndexKD(object):
         else:
             self._transform = np.matrix(transform)
             self._coords = transformation.transform(
-                np.copy(coords), self.transform())
+                np.copy(coords), self.transform)
 
     def __len__(self):
         """Number of points."""
