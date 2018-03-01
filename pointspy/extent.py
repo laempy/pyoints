@@ -42,8 +42,8 @@ class Extent(np.recarray, object):
     def ranges(self):
         """Provides ranges in each coordinate dimension.
         
-        Returns:
-        --------
+        Returns
+        -------
         ranges: (self.dim), `array_like`
             Ranges in each coordinate dimension.
         """
@@ -53,8 +53,8 @@ class Extent(np.recarray, object):
     def min_corner(self):
         """ Provides minimum corner of the extent.
         
-        Returns:
-        --------
+        Returns
+        -------
         min_corner: (self.dim), `array_like`
             Minimum coordinate values in each coordinate axis.
         """
@@ -64,8 +64,8 @@ class Extent(np.recarray, object):
     def max_corner(self):
         """ Provides maximum corner of the extent.
         
-        Returns:
-        --------
+        Returns
+        -------
         max_corner: (self.dim), `array_like`
             Maximum coordinate values in each coordinate axis.
         """
@@ -75,8 +75,8 @@ class Extent(np.recarray, object):
     def center(self):
         """ Provides center of the extent.
         
-        Returns:
-        --------
+        Returns
+        -------
         center: (self.dim), `array_like`
             Focal point of the extent.
         """
@@ -86,8 +86,8 @@ class Extent(np.recarray, object):
     def split(self):
         """Splits the extent into minium and maximum corner.
         
-        Returns:
-        --------
+        Returns
+        -------
         min_corner: (self.dim), `array_like`
             Minimum coordinate values in each coordinate axis.
         max_corner: (self.dim), `array_like`
@@ -99,8 +99,8 @@ class Extent(np.recarray, object):
     def corners(self):
         """Provides each corner of the extent.
         
-        Returns:
-        --------
+        Returns
+        -------
         corners: (2**self.dim,self.dim), `array_like`
             Corners of the extent.
         """
@@ -117,15 +117,15 @@ class Extent(np.recarray, object):
     def intersects(self, coords, dim=None):
         """Returns indices of coordinates which are located within the extent.
         
-        Parameters:
-        -----------
+        Parameters
+        ----------
         coords: (n,k) or (k), `array_like`
              Represents n data points with k dimensions.
         dim: positive `int`
             Desired number of dimensions to consider.
             
-        Returns:
-        --------
+        Returns
+        -------
         indices: `array_like`
             Indices of coordinates, which are within the extent. If the a single
             point is given, just a boolean value is returned.
