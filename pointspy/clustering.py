@@ -11,34 +11,42 @@ def clustering(indexKD,
         r,
         get_class,
         order,
-        classes=None,
+        clusters=None,
         min_size=1,
         auto_set=True):
-    """Generic clustering.
+    """Generic clustering based on spatial neighbourhood.
 
     Parameters
     ----------
     indexKD: `IndexKD`
         Spatial index with `n` points.
     r: positive, `float`
-        Radius to select the neighboured points.
+        Radius to select the cluster ids of neighboured points. # TODO Wort Klassenzugehörigkeit
     get_class: `function`
-        Function recieves a list of class ids and returns a class id. TODO
+        Function to define the cluster id of a point. Recieves a list of
+        cluster ids of neigboured points to define the cluster id of a point. 
+        Returns -1 if the point is not associated with any cluster.
     order: optional, `array_like`
         TODO
         If not defined the order is defined by decreasing point density.
-    classes: optional, `array_like`
-        Array of `n` preliminary class ids. A class id of `-1` is accociated
-        with no class.
-    min_size: `int`
-        TODO
-    auto_set: `boolean`
-        TODO
+    clusters: optional, `array_like of ints` # TODO wie ausdrücken
+        List of `n` integers. Each element represents the preliminary cluster id
+        of a point in `indexKD`. A cluster id is a positive integer. If a 
+        cluster id of `-1` represents no class. If None, each element is set 
+        to `-1`. # TODO revise
+    min_size: optional, `int`
+        Minimum number of points associated with a cluster. If less than 
+        `min_size` points are associated with a cluster, the cluster is rejected.
+    auto_set: optiona, `boolean`
+        Defines weather or not cluster a id is automatically set, if -1 (no class)
+        was returned by `get_class`. If True, a new cluster id is set to 
+        `max(clusters) + 1`.
 
     Returns
     -------
-    classification: `np.ndarray`
-        Array of `n` class ids.
+    clusters: `dict`
+        Dictionary of clusters. The keys correspond to the class ids. The values
+        correspond to the point indices associated with the cluster.
     """
     
     assert isianstance(indexKD,IndexKD)
@@ -52,30 +60,31 @@ def clustering(indexKD,
     else:
         assert hasattr(order,'__len__') and len(order) <= len(indexKD)
 
-    if classes is None:
-        outclasses = -np.ones(len(indexKD),dtype=int)
+    if clusters is None:
+        outclusters = -np.ones(len(indexKD),dtype=int)
     else:
-        assert hasattr(classes,'__len__') and len(classes) == len(indexKD)
-        outclasses = np.array(classes,dtype=int)
-        assert len(outclasses.shape) == 1
+        assert hasattr(clusters,'__len__') and len(clusters) == len(indexKD)
+        outclusters = np.array(clusters,dtype=int)
+        assert len(outclusters.shape) == 1
     
     assert isianstance(min_size,int) and min_size >= 0
     assert isianstance(auto_set,bool)    
             
-    nextId = outclasses.max() + 1
+    nextId = outclusters.max() + 1
     coords = indexKD.coords()
     
+    # calculate spatial neighbourhood
     nIdsIter = indexKD.ball(coords[order, :], r)
     
     for pId, nIds in zip(order,nIdsIter):
-        cIds = [outclasses[nId] for nId in nIds if outclasses[nId] != -1]
+        cIds = [outclusters[nId] for nId in nIds if outclusters[nId] != -1]
         if len(cIds) > 0:
-            outclasses[pId] = get_class(cIds)
+            outclusters[pId] = get_class(cIds)
         elif auto_set:
-            outclasses[pId] = nextId
+            outclusters[pId] = nextId
             nextId += 1
 
-    return classes2dict(outclasses, min_size=min_size)
+    return classes2dict(outclusters, min_size=min_size)
 
 
                 
@@ -88,12 +97,19 @@ def mayorityclusters(
         indexKD,
         r,
         order=None,
-        classes=None,
+        clusters=None,
         min_size=1,
         auto_set=True):
-    # TODO doku
+    """Clustering by mayority voting.
+
+    # TODO erben von Funktion?
+
+    Parameters
+    ----------
+   
+    """
             
-    return clustering(indexKD,r,mayority,order,classes,min_size,auto_set)
+    return clustering(indexKD,r,mayority,order,clusters,min_size,auto_set)
 
 
 def weightclusters(
@@ -101,15 +117,22 @@ def weightclusters(
         r,
         order,
         weights=None,
-        classes=None,
+        clusters=None,
         min_size=1,
         auto_set=True):
     # TODO doku
+    """Clustering by class weight.
+    
+    Parameters
+    ----------
+   
+    """
             
     if weights is None:
         weights = np.ones(len(indexKD),dtype=float)
     else:
-        weights = np.copy(weights)
+        assert hasattr(weights,'__len__') and len(weights) == len(indexKD)
+        weights = np.array(weights,dtype=float)
 
     def get_class(cIds):
         cWeight = defaultdict(lambda: 0)
@@ -121,7 +144,7 @@ def weightclusters(
         weights[pId] = float(cWeight[cId]) / len(cIds)
         return cId
     
-    return clustering(indexKD,r,get_class,order,classes,min_size,auto_set)
+    return clustering(indexKD,r,get_class,order,clusters,min_size,auto_set)
     
     
 def dbscan(
@@ -145,5 +168,5 @@ def dbscan(
         epsilon = np.percentile(dists, quantile * 100) * factor
 
     # perform dbscan
-    outclasses = DBSCAN(eps=epsilon,min_samples=min_pts).fit_predict(coords)
-    return classes2dict(outclasses, min_size=min_size, max_size=max_size)
+    outclusters = DBSCAN(eps=epsilon,min_samples=min_pts).fit_predict(coords)
+    return classes2dict(outclusters, min_size=min_size, max_size=max_size)
