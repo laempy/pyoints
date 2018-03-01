@@ -1,5 +1,5 @@
 import unittest
-from .. import pointspy
+import pointspy
 #from pointpy import *
 import numpy as np
 
@@ -11,6 +11,20 @@ class test_pointpy(unittest.TestCase):
     def test_version(self):
         self.assertTrue(hasattr(pointspy,'__version__'))
         self.assertTrue(float(pointspy.__version__)>0)
+
+
+class test_IndexKd(unittest.TestCase):
+    
+    def test_init(self):
+        
+        for num_dims in range(2,4):
+            coords = np.random.rand(2,num_dims)
+            indexKD = pointspy.IndexKD(coords)
+            print indexKD.coords
+            self.assertEqual(indexKD.dim,num_dims)
+            dists,nIds=indexKD.knn(coords,k=3)
+            print dists
+            print nIds
 
 
 class test_extent(unittest.TestCase):
@@ -45,7 +59,5 @@ class test_extent(unittest.TestCase):
                 [1,2]
             ))
             
-
-
 if __name__ == '__main__':
     unittest.main()
