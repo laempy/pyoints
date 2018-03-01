@@ -1,7 +1,15 @@
 import unittest
+import doctest
+
 import pointspy
 #from pointpy import *
 import numpy as np
+
+
+
+def load_tests(loader, tests, ignore):
+     tests.addTests(doctest.DocTestSuite(pointspy.nptools))
+     return tests
 
 
 class test_pointpy(unittest.TestCase):
@@ -155,4 +163,14 @@ class test_extent(unittest.TestCase):
             
 
 if __name__ == '__main__':
+    
+    print 'main'
+    
+    #doctest.testmod()
+    
+    #import unittest
+    #import doctest
+
+ 
+
     unittest.main()
