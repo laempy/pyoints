@@ -1,6 +1,6 @@
 import numpy as np
 
-from IndexKD import IndexKD
+from .indexkd import IndexKD
 
 
 

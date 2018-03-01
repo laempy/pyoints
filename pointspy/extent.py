@@ -176,4 +176,5 @@ class Extent(np.recarray, object):
 
         if n == 1:
             return len(indices) == 1
+
         return indices

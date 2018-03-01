@@ -1,6 +1,6 @@
 import numpy as np
-from scipy.spatial import cKDTree
-from IndexKD import IndexKD
+
+from .indexkd import IndexKD
 
 
 def pairs(aCoords, bCoords, distance_upper_bound=np.inf):

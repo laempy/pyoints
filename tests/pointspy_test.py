@@ -4,7 +4,6 @@ import pointspy
 import numpy as np
 
 
-
 class test_pointpy(unittest.TestCase):
 
 
@@ -13,18 +12,113 @@ class test_pointpy(unittest.TestCase):
         self.assertTrue(float(pointspy.__version__)>0)
 
 
-class test_IndexKd(unittest.TestCase):
+
+class test_transformation(unittest.TestCase):
+
+
+    def test_matrix(self):
+
+        # 2D
+        t = [3,2]
+        r = 0.5
+        s = [2,1]
+        T = pointspy.transformation.matrix(t=t,r=r,s=s)
+        
+        d = pointspy.transformation.decomposition(T)
+        self.assertTrue( np.array_equal(d[0],t) )
+        self.assertTrue( np.all(np.isclose(d[1],r)) )
+        self.assertTrue( np.all(np.isclose(d[2],s)) )
+        
+        
+        # 3D
+        t = [3,2,1]
+        r = [0.1,0.2,0.3]
+        s = [2,1,0.5]
+        T = pointspy.transformation.matrix(t=t,r=r,s=s)
+        
+        d = pointspy.transformation.decomposition(T)
+        self.assertTrue( np.array_equal(d[0],t) )
+        self.assertTrue( np.all(np.isclose(d[1],r)) )
+        self.assertTrue( np.all(np.isclose(d[2],s)) )
+        
+
+    def test_t_matrix(self):
+        
+        for dim in [2,3,4,5]:
+        
+            t = np.random.rand(dim)
+            T = pointspy.transformation.t_matrix(t)
+            self.assertTrue( np.array_equal(np.asarray(T)[:-1,-1],t) )
+            
+            
+    def test_s_matrix(self):
+        
+        for dim in [2,3,4,5]:
+        
+            s = np.random.rand(dim)
+            T = pointspy.transformation.s_matrix(s)
+            self.assertTrue( np.array_equal(np.diag(T)[:-1],s) )
+            
+
+    def test_transform(self):
+        
+        coords = np.random.rand(20,3)
+        T = pointspy.transformation.matrix(t=[3,2,1],r=[0.1,0.2,0.3],s=[2,3,0.5])
+        
+        # rotate coordinates
+        rCoords = pointspy.transformation.transform(coords,T)
+        
+        # the coordinate sets should differ
+        self.assertFalse( np.all(np.isclose(coords,rCoords)) )
+        
+        iCoords = pointspy.transformation.transform(rCoords,T,inverse=True)
+        
+        # check if the coordinate sets correspond to each other
+        self.assertTrue( np.all(np.isclose(coords,iCoords)) )
+        
+ 
+
+
+class test_IndexKD(unittest.TestCase):
     
     def test_init(self):
         
-        for num_dims in range(2,4):
-            coords = np.random.rand(2,num_dims)
+        for dim in [2,3,4,5]:
+            coords = np.random.rand(2,dim)
+            T = pointspy.transformation.i_matrix(dim)
+            indexKD = pointspy.IndexKD(coords,transform=T)
+
+            self.assertEqual(indexKD.dim,dim)
+            self.assertTrue(np.array_equal(indexKD.transform,T))
+    
+    
+    def test_knn(self):
+        
+        # test different dimensions
+        for dim in [2,3,4,5]:
+            coords = np.random.rand(2,dim)
             indexKD = pointspy.IndexKD(coords)
-            print indexKD.coords
-            self.assertEqual(indexKD.dim,num_dims)
+
+            # test knn
+            self.assertEqual(indexKD.dim,dim)
             dists,nIds=indexKD.knn(coords,k=3)
-            print dists
-            print nIds
+            
+            # point always closest to itself
+            self.assertTrue(np.array_equal(nIds[:,0],[0,1]))
+            self.assertTrue(np.all(dists[:,0]==0))
+            
+            # infinite distances if k>dim
+            self.assertTrue(np.all(dists[:,2]==float('inf')))
+            
+  
+    def test_ball(self):
+        
+        # create regular coords
+        coords = np.indices((20,3))[0]
+        
+        # TODO
+        
+            
 
 
 class test_extent(unittest.TestCase):
@@ -59,5 +153,6 @@ class test_extent(unittest.TestCase):
                 [1,2]
             ))
             
+
 if __name__ == '__main__':
     unittest.main()

@@ -168,7 +168,7 @@ def voxelize(geoRecords, T, dtypes=[('geoRecords', object)]):
 
     return Grid(geoRecords.proj, cells.T, T)
 
-fkeys2indices
+
 def keys2indices(keys, shape):
     # TODO stimmt mit Georecords keys ueberein
     w = np.concatenate(

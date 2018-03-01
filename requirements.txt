@@ -1,2 +1,4 @@
+python2.7.12
 python-gdal
 libgdal-dev>=1.11.3
+pip2 install gdal --global-option=build_ext --global-option="-I/usr/include/gdal/"
