@@ -190,15 +190,25 @@ def recarray(dataDict, dtype=[]):
         Numpy record array build from input dictionary.
         
         
-    Example:
+    Examples
     --------
-    dataDict = {
-        'coords': [ (3,4), (3,2), (0,2), (5,2)],
-        'text': ['lol','asdasd','dasdas','addsa'],
-        'numeric':  [1,3,1,2],
-        'missingvalues':  [None,None,'str',None],
-    }
-    recarray(dataDict)
+    Creation of an numpy record array using a dictionary. 
+    
+    >>> rec = recarray({
+    ...    'coords': [ (3,4), (3,2), (0,2), (5,2)],
+    ...    'text': ['text1','text2','text3','text4'],
+    ...    'numeric':  [1,3,1,2],
+    ...    'missingvalues':  [None,None,'str',None],
+    ... })
+    >>> rec.dtype
+    dtype((numpy.record, [('text', 'O'), ('coords', '<i8', (2,)), ('numeric', '<i8'), ('missingvalues', 'O')]))
+    >>> rec.coords
+    array([[3, 4],
+           [3, 2],
+           [0, 2],
+           [5, 2]])
+    >>> rec[0]
+    ('text1', array([3, 4]), 1, None)
     """
     # TODO haskeys
     assert hasattr(dataDict,'__getitem__')
@@ -232,15 +242,6 @@ def recarray(dataDict, dtype=[]):
                             names=dataDict.keys(), dtype=outDtypes)
     return recarray
 
-dataDict = {
-    'coords': [ (3,4), (3,2), (0,2), (5,2)],
-    'text': ['lol','asdasd','dasdas','addsa'],
-    'numeric':  [1,3,1,2],
-    'missingvalues':  [None,None,'str',None],
-}
-a = recarray(dataDict)
-print a
-print a.dtype.names
 
 def unnest(recarray):
     """Unnest a numpy record array. Recursively adds each named field to a list. 
