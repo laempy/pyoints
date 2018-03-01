@@ -1,10 +1,11 @@
 # Generic files to ignore
 *~
 /build
-/doc
+/docs
 /venv
 *.egg
 *.egg-info
 
 # Python specific
 *.pyc
+
