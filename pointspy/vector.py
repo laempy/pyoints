@@ -1,13 +1,26 @@
 import numpy as np
 import math
-from sklearn.decomposition import PCA
 
-import distance
-import fit
-import transformation
+from . import distance
+from . import fit
+from . import transformation
 
 
 def angle(v, w):
+    """ Provides the angle between two vectors.
+    
+    Parameters
+    ----------
+    v: (k), `array_like`
+        Vector with length k.
+    w: (k), `array_like`
+        Vector with length k.     
+    
+    Returns
+    -------
+    angle: `float`
+        Angle between vectors v and w.
+    """
     a = (np.array(v) * np.array(w)).sum()
     b = math.sqrt(distance.sNorm(v) * distance.sNorm(w))
     if(b > 0):
@@ -17,22 +30,20 @@ def angle(v, w):
     return a
 
 
-def zenith(v, axis=None):
-    if axis is None:
-        axis = len(v) - 1
+def zenith(v, axis=-1):
     length = distance.norm(v)
     return math.acos(v[axis] / length) * 180.0 / math.pi
 
 
 def orthogonal(v, w):
-    return scalarProduct(v, w) == 0
+    return scalarproduct(v, w) == 0
 
 
-def scalarProduct(v, w):
+def scalarproduct(v, w):
     return np.dot(v, w)
 
 
-def basisFromVector(vec):
+def basis(vec):
 
     vec = np.array(vec)
     dim = len(vec)
