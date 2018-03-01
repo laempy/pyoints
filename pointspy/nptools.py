@@ -220,7 +220,7 @@ def recarray(dataDict, dtype=[]):
                 if row is not None:
                     row = np.array(row)
                     s = row.shape
-                    if not np.issubdtype(row.dtype, np.str):
+                    if not np.string_ == row.dtype.type:
                         dt = row.dtype
                     outDtype = (colName, dt, s)
                     break

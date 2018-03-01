@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
 
-import transformation
-import nptools
+from . import transformation
+from . import nptools
 
 from .georecords import GeoRecords
 from .extent import Extent
@@ -186,3 +186,5 @@ def indices2keys(indices, shape):
         indices = indices % d
     keys = np.array(keys, dtype=int).T
     return keys
+
+
