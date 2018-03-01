@@ -2,123 +2,148 @@ import numpy as np
 from sklearn.cluster import DBSCAN
 from collections import defaultdict
 
-from .classification import mayority, classes2dict
+from .classification import (
+    mayority,
+    classes2dict,
+)
 
-
-def dbscan(
-        indexKD,
-        epsilon=None,
-        quantile=0.9,
-        quantileFactor=3,
-        minPts=1,
-        minSize=1,
-        maxSize=np.inf):
-
-    coords = indexKD.coords()
-
-    if epsilon is None:
-        # dists=indexKD.kNN(coords,minPts+1)[0][:,1:]
-        if minPts > 0:
-            dists = indexKD.kNN(coords, k=minPts + 1)[0][:, 1:]
-        else:
-            dists = indexKD.NN()[0]
-        epsilon = np.percentile(dists, quantile * 100) * quantileFactor
-
-    classification = DBSCAN(
-        eps=epsilon,
-        min_samples=minPts).fit_predict(coords)
-    clusters = classes2dict(classification, minSize=minSize, maxSize=maxSize)
-    return clusters
-
-
-def mayorityClustering(
-        indexKD,
+def clustering(indexKD,
         r,
+        get_class,
         order,
         classes=None,
-        minPts=1,
-        autoSet=True):
+        min_size=1,
+        auto_set=True):
+    """Generic clustering.
+
+    Parameters
+    ----------
+    indexKD: `IndexKD`
+        Spatial index with `n` points.
+    r: positive, `float`
+        Radius to select the neighboured points.
+    get_class: `function`
+        Function recieves a list of class ids and returns a class id. TODO
+    order: optional, `array_like`
+        TODO
+        If not defined the order is defined by decreasing point density.
+    classes: optional, `array_like`
+        Array of `n` preliminary class ids. A class id of `-1` is accociated
+        with no class.
+    min_size: `int`
+        TODO
+    auto_set: `boolean`
+        TODO
+
+    Returns
+    -------
+    classification: `np.ndarray`
+        Array of `n` class ids.
+    """
+    
+    assert isianstance(indexKD,IndexKD)
+    assert (isianstance(r,float) or isianstance(r,int)) and r > 0
+
+    if order is None:
+        # order by density
+        count = indexKD.countBall(r)
+        order = np.argsort(count)[::-1]
+        order = order[count[order] > 1]
+    else:
+        assert hasattr(order,'__len__') and len(order) <= len(indexKD)
+
+    if classes is None:
+        outclasses = -np.ones(len(indexKD),dtype=int)
+    else:
+        assert hasattr(classes,'__len__') and len(classes) == len(indexKD)
+        outclasses = np.array(classes,dtype=int)
+        assert len(outclasses.shape) == 1
+    
+    assert isianstance(min_size,int) and min_size >= 0
+    assert isianstance(auto_set,bool)    
+            
+    nextId = outclasses.max() + 1
     coords = indexKD.coords()
-
-    classification = -np.ones(len(indexKD),
-                              dtype=int) if classes is None else np.copy(classes)
-    nextId = classification.max() + 1
-
-    for pId in order:
-        nIds = indexKD.ball(coords[pId, :], r)
-        cIds = [classification[nId]
-                for nId in nIds if classification[nId] != -1]
+    
+    nIdsIter = indexKD.ball(coords[order, :], r)
+    
+    for pId, nIds in zip(order,nIdsIter):
+        cIds = [outclasses[nId] for nId in nIds if outclasses[nId] != -1]
         if len(cIds) > 0:
-            classification[pId] = mayority(cIds)
-        elif autoSet:
-            classification[pId] = nextId
+            outclasses[pId] = get_class(cIds)
+        elif auto_set:
+            outclasses[pId] = nextId
             nextId += 1
 
-    return classes2dict(classification, minSize=minPts)
+    return classes2dict(outclasses, min_size=min_size)
 
 
-def weightClustering(
+                
+
+# TODO vereinfachte clustering funktionen mit vordefinierten gewichten, order etc.!
+
+
+
+def mayorityclusters(
+        indexKD,
+        r,
+        order=None,
+        classes=None,
+        min_size=1,
+        auto_set=True):
+    # TODO doku
+            
+    return clustering(indexKD,r,mayority,order,classes,min_size,auto_set)
+
+
+def weightclusters(
         indexKD,
         r,
         order,
         weights=None,
         classes=None,
-        minPts=1,
-        autoSet=True):
-    coords = indexKD.coords()
+        min_size=1,
+        auto_set=True):
+    # TODO doku
+            
+    if weights is None:
+        weights = np.ones(len(indexKD),dtype=float)
+    else:
+        weights = np.copy(weights)
 
-    classification = -np.ones(len(indexKD),
-                              dtype=int) if classes is None else np.copy(classes)
-    weights = np.ones(
-        len(indexKD),
-        dtype=float) if weights is None else np.copy(weights)
-    nextId = classification.max() + 1
-
-    def getClass(cIds):
+    def get_class(cIds):
         cWeight = defaultdict(lambda: 0)
         for cId in cIds:
-            # if weights[cId]<1:
-            #    print weights[cId]
             cWeight[cId] += weights[cId]
-
         for key in cWeight:
             if cWeight[key] > cWeight[cId]:
                 cId = key
-
-        # for key in cWeight:
-        #    if cWeight[key]==cWeight[cId] and key!=cId:
-        #        return -1,1
-        return cId, float(cWeight[cId]) / len(cIds)
-
-    for pId in order:
-        nIds = indexKD.ball(coords[pId, :], r)
-        cIds = [classification[nId]
-                for nId in nIds if classification[nId] != -1]
-        if len(cIds) > 0:
-            cId, w = getClass(cIds)
-            classification[pId] = cId
-            weights[pId] = w
-        elif autoSet:
-            classification[pId] = nextId
-            nextId += 1
-
-    return classes2dict(classification, minSize=minPts)
-
-
-def densityClustering(indexKD, r, classes=None):
+        weights[pId] = float(cWeight[cId]) / len(cIds)
+        return cId
+    
+    return clustering(indexKD,r,get_class,order,classes,min_size,auto_set)
+    
+    
+def dbscan(
+        indexKD,
+        epsilon=None,
+        quantile=0.9,
+        factor=3,
+        min_pts=1,
+        min_size=1,
+        max_size=np.inf):
+    # TODO doku
 
     coords = indexKD.coords()
+    
+    if epsilon is None:
+        # Estimate epsilon based on density
+        if min_pts > 0:
+            dists = indexKD.kNN(coords, k=min_pts + 1)[0][:, 1:]
+        else:
+            dists = indexKD.NN()[0]
+        epsilon = np.percentile(dists, quantile * 100) * factor
 
-    count = indexKD.countBall(1.0 * r)
-    order = np.argsort(count)[::-1]
-    order = order[count[order] > 1]
-
-    outClasses = -np.ones(len(indexKD),
-                          dtype=int) if classes is None else np.copy(classes)
-
-    for pId in order:
-        nIds = indexKD.ball(coords[pId, :], r)
-        cIds = [outClasses[nId] for nId in nIds if outClasses[nId] != -1]
-        outClasses[pId] = pId if len(cIds) == 0 else mayority(cIds)
-
-    return classification
+    # perform dbscan
+    outclasses = DBSCAN(eps=epsilon,min_samples=min_pts).fit_predict(coords)
+    return classes2dict(outclasses, min_size=min_size, max_size=max_size)

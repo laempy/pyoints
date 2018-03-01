@@ -9,6 +9,8 @@ import transformation
 import bisect
 
 
+# TODO module description
+
 class IndexKD(object):
     """Wrapper class for spatial indices to speed up spatial queries and ease
     calulation.
@@ -42,6 +44,54 @@ class IndexKD(object):
 
     def __iter__(self):
         """Iterate over coordinates."""
+        return enumerate(self.coords)
+
+    @property
+    def coords(self):
+        """Provides transformation matrix.
+        
+        Returns
+        -------
+        transform: (n,k) `np.ndarray`
+            Represents n data points with k dimensions.
+        """
+        return self._coords
+
+    @property
+    def transform(self):
+        """Provides transformation matrix
+        
+        Returns
+        -------
+        transform: (dim+1,dim+1) `np.matrix`
+        """
+        return self._transform
+
+    @property
+    def dim(self):
+        """Provides number of dimensions of coordinates.
+        
+        Returns
+        -------
+        dim: `uint`
+        """
+        return self.coords.shape[1]
+
+    def __len__(self):
+        """Number of points.
+        
+        Returns
+        -------
+        length: `int`
+            Number of points.
+        """
+        return self.coords.shape[0]
+
+    def __iter__(self):
+        """Iterate over coordinates.
+        iter: `iterable`
+            Iterable of index and point tuples.        
+        """
         return enumerate(self.coords)
 
     @property

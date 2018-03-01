@@ -1,6 +1,7 @@
 import numpy as np
 import itertools as it
 
+# TODO module description
 
 class Extent(np.recarray, object):
     """Specifies spatial extent (or bounding box) of coordinates in k 
@@ -175,4 +176,5 @@ class Extent(np.recarray, object):
 
         if n == 1:
             return len(indices) == 1
+
         return indices

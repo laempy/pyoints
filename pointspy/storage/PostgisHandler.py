@@ -7,13 +7,6 @@ import psycopg2
 from spatialCloud import npTools
 from spatialCloud import Extent
 
-from .BaseGeoHandler import *
-from .LasHandler import *
-from .RasterHandler import *
-from .CsvHandler import *
-from .DumpHandler import *
-
-
 
 # Postgis
 ##########

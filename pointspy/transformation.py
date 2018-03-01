@@ -197,10 +197,10 @@ class LocalSystem(np.matrix, object):
     def dim(self):
         return len(self) - 1
 
-    def toLocal(self, globalCoords):
+    def to_local(self, globalCoords):
         return transform(globalCoords, self)
 
-    def toGlobal(self, localCoords):
+    def to_global(self, localCoords):
         return transform(localCoords, self, inverse=True)
 
     def distance(self, coords):
@@ -211,12 +211,12 @@ class LocalSystem(np.matrix, object):
         pc = self[k - 1, :self.dim]
         return np.asarray(pc)[0]
 
-    def explainedVariance(self, globalCoords):
-        localCoords = self.toLocal(globalCoords)
+    def explained_variance(self, globalCoords):
+        localCoords = self.to_local(globalCoords)
         return np.var(localCoords, axis=0)
 
-    def explainedVarianceRatio(self, globalCoords):
-        var = self.explainedVariance(globalCoords)
+    def explained_variance_ratio(self, globalCoords):
+        var = self.explained_variance(globalCoords)
         return var / var.sum()
 
     @property
