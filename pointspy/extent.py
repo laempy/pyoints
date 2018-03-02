@@ -13,23 +13,56 @@ class Extent(np.recarray, object):
         Defines spatial extent of k dimensions as either minimum corner and 
         maximum corner or as a set of n points. If a set of points is given,
         the extent is calculated based on the coordinates.
+    
+    Examples
+    --------
+    
+    Basic handling of extents.
+    >>> points = np.array([(0,0),(1,4),(0,1),(1,0.5)])
+    >>> print points
+    [[0.  0. ]
+     [1.  4. ]
+     [0.  1. ]
+     [1.  0.5]]
+    >>> ext = Extent(points)
+    >>> print ext
+    [0. 0. 1. 4.]
+    >>> print ext.dim
+    2
+    >>> print ext.min_corner
+    [0. 0.]
+    >>> print ext.max_corner
+    [1. 4.]
+    >>> print ext.ranges
+    [1. 4.]
+    >>> print ext.corners
+    [[0. 4.]
+     [1. 4.]
+     [1. 0.]
+     [0. 0.]]
+        
     """
 
     # __new__ to extend np.ndarray
     def __new__(cls, ext):
         
+        assert hasattr(ext,'__getitem__')
+        
         if not isinstance(ext, np.ndarray):
             ext = np.array(ext)
+        
+        assert len(ext.shape) <= 2
+            
         if len(ext.shape) == 2:
             # points given
             min_ext = np.amin(ext, axis=0)
             max_ext = np.amax(ext, axis=0)
-            ext = np.concatenate((min_ext, max_ext))
+            ext = np.concatenate((min_ext, max_ext))            
         return ext.view(cls)
 
     @property
     def dim(self):
-        """Dimension of the coordinate system.
+        """Number of coordinate dimensions.
         
         Returns
         -------
@@ -114,8 +147,9 @@ class Extent(np.recarray, object):
             # return corners[(0, 2, 3, 1), :]
         return corners
 
-    def intersects(self, coords, dim=None):
-        """Returns indices of coordinates which are located within the extent.
+
+    def intersection(self, coords, dim=None):
+        """Tests if coordinates are located within the extent.
         
         Parameters
         ----------
@@ -127,8 +161,25 @@ class Extent(np.recarray, object):
         Returns
         -------
         indices: `array_like`
-            Indices of coordinates, which are within the extent. If the a single
-            point is given, just a boolean value is returned.
+            Indices of coordinates, which are within the extent. If just a
+            single point is given, a boolean value is returned.
+            
+        Examples
+        --------
+        Point within extent?
+        >>> points = np.array([(0,0),(1,4),(0,1),(1,0.5)])
+        >>> print ext.intersection([(2,2)])
+        [0 2]
+        
+        Points within extent?
+        >>> print ext.intersection([(1,2),(-1,1),(0.5,1)])
+        [0 2]
+
+        Corners are considered to be within extent.
+        >>> print ext.intersection(ext.corners)
+        [0 1 2 3]
+
+
         """
         
         assert hasattr(coords,'__iter__')
