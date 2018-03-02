@@ -95,6 +95,22 @@ def flatten_dtypes(np_dtypes):
         Data types of fields.
     shapes: `list of tuples`
         Shapes of fields.
+        
+    Examples
+    --------
+    
+    >>> dtype = np.dtype([
+    ...     ('simple',int),
+    ...     ('multidimensional',float,3),
+    ... ])
+    >>> names, dtypes, shapes = flatten_dtypes(dtype)
+    >>> names
+    ['simple', 'multidimensional']
+    >>> dtypes
+    [dtype('int64'), dtype('float64')]
+    >>> shapes
+    [0, 3]
+
     """
     
     # ensure data type
@@ -102,7 +118,7 @@ def flatten_dtypes(np_dtypes):
 
     dtypes = []
     shapes = []
-    names = np_dtypes.names
+    names = list(np_dtypes.names)
 
     for name in names:
 
@@ -166,6 +182,12 @@ def aggregate(gen, func, dtype=None):
     -------
     recarray: `numpy.recarray`
         Record array similar to input array, but with function applied to.
+        
+    Examples
+    --------
+    TODO
+    
+    
     """
     
     assert hasattr(gen,'__iter__')
@@ -256,8 +278,32 @@ def unnest(recarray):
     -------
     unnested: `list`
         List of unnested fields.
+        
+    Examples
+    --------
+    
+    >>> dtype = [
+    ...    ('regular',int,1),
+    ...    ('nested',[
+    ...         ('child1',str),
+    ...         ('child2',float,2)
+    ...    ])
+    ... ]
+    >>> rec = np.ones(2,dtype=dtype).view(np.recarray)
+    >>> rec.nested.child2
+    array([[1., 1.],
+           [1., 1.]])
+    >>> unnested = unnest(rec)
+    >>> unnested[0]
+    array([1, 1])
+    >>> unnested[1]
+    array(['', ''], dtype='|S0')
+    >>> unnested[2]
+    array([[1., 1.],
+           [1., 1.]])
     """
-    assert isinstance(data,np.recarray), 'Numpy.recarray required.'
+    #print recarray
+    assert isinstance(recarray,(np.recarray,np.ndarray))
     
     if recarray.dtype.names is None:
         return [recarray]
@@ -273,20 +319,34 @@ def missing(data):
     
     Parameters
     ----------
-    data: `numpy.ndarray`
-        Numpy ndarray to search missing values for. Missing values are either
-        None or NAN values.
+    data: `array_like`
+        A array like object to search missing values for. Missing values are
+        either None or NaN values.
     
     Returns
     -------
-    missing: `numpy.recarray`
-        Boolean array which indicates missing values.
-    """
-    assert isinstance(data,np.ndarray), 'Numpy.ndarray required.'
+    missing: boolean numpy.ndarray
+        Boolean values indicate missing values.
+        
+    Examples
+    --------
     
-    mask = np.equal(data, None)
-    try:
-        mask[np.isnan(data)] = True
-    except TypeError:
-        pass
-    return mask
+    Finding missing values in a list.
+    >>> arr = ['str',1,None,np.nan,np.NaN]
+    >>> missing(arr)
+    array([False, False,  True,  True,  True])
+    
+    Finding missing values in multidimensional arrays.
+    >>> arr = np.array([(0,np.nan),(None,1),(2,3)],dtype=float)
+    >>> missing(arr)
+    array([[False,  True],
+           [ True, False],
+           [False, False]])
+    """
+    assert hasattr(data,'__len__')
+    strings = np.array(data,dtype=str)
+
+    ismissing = np.equal(data, None)
+    ismissing[strings == 'nan'] = True
+
+    return ismissing
