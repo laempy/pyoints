@@ -36,10 +36,10 @@ class Extent(np.recarray, object):
     >>> print ext.ranges
     [1. 4.]
     >>> print ext.corners
-    [[0. 4.]
-     [1. 4.]
+    [[0. 0.]
      [1. 0.]
-     [0. 0.]]
+     [1. 4.]
+     [0. 4.]]
         
     """
 
@@ -136,16 +136,44 @@ class Extent(np.recarray, object):
         -------
         corners: (2**self.dim,self.dim), `array_like`
             Corners of the extent.
-        """
-        genCombs = np.array(list(it.product(range(2), repeat=self.dim)))
-        combs = genCombs * self.dim + range(self.dim)
-        corners = self[combs]
-        if self.dim == 2:
-            # change order
-            # TODO
-            return corners[(1, 3, 2, 0), :]
-            # return corners[(0, 2, 3, 1), :]
-        return corners
+            
+        Two dimensional case.
+        >>> ext = Extent([-1,-2,1,2])
+        >>> print ext.corners
+        [[-1 -2]
+         [ 1 -2]
+         [ 1  2]
+         [-1  2]]
+         
+        Three dimensional case.
+        >>> ext = Extent([-1,-2,-4,1,2,4])
+        >>> print ext.corners
+        [[-1 -2 -4]
+         [ 1 -2 -4]
+         [ 1  2 -4]
+         [-1  2 -4]
+         [-1  2  4]
+         [ 1  2  4]
+         [ 1 -2  4]
+         [-1 -2  4]]
+        """      
+        
+        def combgen(dim):
+            # generates order of corners
+            if dim == 1:
+                return np.array([[0,1]],dtype=int).T
+            else:
+                comb = combgen(dim-1)
+                col = np.array([np.hstack((
+                        np.zeros(len(comb)),
+                        np.ones(len(comb)),
+                    ))],dtype=int).T
+                comb = np.vstack((comb,comb[::-1,:]))
+                return np.hstack((comb,col))
+
+        combs = combgen(self.dim)
+        combs = combs * self.dim + range(self.dim)
+        return self[combs]
 
 
     def intersection(self, coords, dim=None):
@@ -166,10 +194,12 @@ class Extent(np.recarray, object):
             
         Examples
         --------
+        
         Point within extent?
-        >>> points = np.array([(0,0),(1,4),(0,1),(1,0.5)])
-        >>> print ext.intersection([(2,2)])
-        [0 2]
+        >>> points = np.array([(1,4),(0,1),(1,0.5)])
+        >>> ext = Extent(points)
+        >>> print ext.intersection([(0.5,1)])
+        True
         
         Points within extent?
         >>> print ext.intersection([(1,2),(-1,1),(0.5,1)])
@@ -178,7 +208,6 @@ class Extent(np.recarray, object):
         Corners are considered to be within extent.
         >>> print ext.intersection(ext.corners)
         [0 1 2 3]
-
 
         """
         
