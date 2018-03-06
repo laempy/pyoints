@@ -18,29 +18,33 @@ class Extent(np.recarray, object):
     --------
     
     Basic handling of extents.
-    >>> points = np.array([(0,0),(1,4),(0,1),(1,0.5)])
-    >>> print points
-    [[0.  0. ]
-     [1.  4. ]
-     [0.  1. ]
-     [1.  0.5]]
+    Derive extent based on a list of points.
+    >>> points = [(0,0),(1,4),(0,1),(1,0.5),(0.5,0.7)]
     >>> ext = Extent(points)
     >>> print ext
     [0. 0. 1. 4.]
+    
+    Create extent based on minumum vales and maximum values.
+    >>> ext = Extent([-1, 0, 1, 4,])
+    >>> print ext
+    [-1  0  1  4]
+    
+    Derive some properties.
     >>> print ext.dim
     2
     >>> print ext.min_corner
-    [0. 0.]
+    [-1  0]
     >>> print ext.max_corner
-    [1. 4.]
+    [1 4]
     >>> print ext.ranges
-    [1. 4.]
+    [2 4]
     >>> print ext.corners
-    [[0. 0.]
-     [1. 0.]
-     [1. 4.]
-     [0. 4.]]
-        
+    [[-1  0]
+     [ 1  0]
+     [ 1  4]
+     [-1  4]]
+    >>> print ext.center
+    [0. 2.]
     """
 
     # __new__ to extend np.ndarray
@@ -67,7 +71,7 @@ class Extent(np.recarray, object):
         Returns
         -------
         dim: `int`
-            Number of coordinate axes.
+            Number of coordinate axes  
         """
         return len(self) / 2
 
@@ -146,16 +150,16 @@ class Extent(np.recarray, object):
          [-1  2]]
          
         Three dimensional case.
-        >>> ext = Extent([-1,-2,-4,1,2,4])
+        >>> ext = Extent([-1,-2,-3,1,2,3])
         >>> print ext.corners
-        [[-1 -2 -4]
-         [ 1 -2 -4]
-         [ 1  2 -4]
-         [-1  2 -4]
-         [-1  2  4]
-         [ 1  2  4]
-         [ 1 -2  4]
-         [-1 -2  4]]
+        [[-1 -2 -3]
+         [ 1 -2 -3]
+         [ 1  2 -3]
+         [-1  2 -3]
+         [-1  2  3]
+         [ 1  2  3]
+         [ 1 -2  3]
+         [-1 -2  3]]
         """      
         
         def combgen(dim):
@@ -196,8 +200,7 @@ class Extent(np.recarray, object):
         --------
         
         Point within extent?
-        >>> points = np.array([(1,4),(0,1),(1,0.5)])
-        >>> ext = Extent(points)
+        >>> ext = Extent([0,0.5,1,4])
         >>> print ext.intersection([(0.5,1)])
         True
         
@@ -205,7 +208,7 @@ class Extent(np.recarray, object):
         >>> print ext.intersection([(1,2),(-1,1),(0.5,1)])
         [0 2]
 
-        Corners are considered to be within extent.
+        Corners are located within extent.
         >>> print ext.intersection(ext.corners)
         [0 1 2 3]
 
