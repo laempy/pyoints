@@ -1,5 +1,15 @@
+# Just once
+#virtualenv venv --python=python2.7
+#. venv/bin/activate
+#pip install numpy
+
+
 # run with:
 # pip install -r requirements.txt
+
+
+
+
 numpy
 rtree
 liblas
@@ -20,13 +30,8 @@ sphinxcontrib-napoleon
 # nice to have
 networkx
 matplotlib
-opencv-contrib-python
+#pip install opencv-python
 
-
-#virtualenv venv --python=python2.7
-#. venv/bin/activate
-#pip install numpy
-#pip install -r requirements.txt
 #python2.7.12
 #python-gdal
 #libgdal-dev>=1.11.3
