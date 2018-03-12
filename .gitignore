@@ -11,4 +11,7 @@ venv
 
 # Docs
 docs/*
+doc/*
 !docs/conf.py
+!docs/Makefile
+!docs/make.bat
