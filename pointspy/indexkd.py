@@ -10,6 +10,8 @@ import bisect
 
 
 # TODO module description
+# TODO nested IndexKD?
+# ==> 
 
 class IndexKD(object):
     """Wrapper class for spatial indices to speed up spatial queries and ease
@@ -27,20 +29,27 @@ class IndexKD(object):
     """
 
 
-    def __init__(self, coords, transform=None, leafsize=20):
+    def __init__(self, coords, transform=None, leafsize=16, quickbuild=True):
+        
         assert hasattr(coords, '__len__')
-        assert len(coords) > 0, 'Empty coordinate lists are not allowed.'
+        assert len(coords) > 0
+        self._coords = np.copy(coords)
+        assert len(coords.shape)==2
+        
         assert isinstance(leafsize,int) and leafsize > 0
+        assert isinstance(quickbuild,bool)
         
         self._leafsize = leafsize
+        self._balanced = not quickbuild
+        self._compact = not quickbuild
         
         if transform is None:
             self._transform = transformation.i_matrix(coords.shape[1])
-            self._coords = np.copy(coords)
         else:
             self._transform = np.matrix(transform)
             self._coords = transformation.transform(
-                np.copy(coords), self.transform)
+                self._coords, self.transform)
+                
         
 
     def __len__(self):
@@ -138,9 +147,16 @@ class IndexKD(object):
         -------
         kdTree: `cKDTree`
 	"""
-        if not hasattr(self, '_kdTree'):
-            self._kdTree = cKDTree(self.coords, leafsize=self._leafsize)
-        return self._kdTree
+                
+        if not hasattr(self, '_kdtree'):
+            self._kdtree = cKDTree(
+                self.coords,
+                leafsize=self._leafsize,
+                copy_data=False,
+                balanced_tree=self._balanced, 
+                compact_nodes=self._compact
+            )
+        return self._kdtree
 
     @property
     def rTree(self):
@@ -167,7 +183,7 @@ class IndexKD(object):
 
         return self._rTree
 
-    def ball(self, coords, r, bulk=100000, **kwargs):
+    def ball(self, coords, r, bulk=1000000, **kwargs):
         """Find all points within distance r of point(s) coords.
         
         Parameters
@@ -188,6 +204,7 @@ class IndexKD(object):
             If coords is a single point, returns a list neighbours. If coords 
             is an list of points, returns a list containing lists of neighbours.
         """
+        
         if hasattr(r,'__iter__'):
             # query multiple radii
             return list(self.balls_iter(coords, r, **kwargs))
@@ -196,9 +213,9 @@ class IndexKD(object):
             return list(self.ball_iter(coords, r, bulk=bulk, **kwargs))
         else:
             # single point query
-            return self.kdTree.query_ball_point(coords[:,:self.dim], r, **kwargs)
+            return self.kdTree.query_ball_point(coords[:self.dim], r, **kwargs)
         
-    def ball_iter(self, coords, r, bulk=100000, **kwargs):
+    def ball_iter(self, coords, r, bulk=1000000, **kwargs):
         """Similar to `ball`, but yields lists of neighbours.
         
         Yields
@@ -210,7 +227,7 @@ class IndexKD(object):
         for i in range(coords.shape[0] / bulk + 1):
             # bulk query
             nIds = self.kdTree.query_ball_point(
-                coords[bulk * i:bulk * (i + 1),:self.dim], r, **kwargs)
+                coords[bulk * i:bulk * (i + 1),:self.dim], r, n_jobs=-1, **kwargs)
             # yield neighbours
             for nId in nIds:
                 yield nId
@@ -229,7 +246,7 @@ class IndexKD(object):
             Lists of indices of neighbouring points.
         """
         for coord,r in itertools.izip(coords,radii):
-            nIds = self.kdTree.query_ball_point(coord[:,:self.dim], r, **kwargs)
+            nIds = self.kdTree.query_ball_point(coord[:self.dim], r, **kwargs)
             yield nIds
             
 
