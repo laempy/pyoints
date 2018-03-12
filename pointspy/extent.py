@@ -17,7 +17,6 @@ class Extent(np.recarray, object):
 
     # __new__ to extend np.ndarray
     def __new__(cls, ext):
-        
         if not isinstance(ext, np.ndarray):
             ext = np.array(ext)
         if len(ext.shape) == 2:
@@ -132,7 +131,7 @@ class Extent(np.recarray, object):
         """
         
         assert hasattr(coords,'__iter__')
-        
+
         # normalize data
         if not isinstance(coords, np.ndarray):
             coords = np.array(coords)
@@ -149,7 +148,7 @@ class Extent(np.recarray, object):
 
         min_ext, max_ext = self.split
 
-        # Try to find optimal order of axes to speed up the process
+        # Order axes by range to speed up the process (heuristic)
         order = np.argsort(self.ranges[0:dim])
         mask = np.any(
             (np.abs(
@@ -159,21 +158,22 @@ class Extent(np.recarray, object):
 
         indices = np.arange(n)
         for axis in axes:
+            values = coords[indices, axis]
 
             # Minimum
-            mask = coords[:, axis] >= min_ext[axis]
+            mask = values >= min_ext[axis]
             indices = indices[mask]
             if len(indices) == 0:
                 break
-            coords = coords[mask, :]
+            values = values[mask]
 
             # Maximum
-            mask = coords[:, axis] <= max_ext[axis]
+            mask = values <= max_ext[axis]
             indices = indices[mask]
             if len(indices) == 0:
                 break
-            coords = coords[mask, :]
-
+            values = values[mask]
+            
         if n == 1:
             return len(indices) == 1
 
