@@ -17,8 +17,16 @@ psycopg2-binary
 Sphinx
 sphinxcontrib-napoleon
 
+# nice to have
+networkx
+matplotlib
+opencv-contrib-python
 
-#virtualenv venv --python=python2.7pip 
+
+#virtualenv venv --python=python2.7
+#. venv/bin/activate
+#pip install numpy
+#pip install -r requirements.txt
 #python2.7.12
 #python-gdal
 #libgdal-dev>=1.11.3

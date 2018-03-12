@@ -7,17 +7,20 @@ setup (
 
 	# Declare your packages' dependencies here, for eg:
 	install_requires=[
-	    'numpy>=1.14.0',
-	    'rtree>=0.8.3',
-	    'liblas>=1.8.3',
-	    'laspy>=1.5.1',
-	    'scipy>=1.0.0',
-	    'scikit-learn>=0.19.1',
-	    'pyproj>=1.9.5.1',
-	    'gdal>=1.11.2', # gdal==1.11.2
-	    'pandas>=0.22.0',
-	    'configobj>=5.0.6',
-	    'pyyaml>=3.12'
+	    'numpy',
+	    'rtree',
+	    'liblas',
+	    'laspy',
+	    'scipy',
+	    'scikit-learn',
+	    'pyproj',
+	    'gdal',
+	    'pandas',
+	    'configobj',
+	    'pyyaml',
+            'psycopg2-binary',
+            'Sphinx', # docs
+            'sphinxcontrib-napoleon', # docs
 	],
 
 	# Fill in these to make your Egg ready for upload to
