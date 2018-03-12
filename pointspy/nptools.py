@@ -225,13 +225,13 @@ def recarray(dataDict, dtype=[]):
     ... })
     >>> rec.dtype
     dtype((numpy.record, [('text', 'O'), ('coords', '<i8', (2,)), ('numeric', '<i8'), ('missingvalues', 'O')]))
-    >>> rec.coords
-    array([[3, 4],
-           [3, 2],
-           [0, 2],
-           [5, 2]])
-    >>> rec[0]
-    ('text1', [3, 4], 1, None)
+    >>> print rec.coords
+    [[3 4]
+     [3 2]
+     [0 2]
+     [5 2]]
+    >>> print rec[0]
+    ('text1', array([3, 4]), 1, None)
     """
 
     assert hasattr(dataDict,'__getitem__') and hasattr(dataDict,'keys')
@@ -283,24 +283,24 @@ def unnest(recarray):
     --------
     
     >>> dtype = [
-    ...    ('regular',int,1),
+    ...    ('regular',np.int,1),
     ...    ('nested',[
-    ...         ('child1',str),
-    ...         ('child2',float,2)
+    ...         ('child1','|S0'),
+    ...         ('child2',np.float,2)
     ...    ])
     ... ]
     >>> rec = np.ones(2,dtype=dtype).view(np.recarray)
-    >>> rec.nested.child2
-    array([[1., 1.],
-           [1., 1.]])
+    >>> print rec.nested.child2
+    [[ 1.  1.]
+     [ 1.  1.]]
     >>> unnested = unnest(rec)
-    >>> unnested[0]
-    array([1, 1])
-    >>> unnested[1]
-    array(['', ''], dtype='|S0')
-    >>> unnested[2]
-    array([[1., 1.],
-           [1., 1.]])
+    >>> print unnested[0]
+    [1 1]
+    >>> print unnested[1]
+    ['' '']
+    >>> print unnested[2]
+    [[ 1.  1.]
+     [ 1.  1.]]
     """
     #print recarray
     assert isinstance(recarray,(np.recarray,np.ndarray))
@@ -322,26 +322,26 @@ def missing(data):
     data: `array_like`
         A array like object to search missing values for. Missing values are
         either None or NaN values.
-    
+        
     Returns
     -------
     missing: boolean numpy.ndarray
         Boolean values indicate missing values.
-        
+    
     Examples
     --------
     
     Finding missing values in a list.
     >>> arr = ['str',1,None,np.nan,np.NaN]
-    >>> missing(arr)
-    array([False, False,  True,  True,  True])
+    >>> print missing(arr)
+    [False False  True  True  True]
     
     Finding missing values in multidimensional arrays.
     >>> arr = np.array([(0,np.nan),(None,1),(2,3)],dtype=float)
-    >>> missing(arr)
-    array([[False,  True],
-           [ True, False],
-           [False, False]])
+    >>> print missing(arr)
+    [[False  True]
+     [ True False]
+     [False False]]
     """
     assert hasattr(data,'__len__')
     strings = np.array(data,dtype=str)
@@ -350,3 +350,10 @@ def missing(data):
     ismissing[strings == 'nan'] = True
 
     return ismissing
+
+
+
+def fields_view(arr,fields,dtype=None):
+    if dtype is None:
+        dtype = np.dtype({name:arr.dtype.fields[name] for name in fields})
+    return np.ndarray(arr.shape, dtype, arr, 0, arr.strides)
