@@ -1,32 +1,33 @@
 import numpy as np
 
 from . import distance
-
+from . import _assertion
 
 # TODO documentation
 
 
 def transform(coords, T, inverse=False):
-    """Applies a linear transformation to coordinates
+    """Performs a linear transformation to coordinates using a transformation
+    matrix.
     
     Parameters
     ----------
-    coords: (n,k), `array_like`
-        Represents n data points of k dimensions.
-    T: (k+1,k+1), `array_like`
+    coords : (n,k), array_like
+        Represents n data points of `k` dimensions.
+    T : (k+1,k+1), array_like
         Transformation matrix.
     
     Returns
     -------
-    coords: (n,k), `array_like`
-        Transformed coordinates. If 
+    coords : (n,k), array_like
+        Transformed coordinates. 
     """
+
+    T = _assertion.ensure_tmatrix(T)
 
     if inverse:
         T = np.linalg.inv(T)
     T = np.asarray(T)
-    assert T.shape > 0
-    assert T.shape[0] == T.shape[1]
 
     H = homogenious(coords)
     HT = np.dot(H, T.T)
@@ -37,14 +38,14 @@ def transform(coords, T, inverse=False):
 
 
 def homogenious(coords, value=1):
-    if not isinstance(coords, np.ndarray):
+    
+    assert hasattr(coords,'__len__')
+    if not isinstance(coords,np.ndarray):
         coords = np.array(coords)
-
+    
     if len(coords.shape) == 1:
         H = np.append(coords, value)
     else:
-        #H = np.column_stack((coords,np.ones(len(coords))*value))
-        #print H
         N, dim = coords.shape
         H = np.empty((N, dim + 1))
         H[:, :-1] = coords
@@ -65,6 +66,9 @@ def matrix(t=None,r=None,s=None):
         sM = s_matrix(s)
         shape = sM.shape
 
+    assert len(shape) == 2
+    assert shape[0] == shape[1]
+    assert shape[0] > 1
         
     if t is None:
         tM = i_matrix(shape[0]-1)
@@ -73,6 +77,7 @@ def matrix(t=None,r=None,s=None):
     if s is None:
         sM = i_matrix(shape[0]-1)
         
+    
     assert tM.shape == shape
     assert rM.shape == shape
     assert sM.shape == shape
@@ -81,12 +86,12 @@ def matrix(t=None,r=None,s=None):
     
 
 def i_matrix(d):
-    assert isinstance(d, int)
+    assert isinstance(d, int) and d > 1
     return np.matrix(np.identity(d + 1))
 
 
 def t_matrix(t):
-    assert hasattr(t,'__len__') and len(t)>0
+    assert hasattr(t,'__len__') and len(t) > 1
     dim = len(t)
     T = np.identity(dim + 1)
     T[0:dim, dim] = t
@@ -94,7 +99,7 @@ def t_matrix(t):
 
 
 def s_matrix(s):
-    assert hasattr(s,'__len__') and len(s)>0
+    assert hasattr(s,'__len__') and len(s) > 1
     dim = len(s)
     S = np.identity(dim + 1)
     diag = np.append(s, 1)
@@ -139,14 +144,13 @@ def r_matrix(a):
     return R
 
 
-def addDim(T):
-    T = np.matrix(T)
+def add_dim(T):
+    
+    T = _assert.ensure_tmatrix(T)
+    
     dim = len(T) + 1
     M = np.eye(dim)
-    M[0:(dim - 1), 0:(dim - 1)] = T
-    # s=len(T)-1
-    # M[0:s,0:s]=T#[0:s,0:s]
-    # M[0:s,len(T)]=T[0:s,len(T)-1].flatten()
+    M[:-2, :-2] = T
     return M
 
 
@@ -154,9 +158,7 @@ def decomposition(T):
     # https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati
     # https://math.stackexchange.com/questions/13150/extracting-rotation-scale-values-from-2d-transformation-matrix/13165#13165
 
-    T = np.asarray(T)
-    assert len(T.shape) == 2 
-    assert T.shape[0] == T.shape[1]
+    T = _assertion.ensure_tmatrix(T)
     dim = T.shape[0]-1
     
     # translation

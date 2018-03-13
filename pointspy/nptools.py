@@ -350,3 +350,26 @@ def missing(data):
     ismissing[strings == 'nan'] = True
 
     return ismissing
+
+
+def colzip(arr):
+    """ Splits a numpy array by each collumn.
+    
+    Parameters
+    ----------
+    arr : (n,k), np.ndarray
+        Numpy array with `n` rows and `k` columns.
+        
+    Returns
+    -------
+    columns : list of np.ndarray
+        List of k np.ndarrays 
+    """
+    
+    assert isinstance(arr,np.ndarray)
+    assert len(arr.shape) == 2
+    
+    cols = []
+    for col in range(arr.shape[1]):
+        cols.append(arr[:,col])
+    return cols

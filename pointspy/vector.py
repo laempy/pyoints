@@ -6,45 +6,167 @@ from . import fit
 from . import transformation
 
 
-def angle(v, w):
-    """ Provides the angle between two vectors.
+def to_degree(a):
+    return a * 180.0 / math.pi
+
+def to_rad(a):
+    return a * math.pi / 180.0
+
+def angle(v, w, deg=False):
+    """Angle between two vectors.
     
     Parameters
     ----------
-    v: (k), `array_like`
-        Vector with length k.
-    w: (k), `array_like`
-        Vector with length k.     
+    v, w : (k), array_like
+        Vector of length k. 
     
     Returns
     -------
-    angle: `float`
+    float
         Angle between vectors v and w.
+        
+    Examples
+    --------
+    
+    2D
+    
+    >>> angle([0,1],[1,0],deg=True)
+    90.0
+    >>> round(angle([0,1],[1,1],deg=True),1)
+    45.0
+    >>> angle([2,2],[1,1],deg=True)
+    0.0
+    >>> angle([0,0],[1,1],deg=True)
+    inf
+    
+    3D
+    
+    >>> angle([1,0,1],[0,1,0],deg=True)
+    90.0
+    
+    4D
+    >>> angle([1,0,0,0],[0,1,1,0],deg=True)
+    90.0
+
     """
+    assert hasattr(v,'__len__')
+    assert hasattr(w,'__len__') 
+    assert len(v) == len(w)
+    
     a = (np.array(v) * np.array(w)).sum()
-    b = math.sqrt(distance.sNorm(v) * distance.sNorm(w))
+    b = math.sqrt(distance.snorm(v) * distance.snorm(w))
     if(b > 0):
-        a = math.acos(a / b) * 180.0 / math.pi
+        a = math.acos(a / b) 
+        if deg:
+            a = to_degree(a)
     else:
         a = float('inf')
     return a
 
 
-def zenith(v, axis=-1):
+def zenith(v, axis=-1, deg=False):
+    """Angle between a vector and the coordinate axes.
+    
+    Parameters
+    ----------
+    v : (k), `array_like`
+        Vector of length k.
+    axis : int, optional
+        Defines which axis to compare the vector with.
+    
+    Returns
+    -------
+    float
+        Angle between the vector and the selected coordinate axis.
+        
+    Examples
+    --------
+    
+    >>> zenith([1,0],deg=True)
+    90.0
+    >>> zenith([1,0],axis=0)
+    0.0
+    >>> round( zenith([1,1],deg=True),1)
+    45.0
+    >>> round( zenith([1,0,1],2,deg=True) ,1)
+    45.0
+    
+    """
+    assert hasattr(v,'__len__') 
+    assert isinstance(axis,int)
+    assert abs(axis) < len(v)
+    
     length = distance.norm(v)
-    return math.acos(v[axis] / length) * 180.0 / math.pi
-
-
-def orthogonal(v, w):
-    return scalarproduct(v, w) == 0
+    a = math.acos(v[axis] / length) 
+    if deg:
+        a = to_degree(a)
+    return a
 
 
 def scalarproduct(v, w):
+    """Calculates the scalar product between two vectors.
+    
+    Parameters
+    ----------
+    Parameters
+    ----------
+    v, w : (k), array_like
+        Vector of length k.
+    
+    Returns
+    -------
+    float
+        Scalar product or dot product of the vectors.
+        
+    Examples
+    --------
+    
+    >>> scalarproduct([1,2],[3,4])
+    11
+    >>> scalarproduct([1,2,3],[4,5,6])
+    32
+    
+    othoogonal vectors
+    
+    >>> scalarproduct([1,1],[1,-1])
+    0
+    """
+    
+    assert hasattr(v,'__len__')
+    assert hasattr(w,'__len__') 
+    assert len(v) == len(w)
+    
     return np.dot(v, w)
 
 
-def basis(vec):
+def orthogonal(v, w):
+    """Check wether two vectors are orthogonal.
+    
+    Parameters
+    ----------
+    v, w : (k), array_like
+        Vector of length k.
+    
+    Returns
+    -------
+    boolean
+        True, if v is orthogonal to w.
+        
+    Examples
+    --------
+    
+    >>> orthogonal([1,1],[1,-1])
+    True
+    >>> orthogonal([1,1],[1,0])
+    False
+    
+    """
+    return scalarproduct(v, w) == 0
 
+
+def basis(vec):
+    # TODO
+    
     vec = np.array(vec)
     dim = len(vec)
 
@@ -60,6 +182,22 @@ def basis(vec):
 
 
 class Vector(transformation.LocalSystem, object):
+    """ Vector class.
+    
+    Parameters
+    ----------
+    coords : (n,k), array_like
+        Coordinates 
+    
+    Examples
+    --------
+    
+    TODO
+    
+    """
+
+    # TODO vereinfachen?
+    
 
     def __init__(self, coords):
         #__new__(coords)
@@ -131,23 +269,45 @@ class Vector(transformation.LocalSystem, object):
     def __str__(self):
         return 'pos: %s; vec: %s' % (str(self.pos), str(self.vec))
 
-    def intersection(self, surface, eps=0.001, maxIter=20):
-
+    def intersection(self, surface, eps=0.001, max_iter=20):
+        """ Approximates the intersection point between the vector and a surface
+        iteratively.
+        
+        Parameters
+        ----------
+        TODO
+        
+        Returns
+        -------
+        coord: 
+            Approximate intersection point between the vector and a surface.
+        
+        Examples
+        --------
+        TODO
+        
+        
+        """
+        assert hasattr(surface,'__call__')
         assert isinstance(eps, float)
 
-        # Fixpunktiteration
         coord = np.copy(self.target)
 
         h0 = surface(coord)
-        for i in range(maxIter):
+        for i in range(max_iter):
+            
+            # check residual
             if np.abs(h0 - coord[-1]) < eps:
                 break
+                
+            # set new coordinate
             coord[-1] = h0
             k = self.k([coord])[0]
             coord = self(k)
+            
             h0 = surface(coord)
 
         return coord
 
-    def angles(self):
-        return np.array([zenith(self.vec, axis=i) for i in range(self.dim)])
+    def angles(self,deg=False):
+        return np.array([zenith(self.vec, axis=i,deg=deg) for i in range(self.dim)])

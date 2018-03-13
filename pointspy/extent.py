@@ -9,27 +9,42 @@ class Extent(np.recarray, object):
     
     Parameters
     ----------
-    ext: (2*k) or (n,k), `array_like` 
+    ext : (2*k) or (n,k), array_like
         Defines spatial extent of k dimensions as either minimum corner and 
-        maximum corner or as a set of n points. If a set of points is given,
+        maximum corner or as a set of `n` points. If a set of points is given,
         the extent is calculated based on the coordinates.
     
+    Attributes
+    ----------
+    dim : positive int
+        Number of coordinate dimensions.
+    ranges : (self.dim), np.ndarray
+        Ranges between each coordinate dimension.
+    min_corner :
+        Minimum values in each coordinate dimension.
+    max_corner :
+        Maximum values in each coordinate dimension
+    center : (self.dim), array_like
+        Focal point of the extent.
+
     Examples
     --------
     
-    Basic handling of extents.
     Derive extent based on a list of points.
+    
     >>> points = [(0,0),(1,4),(0,1),(1,0.5),(0.5,0.7)]
     >>> ext = Extent(points)
     >>> print ext
     [0. 0. 1. 4.]
     
     Create extent based on minumum vales and maximum values.
+    
     >>> ext = Extent([-1, 0, 1, 4,])
     >>> print ext
     [-1  0  1  4]
     
     Derive some properties.
+    
     >>> print ext.dim
     2
     >>> print ext.min_corner
@@ -38,13 +53,14 @@ class Extent(np.recarray, object):
     [1 4]
     >>> print ext.ranges
     [2 4]
-    >>> print ext.corners
+    >>> print ext.center
+    [0. 2.]
+    >>> print ext.corners()
     [[-1  0]
      [ 1  0]
      [ 1  4]
      [-1  4]]
-    >>> print ext.center
-    [0. 2.]
+
     """
 
     # __new__ to extend np.ndarray
@@ -66,92 +82,60 @@ class Extent(np.recarray, object):
 
     @property
     def dim(self):
-        """Number of coordinate dimensions.
-        
-        Returns
-        -------
-        dim: `int`
-            Number of coordinate axes  
-        """
         return len(self) / 2
 
     @property
     def ranges(self):
-        """Provides ranges in each coordinate dimension.
-        
-        Returns
-        -------
-        ranges: (self.dim), `array_like`
-            Ranges in each coordinate dimension.
-        """
         return self.max_corner - self.min_corner
 
     @property
     def min_corner(self):
-        """ Provides minimum corner of the extent.
-        
-        Returns
-        -------
-        min_corner: (self.dim), `array_like`
-            Minimum coordinate values in each coordinate axis.
-        """
         return self[:self.dim]
 
     @property
     def max_corner(self):
-        """ Provides maximum corner of the extent.
-        
-        Returns
-        -------
-        max_corner: (self.dim), `array_like`
-            Maximum coordinate values in each coordinate axis.
-        """
         return self[self.dim:]
 
     @property
     def center(self):
-        """ Provides center of the extent.
-        
-        Returns
-        -------
-        center: (self.dim), `array_like`
-            Focal point of the extent.
-        """
         return (self.max_corner + self.min_corner) * 0.5
 
-    @property
+
     def split(self):
         """Splits the extent into minium and maximum corner.
         
         Returns
         -------
-        min_corner: (self.dim), `array_like`
-            Minimum coordinate values in each coordinate axis.
-        max_corner: (self.dim), `array_like`
-            Maximum coordinate values in each coordinate axis.
+        min_corner, max_corner : (self.dim), np.ndarray
+            Minimum and maximum values in each coordinate dimension.
         """
         return self.min_corner, self.max_corner
+    
 
-    @property
     def corners(self):
-        """Provides each corner of the extent.
+        """Provides each corner of the extent box.
         
         Returns
         -------
-        corners: (2**self.dim,self.dim), `array_like`
+        corners : (2**self.dim,self.dim), np.ndarray
             Corners of the extent.
             
+        Examples
+        --------
+            
         Two dimensional case.
+        
         >>> ext = Extent([-1,-2,1,2])
-        >>> print ext.corners
+        >>> print ext.corners()
         [[-1 -2]
          [ 1 -2]
          [ 1  2]
          [-1  2]]
          
         Three dimensional case.
+        
         >>> ext = Extent([-1,-2,-3,1,2,3])
-        >>> print ext.corners
+        >>> print ext.corners()
         [[-1 -2 -3]
          [ 1 -2 -3]
          [ 1  2 -3]
@@ -160,6 +144,7 @@ class Extent(np.recarray, object):
          [ 1  2  3]
          [ 1 -2  3]
          [-1 -2  3]]
+         
         """      
         
         def combgen(dim):
@@ -180,19 +165,20 @@ class Extent(np.recarray, object):
         return self[combs]
 
 
+
     def intersection(self, coords, dim=None):
         """Tests if coordinates are located within the extent.
         
         Parameters
         ----------
-        coords: (n,k) or (k), `array_like`
+        coords : (n,k) or (k), array_like
              Represents n data points with k dimensions.
-        dim: positive `int`
+        dim : positive int
             Desired number of dimensions to consider.
             
         Returns
         -------
-        indices: `array_like`
+        indices : np.ndarray of ints or bool
             Indices of coordinates, which are within the extent. If just a
             single point is given, a boolean value is returned.
             
@@ -208,8 +194,8 @@ class Extent(np.recarray, object):
         >>> print ext.intersection([(1,2),(-1,1),(0.5,1)])
         [0 2]
 
-        Corners are located within extent.
-        >>> print ext.intersection(ext.corners)
+        Corners are located within the extent.
+        >>> print ext.intersection(ext.corners())
         [0 1 2 3]
 
         """
@@ -230,7 +216,7 @@ class Extent(np.recarray, object):
         n, c_dim = coords.shape
         assert c_dim <= self.dim, 'Dimensions do not match.'
 
-        min_ext, max_ext = self.split
+        min_ext, max_ext = self.split()
 
         # Try to find optimal order of axes to speed up the process
         order = np.argsort(self.ranges[0:dim])
