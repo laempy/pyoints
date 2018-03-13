@@ -88,7 +88,7 @@ class GeoRecords(np.recarray, object):
         """
         return np.product(self.shape)
 
-    def extent(self, dim=-1):
+    def extent(self, dim=None):
         """Provides the spatial extent of the data structure.
 
         Parameters
@@ -101,6 +101,10 @@ class GeoRecords(np.recarray, object):
         extent: `Extent`
             Spatial extent of the coordinates.
         """
+        if dim is None:
+            dim = self.dim
+        assert dim > 0 and dim <= self.dim
+
         return Extent(self.records().coords[:,:dim])
 
     @staticmethod

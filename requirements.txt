@@ -1,5 +1,16 @@
+# Just once
+#virtualenv venv --python=python2.7
+#. venv/bin/activate
+# cd path/to/pointspy
+# pip install -r requirements.txt
+#python setup.py install pointspy
+
+
 # run with:
 # pip install -r requirements.txt
+
+
+
 numpy
 rtree
 liblas
@@ -17,8 +28,11 @@ psycopg2-binary
 Sphinx
 sphinxcontrib-napoleon
 
+# nice to have
+networkx
+matplotlib
+#pip install opencv-python
 
-#virtualenv venv --python=python2.7pip 
 #python2.7.12
 #python-gdal
 #libgdal-dev>=1.11.3

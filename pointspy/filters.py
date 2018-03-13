@@ -3,9 +3,12 @@ from .indexkd import IndexKD
 from .interpolate import LinearInterpolator
 
 
+# TODO density (min neighbours in radius)
+
+
 def extrema(indexKD, attributes, r=1, inverse=False):
 
-    coords = indexKD.coords()
+    coords = indexKD.coords
     order = np.argsort(attributes)
     notClassified = np.ones(len(order), dtype=np.bool)
 
@@ -34,7 +37,7 @@ def extrema(indexKD, attributes, r=1, inverse=False):
 
 
 def hasNeighbour(indexKD, r=1):
-    coords = indexKD.coords()
+    coords = indexKD.coords
 
     notClassified = np.ones(len(indexKD), dtype=np.bool)
     for pId, coord in enumerate(coords):
@@ -46,8 +49,8 @@ def hasNeighbour(indexKD, r=1):
                 yield pId
 
 
-def ball(indexKD, r=1, order=None, inverse=False, axis=-1, minPts=1):
-    coords = indexKD.coords()
+def ball(indexKD, r=1, order=None, inverse=False, axis=-1, min_pts=1):
+    coords = indexKD.coords
 
     if order is None:
         order = np.argsort(coords[:, axis])[::-1]
@@ -62,14 +65,14 @@ def ball(indexKD, r=1, order=None, inverse=False, axis=-1, minPts=1):
     for pId in order:
         if notClassified[pId]:
             nIds = indexKD.ball(coords[pId], r[pId])
-            if len(nIds) >= minPts:
+            if len(nIds) >= min_pts:
                 notClassified[nIds] = False
                 yield pId
 
 
 def surface(indexKD, r=1, order=None, inverse=False, axis=-1):
 
-    coords = indexKD.coords()
+    coords = indexKD.coords
 
     if order is None:
         order = np.argsort(coords[:, axis])[::-1]
@@ -94,7 +97,7 @@ def inConvexHull(hullCoords, coords):
 
 
 def minFilter(indexKD, r, axis=-1):
-    coords = indexKD.coords()
+    coords = indexKD.coords
 
     ballIter = indexKD.ball(coords, r)
     mask = np.zeros(len(indexKD), dtype=bool)
@@ -120,13 +123,13 @@ def dem(coords, r=1, order=None, inverse=False, axis=-1):
     fIds = np.array(list(ballGen), dtype=int)
 
     # ensure neighbours
-    count = IndexKD(coords[fIds, :]).countBall(2 * r[fIds])
+    count = IndexKD(coords[fIds, :]).ball_count(2 * r[fIds])
     fIds = fIds[count >= 6]
 
     # subsequent filter
     while True:
         l = len(fIds)
-        count = IndexKD(coords[fIds, :]).countBall(2 * r[fIds])
+        count = IndexKD(coords[fIds, :]).ball_count(2 * r[fIds])
         fIds = fIds[count >= 3]
         if l == len(fIds):
             break

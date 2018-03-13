@@ -1,7 +1,7 @@
 # Generic files to ignore
 *~
-/build
-/venv
+build
+venv
 *.egg
 *.egg-info
 
@@ -10,5 +10,8 @@
 
 
 # Docs
-/docs
-#!/docs/conf.py
+docs/*
+doc/*
+!docs/conf.py
+!docs/Makefile
+!docs/make.bat
