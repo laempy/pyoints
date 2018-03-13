@@ -1,12 +1,13 @@
 # Just once
 #virtualenv venv --python=python2.7
 #. venv/bin/activate
-#pip install numpy
+# cd path/to/pointspy
+# pip install -r requirements.txt
+#python setup.py install pointspy
 
 
 # run with:
 # pip install -r requirements.txt
-
 
 
 
