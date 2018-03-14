@@ -24,11 +24,11 @@ def add_field(A, B, name):
         B = np.array(B)
     dtype = A.dtype.descr
     dtype.append((name, B.dtype))
-    recarray = np.recarray(A.shape, dtype=dtype)
+    rec = np.recarray(A.shape, dtype=dtype)
     for colName in A.dtype.names:
-        recarray[colName] = A[colName]
-    recarray[name] = B
-    return recarray
+        rec[colName] = A[colName]
+    rec[name] = B
+    return rec
 
 
 def fuse(A, B):
@@ -136,7 +136,7 @@ def flatten_dtypes(np_dtypes):
     return names, dtypes, shapes
 
 
-def map(func, ndarray, dtypes=None):
+def map_function(func, ndarray, dtypes=None):
     """Maps a function to each cell of a numpy array.
     
     Parameters
@@ -231,7 +231,7 @@ def recarray(dataDict, dtype=[]):
      [0 2]
      [5 2]]
     >>> print rec[0]
-    ('text1', array([3, 4]), 1, None)
+    ('text1', [3, 4], 1, None)
     """
 
     assert hasattr(dataDict,'__getitem__') and hasattr(dataDict,'keys')
@@ -246,14 +246,14 @@ def recarray(dataDict, dtype=[]):
     for colName in dataDict.keys():
         
         if colName not in dtype.names:
-            dt = np.object_ 
+            dt = np.dtype(object)
             outDtype = (colName, dt) # default data type
             # Find non empty row
             for row in dataDict[colName]:
                 if row is not None:
                     row = np.array(row)
                     s = row.shape
-                    if not np.string_ == row.dtype.type:
+                    if not np.dtype(str) == row.dtype.type:
                         dt = row.dtype
                     outDtype = (colName, dt, s)
                     break
@@ -261,17 +261,17 @@ def recarray(dataDict, dtype=[]):
             dt = dtype[colName]
             outDtype = (colName, dt)
         outDtypes.append(outDtype)
-    recarray = np.rec.array(zip(*dataDict.values()),
+    rec = np.rec.array(zip(*dataDict.values()),
                             names=dataDict.keys(), dtype=outDtypes)
-    return recarray
+    return rec
 
 
-def unnest(recarray):
+def unnest(rec):
     """Unnest a numpy record array. Recursively adds each named field to a list. 
     
     Parameters
     ----------
-    recarray: `numpy.recarray`
+    rec: `numpy.recarray`
         Numpy record array to unnest.
     
     Returns
@@ -291,27 +291,27 @@ def unnest(recarray):
     ... ]
     >>> rec = np.ones(2,dtype=dtype).view(np.recarray)
     >>> print rec.nested.child2
-    [[ 1.  1.]
-     [ 1.  1.]]
+    [[1. 1.]
+     [1. 1.]]
     >>> unnested = unnest(rec)
     >>> print unnested[0]
     [1 1]
     >>> print unnested[1]
     ['' '']
     >>> print unnested[2]
-    [[ 1.  1.]
-     [ 1.  1.]]
+    [[1. 1.]
+     [1. 1.]]
     """
     #print recarray
-    assert isinstance(recarray,(np.recarray,np.ndarray))
+    assert isinstance(rec,(np.recarray,np.ndarray))
     
-    if recarray.dtype.names is None:
-        return [recarray]
+    if rec.dtype.names is None:
+        ret = [rec]
     else:
         ret = []
-        for name in recarray.dtype.names:
-            ret.extend(unnest(recarray[name]))
-        return ret
+        for name in rec.dtype.names:
+            ret.extend(unnest(rec[name]))
+    return ret
 
 
 def missing(data):

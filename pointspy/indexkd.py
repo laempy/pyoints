@@ -106,7 +106,7 @@ class IndexKD(object):
 	"""
                 
         if not hasattr(self, '_kd_tree'):
-            self._kdtree = cKDTree(
+            self._kd_tree = cKDTree(
                 self.coords,
                 leafsize=self._leafsize,
                 copy_data=False,
