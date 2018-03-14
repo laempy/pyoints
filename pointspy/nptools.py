@@ -1,3 +1,6 @@
+"""Provides functions for convienient handling of numpy arrays.
+"""
+
 import numpy as np
 
 # TODO module description
@@ -18,11 +21,22 @@ def add_field(A, B, name):
     Returns
     -------
     recarray: `numpy.recarray`
-        Record array similar to A, but with additional field B.
+        Record array similar to `A`, but with additional field `B`.
+
+    Examples
+    --------
+    TODO
+
     """
-    assert isinstance(A, np.ndarray)
+    if not isinstance(A, np.ndarray):
+        raise ValueError("'A' has to be of type 'numpy.ndarray'")
+    if not hasattr(B, '__len__'):
+        raise ValueError("'B' has to have a length")
     if not isinstance(B, np.ndarray):
         B = np.array(B)
+    if not A.shape == B.shape:
+        raise ValueError("'A' has to have the same shape as 'B'")
+
     dtype = A.dtype.descr
     dtype.append((name, B.dtype))
     rec = np.recarray(A.shape, dtype=dtype)
@@ -37,19 +51,25 @@ def fuse(A, B):
 
     Parameters
     ----------
-    A: `numpy.recarray`
-        Numpy recarray to fuse.
-    B: `numpy.recarray`
-        Numpy recarray to fuse.
+    A, B: `numpy.recarray`
+        Numpy recarrays to fuse.
 
     Returns
     -------
     recarray: `numpy.recarray`
-        Record array with same fields as A and B.
+        Record array with same fields as `A` and `B`.
+
+    Examples
+    --------
+    TODO
+
     """
-    assert isinstance(A, np.recarray)
-    assert isinstance(B, np.recarray)
-    assert A.shape == B.shape
+    if not isinstance(A, np.recarray):
+        raise ValueError("'A' has to be of type 'numpy.recarray'")
+    if not isinstance(B, np.recarray):
+        raise ValueError("'B' has to be of type 'numpy.recarray'")
+    if not A.shape == B.shape:
+        raise ValueError("'A' has to have the same shape as 'B'")
 
     dtype = A.dtype.descr
     dtype.extend(B.dtype.descr)
@@ -69,13 +89,24 @@ def merge(arrays):
     Parameters
     ----------
     arrays: `array_like`
-        List of numpy.ndarrays to merge.
+        List of `numpy.ndarray`'s to merge.
 
     Returns
     -------
     merged: `numpy.ndarray`
         Merged numpy record array.
+
+    Examples
+    --------
+    TODO
+
     """
+    if not isinstance(arrays, (tuple, list)):
+        raise ValueError("attribute 'arrays' has to be a list or tuple")
+    for arr in arrays:
+        if not isinstance(arr, np.ndarray):
+             ValueError("all elements of 'arrays' have to be of type 'numpy.recarray'")
+
     assert hasattr(arrays, '__getitem__')
     return arrays[0].__array_wrap__(np.hstack(arrays))
 
@@ -153,6 +184,12 @@ def map_function(func, ndarray, dtypes=None):
     -------
     recarray: `numpy.recarray`
         Record array similar to input array, but with function applied to.
+
+
+    Examples
+    --------
+    TODO
+
     """
     assert hasattr(func, '__call__')
     assert hasattr(ndarray, np.ndarray)
@@ -203,7 +240,7 @@ def recarray(dataDict, dtype=[]):
 
     Parameters
     ----------
-    dataDict: `numpy.recarray`
+    dataDict: `dict`
         Dictionary of array like objects to convert to a numpy record array.
     dtype: optional, `numpy.dtype`
         Describes the desired data type of specific fields.
@@ -216,31 +253,34 @@ def recarray(dataDict, dtype=[]):
 
     Examples
     --------
+
     Creation of an numpy record array using a dictionary.
 
     >>> rec = recarray({
     ...    'coords': [ (3,4), (3,2), (0,2), (5,2)],
     ...    'text': ['text1','text2','text3','text4'],
-    ...    'numeric':  [1,3,1,2],
-    ...    'missingvalues':  [None,None,'str',None],
+    ...    'n':  [1,3,1,2],
+    ...    'missing':  [None,None,'str',None],
     ... })
-    >>> rec.dtype
-    dtype((numpy.record, [('text', 'O'), ('coords', '<i8', (2,)), ('numeric', '<i8'), ('missingvalues', 'O')]))
+    >>> rec.dtype.descr
+    [('text', '|O'), ('missing', '|O'), ('coords', '<i8', (2,)), ('n', '<i8')]
     >>> print rec.coords
     [[3 4]
      [3 2]
      [0 2]
      [5 2]]
     >>> print rec[0]
-    ('text1', [3, 4], 1, None)
-    """
+    ('text1', None, [3, 4], 1)
 
-    assert hasattr(dataDict, '__getitem__') and hasattr(dataDict, 'keys')
+    """
+    if not (hasattr(dataDict, '__getitem__') and hasattr(dataDict, 'keys')):
+        raise ValueError("'dataDict' has to be a dictionary like object")
 
     # check data types
     dtype = np.dtype(dtype)
     for colName in dtype.names:
-        assert colName in dataDict.keys(), 'column "%s" not found!' % colName
+        if colName not in dataDict.keys():
+            raise ValueError('column "%s" not found!' % colName)
 
     # get datatypes
     outDtypes = []
@@ -302,9 +342,11 @@ def unnest(rec):
     >>> print unnested[2]
     [[1. 1.]
      [1. 1.]]
+
     """
-    #print recarray
-    assert isinstance(rec, (np.recarray, np.ndarray))
+
+    if not isinstance(rec, (np.recarray, np.ndarray)):
+        raise ValueError("'rec' has to a 'np.recarray' or 'np.ndarray'")
 
     if rec.dtype.names is None:
         ret = [rec]
@@ -333,18 +375,23 @@ def missing(data):
     --------
 
     Finding missing values in a list.
+
     >>> arr = ['str',1,None,np.nan,np.NaN]
     >>> print missing(arr)
     [False False  True  True  True]
 
     Finding missing values in multidimensional arrays.
+
     >>> arr = np.array([(0,np.nan),(None,1),(2,3)],dtype=float)
     >>> print missing(arr)
     [[False  True]
      [ True False]
      [False False]]
+
     """
-    assert hasattr(data, '__len__')
+
+    if not hasattr(data, '__len__'):
+        raise ValueError("'data' has be a array like object")
     strings = np.array(data, dtype=str)
 
     ismissing = np.equal(data, None)
@@ -354,7 +401,7 @@ def missing(data):
 
 
 def colzip(arr):
-    """ Splits a numpy array by each collumn.
+    """ Splits a two dimensional np.ndarray into a list of columns.
 
     Parameters
     ----------
@@ -365,10 +412,14 @@ def colzip(arr):
     -------
     columns : list of np.ndarray
         List of k np.ndarrays
-    """
 
-    assert isinstance(arr, np.ndarray)
-    assert len(arr.shape) == 2
+    Examples
+    --------
+    TODO
+
+    """
+    if not (isinstance(arr, np.ndarray) and len(arr.shape) == 2):
+        raise ValueError("'arr' has be a two dimensional 'np.ndarray'")
 
     cols = []
     for col in range(arr.shape[1]):
@@ -377,6 +428,24 @@ def colzip(arr):
 
 
 def fields_view(arr, fields, dtype=None):
+    """TODO
+
+    Parameters
+    ----------
+    TODO
+
+    Returns
+    -------
+    TODO
+
+    Examples
+    --------
+    TODO
+
+    """
+    if not isinstance(arr, np.ndarray):
+        raise ValueError("'arr' has be a 'np.ndarray'")
+
     if dtype is None:
         dtype = np.dtype({name: arr.dtype.fields[name] for name in fields})
     return np.ndarray(arr.shape, dtype, arr, 0, arr.strides)
