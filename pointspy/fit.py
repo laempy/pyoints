@@ -3,7 +3,7 @@ from scipy import optimize
 
 from . import nptools
 from . import transformation
-from . import _assertion
+from . import assertion
 
 
 
@@ -41,7 +41,7 @@ def ball(coords, weights=1.0):
     
     """
     
-    coords = _assertion.ensure_coords(coords)
+    coords = assertion.ensure_coords(coords)
     
     assert ( isinstance(weights,int) or isinstance(weights,float) ) or \
         ( hasattr(weights,'__len__') and len(weights) == coords.shape[0] )
