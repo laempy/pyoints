@@ -1,7 +1,11 @@
+"""Definition of coordinate reference systems and two dimensional geograpic
+coordinate transformations.
+"""
+
 import numpy as np
+from osgeo import osr
 from pyproj import Proj as pyProj
 from pyproj import transform as CoordinateTransformation
-from osgeo import osr
 
 from . import assertion
 
@@ -59,8 +63,8 @@ class Proj():
     """
 
     def __init__(self, proj4=WGS84):
-        assert proj4 is not None
-        assert isinstance(proj4, str)
+        if proj4 is None or not isinstance(proj4, str) or proj4 is '':
+            raise ValueError("proj4 not defined")
         self._proj4 = proj4.rstrip()
 
     @property
@@ -102,9 +106,11 @@ class Proj():
             Coordinate projection definition in Well Known Text format.
 
         """
-        assert isinstance(wkt, str)
+        if not isinstance(wkt, str):
+            raise ValueError("'wkt' needs to be a string")
         proj4 = osr.SpatialReference(wkt=wkt).ExportToProj4()
-        assert proj4 is not '', 'WKT unknown'
+        if proj4 is '':
+            raise ValueError("WKT unknown")
         return Proj.from_proj4(proj4)
 
     @classmethod
@@ -117,11 +123,13 @@ class Proj():
             Coordinate projection definition in EPSG format.
 
         """
-        assert isinstance(epsg, int)
+        if not isinstance(epsg, int):
+            raise ValueError("'epsg' needs to be an integer")
         sr = osr.SpatialReference()
         sr.ImportFromEPSG(epsg)
         proj4 = sr.ExportToProj4()
-        assert proj4 is not '', 'epsg code "%i" unknown' % epsg
+        if proj4 is '':
+            raise ValueError("epsg code '%i' unknown" % epsg)
         return Proj.from_proj4(proj4)
 
 
@@ -161,14 +169,15 @@ class CoordinateTransform:
     """
 
     def __init__(self, fromProj, toProj):
-        assert isinstance(fromProj, Proj)
-        assert isinstance(toProj, Proj)
+        if not isinstance(fromProj, Proj) or not isinstance(toProj, Proj):
+            raise ValueError("objects of type 'Proj' required")
         self._fromProj = fromProj
         self._toProj = toProj
 
     def __call__(self, coords, reverse=False):
         coords = assertion.ensure_coords(coords)
-        assert isinstance(reverse, bool)
+        if not isinstance(reverse, bool):
+            raise ValueError("'reverse' needs to be boolean")
 
         if reverse:
             fromProj = self._toProj
