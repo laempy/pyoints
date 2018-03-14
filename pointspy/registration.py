@@ -76,8 +76,8 @@ def get_transformation(A, B):
 
     assert A.shape == B.shape, 'dimensions do not match!'
     
-    b = homogenious(A)
-    mA = homogenious(B)
+    b = transformation.homogenious(A)
+    mA = transformation.homogenious(B)
 
     x = np.linalg.lstsq(mA, b)[0]
     M = np.matrix(x).T
