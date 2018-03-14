@@ -57,15 +57,19 @@ def coords2polar(coords):
         x = coords[:, 0]
         y = coords[:, 1]
         a = np.arctan2(y, x)
-        return assertion.ensure_polar([d, a],by_row=True)
+        return assertion.ensure_polar([d, a], by_row=True)
     elif dim == 3:
         x = coords[:, 0]
         y = coords[:, 1]
         z = coords[:, 2]
-        omega = np.arccos(z / d)
-        omega[d==0] = 0 # avoid nan
+
+        # avoid nan
+        omega = np.zeros(len(d))
+        mask = d > 0
+        omega[mask] = np.arccos(z[mask] / d[mask])
+
         phi = np.arctan2(y, x)
-        return assertion.ensure_polar([d, phi, omega],by_row=True)
+        return assertion.ensure_polar([d, phi, omega], by_row=True)
     else:
         raise ValueError('%i dimensions are not supported yet.' % dim)
 
@@ -119,13 +123,13 @@ def polar2coords(pcoords):
         a = pcoords[:, 1]
         x = d * np.cos(a)
         y = d * np.sin(a)
-        return assertion.ensure_coords([x, y],by_row=True)
+        return assertion.ensure_coords([x, y], by_row=True)
     elif dim == 3:
         phi = pcoords[:, 1]
         omega = pcoords[:, 2]
         x = d * np.sin(omega) * np.cos(phi)
         y = d * np.sin(omega) * np.sin(phi)
         z = d * np.cos(omega)
-        return assertion.ensure_coords([x, y, z],by_row=True)
+        return assertion.ensure_coords([x, y, z], by_row=True)
     else:
         raise ValueError('%i dimensions are not supported yet.' % dim)
