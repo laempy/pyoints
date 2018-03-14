@@ -82,8 +82,7 @@ def cylinder(origin, coords, p, th):
     
     Examples
     --------
-    >>> r = 2
-    >>> from pointspy.polar import
+    >>> r = 2.5
     >>> x = np.arange(-1,1,0.01)
     >>> y = np.sqrt(1**2 - x**2)
     >>> y[::2] = - y[::2]
@@ -100,15 +99,15 @@ def cylinder(origin, coords, p, th):
     >>> print success
     True
     >>> print np.round(r,2)
-    3.0
+    2.5
     >>> print np.round(center,2)
     [1. 2. 3.]
-    >>> print np.round(M,2)
+    >>> print np.round(M,3)
     [[ 1.  0. -0. -1.]
      [ 0.  1.  0. -2.]
      [ 0. -0.  1. -3.]
      [ 0.  0.  0.  1.]]
-    >>> print np.round(transformation.transform(rCoords,M,inverse=True),2)
+    >>> print np.round(transformation.transform(rCoords,M,inverse=True),3)
 
     
     # https://stackoverflow.com/questions/42157604/how-to-fit-a-cylindrical-model-to-scattered-3d-xyz-point-data/42163007
@@ -165,8 +164,8 @@ def cylinder(origin, coords, p, th):
     ps = [(0,0,0,0,0),(0,0,0,0,m),(0,0,0,m,0)]
     for p in ps:
         est_p, success = optimize.leastsq(errfunc, p, args=(x, y, z),maxfev=100000000)
-        print success
-        if success in (1,2,3,4):
+        success = success in (1,2,3,4)
+        if success:
             break
     #print errfunc(las.coords)
 
@@ -189,7 +188,7 @@ def cylinder(origin, coords, p, th):
     print (coords[:,2]<0).sum()
     print (coords[:,2]>0).sum()
 
-    return M, center, r, success == 0
+    return M, center, r, success
 
 
 
