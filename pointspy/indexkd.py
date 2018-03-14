@@ -1,5 +1,6 @@
 import numpy as np
 import itertools
+from numbers import Number
 
 from scipy.spatial import cKDTree
 import rtree.index as r_treeIndex
@@ -8,6 +9,7 @@ from rtree import Rtree
 import transformation
 import bisect
 
+from . import assertion
 
 # TODO module description
 # TODO nested IndexKD?
@@ -20,7 +22,7 @@ class IndexKD(object):
     Parameters
     ----------
     coords : (n,k), array_like
-        Represents n data points of k dimensions.
+        Represents `n` data points of `k` dimensions.
     transform : (k+1,k+1) array_like, optional
         Represents any kind of transformation matrix applied to the coordinates
         before index computation.
@@ -45,10 +47,7 @@ class IndexKD(object):
 
     def __init__(self, coords, transform=None, leafsize=16, quickbuild=True):
 
-        assert hasattr(coords, '__len__')
-        assert len(coords) > 0
-
-        # TODO ensure_coords
+        coords = assertion.ensure_coords(coords).copy()
 
         assert isinstance(leafsize, int) and leafsize > 0
         assert isinstance(quickbuild, bool)
@@ -58,12 +57,11 @@ class IndexKD(object):
         self._compact = not quickbuild
 
         if transform is None:
-            self._coords = np.copy(coords)
+            self._coords = coords
             self._transform = transformation.i_matrix(self._coords.shape[1])
         else:
-            self._transform = np.matrix(transform)
-            self._coords = transformation.transform(
-                np.copy(coords), self.transform)
+            self._transform = assertion.ensure_tmatrix(transform)
+            self._coords = transformation.transform(coords, self._transform)
 
     def __len__(self):
         return self.coords.shape[0]
@@ -73,12 +71,6 @@ class IndexKD(object):
 
     @property
     def dim(self):
-        """Provides number of dimensions of coordinates.
-
-        Returns
-        -------
-        dim: `uint`
-        """
         return self.coords.shape[1]
 
     @property
@@ -87,23 +79,10 @@ class IndexKD(object):
 
     @property
     def transform(self):
-        """Provides transformation matrix
-
-        Returns
-        -------
-        transform: (dim+1,dim+1) `np.matrix`
-        """
         return self._transform
 
     @property
     def kd_tree(self):
-        """Provides a kd-tree for rapid neighbourhood queries.
-
-        Returns
-        -------
-        kdTree: `cKDTree`
-        """
-
         if not hasattr(self, '_kd_tree'):
             self._kd_tree = cKDTree(
                 self.coords,
@@ -180,7 +159,9 @@ class IndexKD(object):
         ball, balls_iter
 
         """
-        assert bulk > 0
+        if not isinstance(bulk, int) and bulk > 0:
+            raise ValueError("bulk size has to be a integer greater zero")
+
         for i in range(coords.shape[0] / bulk + 1):
             # bulk query
             nIds = self.kd_tree.query_ball_point(
@@ -261,7 +242,12 @@ class IndexKD(object):
         list of ints
             Indices of points within sphere.
         """
-        assert r_min < r_max
+        if not isinstance(r_min, Number) and r_min > 0:
+            raise ValueError("r_min has to be numeric and greater zero")
+
+        if not isinstance(r_max, Number) and r_max > r_min:
+            raise ValueError("r_max has to be numeric and greater 'r_max'")
+
         inner = self.ball(coord[:self.dim], r_min, **kwargs)
         outer = self.ball(coord[:self.dim], r_max, **kwargs)
         return np.intersect1d((outer, inner))
@@ -316,7 +302,9 @@ class IndexKD(object):
         knn, knns_iter
 
         """
-        assert bulk > 0
+        if not isinstance(bulk, int) and bulk > 0:
+            raise ValueError("bulk size has to be a integer greater zero")
+
         for i in range(coords.shape[0] / bulk + 1):
             dists, nIds = self.kd_tree.query(
                 coords[bulk * i:bulk * (i + 1), :self.dim], k=k, **kwargs)
@@ -431,11 +419,12 @@ class IndexKD(object):
         box, cube, slice
 
         """
-        assert isinstance(min_th, float) or isinstance(min_th, int)
-        assert isinstance(max_th, float) or isinstance(max_th, int)
-        assert min_th < max_th
-        assert isinstance(axis, int)
-        assert abs(axis) < self.dim
+        if not isinstance(min_th, Number) and min_th > 0:
+            raise ValueError("'min_th' has to be numeric and greater zero")
+        if not isinstance(max_th, Number) and max_th > min_th:
+            raise ValueError("'max_th' has to be numeric and greater 'min_th'")
+        if not isinstance(axis, int) and abs(axis) < self.dim:
+            raise ValueError("'axis' has to be an integer and smaller 'dim'")
 
         values = self.coords[:, axis]
         order = np.argsort(values)
