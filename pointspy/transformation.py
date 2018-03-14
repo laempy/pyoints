@@ -1,7 +1,7 @@
 import numpy as np
 
 from . import distance
-from . import _assertion
+from . import assertion
 
 # TODO documentation
 
@@ -23,7 +23,7 @@ def transform(coords, T, inverse=False):
         Transformed coordinates. 
     """
 
-    T = _assertion.ensure_tmatrix(T)
+    T = assertion.ensure_tmatrix(T)
 
     if inverse:
         T = np.linalg.inv(T)
@@ -158,7 +158,7 @@ def decomposition(T):
     # https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati
     # https://math.stackexchange.com/questions/13150/extracting-rotation-scale-values-from-2d-transformation-matrix/13165#13165
 
-    T = _assertion.ensure_tmatrix(T)
+    T = assertion.ensure_tmatrix(T)
     dim = T.shape[0]-1
     
     # translation
