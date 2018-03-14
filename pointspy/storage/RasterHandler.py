@@ -14,41 +14,46 @@ from .. import (
 
 
 class RasterReader(GeoFile):
-    
-    def __init__(self,file,date=None,proj=None):
 
-        GeoFile.__init__(self,file)
-        
+    def __init__(self, file, date=None, proj=None):
+
+        GeoFile.__init__(self, file)
+
         # Read header
-        gdalRaster=gdal.Open(self.file,gdal.GA_ReadOnly)
-        
+        gdalRaster = gdal.Open(self.file, gdal.GA_ReadOnly)
+
         self._proj = proj
         if proj is None:
-            wkt=gdalRaster.GetProjection()
+            wkt = gdalRaster.GetProjection()
             if wkt is not '':
-                self._proj=projection.projFromProj4(osr.SpatialReference(wkt=wkt).ExportToProj4())
+                self._proj = projection.projFromProj4(
+                    osr.SpatialReference(wkt=wkt).ExportToProj4())
         if self._proj is None:
             raise Exception('No projection found')
-        
-        
-        self._T=np.matrix(Affine.from_gdal(*gdalRaster.GetGeoTransform())).reshape(3,3)
-        self._shape=(gdalRaster.RasterYSize,gdalRaster.RasterXSize)
-        self._numBands=gdalRaster.RasterCount
-        
-        self._corners=grid.transform2corners(self._T,self._shape)
-        self._extent=Extent(self._corners)
-        
+
+        self._T = np.matrix(
+            Affine.from_gdal(
+                *
+                gdalRaster.GetGeoTransform())).reshape(
+            3,
+            3)
+        self._shape = (gdalRaster.RasterYSize, gdalRaster.RasterXSize)
+        self._numBands = gdalRaster.RasterCount
+
+        self._corners = grid.transform2corners(self._T, self._shape)
+        self._extent = Extent(self._corners)
+
         # try to read date
         if date is None:
-            date=gdalRaster.GetMetadataItem('ACQUISITIONDATETIME')
+            date = gdalRaster.GetMetadataItem('ACQUISITIONDATETIME')
             if date is None:
-                date=gdalRaster.GetMetadataItem('TIFFTAG_DATETIME')
+                date = gdalRaster.GetMetadataItem('TIFFTAG_DATETIME')
             if date is not None:
-                year,month,day=date.split(' ')[0].split(':')
-                self.date=datetime.date(int(year),int(month),int(day))
+                year, month, day = date.split(' ')[0].split(':')
+                self.date = datetime.date(int(year), int(month), int(day))
         else:
-            self.date=date
-        
+            self.date = date
+
         del gdalRaster
 
     @property
@@ -58,64 +63,73 @@ class RasterReader(GeoFile):
     @property
     def proj(self):
         return self._proj
-    
+
     @property
     def corners(self):
         return self._corners
-    
+
     @property
     def extent(self):
         return self._extent
 
+    def load(self, extent=None):
 
-    def load(self,extent=None):
+        gdalRaster = gdal.Open(self.file, gdal.GA_ReadOnly)
 
-        gdalRaster=gdal.Open(self.file,gdal.GA_ReadOnly)
-
-        T=self._T
-        shape=(gdalRaster.RasterYSize,gdalRaster.RasterXSize)
-        corner=(0,0)
+        T = self._T
+        shape = (gdalRaster.RasterYSize, gdalRaster.RasterXSize)
+        corner = (0, 0)
 
         if extent is not None:
-            T,corner,shape=grid.Grid.extentInfo(T,shape,extent)
+            T, corner, shape = grid.Grid.extentInfo(T, shape, extent)
 
-        attr=np.recarray(shape,dtype=[('bands',int,gdalRaster.RasterCount)])
-        attr.bands[:]=np.swapaxes(gdalRaster.ReadAsArray(corner[1],corner[0],shape[1],shape[0]).T,0,1)
-        raster=grid.Grid(self.proj,attr,T)
+        attr = np.recarray(
+            shape, dtype=[
+                ('bands', int, gdalRaster.RasterCount)])
+        attr.bands[:] = np.swapaxes(
+            gdalRaster.ReadAsArray(
+                corner[1],
+                corner[0],
+                shape[1],
+                shape[0]).T,
+            0,
+            1)
+        raster = grid.Grid(self.proj, attr, T)
 
         del gdalRaster
-                
+
         return raster
-    
+
     def cleanCache(self):
         pass
-          
 
 
-def writeRaster(geoRecords,file,noData=np.nan):
+def writeRaster(geoRecords, file, noData=np.nan):
     driver = gdal.GetDriverByName('GTiff')
 
-    if len(geoRecords.bands.shape)==2:
-        numBands=1
+    if len(geoRecords.bands.shape) == 2:
+        numBands = 1
     else:
-        numBands=geoRecords.bands.shape[2]
+        numBands = geoRecords.bands.shape[2]
 
-    raster = driver.Create(file,geoRecords.shape[1],geoRecords.shape[0],numBands,gdal.GDT_Float32)
+    raster = driver.Create(
+        file, geoRecords.shape[1],
+        geoRecords.shape[0],
+        numBands, gdal.GDT_Float32)
 
-    if numBands==1:
-        band=raster.GetRasterBand(1)
+    if numBands == 1:
+        band = raster.GetRasterBand(1)
         band.SetNoDataValue(noData)
         band.WriteArray(geoRecords.bands)
         band.FlushCache()
     else:
         for i in range(numBands):
-            band=raster.GetRasterBand(i+1)
+            band = raster.GetRasterBand(i + 1)
             band.SetNoDataValue(noData)
-            band.WriteArray(geoRecords.bands[:,:,i])
+            band.WriteArray(geoRecords.bands[:, :, i])
             band.FlushCache()
 
     raster.SetGeoTransform(geoRecords.gdalGeoTransform())
     raster.SetProjection(geoRecords.proj.wkt)
 
     raster.FlushCache()
-    

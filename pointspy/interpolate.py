@@ -1,12 +1,11 @@
 import numpy as np
 from scipy.interpolate import (
     LinearNDInterpolator,
-    #NearestNDInterpolator
+    # NearestNDInterpolator
 )
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression
-
 
 
 class Interpolator:
@@ -100,7 +99,8 @@ class PolynomInterpolator(Interpolator):
 
     def _prepare(self, coords):
         return PolynomialFeatures(
-            self._deg, interaction_only=self._interaction_only).fit_transform(coords)
+            self._deg, interaction_only=self._interaction_only).fit_transform(
+            coords)
 
     @property
     def coef(self):

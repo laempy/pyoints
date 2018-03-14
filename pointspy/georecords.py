@@ -2,14 +2,14 @@ import numpy as np
 
 from .indexkd import IndexKD
 from .extent import Extent
-from . import transformation 
+from . import transformation
 from . import projection
 
 
 # TODO module description
 
 class GeoRecords(np.recarray, object):
-    """Abstraction class to ease handling of point sets as well as structured 
+    """Abstraction class to ease handling of point sets as well as structured
     matrices of point like objects. This gives the oportunity to handle
     unstructured point sets the same way like rasters or voxels. The class also
     provides a IndexKD object on demand to speed up neigbourhod analyzes.
@@ -20,7 +20,7 @@ class GeoRecords(np.recarray, object):
         Projection object provides the geograpic projection of the points.
     npRecarray: (n,), `numpy.recarray`
         A numpy record array provides coordinates and attributes of n points.
-        The field "coords" is required and represents coordinates of k 
+        The field "coords" is required and represents coordinates of k
         dimensions.
     T: optional, (k+1,k+1), `array_like`
         Optional linear transformation matrix to transform the coordinates.
@@ -34,12 +34,12 @@ class GeoRecords(np.recarray, object):
             self._t = transformation.t_matrix(self.extent().min_corner)
         self._clear_cache()
 
-
     def __new__(cls, proj, npRecarray, T=None):
         assert isinstance(
             proj, projection.Proj), 'Wrong Projection definition!'
         assert hasattr(npRecarray, 'coords'), 'Field "coords" needed!'
-        assert len(npRecarray.coords.shape)==2 and npRecarray.coords.shape>=2, 'At least two coordinate dimensions needed!'
+        assert len(
+            npRecarray.coords.shape) == 2 and npRecarray.coords.shape >= 2, 'At least two coordinate dimensions needed!'
 
         return npRecarray.view(cls)
 
@@ -83,7 +83,7 @@ class GeoRecords(np.recarray, object):
         Returns
         -------
         count: positive `int`
-            Number number of objects in the data structure. E.g. number of 
+            Number number of objects in the data structure. E.g. number of
             points in the point cloud or number of cells in the raster.
         """
         return np.product(self.shape)
@@ -105,7 +105,7 @@ class GeoRecords(np.recarray, object):
             dim = self.dim
         assert dim > 0 and dim <= self.dim
 
-        return Extent(self.records().coords[:,:dim])
+        return Extent(self.records().coords[:, :dim])
 
     @staticmethod
     def keys(shape):
@@ -122,8 +122,8 @@ class GeoRecords(np.recarray, object):
             Array of indices with desired shape. Each entry provides a index
             tuple to call `__getitem__`.
         """
-        assert isinstance(shape, int) or hasattr(shape,'__len__')
-        
+        assert isinstance(shape, int) or hasattr(shape, '__len__')
+
         if isinstance(shape, int):
             return np.arange(shape)
         else:
@@ -188,12 +188,12 @@ class GeoRecords(np.recarray, object):
         proj: `Proj`
             Projection object provides the geograpic projection of the points.
         coords: `numpy.ndarray`
-            New coordinates of the data structure. 
+            New coordinates of the data structure.
         """
-        assert isinstance(coords,np.ndarray)
-        assert isinstance(proj,Proj)
+        assert isinstance(coords, np.ndarray)
+        assert isinstance(proj, Proj)
         assert self.coords.shape == coords.shape
-        
+
         self.coords = coords
         self._proj = proj
         self._clear_cache()
@@ -203,7 +203,6 @@ class GeoRecords(np.recarray, object):
         """
         self._indices = {}
 
-
     def indexKD(self, dim=None):
         """Spatial index of the coordinates.
 
@@ -212,11 +211,11 @@ class GeoRecords(np.recarray, object):
         dim: optional, `int`
             Desired dimension of the spatial index. If None the all coordinate
             dimensions are used.
-            
+
         Returns
         -------
         indexKD: `IndexKD`
-            Spatial index of the coordinates with disired dimension. 
+            Spatial index of the coordinates with disired dimension.
         """
         if dim is None:
             dim = self.dim
@@ -225,7 +224,7 @@ class GeoRecords(np.recarray, object):
             indexKD = IndexKD(self.records().coords[:, 0:dim])
             self._indices[dim] = indexKD
         return indexKD
-    
+
     def apply(self, func, dtypes=[object]):
         """Applies or maps a function to each element of the data array.
 
@@ -235,13 +234,13 @@ class GeoRecords(np.recarray, object):
             Function to apply to each element of the data array.
         dtypes:  optional, `np.dtype`
             Data type description of the output array.
-            
+
         Returns
         -------
         applyed: `np.ndarray`
             Array of the same shape as the data array.
         """
-        
+
         return nptools.map(func, self, dtypes=dtypes)
 
     def __array_finalize__(self, obj):
@@ -253,4 +252,3 @@ class GeoRecords(np.recarray, object):
 
     def __array_wrap__(self, out_arr, context=None):
         return np.ndarray.__array_wrap__(self, out_arr, context)
-

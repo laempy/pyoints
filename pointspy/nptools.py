@@ -2,9 +2,10 @@ import numpy as np
 
 # TODO module description
 
+
 def add_field(A, B, name):
     """Adds field to array.
-    
+
     Parameters
     ----------
     A: `numpy.ndarray`
@@ -13,11 +14,11 @@ def add_field(A, B, name):
         Field attributes.
     name: `str`
         Name of new field.
-    
+
     Returns
     -------
     recarray: `numpy.recarray`
-        Record array similar to A, but with additional field B.    
+        Record array similar to A, but with additional field B.
     """
     assert isinstance(A, np.ndarray)
     if not isinstance(B, np.ndarray):
@@ -33,23 +34,23 @@ def add_field(A, B, name):
 
 def fuse(A, B):
     """Fuses two numpy record arrays to one array.
-    
+
     Parameters
     ----------
     A: `numpy.recarray`
         Numpy recarray to fuse.
     B: `numpy.recarray`
         Numpy recarray to fuse.
-        
+
     Returns
     -------
     recarray: `numpy.recarray`
-        Record array with same fields as A and B.    
+        Record array with same fields as A and B.
     """
     assert isinstance(A, np.recarray)
     assert isinstance(B, np.recarray)
     assert A.shape == B.shape
-    
+
     dtype = A.dtype.descr
     dtype.extend(B.dtype.descr)
 
@@ -64,29 +65,29 @@ def fuse(A, B):
 
 def merge(arrays):
     """Merges multiple arrays.
-    
+
     Parameters
     ----------
     arrays: `array_like`
         List of numpy.ndarrays to merge.
-    
+
     Returns
     -------
     merged: `numpy.ndarray`
         Merged numpy record array.
     """
-    assert hasattr(arrays,'__getitem__')
+    assert hasattr(arrays, '__getitem__')
     return arrays[0].__array_wrap__(np.hstack(arrays))
 
 
 def flatten_dtypes(np_dtypes):
     """Exract name, datatype and shape information from numpy data type.
-    
+
     Parameters
     ----------
     np_dtypes: `numpy.dtype`
         Numpy data types to flatten.
-    
+
     Returns
     -------
     names: `list of str`
@@ -95,10 +96,10 @@ def flatten_dtypes(np_dtypes):
         Data types of fields.
     shapes: `list of tuples`
         Shapes of fields.
-        
+
     Examples
     --------
-    
+
     >>> dtype = np.dtype([
     ...     ('simple',int),
     ...     ('multidimensional',float,3),
@@ -112,7 +113,7 @@ def flatten_dtypes(np_dtypes):
     [0, 3]
 
     """
-    
+
     # ensure data type
     np_dtypes = np.dtype(np_dtypes)
 
@@ -138,7 +139,7 @@ def flatten_dtypes(np_dtypes):
 
 def map_function(func, ndarray, dtypes=None):
     """Maps a function to each cell of a numpy array.
-    
+
     Parameters
     ----------
     func: `function`
@@ -147,16 +148,16 @@ def map_function(func, ndarray, dtypes=None):
         Numpy array to map function to.
     dtypes: optional, `numpy.dtype`
         Desired data type of return array.
-    
+
     Returns
     -------
     recarray: `numpy.recarray`
         Record array similar to input array, but with function applied to.
     """
-    assert hasattr(func,'__call__')
-    assert hasattr(ndarray,np.ndarray)
+    assert hasattr(func, '__call__')
+    assert hasattr(ndarray, np.ndarray)
     dtypes = np.dtype(dtypes)
-    
+
     args = np.broadcast(None, ndarray)
     values = [func(*arg[1:]) for arg in args]
     res = np.array(
@@ -168,7 +169,7 @@ def map_function(func, ndarray, dtypes=None):
 
 def aggregate(gen, func, dtype=None):
     """Aggregates TODO
-    
+
     Parameters
     ----------
     gen: `iterable`
@@ -177,46 +178,46 @@ def aggregate(gen, func, dtype=None):
         Function which aggregates the fields.
     dtype: optional, `numpy.dtype`
         Desired data type of return array.
-    
+
     Returns
     -------
     recarray: `numpy.recarray`
         Record array similar to input array, but with function applied to.
-        
+
     Examples
     --------
     TODO
-    
-    
+
+
     """
-    
-    assert hasattr(gen,'__iter__')
-    assert hasattr(func,'__call__')
-    
+
+    assert hasattr(gen, '__iter__')
+    assert hasattr(func, '__call__')
+
     values = [func(item) for item in gen]
     return np.array(values, dtype=dtype).view(np.recarray)
 
 
 def recarray(dataDict, dtype=[]):
-    """Converts a dictionary of array like objects to a numpy record array. 
-    
+    """Converts a dictionary of array like objects to a numpy record array.
+
     Parameters
     ----------
     dataDict: `numpy.recarray`
         Dictionary of array like objects to convert to a numpy record array.
     dtype: optional, `numpy.dtype`
         Describes the desired data type of specific fields.
-    
+
     Returns
     -------
     recarray: `numpy.recarray`
         Numpy record array build from input dictionary.
-        
-        
+
+
     Examples
     --------
-    Creation of an numpy record array using a dictionary. 
-    
+    Creation of an numpy record array using a dictionary.
+
     >>> rec = recarray({
     ...    'coords': [ (3,4), (3,2), (0,2), (5,2)],
     ...    'text': ['text1','text2','text3','text4'],
@@ -234,8 +235,8 @@ def recarray(dataDict, dtype=[]):
     ('text1', [3, 4], 1, None)
     """
 
-    assert hasattr(dataDict,'__getitem__') and hasattr(dataDict,'keys')
-    
+    assert hasattr(dataDict, '__getitem__') and hasattr(dataDict, 'keys')
+
     # check data types
     dtype = np.dtype(dtype)
     for colName in dtype.names:
@@ -244,10 +245,10 @@ def recarray(dataDict, dtype=[]):
     # get datatypes
     outDtypes = []
     for colName in dataDict.keys():
-        
+
         if colName not in dtype.names:
             dt = np.dtype(object)
-            outDtype = (colName, dt) # default data type
+            outDtype = (colName, dt)  # default data type
             # Find non empty row
             for row in dataDict[colName]:
                 if row is not None:
@@ -262,26 +263,26 @@ def recarray(dataDict, dtype=[]):
             outDtype = (colName, dt)
         outDtypes.append(outDtype)
     rec = np.rec.array(zip(*dataDict.values()),
-                            names=dataDict.keys(), dtype=outDtypes)
+                       names=dataDict.keys(), dtype=outDtypes)
     return rec
 
 
 def unnest(rec):
-    """Unnest a numpy record array. Recursively adds each named field to a list. 
-    
+    """Unnest a numpy record array. Recursively adds each named field to a list.
+
     Parameters
     ----------
     rec: `numpy.recarray`
         Numpy record array to unnest.
-    
+
     Returns
     -------
     unnested: `list`
         List of unnested fields.
-        
+
     Examples
     --------
-    
+
     >>> dtype = [
     ...    ('regular',np.int,1),
     ...    ('nested',[
@@ -303,8 +304,8 @@ def unnest(rec):
      [1. 1.]]
     """
     #print recarray
-    assert isinstance(rec,(np.recarray,np.ndarray))
-    
+    assert isinstance(rec, (np.recarray, np.ndarray))
+
     if rec.dtype.names is None:
         ret = [rec]
     else:
@@ -316,26 +317,26 @@ def unnest(rec):
 
 def missing(data):
     """Find missing values.
-    
+
     Parameters
     ----------
     data: `array_like`
         A array like object to search missing values for. Missing values are
         either None or NaN values.
-        
+
     Returns
     -------
     missing: boolean numpy.ndarray
         Boolean values indicate missing values.
-    
+
     Examples
     --------
-    
+
     Finding missing values in a list.
     >>> arr = ['str',1,None,np.nan,np.NaN]
     >>> print missing(arr)
     [False False  True  True  True]
-    
+
     Finding missing values in multidimensional arrays.
     >>> arr = np.array([(0,np.nan),(None,1),(2,3)],dtype=float)
     >>> print missing(arr)
@@ -343,8 +344,8 @@ def missing(data):
      [ True False]
      [False False]]
     """
-    assert hasattr(data,'__len__')
-    strings = np.array(data,dtype=str)
+    assert hasattr(data, '__len__')
+    strings = np.array(data, dtype=str)
 
     ismissing = np.equal(data, None)
     ismissing[strings == 'nan'] = True
@@ -354,29 +355,28 @@ def missing(data):
 
 def colzip(arr):
     """ Splits a numpy array by each collumn.
-    
+
     Parameters
     ----------
     arr : (n,k), np.ndarray
         Numpy array with `n` rows and `k` columns.
-        
+
     Returns
     -------
     columns : list of np.ndarray
-        List of k np.ndarrays 
+        List of k np.ndarrays
     """
-    
-    assert isinstance(arr,np.ndarray)
+
+    assert isinstance(arr, np.ndarray)
     assert len(arr.shape) == 2
-    
+
     cols = []
     for col in range(arr.shape[1]):
-        cols.append(arr[:,col])
+        cols.append(arr[:, col])
     return cols
 
 
-def fields_view(arr,fields,dtype=None):
+def fields_view(arr, fields, dtype=None):
     if dtype is None:
-        dtype = np.dtype({name:arr.dtype.fields[name] for name in fields})
+        dtype = np.dtype({name: arr.dtype.fields[name] for name in fields})
     return np.ndarray(arr.shape, dtype, arr, 0, arr.strides)
-

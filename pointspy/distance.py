@@ -2,35 +2,37 @@ import numpy as np
 
 # TODO module description
 
+
 def norm(coords):
     # TODO
     """ Normalization of coordinates.
-    
+
     Parameters
     ----------
     coords: (n,k), `array_like`
         Represents n data points of k dimensions.
-    
+
     Returns
     -------
     norm: (n), `array_like`
-        TODO 
+        TODO
     """
     return np.sqrt(snorm(coords))
+
 
 def snorm(coords):
     # TODO
     """ Normalization of coordinates.
-    
+
     Parameters
     ----------
     coords: (n,k), `array_like`
         Represents n data points of k dimensions.
-    
+
     Returns
     -------
     snorm: (n), `array_like`
-        TODO 
+        TODO
     """
     if not isinstance(coords, np.ndarray):
         coords = np.array(coords)
@@ -39,6 +41,7 @@ def snorm(coords):
     else:
         res = (coords * coords).sum(1)
     return res
+
 
 def dist(p, coords):
     return np.sqrt(sdist(p, coords))
@@ -59,7 +62,7 @@ def sdist(p, coords):
 
 
 def rmse(A, B):
-    return np.sqrt(np.mean(sdist(A,B)))
+    return np.sqrt(np.mean(sdist(A, B)))
 
 
 def idw(dists, p=2):

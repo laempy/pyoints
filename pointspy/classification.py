@@ -22,7 +22,7 @@ def dict2classes(classes, n, minPts=1):
     return classification
 
 
-def classes2dict(classification, ids=None, minSize=1, maxSize=np.inf):
+def classes2dict(classification, ids=None, min_size=1, max_size=np.inf):
     classes = defaultdict(lambda: [])
     if ids is None:
         ids = range(len(classification))
@@ -30,10 +30,10 @@ def classes2dict(classification, ids=None, minSize=1, maxSize=np.inf):
     for id, cId in zip(ids, classification):
         classes[cId].append(id)
 
-    if minSize > 1 or maxSize < np.inf:
+    if min_size > 1 or max_size < np.inf:
         for key in classes.keys():
             s = len(classes[key])
-            if s < minSize or s > maxSize:
+            if s < min_size or s > max_size:
                 del classes[key]
     return classes
 
@@ -74,10 +74,10 @@ class Sample:
 
         # classKeys=np.unique(classes)
         classKeys = list(set(classes))
-        #print classKeys
+        # print classKeys
         # groupKeys=np.unique(groups)
         groupKeys = list(set(groups))
-        #print groupKeys
+        # print groupKeys
 
         ids = np.arange(len(classes))
         tIds = defaultdict(lambda: [])
@@ -110,8 +110,10 @@ class Sample:
                 for groupKey in np.array(counts.keys())[order]:
                     mask = groups[cIds] == groupKey
                     if counts[groupKey] > 0:
-                        f = 0 if tMask.sum() == 0 and vMask.sum() == 0 else 1.0 * \
-                            tMask.sum() / (tMask.sum() + vMask.sum())
+                        if tMask.sum() == 0 and vMask.sum() == 0:
+                            f = 0
+                        else:
+                            f = 1.0 * tMask.sum() / (tMask.sum() + vMask.sum())
                         if f < trainFraction:
                             tMask[mask] = True
                         else:

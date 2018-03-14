@@ -11,23 +11,23 @@ import bisect
 
 # TODO module description
 # TODO nested IndexKD?
-# ==> 
+# ==>
 
 class IndexKD(object):
-    """Wrapper class of serveral spatial indices to speed up spatial queries 
+    """Wrapper class of serveral spatial indices to speed up spatial queries
     and ease usage.
-    
+
     Parameters
     ----------
     coords : (n,k), array_like
         Represents n data points of k dimensions.
     transform : (k+1,k+1) array_like, optional
-        Represents any kind of transformation matrix applied to the coordinates 
+        Represents any kind of transformation matrix applied to the coordinates
         before index computation.
     leafsize : optional, positive, int
         Leaf size of KD-Tree.
-        
-        
+
+
     Attributes
     ----------
     dim : positive int
@@ -40,24 +40,23 @@ class IndexKD(object):
         KD-tree for rapid neighbourhood queries. Generated on first demand.
     r_tree : `rtree.Rtree`
         R-tree for rapid box queries. Generated on first demand.
-    
+
     """
 
-
     def __init__(self, coords, transform=None, leafsize=16, quickbuild=True):
-        
+
         assert hasattr(coords, '__len__')
         assert len(coords) > 0
 
-        #TODO ensure_coords
-        
-        assert isinstance(leafsize,int) and leafsize > 0
-        assert isinstance(quickbuild,bool)
-        
+        # TODO ensure_coords
+
+        assert isinstance(leafsize, int) and leafsize > 0
+        assert isinstance(quickbuild, bool)
+
         self._leafsize = leafsize
         self._balanced = not quickbuild
         self._compact = not quickbuild
-        
+
         if transform is None:
             self._coords = np.copy(coords)
             self._transform = transformation.i_matrix(self._coords.shape[1])
@@ -71,17 +70,17 @@ class IndexKD(object):
 
     def __iter__(self):
         return enumerate(self.coords)
-    
+
     @property
     def dim(self):
         """Provides number of dimensions of coordinates.
-        
+
         Returns
         -------
         dim: `uint`
         """
         return self.coords.shape[1]
-    
+
     @property
     def coords(self):
         return self._coords
@@ -89,7 +88,7 @@ class IndexKD(object):
     @property
     def transform(self):
         """Provides transformation matrix
-        
+
         Returns
         -------
         transform: (dim+1,dim+1) `np.matrix`
@@ -98,35 +97,34 @@ class IndexKD(object):
 
     @property
     def kd_tree(self):
-	"""Provides a kd-tree for rapid neighbourhood queries.
-        
+        """Provides a kd-tree for rapid neighbourhood queries.
+
         Returns
         -------
         kdTree: `cKDTree`
-	"""
-                
+        """
+
         if not hasattr(self, '_kd_tree'):
             self._kd_tree = cKDTree(
                 self.coords,
                 leafsize=self._leafsize,
                 copy_data=False,
-                balanced_tree=self._balanced, 
+                balanced_tree=self._balanced,
                 compact_nodes=self._compact
             )
         return self._kd_tree
 
-
     @property
     def r_tree(self):
         if not hasattr(self, '_r_tree'):
-            
-	    # define properties
+
+            # define properties
             p = r_treeIndex.Property()
             p.dimension = self.dim()
             p.variant = r_treeIndex.RT_Star
             index = np.concatenate((range(self.dim()), range(self.dim())))
 
-	    # Generator provides required point format
+            # Generator provides required point format
             def gen():
                 for id, coord in self:
                     yield (id, coord[index], id)
@@ -134,10 +132,9 @@ class IndexKD(object):
 
         return self._r_tree
 
-
     def ball(self, coords, r, bulk=100000, **kwargs):
         """Find all points within distance `r` of point or points `coords`.
-        
+
         Parameters
         ----------
         coords : (n,k), array_like
@@ -147,76 +144,78 @@ class IndexKD(object):
         bulk : positive int
             Reduce required memory by performing bulk queries.
         **kwargs : optional
-            Additional parameters similar to `scipy.spatial.cKDTree.query_ball_point`
-            
-        
+            Additional parameters similar to
+            `scipy.spatial.cKDTree.query_ball_point`
+
+
         Returns
         -------
-        nIds: `list or array of lists` 
-            If coords is a single point, returns a list neighbours. If coords 
-            is an list of points, returns a list containing lists of neighbours.
+        nIds: `list or array of lists`
+            If coords is a single point, returns a list neighbours. If coords
+            is an list of points, returns a list containing lists of
+            neighbours.
         """
-        
-        if hasattr(r,'__iter__'):
+
+        if hasattr(r, '__iter__'):
             # query multiple radii
             return list(self.balls_iter(coords, r, **kwargs))
-        elif isinstance(coords,np.ndarray) and len(coords.shape)>1:
+        elif isinstance(coords, np.ndarray) and len(coords.shape) > 1:
             # bulk queries
             return list(self.ball_iter(coords, r, bulk=bulk, **kwargs))
         else:
             # single point query
-            return self.kd_tree.query_ball_point(coords[:self.dim], r, **kwargs)
+            return self.kd_tree.query_ball_point(
+                coords[:self.dim], r, **kwargs)
 
-        
     def ball_iter(self, coords, r, bulk=1000000, **kwargs):
         """Similar to `ball`, but yields lists of neighbours.
-        
+
         Yields
         ------
         nIds : list of ints
             Lists of indices of neighbouring points.
-        
+
         See Also
         --------
         ball, balls_iter
-            
+
         """
         assert bulk > 0
         for i in range(coords.shape[0] / bulk + 1):
             # bulk query
             nIds = self.kd_tree.query_ball_point(
-                coords[bulk * i:bulk * (i + 1),:self.dim], r, n_jobs=-1, **kwargs)
+                coords[bulk * i: bulk * (i + 1),
+                       : self.dim],
+                r, n_jobs=-1, **kwargs)
             # yield neighbours
             for nId in nIds:
                 yield nId
-                
 
     def balls_iter(self, coords, radii, **kwargs):
         """Yields lists of neighbours.
-        
+
         Parameters
         ----------
         radii: iterable of floats
             Radii to query.
-        
+
         Yields
         ------
         nIds : list
             Lists of indices of neighbouring points.
-        
+
         See Also
         --------
         ball, ball_iter
-            
+
         """
-        for coord,r in itertools.izip(coords,radii):
+        for coord, r in itertools.izip(coords, radii):
             nIds = self.kd_tree.query_ball_point(coord[:self.dim], r, **kwargs)
             yield nIds
-            
 
     def ball_count(self, r, coords=None, p=2):
         """Counts numbers of neighbours within radius.
-        
+
         Parameters
         ----------
         r : float or iterable of floats
@@ -224,16 +223,16 @@ class IndexKD(object):
         coords : (n,k), array_like, optional
             Represents `n` points of `k` dimensions. If None it is set to
             `self.coords`.
-        
+
         Returns
         -------
         list if ints
             Number of neigbours for each point.
-            
+
         See Also
         --------
         ball, ball_iter, balls_iter
-            
+
         """
         if coords is None:
             coords = self.coords
@@ -242,11 +241,10 @@ class IndexKD(object):
         else:
             nIdsGen = self.ball_iter(coords, r, p=p)
         return np.array(map(len, nIdsGen), dtype=int)
-          
-          
+
     def sphere(self, coord, r_min, r_max, **kwargs):
         """Counts numbers of neighbours within radius.
-        
+
         Parameters
         ----------
         r_min : float
@@ -257,7 +255,7 @@ class IndexKD(object):
             Center of sphere.
         **kwargs:
             Additional parameters similar to `self.ball`.
-            
+
         Returns
         -------
         list of ints
@@ -266,12 +264,11 @@ class IndexKD(object):
         assert r_min < r_max
         inner = self.ball(coord[:self.dim], r_min, **kwargs)
         outer = self.ball(coord[:self.dim], r_max, **kwargs)
-        return np.intersect1d((outer,inner))
-            
+        return np.intersect1d((outer, inner))
 
     def knn(self, coords, k=1, bulk=100000, **kwargs):
         """Query for k nearest neighbours.
-        
+
         Parameters
         ----------
         coords : (n,k), array_like
@@ -280,60 +277,60 @@ class IndexKD(object):
             Number of nearest numbers to return.
         **kwargs : optional
             Additional parameters similar to `scipy.spatial.cKDTree.query`.
-        
+
         Returns
         -------
         dists, dist : (n,k), list
             Distances to nearest neihbours.
         indices : (n,k), list
             Indices of nearest neihbours.
-            
+
         See Also
         --------
         knn, knns_iter, scipy.spatial.cKDTree.query
-            
-        """        
-        if hasattr(k,'__iter__'):
+
+        """
+        if hasattr(k, '__iter__'):
             # query multiple radii
-            dists,nIds = list(self.knns_iter(coords, k=k, **kwargs))
-        elif isinstance(coords,np.ndarray) and len(coords.shape)>1:
+            dists, nIds = list(self.knns_iter(coords, k=k, **kwargs))
+        elif isinstance(coords, np.ndarray) and len(coords.shape) > 1:
             # bulk queries
-            dists,nIds = zip(*self.knn_iter(coords, k=k, bulk=bulk, **kwargs))
+            dists, nIds = zip(*self.knn_iter(coords, k=k, bulk=bulk, **kwargs))
         else:
             # single point query
-            dists,nIds =  self.kd_tree.query_ball_point(coords[:,:self.dim], r, **kwargs)
-        return np.array(dists),np.array(nIds)
-        
+            dists, nIds = self.kd_tree.query(
+                coords[:self.dim], k, **kwargs)
+        return np.array(dists), np.array(nIds)
 
     def knn_iter(self, coords, k=1, bulk=100000, **kwargs):
         """Similar to `knn`, but yields lists of neighbours.
-        
+
         Yields
         -------
         dists, indices : (k), list
-            List of distances to nearest neighbours and corresponding point indices.
-        
+            List of distances to nearest neighbours and corresponding point
+            indices.
+
         See Also
         --------
         knn, knns_iter
-        
+
         """
         assert bulk > 0
         for i in range(coords.shape[0] / bulk + 1):
             dists, nIds = self.kd_tree.query(
-                coords[bulk * i:bulk * (i + 1),:self.dim], k=k, **kwargs)
+                coords[bulk * i:bulk * (i + 1), :self.dim], k=k, **kwargs)
             for d, n in itertools.izip(dists, nIds):
                 yield d, n
-                
-                
+
     def knns_iter(self, coords, ks, **kwargs):
         """Similar to `knn`, but yields lists of neighbours.
-        
+
         Parameters
         ----------
         ks : (n), iterable
             Iterable numbers of neighbours to query.
-        
+
         Yields
         -------
         dists: (k), list
@@ -341,15 +338,14 @@ class IndexKD(object):
         indices: (k), list
             Indices of nearest neihbours.
         """
-        for coord,k in itertools.izip(coords,ks):
-            dists, nIds = self.kd_tree.query(coord[:,:self.dim], k=k, **kwargs)
+        for coord, k in itertools.izip(coords, ks):
+            dists, nIds = self.kd_tree.query(
+                coord[:, :self.dim], k=k, **kwargs)
             yield dists, nIds
-            
-                
-    
+
     def nn(self, p=2):
         """Provides nearest neighbours.
-        
+
         Parameters
         ----------
         p : float, 1<=p<=infinity, optional
@@ -360,59 +356,56 @@ class IndexKD(object):
             self._NN = dists[:, 1], ids[:, 1]
         return self._NN
 
-
     def closest(self, id, **kwargs):
         """Provides nearest neighbour of a specific point.
-        
+
         Parameters
         ----------
         id : int
             Index of a point in `self.coords`.
-            
+
         Returns:
         --------
         distance : positive float
             Distance to closest point.
         id : positive int
             Index of closest point.
-            
+
         See Also
         --------
         knn
-            
+
         """
         dists, ids = self.knn(self.coords[id, :], k=2, **kwargs)
         return dists[1], ids[1]
 
-    
     def cube(self, coords, r, **kwargs):
         """Provides points within a cube. Wrapper to self.ball with `p=infinity`
-        
+
         See Also
         --------
         ball
         """
         return self.ball(coords, r, p=float('inf'))
-    
 
     def box(self, extent):
         """Select points within extent.
-        
+
         Parameters
         ----------
         extent : (2*self.dim), array_like
             Specifies the points to return. A point p is returned, if
-            p>=extent[0:dim] and p>=extent[dim+1:2*dim] 
-            
+            p>=extent[0:dim] and p>=extent[dim+1:2*dim]
+
         Returns
         -------
         indices : list of ints
             Indices of points within the extent.
-            
+
         See Also
         --------
         ball, cube, slice
-            
+
         """
         return self.r_tree.intersection(extent, objects='raw')
 
@@ -420,30 +413,30 @@ class IndexKD(object):
     def slice(self, min_th, max_th, axis=-1):
         """Select points with coordinate value of axis `axis` within range the
         [`min_th`,`max_th`].
-        
+
         Parameters
         ----------
         min_th, max_th : float
-            A point `p` is returned `min_th <= p[axis] <= max_th`. 
+            A point `p` is returned `min_th <= p[axis] <= max_th`.
         axis : int
             Axis to evaluate.
-            
+
         Returns
         -------
         list of ints
             Indices of points within the slice.
-            
+
         See Also
         --------
         box, cube, slice
-            
+
         """
-        assert isinstance(min_th,float) or isinstance(min_th,int)
-        assert isinstance(max_th,float) or isinstance(max_th,int)
+        assert isinstance(min_th, float) or isinstance(min_th, int)
+        assert isinstance(max_th, float) or isinstance(max_th, int)
         assert min_th < max_th
-        assert isinstance(axis,int)
+        assert isinstance(axis, int)
         assert abs(axis) < self.dim
-        
+
         values = self.coords[:, axis]
         order = np.argsort(values)
         iMin = bisect.bisect_left(values[order], min_th) - 1
@@ -452,8 +445,6 @@ class IndexKD(object):
         # return original order (for performance reasons)
         ids = np.sort(order[iMin:iMax])
         return ids
-
-
 
     # TODO Documentation
     def countBox(self, extent):
@@ -464,7 +455,7 @@ class IndexKD(object):
                 coord,
                 delta,
                 p=2,
-                filter=lambda pA,pB: pA[-1] < pB[-1]):
+                filter=lambda pA, pB: pA[-1] < pB[-1]):
         nIds = self.ball(coord, delta, p=p)
         coords = self.coords
         return [nId for nId in nIds if filter(coord, coords[nId, :])]
@@ -475,7 +466,7 @@ class IndexKD(object):
             coord,
             delta,
             p=p,
-            filter=lambda pA,pB: pA[axis] > pB[axis])
+            filter=lambda pA, pB: pA[axis] > pB[axis])
 
     # TODO Documentation
     def lowerBall(self, coord, delta, p=2, axis=-1):
@@ -483,8 +474,4 @@ class IndexKD(object):
             coord,
             delta,
             p=p,
-            filter=lambda pA,pB: pA[axis] < pB[axis])
-
-
-
-
+            filter=lambda pA, pB: pA[axis] < pB[axis])
