@@ -1,14 +1,15 @@
 import numpy as np
 
 
-def ensure_coords(coords):
+def ensure_coords(coords,by_row=False):
     
     assert hasattr(coords,'__len__')
     
     if not isinstance(coords,np.ndarray):
         coords = np.array(coords)
+    if by_row:
+        coords = coords.T
     
-    assert isinstance(coords,np.ndarray)
     assert len(coords.shape) == 2
     assert coords.shape[1] > 0
     return coords
