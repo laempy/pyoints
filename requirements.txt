@@ -1,16 +1,16 @@
 # Just once
+#cd path/to/pointspy
 #virtualenv venv --python=python2.7
 #. venv/bin/activate
-# cd path/to/pointspy
-# pip install -r requirements.txt
-#python setup.py install pointspy
+#pip install numpy
+#pip install gdal==\`gdal-config --version\` --global-option=build_ext --global-option="-I/usr/include/gdal" 
 
+#sudo apt install gdal-bin
+#sudo apt install libgdal-dev libgdal1h
+#sudo apt install libspatialindex-dev
 
 # run with:
-# pip install -r requirements.txt
-
-
-
+# pip install --global-option=build_ext --global-option="-I/usr/include/gdal" -r requirements.txt
 numpy
 rtree
 liblas
@@ -20,7 +20,8 @@ scikit-learn
 pyproj
 affine
 dill
-gdal --global-option=build_ext --global-option="-I/usr/include/gdal/"
+#gdal
+pygdal==1.11.3.3
 pandas
 configobj
 pyyaml
@@ -28,13 +29,10 @@ psycopg2-binary
 Sphinx
 sphinxcontrib-napoleon
 
-# nice to have
-networkx
-matplotlib
-#pip install opencv-python
+# Finally
+#python setup.py install pointspy
 
 #python2.7.12
-#python-gdal
+#apt install python-gdal
 #libgdal-dev>=1.11.3
-#pip2 install gdal --global-option=build_ext --global-option="-I/usr/include/gdal/"
 #libspatialindex-dev (for rtree)
