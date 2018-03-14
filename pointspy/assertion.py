@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def ensure_coords(coords, by_row=False):
 
     assert hasattr(coords, '__len__')
@@ -13,6 +12,12 @@ def ensure_coords(coords, by_row=False):
     assert len(coords.shape) == 2
     assert coords.shape[1] > 0
     return coords
+
+
+def ensure_polar(pcoords, by_row=False):
+    pcoords = ensure_coords(pcoords, by_row=by_row)
+    assert np.all(pcoords[:,0] >= 0)
+    return pcoords
 
 
 def ensure_tmatrix(T):
