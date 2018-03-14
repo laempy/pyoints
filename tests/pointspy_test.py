@@ -6,10 +6,19 @@ import pointspy
 import numpy as np
 
 
-
 def load_tests(loader, tests, ignore):
-     tests.addTests(doctest.DocTestSuite(pointspy.nptools))
-     return tests
+    #tests.addTests(doctest.DocTestSuite(pointspy.fit))
+    tests.addTests(doctest.DocTestSuite(pointspy.vector))
+    tests.addTests(doctest.DocTestSuite(pointspy.nptools))
+    tests.addTests(doctest.DocTestSuite(pointspy.extent))
+    
+    #filename = '/daten/Seafile/promotion/Projekte/PANtHEOn/Seafile/TestData/Faro_Focus_S70/Outdoor/LAS_preliminary/Scan_006.las'
+    #from pointspy.projection import Proj
+    #from pointspy import storage
+    #lasHandler = storage.LasHandler(Proj(),filename)
+    
+    
+    return tests
 
 
 class test_pointpy(unittest.TestCase):
@@ -148,16 +157,16 @@ class test_extent(unittest.TestCase):
         self.assertTrue(np.array_equal(ext.ranges,[1,2,4]))
         self.assertTrue(np.array_equal(ext.min_corner,[0,0,0]))
         self.assertTrue(np.array_equal(ext.max_corner,[1,2,4]))
-        self.assertTrue(np.array_equal(ext.split,[(0,0,0),(1,2,4)]))
+        self.assertTrue(np.array_equal(ext.split(),[(0,0,0),(1,2,4)]))
         self.assertTrue(np.array_equal(ext.center,[0.5,1,2]))
 
 
 
-        self.assertTrue(ext.intersects([0.5,1,0.5]))
-        self.assertFalse(ext.intersects([-1,0,0]))
-        self.assertFalse(ext.intersects([0,0,5]))
+        self.assertTrue(ext.intersection([0.5,1,0.5]))
+        self.assertFalse(ext.intersection([-1,0,0]))
+        self.assertFalse(ext.intersection([0,0,5]))
         self.assertTrue(np.array_equal(
-                ext.intersects([(0,0,-1),(0.5,0.5,0.5),(0.1,0.2,0.3),(0,5,0)]),
+                ext.intersection([(0,0,-1),(0.5,0.5,0.5),(0.1,0.2,0.3),(0,5,0)]),
                 [1,2]
             ))
             
