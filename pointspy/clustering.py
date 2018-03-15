@@ -1,6 +1,6 @@
-import numpy as np
-from sklearn.cluster import DBSCAN
 from collections import defaultdict
+from sklearn.cluster import DBSCAN
+import numpy as np
 
 from .classification import (
     mayority,
@@ -23,7 +23,8 @@ def clustering(indexKD,
     indexKD : IndexKD
         Spatial index with `n` points.
     r : positive, float
-        Radius to select the cluster ids of neighboured points. # TODO Wort Klassenzugehoerigkeit
+        Radius to select the cluster ids of neighboured points.
+        # TODO Wort Klassenzugehoerigkeit
     get_class : function
         Function to define the cluster id of a point. Recieves a list of
         cluster ids of neigboured points to define the cluster id of a point.
@@ -32,23 +33,24 @@ def clustering(indexKD,
         TODO
         If not defined the order is defined by decreasing point density.
     clusters : array_like of ints, optional
-        List of `n` integers. Each element represents the preliminary cluster id
-        of a point in `indexKD`. A cluster id is a positive integer. If a
+        List of `n` integers. Each element represents the preliminary cluster
+        id of a point in `indexKD`. A cluster id is a positive integer. If a
         cluster id of `-1` represents no class. If None, each element is set
         to `-1`. # TODO revise
     min_size : int, optional
         Minimum number of points associated with a cluster. If less than
-        `min_size` points are associated with a cluster, the cluster is rejected.
+        `min_size` points are associated with a cluster, the cluster is
+        rejected.
     auto_set : boolean, optional
-        Defines weather or not cluster a id is automatically set, if -1 (no class)
-        was returned by `get_class`. If True, a new cluster id is set to
-        `max(clusters) + 1`.
+        Defines weather or not cluster a id is automatically set, if -1
+        (no class) was returned by `get_class`. If True, a new cluster id is
+        set to `max(clusters) + 1`.
 
     Returns
     -------
     dict
-        Dictionary of clusters. The keys correspond to the class ids. The values
-        correspond to the point indices associated with the cluster.
+        Dictionary of clusters. The keys correspond to the class ids. The
+        values correspond to the point indices associated with the cluster.
     """
 
     assert isinstance(indexKD, IndexKD)
