@@ -182,15 +182,18 @@ class Extent(np.recarray, object):
         --------
 
         Point within extent?
+
         >>> ext = Extent([0,0.5,1,4])
         >>> print ext.intersection([(0.5,1)])
         True
 
         Points within extent?
+
         >>> print ext.intersection([(1,2),(-1,1),(0.5,1)])
         [0 2]
 
         Corners are located within the extent.
+
         >>> print ext.intersection(ext.corners())
         [0 1 2 3]
 
