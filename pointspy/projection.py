@@ -1,8 +1,7 @@
-"""Definition of coordinate reference systems and two dimensional geograpic
-coordinate transformations.
+"""Coordinate Reference Systems and two dimensional geograpic coordinate
+transformations.
 """
 
-import numpy as np
 from osgeo import osr
 from pyproj import Proj as pyProj
 from pyproj import transform as CoordinateTransformation
@@ -12,9 +11,6 @@ from . import assertion
 
 # Global proj4 definitions
 WGS84 = '+proj=latlong +datum=WGS84 +to +proj=latlong +datum=WGS84 +units=m +no_defs'
-# TODO add some default projections
-
-# TODO assertions
 
 
 class Proj():
@@ -147,6 +143,7 @@ class CoordinateTransform:
 
     Transform coordinates.
 
+    >>> import numpy as np
     >>> wgs84 = Proj.from_epsg(4326)
     >>> gk2 = Proj.from_epsg(31466)
     >>> coords = [(6.842,49.971),(6.847,49.969),(6.902,49.991),(6.922,50.101)]
@@ -192,4 +189,4 @@ class CoordinateTransform:
             coords[:, 0],
             coords[:, 1]
         )
-        return assertion.ensure_coords(tCoords, by_row=True)
+        return assertion.ensure_coords(tCoords, by_col=True)
