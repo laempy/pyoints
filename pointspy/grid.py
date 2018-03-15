@@ -47,21 +47,21 @@ class Grid(GeoRecords):
         object with k coordinate dimension.
     T: (k+1,k+1), `array_like`
         The  linear transformation matrix to transform the coordinates.
-        The translation represents the origin, the rotation the 
+        The translation represents the origin, the rotation the
         orientation and the scale the pixel size of the matrix.
     """
 
-    def __new__(cls, proj, npRecarray, T):      
-        assert isinstance(npRecarray,np.recarray)
-        assert len(np.Recarray.shape)>1
-        assert isinstance(T,np.array)
-        assert np.Recarray.shape[0] == np.Recarray.shape[1]
-        
-        if not 'coords' in npRecarray.dtype.names:
+    def __new__(cls, proj, npRecarray, T):
+        assert isinstance(npRecarray, np.recarray)
+        assert len(npRecarray.shape) > 1
+        assert isinstance(T, np.array)
+        assert npRecarray.shape[0] == npRecarray.shape[1]
+
+        if 'coords' not in npRecarray.dtype.names:
             keys = cls.keys(npRecarray.shape)
             coords = cls.keys2coords(T, keys)
-            data = nptools.add_field(npRecarray,coords,'coords')
-        grid = GeoRecords(proj, data, T=T).reshape(shape).view(cls)
+            data = nptools.add_field(npRecarray, coords, 'coords')
+        grid = GeoRecords(proj, data, T=T).reshape(npRecarray.shape).view(cls)
         return grid
 
     @staticmethod
@@ -72,11 +72,11 @@ class Grid(GeoRecords):
         ----------
         T: (k+1,k+1), `array_like`
             The  linear transformation matrix to transform the coordinates.
-            The translation represents the origin, the rotation the 
+            The translation represents the origin, the rotation the
             orientation and the scale the pixel size of the matrix.
         coords: `numpy.recarray`
             Coordinates with at least k dimensions to convert to indices.
-        
+
         Returns
         -------
         keys: `numpy.recarray`
@@ -88,8 +88,8 @@ class Grid(GeoRecords):
         s = np.product(coords[:, :dim].shape) / dim
         flatCoords = coords[:, :dim].view().reshape((s, dim))
         values = localSystem.to_global(flatCoords)
-        
-        #TODO Reihenfolge der Spalten?
+
+        # TODO Reihenfolge der Spalten?
         # keys=np.array(np.round(values),dtype=int)[:,::-1]
         keys = np.array(np.floor(values), dtype=int)[:, ::-1]
         return keys.reshape(coords[:, :dim].shape)
@@ -119,8 +119,10 @@ class Grid(GeoRecords):
 
         # Minimum corner
         minCornerIdx = np.argmin(cornerIndices, axis=0)
-        minCornerIndex = np.array([cornerIndices[idx, i]
-                                   for i, idx in enumerate(minCornerIdx)], dtype=int)
+        minCornerIndex = np.array(
+            [cornerIndices[idx, i] for i, idx in enumerate(minCornerIdx)],
+            dtype=int
+        )
         minCorner = Grid.keys2coords(
             transform, np.array([minCornerIndex - 0.5]))[0, :]
 
@@ -140,7 +142,6 @@ class Grid(GeoRecords):
     def get_gdal_transform(self):
         return (self.t[0, 2], self.t[0, 0], self.t[1, 0],
                 self.t[1, 2], self.t[0, 1], self.t[1, 1])
-                
 
 
 def voxelize(geoRecords, T, dtypes=[('geoRecords', object)]):
@@ -186,5 +187,3 @@ def indices2keys(indices, shape):
         indices = indices % d
     keys = np.array(keys, dtype=int).T
     return keys
-
-

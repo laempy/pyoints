@@ -2,14 +2,13 @@ import numpy as np
 
 from .indexkd import IndexKD
 from .extent import Extent
+
 from . import (
     transformation,
     projection,
+    assertion,
+    nptools,
 )
-
-# TODO
-from . import _assertion as assertion
-
 
 # TODO module description
 
@@ -25,7 +24,7 @@ class GeoRecords(np.recarray, object):
         Projection object to provide the coordinate reference system.
     npRecarray : np.recarray(shape=(n,))
         A numpy record array provides coordinates and attributes of `n` points.
-        The field "coords" is required and represents coordinates of `k`
+        The field `coords` is required and represents coordinates of `k`
         dimensions.
     T : optional, array_like(shape=(k+1,k+1))
         Linear transformation matrix to transform the coordinates. Set to a
@@ -66,6 +65,20 @@ class GeoRecords(np.recarray, object):
         if not rec.dtype['coords'].shape[0] >= 2:
             raise ValueError("at least two coordinate dimensions needed")
         return rec.view(cls)
+
+    def __array_finalize__(self, obj):
+        if obj is None:
+            return
+        self._t = getattr(obj, '_t', None)
+        self._proj = getattr(obj, '_proj', None)
+        self._clear_cache()
+
+    def __array_wrap__(self, out_arr, context=None):
+        return np.ndarray.__array_wrap__(self, out_arr, context)
+
+    def _clear_cache(self):
+        # Deletes cached data.
+        self._indices = {}
 
     @property
     def t(self):
@@ -123,7 +136,6 @@ class GeoRecords(np.recarray, object):
             raise ValueError("'dim' inappropiate dimension selected")
         return Extent(self.records().coords[:, :dim])
 
-
     def ids(self):
         """Keys or indices of the data structure.
 
@@ -149,13 +161,6 @@ class GeoRecords(np.recarray, object):
             for field, column in zip(dtypes, data):
                 if column is not None:
                     records[field] = column
-
-        #print np.lib.recfunctions.append_fields(self,B,B.dtype)
-        # data=np.lib.recfunctions.rec_append_fields(self.flatten(),(name),B.flatten()).reshape(self.shape)
-        #d=[self[field] for field in self.dtype.names]
-        # data=np.lib.recfunctions.rec_append_fields(B,self.dtype.names,d)#.reshape(self.shape)
-        # data=np.lib.recfunctions.merge_arrays([B,self],flatten=True,usemask=False,asrecarray=True)
-        # TODO sich selbst uberschreiben
         return self.__class__(self.proj, records, T=self.T)
 
     def add_field(self, dtype, data=None):
@@ -163,7 +168,7 @@ class GeoRecords(np.recarray, object):
 
     def merge(self, geoRecords):
         # TODO
-        data = npTools.merge((self, geoRecords))
+        data = nptools.merge((self, geoRecords))
         # TODO sich selbst uberschreiben
         return self.__class__(self.proj, data, T=self.T)
 
@@ -186,19 +191,13 @@ class GeoRecords(np.recarray, object):
         coords: `numpy.ndarray`
             New coordinates of the data structure.
         """
-        assert isinstance(coords,np.ndarray)
-        assert isinstance(proj,Proj)
+        assert isinstance(coords, np.ndarray)
+        assert isinstance(proj, projection.Proj)
         assert self.coords.shape == coords.shape
 
-        self.coords = coords
+        self['coords'] = coords
         self._proj = proj
         self._clear_cache()
-
-    def _clear_cache(self):
-        """Deletes all cached data.
-        """
-        self._indices = {}
-
 
     def indexKD(self, dim=None):
         """Spatial index of the coordinates.
@@ -239,14 +238,3 @@ class GeoRecords(np.recarray, object):
         """
 
         return nptools.map(func, self, dtypes=dtypes)
-
-    def __array_finalize__(self, obj):
-        if obj is None:
-            return
-        self._t = getattr(obj, '_t', None)
-        self._proj = getattr(obj, '_proj', None)
-        self._clear_cache()
-
-    def __array_wrap__(self, out_arr, context=None):
-        return np.ndarray.__array_wrap__(self, out_arr, context)
-

@@ -8,7 +8,7 @@ from . import distance
 def get_rototranslation(A, B):
     """Finds the optimal roto-translation matrix `M` between two point sets.
     Each point of point set `A` is associated with exactly one point in point
-    set `B`. 
+    set `B`.
 
     Parameters
     ----------
@@ -16,14 +16,14 @@ def get_rototranslation(A, B):
         Array representing n reference points with k dimensions.
     B: (n,k), `numpy.ndarray`
         Array representing n points with k dimensions.
-        
+
     Returns
     -------
     M: (n,k), `numpy.matrix`
         Roto-translation matrix which maps `B` to `A` with `A = B * M.T`.
     """
 
-    #TODO
+    # TODO
     # http://nghiaho.com/?page_id=671
     # http://nghiaho.com/uploads/code/rigid_transform_3D.py_
     # Zhang_2016a
@@ -49,7 +49,7 @@ def get_rototranslation(A, B):
     # Create transformation matrix
     T1 = transformation.tMatrix(-cB)
     M = (R * T1)
-    
+
     # TODO mit translationsmatrix!
     M[:-2, -2] += np.matrix(cA).T
 
@@ -58,8 +58,8 @@ def get_rototranslation(A, B):
 
 def get_transformation(A, B):
     """Finds the optimal (non-rigid) transformation matrix `M` between two point
-    sets. Each point of point set `A` is associated with exactly one point in 
-    point set `B`. 
+    sets. Each point of point set `A` is associated with exactly one point in
+    point set `B`.
 
     Parameters
     ----------
@@ -67,7 +67,7 @@ def get_transformation(A, B):
         Array representing n reference points with k dimensions.
     B: (n,k), `numpy.ndarray`
         Array representing n points with k dimensions.
-        
+
     Returns
     -------
     M: (n,k), `numpy.matrix`
@@ -75,9 +75,9 @@ def get_transformation(A, B):
     """
 
     assert A.shape == B.shape, 'dimensions do not match!'
-    
-    b = homogenious(A)
-    mA = homogenious(B)
+
+    b = transformation.homogenious(A)
+    mA = transformation.homogenious(B)
 
     x = np.linalg.lstsq(mA, b)[0]
     M = np.matrix(x).T
@@ -99,13 +99,13 @@ def get_rototranslations(coordsDict, pairs, sWeights=1, oWeights={}):
         Weights for sum of translations and rotations
     oWeights: optional, `TODO`
         Weights try to keep the original location and orientation TOOD
-        
+
     Returns
     -------
     M: `dict`
         Dictionary of roto-translation matrices with `B` to `A` with A = `B * M.T`.
     """
-    
+
     # basics: http://geomatica.como.polimi.it/corsi/def_monitoring/roto-translationsb.pdf
     # Zhang_2016a
     '''
@@ -122,7 +122,7 @@ def get_rototranslations(coordsDict, pairs, sWeights=1, oWeights={}):
     '''
 
     # TODO asserts
-    # TODO 2D? 
+    # TODO 2D?
 
     k = len(coordsDict)  # number of point clouds
 
@@ -142,7 +142,10 @@ def get_rototranslations(coordsDict, pairs, sWeights=1, oWeights={}):
             if len(p) < 3:
                 w = np.ones(len(p[0]))
             n = p[0].shape[0]
-            assigned = np.recarray(n, dtype=[('A', int), ('B', int), ('weights', float)])
+            assigned = np.recarray(
+                n, dtype=[('A', int),
+                          ('B', int),
+                          ('weights', float)])
             assigned.A = p[0]
             assigned.B = p[1]
             assigned.weights = 1
@@ -152,7 +155,7 @@ def get_rototranslations(coordsDict, pairs, sWeights=1, oWeights={}):
     # try to keep the sum of translations and rotations close to zero
     if hasattr(sWeights, '__len__'):
         assert len(sWeights) == 2 * dim
-    else:    
+    else:
         sWeights = np.repeat(sWeights, 2 * dim)
 
     # try to keep the original location and orientation
@@ -253,9 +256,8 @@ def get_rototranslations(coordsDict, pairs, sWeights=1, oWeights={}):
 
 def ICP(coordsDict, maxDist, k=1, p=2, maxIter=10):
     # TODO docu
-    
+
     # iterative closest point
-    
 
     assert k > 0
     assert isinstance(coordsDict, dict)

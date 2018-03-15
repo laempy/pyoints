@@ -1,19 +1,37 @@
 import numpy as np
-from scipy.interpolate import (
-    LinearNDInterpolator,
-    #NearestNDInterpolator
-)
+
+from scipy.interpolate import LinearNDInterpolator
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression
 
+from . import assertion
 
 
 class Interpolator:
+    """Abstract generic multidimensional interpolation class.
+
+    Parameters
+    ----------
+    coords : (n,k), array_like
+        Represents `n` data points of `k` dimensions.
+    values : (n), array_like
+        Values to interpolate.
+
+    Attributes
+    ----------
+    coords : (n,k), array_like
+        Represents `n` data points of `k` dimensions.
+    dim : positive int
+        Number of coordinate dimensions.
+
+    """
 
     def __init__(self, coords, values):
-        self._coords = coords
-        self._shift = coords.min(0)
+        self._coords = assertion.ensure_coords(coords)
+        assert hasattr(values,'__len__')
+        assert len(self._coords) == len(values)
+        self._shift = self._coords.min(0)
         self._dim = len(self._shift)
 
     def _interpolate(self, coords):
@@ -22,6 +40,7 @@ class Interpolator:
     def __call__(self, coords, axis=None):
         if axis is None:
             axis = tuple(range(self.dim))
+        coords = assertion.ensure_coords(coords)
         if len(coords.shape) == 1:
             return self._interpolate(np.array([coords])[:, axis])[0]
         else:
@@ -37,7 +56,17 @@ class Interpolator:
 
 
 class LinearInterpolator(Interpolator):
+    """Linear interpolation.
 
+    Examples
+    --------
+    TODO
+
+    See Also
+    --------
+    Interpolator
+
+    """
     def __init__(self, coords, values):
         Interpolator.__init__(self, coords, values)
         self._interpolator = LinearNDInterpolator(coords, values, rescale=True)
@@ -47,7 +76,17 @@ class LinearInterpolator(Interpolator):
 
 
 class KnnInterpolator(Interpolator):
+    """Nearest neighbour interpolation.
 
+    Examples
+    --------
+    TODO
+
+    See Also
+    --------
+    Interpolator
+
+    """
     def __init__(self, coords, values, k=None, maxDist=None):
         Interpolator.__init__(self, coords, values)
         if k is None:
@@ -68,7 +107,9 @@ class KnnInterpolator(Interpolator):
 
         # self._interpolator=NearestNDInterpolator(coords,values)
         self._interpolator = KNeighborsRegressor(
-            n_neighbors=k, weights=weightFunction)
+            n_neighbors=k,
+            weights=weightFunction
+        )
         self._interpolator.fit(coords, values)
 
     def _interpolate(self, coords):
@@ -77,7 +118,21 @@ class KnnInterpolator(Interpolator):
 
 
 class PolynomInterpolator(Interpolator):
+    """Polynom interpolation.
 
+    Parameters
+    ----------
+    TODO
+
+    Examples
+    --------
+    TODO
+
+    See Also
+    --------
+    Interpolator
+
+    """
     def __init__(
             self,
             coords,
@@ -92,7 +147,8 @@ class PolynomInterpolator(Interpolator):
         self._interpolator.fit(
             self._prepare(coords),
             values,
-            sample_weight=weights)
+            sample_weight=weights
+        )
 
     def _interpolate(self, coords):
         pred = self._interpolator.predict(self._prepare(coords))
@@ -100,12 +156,35 @@ class PolynomInterpolator(Interpolator):
 
     def _prepare(self, coords):
         return PolynomialFeatures(
-            self._deg, interaction_only=self._interaction_only).fit_transform(coords)
+                    self._deg,
+                    interaction_only=self._interaction_only
+                ).fit_transform(coords)
 
     @property
     def coef(self):
         return self._interpolator.coef_
 
 
-def DEM(surfaceCoords, method=KnnInterpolator, **kwargs):
-    return method(surfaceCoords[:, :-1], surfaceCoords[:, -1], **kwargs)
+def Surface(coords, method=KnnInterpolator, **kwargs):
+    """Creates a surface model based on points representing the surface.
+
+    Parameters
+    ----------
+    coords : (n,k), array_like
+        Represents `n` data points of `k` dimensions representing a surface.
+    method : optional, `Interpolator`
+        Interpolation method to use.
+    **kwargs : optional
+        Arguments passed to the interpolation `method`.
+
+    Examples
+    --------
+    TODO
+
+    See Also
+    --------
+    Interpolator
+
+    """
+    coords = assertion.ensure_coords(coords)
+    return method(coords[:, :-1], coords[:, -1], **kwargs)

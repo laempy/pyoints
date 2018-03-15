@@ -21,13 +21,16 @@ pyproj
 affine
 dill
 #gdal
-pygdal==1.11.3.3
+#pygdal==1.11.3.3
+gdal
 pandas
 configobj
 pyyaml
 psycopg2-binary
 Sphinx
 sphinxcontrib-napoleon
+autopep8
+pycodestyle
 
 # Finally
 #python setup.py install pointspy

@@ -1,7 +1,7 @@
 import numpy as np
 
 from . import distance
-from . import _assertion
+from . import assertion
 
 # TODO documentation
 
@@ -9,21 +9,21 @@ from . import _assertion
 def transform(coords, T, inverse=False):
     """Performs a linear transformation to coordinates using a transformation
     matrix.
-    
+
     Parameters
     ----------
     coords : (n,k), array_like
         Represents n data points of `k` dimensions.
     T : (k+1,k+1), array_like
         Transformation matrix.
-    
+
     Returns
     -------
     coords : (n,k), array_like
-        Transformed coordinates. 
-    """
+        Transformed coordinates.
 
-    T = _assertion.ensure_tmatrix(T)
+    """
+    T = assertion.ensure_tmatrix(T)
 
     if inverse:
         T = np.linalg.inv(T)
@@ -38,11 +38,11 @@ def transform(coords, T, inverse=False):
 
 
 def homogenious(coords, value=1):
-    
-    assert hasattr(coords,'__len__')
-    if not isinstance(coords,np.ndarray):
+
+    assert hasattr(coords, '__len__')
+    if not isinstance(coords, np.ndarray):
         coords = np.array(coords)
-    
+
     if len(coords.shape) == 1:
         H = np.append(coords, value)
     else:
@@ -53,8 +53,8 @@ def homogenious(coords, value=1):
     return H
 
 
-def matrix(t=None,r=None,s=None):
-    shape = (0,0)
+def matrix(t=None, r=None, s=None):
+    shape = (0, 0)
 
     if t is not None:
         tM = t_matrix(t)
@@ -69,21 +69,20 @@ def matrix(t=None,r=None,s=None):
     assert len(shape) == 2
     assert shape[0] == shape[1]
     assert shape[0] > 1
-        
+
     if t is None:
-        tM = i_matrix(shape[0]-1)
+        tM = i_matrix(shape[0] - 1)
     if r is None:
-        rM = i_matrix(shape[0]-1)
+        rM = i_matrix(shape[0] - 1)
     if s is None:
-        sM = i_matrix(shape[0]-1)
-        
-    
+        sM = i_matrix(shape[0] - 1)
+
     assert tM.shape == shape
     assert rM.shape == shape
     assert sM.shape == shape
-        
+
     return tM * rM * sM
-    
+
 
 def i_matrix(d):
     assert isinstance(d, int) and d > 1
@@ -91,7 +90,7 @@ def i_matrix(d):
 
 
 def t_matrix(t):
-    assert hasattr(t,'__len__') and len(t) > 1
+    assert hasattr(t, '__len__') and len(t) > 1
     dim = len(t)
     T = np.identity(dim + 1)
     T[0:dim, dim] = t
@@ -99,7 +98,7 @@ def t_matrix(t):
 
 
 def s_matrix(s):
-    assert hasattr(s,'__len__') and len(s) > 1
+    assert hasattr(s, '__len__') and len(s) > 1
     dim = len(s)
     S = np.identity(dim + 1)
     diag = np.append(s, 1)
@@ -116,7 +115,7 @@ def r_matrix(a):
             [0, 0, 1]
         ])
     else:
-        assert hasattr(a,'__getitem__')
+        assert hasattr(a, '__getitem__')
         if len(a) == 2:
             raise ValueError('Rotation in 2D requires one angle only.')
         elif len(a) == 3:
@@ -140,14 +139,16 @@ def r_matrix(a):
             ])
             R = Rz * Ry * Rx
         else:
-            raise ValueError('%i-dimensional rotations are not supported yet'%len(a))
+            raise ValueError(
+                '%i-dimensional rotations are not supported yet' %
+                len(a))
     return R
 
 
 def add_dim(T):
-    
+
     T = _assert.ensure_tmatrix(T)
-    
+
     dim = len(T) + 1
     M = np.eye(dim)
     M[:-2, :-2] = T
@@ -158,36 +159,35 @@ def decomposition(T):
     # https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati
     # https://math.stackexchange.com/questions/13150/extracting-rotation-scale-values-from-2d-transformation-matrix/13165#13165
 
-    T = _assertion.ensure_tmatrix(T)
-    dim = T.shape[0]-1
-    
+    T = assertion.ensure_tmatrix(T)
+    dim = T.shape[0] - 1
+
     # translation
-    t = np.asarray(T)[:-1,-1]
-    
+    t = np.asarray(T)[:-1, -1]
+
     # scale
     s = distance.norm(np.asarray(T.T))[:-1]
-    
+
     # rotation
-    R = T[:-1,:-1]/s
-    
+    R = T[:-1, :-1] / s
+
     if dim == 2:
-        r1 = np.arctan2(R[1,0],R[1,1])
-        r2 = np.arctan2(-R[0,1],R[0,0])
-        assert np.isclose(r1,r2), 'Rotation angles seem to differ.'
-        r = ( r1 + r2 ) * 0.5
+        r1 = np.arctan2(R[1, 0], R[1, 1])
+        r2 = np.arctan2(-R[0, 1], R[0, 0])
+        assert np.isclose(r1, r2), 'Rotation angles seem to differ.'
+        r = (r1 + r2) * 0.5
     elif dim == 3:
         r_x = np.arctan(R[2, 1] / R[2, 2])
         r_y = -np.arcsin(R[2, 0])
         r_z = np.arctan(R[1, 0] / R[0, 0])
         r = np.array([r_x, r_y, r_z])
     else:
-        raise ValueError('Only %s dimensions are not supported jet'%dim)
-    
+        raise ValueError('Only %s dimensions are not supported jet' % dim)
+
     # determinant
     det = np.linalg.det(T)
-    
-    return t,r,s,det
-   
+
+    return t, r, s, det
 
 
 class LocalSystem(np.matrix, object):
