@@ -8,12 +8,12 @@ from . import assertion
 
 
 def coords2polar(coords):
-    """Converts euclidian coordinates to polar coordinates.
+    """Converts Cartesian coordinates to polar coordinates.
 
     Parameters
     ----------
     coords : (n,k), array_like
-        Represents `n` data points of `k` dimensions in a euclidian coordinate
+        Represents `n` data points of `k` dimensions in a Cartesian coordinate
         system.
 
     Returns
@@ -57,7 +57,7 @@ def coords2polar(coords):
         x = coords[:, 0]
         y = coords[:, 1]
         a = np.arctan2(y, x)
-        return assertion.ensure_polar([d, a], by_row=True)
+        return assertion.ensure_polar([d, a], by_col=True)
     elif dim == 3:
         x = coords[:, 0]
         y = coords[:, 1]
@@ -69,13 +69,13 @@ def coords2polar(coords):
         omega[mask] = np.arccos(z[mask] / d[mask])
 
         phi = np.arctan2(y, x)
-        return assertion.ensure_polar([d, phi, omega], by_row=True)
+        return assertion.ensure_polar([d, phi, omega], by_col=True)
     else:
         raise ValueError('%i dimensions are not supported yet.' % dim)
 
 
 def polar2coords(pcoords):
-    """Converts polar coordinates to euclidian coordinates.
+    """Converts polar coordinates to Cartesian coordinates.
 
     Parameters
     ----------
@@ -87,7 +87,7 @@ def polar2coords(pcoords):
     Returns
     -------
     coords : (n,k), array_like
-        Represents `n` data points of `k` dimensions in a euclidian coordinate
+        Represents `n` data points of `k` dimensions in a Cartesian coordinate
         system.
 
     Examples
@@ -123,13 +123,13 @@ def polar2coords(pcoords):
         a = pcoords[:, 1]
         x = d * np.cos(a)
         y = d * np.sin(a)
-        return assertion.ensure_coords([x, y], by_row=True)
+        return assertion.ensure_coords([x, y], by_col=True)
     elif dim == 3:
         phi = pcoords[:, 1]
         omega = pcoords[:, 2]
         x = d * np.sin(omega) * np.cos(phi)
         y = d * np.sin(omega) * np.sin(phi)
         z = d * np.cos(omega)
-        return assertion.ensure_coords([x, y, z], by_row=True)
+        return assertion.ensure_coords([x, y, z], by_col=True)
     else:
         raise ValueError('%i dimensions are not supported yet.' % dim)

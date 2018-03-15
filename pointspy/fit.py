@@ -191,7 +191,7 @@ class PCA(transformation.LocalSystem):
 
     def __new__(cls, coords):
 
-        coords = _assertion.ensure_coords(coords)
+        coords = assertion.ensure_coords(coords)
 
         center = coords.mean(0)
         dim = len(center)
