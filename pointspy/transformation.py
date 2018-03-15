@@ -3,11 +3,13 @@
 from numbers import Number
 import numpy as np
 import itertools as it
+import warnings
 
 from . import (
     distance,
     assertion,
 )
+
 
 
 def transform(coords, T, inverse=False):
@@ -30,7 +32,12 @@ def transform(coords, T, inverse=False):
     T = assertion.ensure_tmatrix(T)
 
     if inverse:
-        T = np.linalg.inv(T)
+        try:
+            T = np.linalg.inv(T)
+        except np.linalg.LinAlgError, e:
+            warnings.warn(e.message)
+            T = np.linalg.pinv(T)
+
     T = np.asarray(T)
 
     H = homogenious(coords)

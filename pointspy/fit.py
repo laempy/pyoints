@@ -186,6 +186,8 @@ def cylinder(origin, coords, p, th):
 
 class PCA(transformation.LocalSystem):
 
+    # TODO docstring
+
     def __init__(self, coords):
         pass
 
@@ -197,9 +199,6 @@ class PCA(transformation.LocalSystem):
         dim = len(center)
 
         cCoords = coords - center
-        if cCoords.shape[0] == 2:
-            # Add dimension if neccessary
-            cCoords = transformation.homogenious(cCoords, value=0)
 
         covM = np.cov(cCoords, rowvar=False)
         evals, evecs = np.linalg.eigh(covM)
@@ -214,7 +213,7 @@ class PCA(transformation.LocalSystem):
 
         # Transformation matrix
         T = np.matrix(np.identity(dim + 1))
-        T[0:dim, 0:dim] = pComponents
-        T = T * transformation.tMatrix(-center)
+        T[:dim, :dim] = pComponents[:dim,:dim]
+        T = T * transformation.matrix(-center)
 
         return transformation.LocalSystem(T).view(cls)

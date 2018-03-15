@@ -1,17 +1,24 @@
+"""Handling of vectors.
+"""
 import numpy as np
 import math
 
-from . import distance
-from . import fit
-from . import transformation
+from . import (
+    assertion,
+    distance,
+    fit,
+    transformation,
+)
 
+
+# TODO module documentation
 
 def to_degree(a):
-    return a * 180.0 / math.pi
+    return a * 180.0 / np.pi
 
 
 def to_rad(a):
-    return a * math.pi / 180.0
+    return a * np.pi / 180.0
 
 
 def angle(v, w, deg=False):
@@ -19,7 +26,7 @@ def angle(v, w, deg=False):
 
     Parameters
     ----------
-    v, w : (k), array_like
+    v, w : array_like(shape=(k))
         Vector of length k.
 
     Returns
@@ -51,11 +58,16 @@ def angle(v, w, deg=False):
     90.0
 
     """
-    assert hasattr(v, '__len__')
-    assert hasattr(w, '__len__')
-    assert len(v) == len(w)
+    # TODO ValueError
+    if not isinstance(deg, bool):
+        raise ValueError("'deg' has to be boolean")
 
-    a = (np.array(v) * np.array(w)).sum()
+    v = assertion.ensure_vector(v)
+    w = assertion.ensure_vector(w)
+    if not len(v) == len(w):
+        raise ValueError("'v' has to have the same length as 'w'")
+
+    a = (v * w).sum()
     b = math.sqrt(distance.snorm(v) * distance.snorm(w))
     if(b > 0):
         a = math.acos(a / b)
@@ -94,9 +106,9 @@ def zenith(v, axis=-1, deg=False):
     45.0
 
     """
-    assert hasattr(v, '__len__')
-    assert isinstance(axis, int)
-    assert abs(axis) < len(v)
+    v = assertion.ensure_vector(v)
+    if not (isinstance(axis, int) and abs(axis) < len(v)):
+        raise ValueError("'axis' neets to be an integer smaller len(v)")
 
     length = distance.norm(v)
     a = math.acos(v[axis] / length)
@@ -134,9 +146,10 @@ def scalarproduct(v, w):
     0
     """
 
-    assert hasattr(v, '__len__')
-    assert hasattr(w, '__len__')
-    assert len(v) == len(w)
+    v = assertion.ensure_vector(v)
+    w = assertion.ensure_vector(w)
+    if not len(v) == len(w):
+        raise ValueError("'v' has to have the same length as 'w'")
 
     return np.dot(v, w)
 
@@ -188,56 +201,75 @@ class Vector(transformation.LocalSystem, object):
 
     Parameters
     ----------
-    coords : (n,k), array_like
-        Coordinates
+    coords : array_like(Number, shape=(n,k))
+        Represents `n` data points of `k` dimensions in a Cartesian coordinate
+        system.
+
+    Attributes
+    ----------
+    origin, target, vec : np.ndarray(Number, shape=(k))
+        The vector `vec` starts point `origin` and points at point `target`.
+    length : positive float
+        Length of the vector `vec`.
+
 
     Examples
     --------
 
-    TODO
+    Two dimensional case.
+
+    >>> v = Vector([(3,4),(5,4)])
+    >>> print v
+    origin: [3. 4.]; vec: [2. 0.]
+    >>> print v.origin
+    [3. 4.]
+    >>> print v.target
+    [5. 4.]
+    >>> print v.length
+    2.0
+
+    Three dimensional case.
+
+    >>> v = Vector([(1,1,1),(2,3,4)])
+    >>> print v
+    origin: [1. 1. 1.]; vec: [1. 2. 3.]
+    >>> print v.origin
+    [1. 1. 1.]
+    >>> print v.target
+    [2. 3. 4.]
+
 
     """
-
-    # TODO vereinfachen?
-
     def __init__(self, coords):
         #__new__(coords)
-
-        k = self.k(coords)
-        #-min(k)==max(k)!
-        self._pos = self(min(k))
-        self._target = self(max(k))
+        self._max_k = max(self.k(coords))
 
     def __new__(cls, coords):
-        coords = np.array(coords)
-        assert len(coords.shape) == 2, 'coordinates needed!'
-        assert coords.shape[0] >= 2, 'at least two points!'
+        coords = assertion.ensure_coords(coords)
+        if not coords.shape[0] >= 2:
+            ValueError('at least two points needed')
 
         localSystem = fit.PCA(coords)
 
         # Second fit (==> centering)
-        if coords.shape[0] > 2:
-            k = localSystem.toLocal(coords)[:, 0]
+        if True or coords.shape[0] > 2:
+            k = localSystem.to_local(coords)[:, 0]
             lCoords = np.zeros((2, localSystem.dim))
-            lCoords[0, 0] = min(k)
+            lCoords[0, 0] = -3*max(k)
             lCoords[1, 0] = max(k)
-            localSystem = fit.PCA(localSystem.toGlobal(lCoords))
+            gcoords = localSystem.to_global(lCoords)
+            localSystem = fit.PCA(gcoords)
 
         return localSystem.view(cls)
 
     def __array_finalize__(self, obj):
         if obj is None:
             return
-        self._pos = getattr(obj, '_pos', None)
         self._target = getattr(obj, '_target', None)
 
     @property
-    def pos(self):
-        return self._pos
-
-    @property
     def target(self):
-        return self._target
+        return self(self._max_k)
 
     @property
     def origin(self):
@@ -245,18 +277,18 @@ class Vector(transformation.LocalSystem, object):
 
     @property
     def vec(self):
-        return self.target - self.pos
+        return self.target - self.origin
 
     @property
     def length(self):
         return distance.norm(self.vec)
 
-    def k(self, globalCoords):
-        coords = np.array(globalCoords)
-        if len(coords.shape) < 2:
-            return self.toLocal(coords)[0]
+    def k(self, gcoords):
+        lcoords = self.to_local(gcoords)
+        if len(lcoords.shape) < 2:
+            return lcoords[0]
         else:
-            return self.toLocal(coords)[:, 0]
+            return lcoords[:, 0]
 
     def __call__(self, k):
         if hasattr(k, '__len__'):
@@ -265,10 +297,10 @@ class Vector(transformation.LocalSystem, object):
         else:
             v = np.zeros(self.dim)
             v[0] = k
-        return self.toGlobal(v)
+        return self.to_global([v])[0]
 
     def __str__(self):
-        return 'pos: %s; vec: %s' % (str(self.pos), str(self.vec))
+        return 'origin: %s; vec: %s' % (str(self.origin), str(self.vec))
 
     def intersection(self, surface, eps=0.001, max_iter=20):
         """ Approximates the intersection point between the vector and a surface
