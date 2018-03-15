@@ -15,15 +15,17 @@ from . import assertion
 # TODO nested IndexKD?
 # ==>
 
+
 class IndexKD(object):
     """Wrapper class of serveral spatial indices to speed up spatial queries
     and ease usage.
 
     Parameters
     ----------
-    coords : (n,k), array_like
-        Represents `n` data points of `k` dimensions.
-    transform : (k+1,k+1) array_like, optional
+    coords : array_like(Number, shape=(n,k))
+        Represents `n` data points of `k` dimensions in a Cartesian coordinate
+        system.
+    transform : optional, np.matrix(Number, shape=(k+1,k+1))
         Represents any kind of transformation matrix applied to the coordinates
         before index computation.
     leafsize : optional, positive, int

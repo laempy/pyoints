@@ -29,7 +29,7 @@ class Interpolator:
 
     def __init__(self, coords, values):
         self._coords = assertion.ensure_coords(coords)
-        assert hasattr(values,'__len__')
+        assert hasattr(values, '__len__')
         assert len(self._coords) == len(values)
         self._shift = self._coords.min(0)
         self._dim = len(self._shift)
@@ -67,6 +67,7 @@ class LinearInterpolator(Interpolator):
     Interpolator
 
     """
+
     def __init__(self, coords, values):
         Interpolator.__init__(self, coords, values)
         self._interpolator = LinearNDInterpolator(coords, values, rescale=True)
@@ -87,6 +88,7 @@ class KnnInterpolator(Interpolator):
     Interpolator
 
     """
+
     def __init__(self, coords, values, k=None, maxDist=None):
         Interpolator.__init__(self, coords, values)
         if k is None:
@@ -133,6 +135,7 @@ class PolynomInterpolator(Interpolator):
     Interpolator
 
     """
+
     def __init__(
             self,
             coords,
@@ -156,9 +159,9 @@ class PolynomInterpolator(Interpolator):
 
     def _prepare(self, coords):
         return PolynomialFeatures(
-                    self._deg,
-                    interaction_only=self._interaction_only
-                ).fit_transform(coords)
+            self._deg,
+            interaction_only=self._interaction_only
+        ).fit_transform(coords)
 
     @property
     def coef(self):

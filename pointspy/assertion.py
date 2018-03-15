@@ -146,7 +146,7 @@ def ensure_vector(v):
 
     """
     if not hasattr(v, '__getitem__'):
-        raise ValueError("'v' needs to array like")
+        raise ValueError("'v' needs to an array like object")
     v = np.array(v)
     if not len(v.shape) == 1:
         raise ValueError("malformed shape of vector 'v'")

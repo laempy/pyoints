@@ -105,9 +105,9 @@ def merge(arrays):
         raise ValueError("attribute 'arrays' has to be a list or tuple")
     for arr in arrays:
         if not isinstance(arr, np.ndarray):
-             ValueError("all elements of 'arrays' have to be of type 'numpy.recarray'")
+            ValueError(
+                "all elements of 'arrays' have to be of type 'numpy.recarray'")
 
-    assert hasattr(arrays, '__getitem__')
     return arrays[0].__array_wrap__(np.hstack(arrays))
 
 
