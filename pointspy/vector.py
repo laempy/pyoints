@@ -2,23 +2,88 @@
 """
 import numpy as np
 import math
+from numbers import Number
 
 from . import (
     assertion,
     distance,
     fit,
     transformation,
+    nptools,
 )
 
 
 # TODO module documentation
 
-def to_degree(a):
-    return a * 180.0 / np.pi
+def rad2deg(rad):
+    """Converts an angle from radiant to degree.
+
+    Parameters
+    ----------
+    rad : Numeric or array_like(Number)
+        Angle in radiant.
+
+    Returns
+    -------
+    float
+        Angle in degree.
+
+    See Also
+    --------
+    deg2rad
+
+    Examples
+    --------
+
+    >>> rad2deg(0.5*np.pi)
+    90.0
+    >>> print rad2deg([0,np.pi/4,np.pi,2*np.pi])
+    [  0.  45. 180. 360.]
+
+    """
+    if nptools.isarray(rad):
+        rad = assertion.ensure_numarray(rad)
+    else:
+        if not isinstance(rad, Number):
+            raise ValueError("'rad' neets to be numeric")
+    return rad * 180.0 / np.pi
 
 
-def to_rad(a):
-    return a * np.pi / 180.0
+def deg2rad(deg):
+    """Converts an angle from degree to radiant.
+
+    Parameters
+    ----------
+    deg : Numeric or array_like(Number)
+        Angle in degree.
+
+    Returns
+    -------
+    float
+        Angle in radiant.
+
+    See Also
+    --------
+    rad2deg
+
+    Examples
+    --------
+
+    >>> round(deg2rad(90), 3)
+    1.571
+    >>> rad = deg2rad([0, 45, 180, 360])
+    >>> print np.round(rad, 3)
+    [0.    0.785 3.142 6.283]
+
+
+
+    """
+    if nptools.isarray(deg):
+        deg = assertion.ensure_numarray(deg)
+    else:
+        if not isinstance(deg, Number):
+            raise ValueError("'deg' neets to be numeric")
+    return deg * np.pi / 180.0
 
 
 def angle(v, w, deg=False):
@@ -62,8 +127,8 @@ def angle(v, w, deg=False):
     if not isinstance(deg, bool):
         raise ValueError("'deg' has to be boolean")
 
-    v = assertion.ensure_vector(v)
-    w = assertion.ensure_vector(w)
+    v = assertion.ensure_numvector(v)
+    w = assertion.ensure_numvector(w)
     if not len(v) == len(w):
         raise ValueError("'v' has to have the same length as 'w'")
 
@@ -72,7 +137,7 @@ def angle(v, w, deg=False):
     if(b > 0):
         a = math.acos(a / b)
         if deg:
-            a = to_degree(a)
+            a = rad2deg(a)
     else:
         a = float('inf')
     return a
@@ -106,14 +171,14 @@ def zenith(v, axis=-1, deg=False):
     45.0
 
     """
-    v = assertion.ensure_vector(v)
+    v = assertion.ensure_numvector(v)
     if not (isinstance(axis, int) and abs(axis) < len(v)):
         raise ValueError("'axis' neets to be an integer smaller len(v)")
 
     length = distance.norm(v)
     a = math.acos(v[axis] / length)
     if deg:
-        a = to_degree(a)
+        a = rad2deg(a)
     return a
 
 
@@ -146,8 +211,8 @@ def scalarproduct(v, w):
     0
     """
 
-    v = assertion.ensure_vector(v)
-    w = assertion.ensure_vector(w)
+    v = assertion.ensure_numvector(v)
+    w = assertion.ensure_numvector(w)
     if not len(v) == len(w):
         raise ValueError("'v' has to have the same length as 'w'")
 
@@ -218,7 +283,7 @@ class Vector(transformation.LocalSystem, object):
 
     Two dimensional case.
 
-    >>> v = Vector([(3,4),(5,4)])
+    >>> v = Vector((3,4),(5,4))
     >>> print v
     origin: [3. 4.]; vec: [2. 0.]
     >>> print v.origin
@@ -230,7 +295,7 @@ class Vector(transformation.LocalSystem, object):
 
     Three dimensional case.
 
-    >>> v = Vector([(1,1,1),(2,3,4)])
+    >>> v = Vector((1,1,1),(2,3,4))
     >>> print v
     origin: [1. 1. 1.]; vec: [1. 2. 3.]
     >>> print v.origin
@@ -240,16 +305,22 @@ class Vector(transformation.LocalSystem, object):
 
 
     """
-    def __init__(self, coords):
+    def __init__(self, origin, target):
         #__new__(coords)
-        self._max_k = max(self.k(coords))
+        self._origin = assertion.ensure_numvector(origin)
+        self._target = assertion.ensure_numvector(target)
 
-    def __new__(cls, coords):
+
+    def __new__(cls, origin, target):
+        coords = [origin,target]
         coords = assertion.ensure_coords(coords)
         if not coords.shape[0] >= 2:
             ValueError('at least two points needed')
 
+
         localSystem = fit.PCA(coords)
+        # TODO mit translationsmatrix origin anpassen
+        # TODO gegebenenfalls Richtung aendern
 
         # Second fit (==> centering)
         if True or coords.shape[0] > 2:
@@ -260,6 +331,9 @@ class Vector(transformation.LocalSystem, object):
             gcoords = localSystem.to_global(lCoords)
             localSystem = fit.PCA(gcoords)
 
+        print localSystem.origin
+        print origin
+
         return localSystem.view(cls)
 
     def __array_finalize__(self, obj):
@@ -268,12 +342,12 @@ class Vector(transformation.LocalSystem, object):
         self._target = getattr(obj, '_target', None)
 
     @property
-    def target(self):
-        return self(self._max_k)
+    def origin(self):
+        return self._origin
 
     @property
-    def origin(self):
-        return self(0)
+    def target(self):
+        return self._target
 
     @property
     def vec(self):

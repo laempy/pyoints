@@ -306,7 +306,7 @@ def r_matrix(a):
             [0, 0, 1]
         ])
     elif hasattr(a, '__getitem__'):
-        a = assertion.ensure_vector(a)
+        a = assertion.ensure_numvector(a)
         if len(a) == 2:
             raise ValueError('rotation in 2D requires one angle only')
         elif len(a) == 3:
@@ -497,6 +497,7 @@ class LocalSystem(np.matrix, object):
     def dim(self):
         return len(self) - 1
 
+    # TODO notwendig?
     @property
     def components(self):
         # TODO here might be a sign error
@@ -562,6 +563,7 @@ class LocalSystem(np.matrix, object):
         """
         return transform(lcoords, self, inverse=True)
 
+    # TODO nach vektor auslagern
     def distance(self, gcoords):
         """Transforms global coordinates into local coordinates.
 
@@ -590,6 +592,7 @@ class LocalSystem(np.matrix, object):
         lcoords = self.to_local(gcoords)
         return distance.norm(lcoords[:, 1:self.dim])
 
+    # TODO auslagern?
     def PC(self, k):
         """Get a specific principal component of the local coordinate system.
 
@@ -625,6 +628,7 @@ class LocalSystem(np.matrix, object):
         pc = self[i, :self.dim]
         return np.asarray(pc)[0]
 
+    # TODO auslagern?
     def explained_variance(self, gcoords):
         """Get explained variance of global coordinates.
 
@@ -659,6 +663,7 @@ class LocalSystem(np.matrix, object):
         lcoords = self.to_local(gcoords)
         return np.var(lcoords, axis=0)
 
+    # TODO auslagern?
     def explained_variance_ratio(self, gcoords):
         """Get relative amount of explained variance of global coordinates.
 
