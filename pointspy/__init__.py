@@ -7,5 +7,6 @@ from .grid import Grid
 from .config import Config
 from . import (
     vector,
-    projection
+    projection,
+    polar,
 )
