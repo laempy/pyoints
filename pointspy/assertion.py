@@ -2,10 +2,58 @@
 """
 
 import numpy as np
+from . import nptools
 
 
-def _isnumeric(nparray):
-     return np.issubdtype(nparray.dtype.type,np.int64) or np.issubdtype(nparray.dtype.type,np.float64)
+def ensure_numarray(arr):
+    """Ensures the properties of an numeric numpy ndarray.
+
+    Parameters
+    ----------
+    arr : array_like(Number)
+        Array like numeric object.
+
+    Returns
+    -------
+    np.ndarray(Number)
+        Array with guaranteed properties.
+
+    Examples
+    --------
+
+    >>> print ensure_numarray([0,1,2])
+    [0 1 2]
+    >>> print ensure_numarray((-4,-5))
+    [-4 -5]
+
+    """
+    if not nptools.isarray(arr):
+        raise ValueError("'arr' needs to an array like object")
+    arr = np.array(arr)
+    if not nptools.isnumeric(arr):
+        raise ValueError("array 'arr' needs to be numeric")
+    return arr
+
+
+def ensure_numvector(v):
+    """Ensures the properties of a numeric vector.
+
+    Parameters
+    ----------
+    v : array_like(Number, shape=(k))
+        Vector of `k` dimensions.
+
+    Returns
+    -------
+    v : np.ndarray(Number, shape=(k))
+        Vector with guaranteed properties.
+
+    """
+    v = ensure_numarray(v)
+    if not len(v.shape) == 1:
+        raise ValueError("malformed shape of vector 'v'")
+    return v
+
 
 def ensure_coords(coords, by_col=False):
     """Ensures all required properties of a coordinate like array.
@@ -52,19 +100,13 @@ def ensure_coords(coords, by_col=False):
     ensure_polar
 
     """
-    if not hasattr(coords, '__len__'):
-        raise ValueError("coords has no length")
-
-    if not isinstance(coords, np.ndarray):
-        coords = np.array(coords)
+    coords = ensure_numarray(coords)
     if by_col:
         coords = coords.T
     if not len(coords.shape) == 2:
         raise ValueError("malformed shape of 'coords', got '%s'"%str(coords.shape))
     if not coords.shape[1] > 1:
         raise ValueError("at least two coordinate dimensions needed")
-    if not _isnumeric(coords):
-        raise ValueError("numeric values of 'coords' reqired")
 
     return coords
 
@@ -115,12 +157,13 @@ def ensure_tmatrix(T):
     transformation.matrix
 
     """
-
-    if not hasattr(T, '__len__'):
-        raise ValueError("transformation matrix has no length")
+    if not nptools.isarray(T):
+        raise ValueError("transformation matrix is not an array")
     if not isinstance(T, np.matrix):
         T = np.matrix(T)
 
+    if not nptools.isnumeric(T):
+        raise ValueError("'T' needs to be numeric")
     if not len(T.shape) == 2:
         raise ValueError("malformed shape of transformation matrix")
     if not T.shape[0] == T.shape[1]:
@@ -129,27 +172,3 @@ def ensure_tmatrix(T):
         raise ValueError("at least two coordinate dimensions needed")
 
     return T
-
-
-def ensure_vector(v):
-    """Ensures the properties of a vector.
-
-    Parameters
-    ----------
-    v : array_like(Number, shape=(k))
-        Vector of `k` dimensions.
-
-    Returns
-    -------
-    v : np.ndarray(Number, shape=(k))
-        Vector with guaranteed properties.
-
-    """
-    if not hasattr(v, '__getitem__'):
-        raise ValueError("'v' needs to an array like object")
-    v = np.array(v)
-    if not len(v.shape) == 1:
-        raise ValueError("malformed shape of vector 'v'")
-    if not _isnumeric(v):
-        raise ValueError("vector 'v' is not numeric")
-    return v

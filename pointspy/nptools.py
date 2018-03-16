@@ -3,7 +3,61 @@
 
 import numpy as np
 
-# TODO module description
+
+def isarray(o):
+    """Checks weather or nor an object is an array.
+
+    Parameters
+    ----------
+    o: object
+        Some object.
+
+    Returns
+    -------
+    bool
+        Indicates weather or not the object is an array.
+
+    Example
+    -------
+
+    >>> isarray([1,2,3])
+    True
+    >>> isarray('str')
+    False
+
+    """
+    return hasattr(o, '__getitem__') and hasattr(o, '__iter__')
+
+
+def isnumeric(arr):
+    """Checks if the data type of an `numpy.ndarray` is numeric.
+
+    Parameters
+    ----------
+    arr: `numpy.ndarray`
+        Numpy array to add field to.
+
+    Returns
+    -------
+    bool
+        Indicates weather or not the array is numeric.
+
+    Example
+    -------
+
+    >>> isnumeric([1,2,3])
+    True
+    >>> isnumeric(['1','2','3'])
+    False
+    >>> isnumeric([1,2,None])
+    False
+
+    """
+    if not isarray(arr):
+        raise ValueError("'arr' needs to an array like object")
+    if not isinstance(arr, np.ndarray):
+        arr = np.array(arr)
+    return np.issubdtype(arr.dtype.type, np.int64) or np.issubdtype(arr.dtype.type, np.float64)
 
 
 def add_field(A, B, name):
