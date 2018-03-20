@@ -53,7 +53,6 @@ class LasReader(GeoFile):
         return Extent(self.extent[[0, 1, 3, 4]]).corners()
 
     def load(self, extent=None):
-        from pointspy.misc import tic, toc
 
         lasFile = laspy.file.File(self.file, mode='r')
 
@@ -61,119 +60,26 @@ class LasReader(GeoFile):
         offset = np.array(lasFile.header.offset, dtype=np.float64)
         lasFields = [dim.name for dim in lasFile.point_format]
 
-        tic()
-
         points = lasFile.points.view(np.recarray).point
-        toc()
 
-        print lasFile.header.min
-        print lasFile.header.max
-
-        print points
-        print points.dtype
-
-       # import numpy.lib.recfunctions as rf
-        #from numpy.lib.recfunctions import merge_arrays
-
-        from pointspy import nptools
-
-        print 'select coords'
-        # = points.view([('X',int),('Y',int)])
-
-        print points.Z
-        # TODO calculate transformation matrix
-        data = nptools.fields_view(
-            points, ['X', 'Y', 'Z'],
-            dtype=[('coords', 'i4', 3)]).view(
-            np.recarray)
-
-        print points.X * scale[0] + offset[0]
-        print lasFile.header.min
-        print lasFile.header.max
-        print points.X
-        print (np.array(lasFile.header.min) - offset) / scale
-        print np.array(
-            (np.array(
-                lasFile.header.max) -
-                offset) /
-            scale,
-            dtype='i4')
-        ext = Extent([lasFile.header.min, lasFile.header.max])
-        ext[3] -= 50
-        ext[4] -= 50
-        ext[5] -= 0
-
-        #ext = Extent(ext)
-
-        print ext
-        iext = Extent(
-            np.array(
-                [(ext.min_corner - offset) / scale, (ext.max_corner - offset) /
-                 scale],
-                dtype='i4'))
-
-        print iext.min_corner
-        print iext.max_corner
-        print iext.ranges
-
-        # scale extent
-        print data.coords
-
-        print data.coords[:, 0]
-        print 'ext'
-        tic()
-        print iext.intersects(data.coords)
-        toc()
-        exit(0)
-        print data.dtype
-        tic()
-        print data[0:3]
-        toc()
-        tic()
-        coords = data.coords * scale + offset
-        toc()
-        #coords = points[['X','Y','Z']]
-
-        print coords
-
-        exit(0)
-
-        # Close File
-        # lasFile.close()
-        #del lasFile
+        # filter by extent (before scaling)
+        if extent is not None:
+            ext = Extent(extent)
+            iext = Extent(np.array([
+                        (ext.min_corner - offset) / scale,
+                        (ext.max_corner - offset) / scale
+                     ], dtype='i4'))
+            sIds = iext.intersects([points.X, points.Y, points.Z])
+            points = points[sIds]
 
         # much faster than accessing lasFile.x
-
-        tic()
-
         coords = np.empty((len(points), 3), dtype=np.float64)
         coords[:, 0] = points.X * scale[0] + offset[0]
         coords[:, 1] = points.Y * scale[1] + offset[1]
         coords[:, 2] = points.Z * scale[2] + offset[2]
-        toc()
 
-        # exit(0)
-        #coords[:,0] = lasFile.x
-        #coords[:,1] = lasFile.y
-        #coords[:,2] = lasFile.z
-
-        print coords
-        # Filter by extent
-        if extent is None:
-            sIds = np.arange(len(points), dtype=int)
-        else:
-            extent = Extent(extent)
-            sIds = extent.intersects(coords[:, 0:extent.dim])
-
-        tic()
-        points = points[sIds]
-        toc()
-        # Grep data
-        #print 'ok1'
-        #coords = coords[sIds,:]
-        # selprint 'ok2'
+        # grep data
         dataDict = {'coords': coords}
-        exit(0)
         if 'intensity' in lasFields:
             print 'intensity'
             values = points.intensity
