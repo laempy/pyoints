@@ -563,70 +563,9 @@ class LocalSystem(np.matrix, object):
         """
         return transform(lcoords, self, inverse=True)
 
-    # TODO nach vektor auslagern
-    def distance(self, gcoords):
-        """Transforms global coordinates into local coordinates.
 
-        Parameters
-        ----------
-        gcoords : array_like(Number, shape=(n,k))
-            Represents n data points of `k` dimensions in the global coordinate
-            system.
 
-        Returns
-        -------
-        np.ndarray(Number, shape=(n))
-            Distances of the coordinates to the first principal component of
-            the coordinate system. The first principal compnent corresponds to
-            the first
 
-        Examples
-        --------
-
-        >>> T = matrix(t=[2, 3], s=[0.5, 10])
-        >>> dist = T.distance([(0,0),(0,1),(1,0),(-1,-1)])
-        >>> print dist
-        [ 3. 13.  3.  7.]
-
-        """
-        lcoords = self.to_local(gcoords)
-        return distance.norm(lcoords[:, 1:self.dim])
-
-    # TODO auslagern?
-    def PC(self, k):
-        """Get a specific principal component of the local coordinate system.
-
-        Parameters
-        ----------
-        k : positive int
-            `k` th principal component to select.
-
-        Returns
-        -------
-        np.ndarray(Number, shape=(self.dim))
-            `k` th principal component.
-
-        Examples
-        --------
-
-        >>> T = matrix(t=[2, 3], s=[0.5, 10])
-        >>> print T
-        [[ 0.5  0.   2. ]
-         [ 0.  10.   3. ]
-         [ 0.   0.   1. ]]
-        >>> print T.PC(1)
-        [ 0. 10.]
-        >>> print T.PC(2)
-        [0.5 0. ]
-
-        """
-        if not (k >= 1 and k <= self.dim):
-            raise ValueError("%'th principal component not available")
-
-        order = np.argsort(distance.snorm(self.components)[::-1])
-        i = np.where(order == (k-1))[0][0]
-        pc = self[i, :self.dim]
-        return np.asarray(pc)[0]
 
     # TODO auslagern?
     def explained_variance(self, gcoords):
