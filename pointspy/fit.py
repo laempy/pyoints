@@ -184,6 +184,8 @@ def cylinder(origin, coords, p, th):
     return M, center, r, success
 
 
+
+
 class PCA(transformation.LocalSystem):
 
     # TODO docstring
@@ -209,11 +211,49 @@ class PCA(transformation.LocalSystem):
         pc1 = pComponents[0, :]
         mIndex = np.argmax(np.abs(pc1))
         if pc1[mIndex] < 0:
-            pComponents = -pComponents
+            #pComponents = -pComponents
+            pComponents[0, :] = -pComponents[0, :]
+        # TODO det gets -1!!!!
+        #pComponents = np.linalg.inv(pComponents)
 
         # Transformation matrix
+        #print pComponents
         T = np.matrix(np.identity(dim + 1))
-        T[:dim, :dim] = pComponents[:dim,:dim]
-        T = T * transformation.matrix(-center)
+        T[:dim, :dim] = pComponents[:dim, :dim]
+        T = T * transformation.matrix(-center) # don't edit
+        #T = np.linalg.inv(T)
 
         return transformation.LocalSystem(T).view(cls)
+
+    def pc(self, k):
+        """Select a specific principal component.
+
+        Parameters
+        ----------
+        k : positive int
+            `k` th principal component to select.
+
+        Returns
+        -------
+        np.ndarray(Number, shape=(self.dim))
+            `k` th principal component.
+
+        Examples
+        --------
+
+        >>> T = matrix(t=[2, 3], s=[0.5, 10])
+        >>> print T
+        [[ 0.5  0.   2. ]
+         [ 0.  10.   3. ]
+         [ 0.   0.   1. ]]
+        >>> print T.PC(1)
+        [ 0. 10.]
+        >>> print T.PC(2)
+        [0.5 0. ]
+
+        """
+        if not (k >= 1 and k <= self.dim):
+            raise ValueError("%'th principal component not available")
+
+        pc = self[k-1, :self.dim]
+        return np.asarray(pc)[0]
