@@ -70,6 +70,27 @@ def ball(indexKD, r=1, order=None, inverse=False, axis=-1, min_pts=1):
                 yield pId
 
 
+
+def inConvexHull(hullCoords, coords):
+    interpolator = LinearInterpolator(
+        hullCoords, np.zeros(
+            hullCoords.shape[0]))
+    return ~np.isnan(interpolator(coords))
+
+
+def minFilter(indexKD, r, axis=-1):
+    coords = indexKD.coords
+
+    ballIter = indexKD.ball_iter(coords, r, bulk = 1000)
+    mask = np.zeros(len(indexKD), dtype=bool)
+    for nIds in ballIter:
+        nId = nIds[np.argmin(coords[nIds, axis])]
+        print nId
+        mask[nId] = True
+    return mask.nonzero()
+
+
+# TODO unterschied zu dem
 def surface(indexKD, r=1, order=None, inverse=False, axis=-1):
 
     coords = indexKD.coords
@@ -88,26 +109,8 @@ def surface(indexKD, r=1, order=None, inverse=False, axis=-1):
             notClassified[nIds] = False
             yield nIds[np.argmin(inverseOrder[nIds])]
 
-
-def inConvexHull(hullCoords, coords):
-    interpolator = LinearInterpolator(
-        hullCoords, np.zeros(
-            hullCoords.shape[0]))
-    return ~np.isnan(interpolator(coords))
-
-
-def minFilter(indexKD, r, axis=-1):
-    coords = indexKD.coords
-
-    ballIter = indexKD.ball(coords, r)
-    mask = np.zeros(len(indexKD), dtype=bool)
-    for nIds in ballIter:
-        nId = nIds[np.argmin(coords[nIds, axis])]
-        mask[nId] = True
-    return mask.nonzero()
-
-
-def dem(coords, r=1, order=None, inverse=False, axis=-1):
+# TODO unterschied zu surface
+def dem(coords, r, order=None, inverse=False, axis=-1):
     dim = coords.shape[1]
     assert dim >= 3
 
