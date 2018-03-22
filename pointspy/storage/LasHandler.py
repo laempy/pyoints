@@ -25,7 +25,7 @@ class LasReader(GeoFile):
             for vlr in lasFile.header.vlrs:
                 if vlr.record_id == 2112:
                     wtk = vlr.VLR_body
-                    self._proj = projection.projFromWtk(wtk)
+                    self._proj = projection.Proj.from_wkt(wtk)
                     break
 
         if self._proj is None:
@@ -81,47 +81,37 @@ class LasReader(GeoFile):
         # grep data
         dataDict = {'coords': coords}
         if 'intensity' in lasFields:
-            print 'intensity'
             values = points.intensity
             if np.any(values):
-                dataDict['intensity'] = values[sIds]  # .copy()
+                dataDict['intensity'] = values  # .copy()
         if 'raw_classification' in lasFields:
-            print 'raw_classification'
             values = points.raw_classification
             if np.any(values):
-                dataDict['classification'] = values[sIds]  # .copy()
+                dataDict['classification'] = values  # .copy()
         if 'user_data' in lasFields:
-            print 'user_data'
             values = points.user_data
             if np.any(values):
-                dataDict['user_data'] = values[sIds]  # .copy()
+                dataDict['user_data'] = values  # .copy()
         if 'gps_time' in lasFields:
-            print 'gps_time'
             values = points.gps_time
             if np.any(values):
-                dataDict['gps_time'] = values[sIds]  # .copy()
+                dataDict['gps_time'] = values  # .copy()
         if 'flag_byte' in lasFields:
-            print 'flag_byte'
             values = points.flag_byte
             if np.any(values):
                 flag_byte = values[sIds]  # .copy()
                 dataDict['num_returns'] = flag_byte / 8
                 dataDict['return_num'] = flag_byte % 8
         if 'pt_src_id' in lasFields:
-            print 'pt_src_id'
             values = points.pt_src_id
             if np.any(values):
-                dataDict['pt_src_id'] = values[sIds]  # .copy()
+                dataDict['pt_src_id'] = values  # .copy()
         if 'red' in lasFields and 'green' in lasFields and 'blue' in lasFields:
-            print 'rgb'
             red = points.red
             green = points.green
             blue = points.blue
             if np.any(red) or np.any(green) or np.any(blue):
-                values = np.vstack(
-                    [red[sIds],
-                     green[sIds],
-                     blue[sIds]]).T  # .copy()
+                values = np.vstack([red, green, blue]).T  # .copy()
                 dataDict['rgb'] = values
 
         dtypes = []
@@ -129,11 +119,11 @@ class LasReader(GeoFile):
             dtypes.append(LasRecords.FIELDS[key])
 
         # Create recarray
-        data = np.recarray((len(sIds),), dtype=dtypes)
+        data = np.recarray((len(points),), dtype=dtypes)
         for key in dataDict:
             data[key] = dataDict[key]
 
-        if len(sIds) == 0:
+        if len(points) == 0:
             return data.view(LasRecords)
 
         # Close File
@@ -172,7 +162,9 @@ def writeLas(geoRecords, file, precision=[5, 5, 5]):
     del headerWriter
 
     # Set values
-    offset = geoRecords.extent().center
+    offset = geoRecords.extent().min_corner
+
+    # TODO scale ueberarbeiten
     scale = np.repeat(10.0, 3)**-np.array(precision)
     lasFile.header.scale = scale
     lasFile.header.offset = offset
@@ -226,7 +218,7 @@ class LasRecords(GeoRecords):
     }
 
     def activate(self, field):
-        return self.addField(self.FIELDS[field])
+        return self.add_field(self.FIELDS[field])
 
     def grd(self):
         return self.classes(2, 11)
@@ -239,13 +231,13 @@ class LasRecords(GeoRecords):
         return self[mask]
 
     @property
-    def lastReturn(self):
+    def last_return(self):
         return self.return_num == self.num_returns
 
     @property
-    def firstReturn(self):
+    def first_return(self):
         return self.return_num == 1
 
     @property
-    def onlyReturn(self):
+    def only_return(self):
         return self.num_returns == 1
