@@ -15,3 +15,8 @@ doc/*
 !docs/conf.py
 !docs/Makefile
 !docs/make.bat
+
+# IDE
+.spyproject
+.spyderproject*
+

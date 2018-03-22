@@ -148,7 +148,7 @@ class IndexKD(object):
             return self.kd_tree.query_ball_point(
                 coords[:self.dim], r, **kwargs)
 
-    def ball_iter(self, coords, r, bulk=1000000, **kwargs):
+    def ball_iter(self, coords, r, bulk=10000, **kwargs):
         """Similar to `ball`, but yields lists of neighbours.
 
         Yields
