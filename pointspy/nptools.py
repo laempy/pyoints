@@ -29,13 +29,15 @@ def isarray(o):
     return hasattr(o, '__getitem__') and hasattr(o, '__iter__')
 
 
-def isnumeric(arr):
+def isnumeric(arr, dtypes=[np.int64, np.float64]):
     """Checks if the data type of an `numpy.ndarray` is numeric.
 
     Parameters
     ----------
-    arr: `numpy.ndarray`
+    arr : np.ndarray
         Numpy array to add field to.
+    dtypes : optional, tuple
+        Tuple of data types.
 
     Returns
     -------
@@ -57,7 +59,12 @@ def isnumeric(arr):
         raise ValueError("'arr' needs to an array like object")
     if not isinstance(arr, np.ndarray):
         arr = np.array(arr)
-    return np.issubdtype(arr.dtype.type, np.int64) or np.issubdtype(arr.dtype.type, np.float64)
+    if not isinstance(dtypes, list):
+        raise ValueError("'dtypes' needs to be a list. got %s" % (str(dtypes)))
+    for dtype in dtypes:
+        if np.issubdtype(arr.dtype.type, dtype):
+            return True
+    return False
 
 
 def add_field(A, B, name):
