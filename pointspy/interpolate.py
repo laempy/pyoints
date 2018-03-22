@@ -37,14 +37,9 @@ class Interpolator:
     def _interpolate(self, coords):
         raise NotImplementedError()
 
-    def __call__(self, coords, axis=None):
-        if axis is None:
-            axis = tuple(range(self.dim))
+    def __call__(self, coords):
         coords = assertion.ensure_coords(coords)
-        if len(coords.shape) == 1:
-            return self._interpolate(np.array([coords])[:, axis])[0]
-        else:
-            return self._interpolate(coords[:, axis])
+        return self._interpolate(coords[:, :self.dim])
 
     @property
     def coords(self):
@@ -166,28 +161,3 @@ class PolynomInterpolator(Interpolator):
     @property
     def coef(self):
         return self._interpolator.coef_
-
-
-def Surface(coords, method=KnnInterpolator, **kwargs):
-    """Creates a surface model based on points representing the surface.
-
-    Parameters
-    ----------
-    coords : (n,k), array_like
-        Represents `n` data points of `k` dimensions representing a surface.
-    method : optional, `Interpolator`
-        Interpolation method to use.
-    **kwargs : optional
-        Arguments passed to the interpolation `method`.
-
-    Examples
-    --------
-    TODO
-
-    See Also
-    --------
-    Interpolator
-
-    """
-    coords = assertion.ensure_coords(coords)
-    return method(coords[:, :-1], coords[:, -1], **kwargs)
