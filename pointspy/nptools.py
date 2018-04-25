@@ -62,7 +62,7 @@ def isnumeric(arr, dtypes=[np.int64, np.float64]):
     if not isinstance(dtypes, list):
         raise ValueError("'dtypes' needs to be a list. got %s" % (str(dtypes)))
     for dtype in dtypes:
-        if np.issubdtype(arr.dtype.type, dtype):
+        if np.issubdtype(arr.dtype.type, np.dtype(dtype).type):
             return True
     return False
 
@@ -296,19 +296,21 @@ def aggregate(gen, func, dtype=None):
     return np.array(values, dtype=dtype).view(np.recarray)
 
 
-def recarray(dataDict, dtype=[]):
+def recarray(dataDict, dtype=[], dim=1):
     """Converts a dictionary of array like objects to a numpy record array.
 
     Parameters
     ----------
-    dataDict: `dict`
+    dataDict : dict
         Dictionary of array like objects to convert to a numpy record array.
-    dtype: optional, `numpy.dtype`
+    dtype : optional, numpy.dtype
         Describes the desired data type of specific fields.
+    dim : positive int
+        Desired dimension of the resulting numpy record array.
 
     Returns
     -------
-    recarray: `numpy.recarray`
+    numpy.recarray
         Numpy record array build from input dictionary.
 
 
@@ -324,7 +326,7 @@ def recarray(dataDict, dtype=[]):
     ...    'missing':  [None,None,'str',None],
     ... })
     >>> rec.dtype.descr
-    [('text', '|O'), ('missing', '|O'), ('coords', '<i8', (2,)), ('n', '<i8')]
+    [('text', '|S5'), ('missing', '|O'), ('coords', '<i8', (2,)), ('n', '<i8')]
     >>> print rec.coords
     [[3 4]
      [3 2]
@@ -333,39 +335,73 @@ def recarray(dataDict, dtype=[]):
     >>> print rec[0]
     ('text1', None, [3, 4], 1)
 
+    Create a two dimensional array.
+
+    >>> data = {
+    ...    'coords': [
+    ...                 [(2, 3.2), (-3, 2.2)],
+    ...                 [(0, 1.1), (-1, 2.2)],
+    ...                 [(-7, -1), (9.2, -5)]
+    ...             ],
+    ...    'values': [[1, 3], [4, 0], [-4, 2]]
+    ... }
+    >>> rec = recarray(data, dim=2)
+    >>> print rec.shape
+    (3, 2)
+    >>> print rec.values
+    [[ 1  3]
+     [ 4  0]
+     [-4  2]]
+    >>> print rec.dtype
+    (numpy.record, [('values', '<i8'), ('coords', '<f8', (2,))])
+
     """
+
     if not (hasattr(dataDict, '__getitem__') and hasattr(dataDict, 'keys')):
         raise ValueError("'dataDict' has to be a dictionary like object")
 
     # check data types
     dtype = np.dtype(dtype)
-    for colName in dtype.names:
-        if colName not in dataDict.keys():
-            raise ValueError('column "%s" not found!' % colName)
+    for key in dtype.names:
+        if key not in dataDict.keys():
+            raise ValueError('column "%s" not found!' % key)
 
-    # get datatypes
+    if not isinstance(dim, int) and dim > 0:
+        raise ValueError("'dim' has to be an integer greater zero")
+
+    shape = None
+
+    # convert to numpy arrays if neccessary
+    for key in dataDict.keys():
+        if not isinstance(dataDict[key], (np.ndarray, np.recarray)) and key not in dtype.names:
+            dataDict[key] = np.array(dataDict[key])
+
+    # get shape
+    shape = dataDict[dataDict.keys()[0]].shape
+    for key in dataDict.keys():
+        s = dataDict[key].shape
+        if len(s) < dim:
+            raise ValueError('shape "%s" needs to be least of dimension "%i"' % (str(s), dim))
+        if not s[:dim] == shape[:dim]:
+            raise ValueError('incompatible shape of field "key"' % key)
+
+    # get data types
     outDtypes = []
-    for colName in dataDict.keys():
-
-        if colName not in dtype.names:
-            dt = np.dtype(object)
-            outDtype = (colName, dt)  # default data type
-            # Find non empty row
-            for row in dataDict[colName]:
-                if row is not None:
-                    row = np.array(row)
-                    s = row.shape
-                    if not np.dtype(str) == row.dtype.type:
-                        dt = row.dtype
-                    outDtype = (colName, dt, s)
-                    break
+    for key in dataDict.keys():
+        if key in dtype.names:
+            dt = dtype[key]
         else:
-            dt = dtype[colName]
-            outDtype = (colName, dt)
-        outDtypes.append(outDtype)
-    rec = np.rec.array(zip(*dataDict.values()),
-                       names=dataDict.keys(), dtype=outDtypes)
+            arr = dataDict[key]
+            dt = (key, arr.dtype.descr[0][1], arr.shape[dim:])
+        outDtypes.append(dt)
+
+    # define array
+    rec = np.recarray(shape, dtype=outDtypes)
+    for key in dataDict.keys():
+        rec[key][:] = dataDict[key]
+
     return rec
+
 
 
 def unnest(rec):
