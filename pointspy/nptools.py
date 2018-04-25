@@ -9,7 +9,7 @@ def isarray(o):
 
     Parameters
     ----------
-    o: object
+    o : object
         Some object.
 
     Returns
@@ -72,16 +72,16 @@ def add_field(A, B, name):
 
     Parameters
     ----------
-    A: `numpy.ndarray`
+    A : numpy.ndarray
         Numpy array to add field to.
-    B: `array_like`
+    B : array_like
         Field attributes.
-    name: `str`
+    name : str
         Name of new field.
 
     Returns
     -------
-    recarray: `numpy.recarray`
+    np.recarray
         Record array similar to `A`, but with additional field `B`.
 
     Examples
@@ -112,12 +112,12 @@ def fuse(A, B):
 
     Parameters
     ----------
-    A, B: `numpy.recarray`
+    A, B : np.recarray
         Numpy recarrays to fuse.
 
     Returns
     -------
-    recarray: `numpy.recarray`
+    np.recarray
         Record array with same fields as `A` and `B`.
 
     Examples
@@ -149,12 +149,12 @@ def merge(arrays):
 
     Parameters
     ----------
-    arrays: `array_like`
-        List of `numpy.ndarray`'s to merge.
+    arrays : array_like
+        List of numpy arrays to merge.
 
     Returns
     -------
-    merged: `numpy.ndarray`
+    np.ndarray
         Merged numpy record array.
 
     Examples
@@ -177,16 +177,16 @@ def flatten_dtypes(np_dtypes):
 
     Parameters
     ----------
-    np_dtypes: `numpy.dtype`
+    np_dtypes : np.dtype
         Numpy data types to flatten.
 
     Returns
     -------
-    names: `list of str`
+    names : list of str
         Names of fields.
-    dtypes: `list of dtypes`
+    dtypes : list of dtypes
         Data types of fields.
-    shapes: `list of tuples`
+    shapes : list of tuples
         Shapes of fields.
 
     Examples
@@ -234,16 +234,16 @@ def map_function(func, ndarray, dtypes=None):
 
     Parameters
     ----------
-    func: `function`
+    func : function
         Function to apply to each cell.
-    ndarray: `numpy.ndarray`
+    ndarray : np.ndarray
         Numpy array to map function to.
-    dtypes: optional, `numpy.dtype`
+    dtypes : optional, np.dtype
         Desired data type of return array.
 
     Returns
     -------
-    recarray: `numpy.recarray`
+    np.recarray
         Record array similar to input array, but with function applied to.
 
 
@@ -270,16 +270,16 @@ def aggregate(gen, func, dtype=None):
 
     Parameters
     ----------
-    gen: `iterable`
+    gen : iterable
         Iterable object.
-    func: `function`
+    func : function
         Function which aggregates the fields.
-    dtype: optional, `numpy.dtype`
+    dtype : optional, numpy.dtype
         Desired data type of return array.
 
     Returns
     -------
-    recarray: `numpy.recarray`
+    np.recarray
         Record array similar to input array, but with function applied to.
 
     Examples
@@ -310,7 +310,7 @@ def recarray(dataDict, dtype=[], dim=1):
 
     Returns
     -------
-    numpy.recarray
+    np.recarray
         Numpy record array build from input dictionary.
 
 
@@ -403,18 +403,17 @@ def recarray(dataDict, dtype=[], dim=1):
     return rec
 
 
-
 def unnest(rec):
     """Unnest a numpy record array. Recursively adds each named field to a list.
 
     Parameters
     ----------
-    rec: `numpy.recarray`
+    rec: np.recarray
         Numpy record array to unnest.
 
     Returns
     -------
-    unnested: `list`
+    list
         List of unnested fields.
 
     Examples
@@ -459,13 +458,13 @@ def missing(data):
 
     Parameters
     ----------
-    data: `array_like`
+    data : array_like
         A array like object to search missing values for. Missing values are
         either None or NaN values.
 
     Returns
     -------
-    missing: boolean numpy.ndarray
+    missing : boolean np.ndarray
         Boolean values indicate missing values.
 
     Examples
@@ -508,7 +507,7 @@ def colzip(arr):
     Returns
     -------
     columns : list of np.ndarray
-        List of k np.ndarrays
+        List of `k` numpy ndarrays.
 
     Examples
     --------
