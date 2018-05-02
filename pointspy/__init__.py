@@ -11,5 +11,6 @@ from . import (
     polar,
     interpolate,
     surface,
-    assign
+    assign,
+    assertion
 )
