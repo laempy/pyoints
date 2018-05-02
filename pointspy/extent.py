@@ -21,9 +21,9 @@ class Extent(np.recarray, object):
         Number of coordinate dimensions.
     ranges : (self.dim), np.ndarray
         Ranges between each coordinate dimension.
-    min_corner :
+    min_corner : (self.dim), array_like
         Minimum values in each coordinate dimension.
-    max_corner :
+    max_corner : (self.dim), array_like
         Maximum values in each coordinate dimension
     center : (self.dim), array_like
         Focal point of the extent.
