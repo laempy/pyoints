@@ -12,13 +12,13 @@ def coords2polar(coords):
 
     Parameters
     ----------
-    coords : (n,k), array_like
+    coords : array_like(Number, shape=(n, k))
         Represents `n` data points of `k` dimensions in a Cartesian coordinate
         system.
 
     Returns
     -------
-    pcoords : (n,k), array_like
+    pcoords : array_like(Number, shape=(n, k))
         Represents `n` data points of `k` dimensions in a polar coordinate
         system. First column represents the distance to origin of the
         coordinate system. All other columns represent the angles.
@@ -28,9 +28,9 @@ def coords2polar(coords):
 
     2D coordinates.
 
-    >>> coords = [(0,0),(0,1),(1,0),(1,1),(-1,1),(2,-5)]
+    >>> coords = [(0, 0), (0, 1), (1, 0), (1, 1), (-1, 1), (2, -5)]
     >>> pcoords = coords2polar(coords)
-    >>> print np.round(pcoords,3)
+    >>> print np.round(pcoords, 3)
     [[ 0.     0.   ]
      [ 1.     1.571]
      [ 1.     0.   ]
@@ -40,9 +40,9 @@ def coords2polar(coords):
 
     3D coordinates.
 
-    >>> coords = [(0,0,0),(1,1,0),(-1,-1,-1),(2,-5,9)]
+    >>> coords = [(0, 0, 0), (1, 1, 0), (-1, -1, -1), (2, -5, 9)]
     >>> pcoords = coords2polar(coords)
-    >>> print np.round(pcoords,3)
+    >>> print np.round(pcoords, 3)
     [[ 0.     0.     0.   ]
      [ 1.414  0.785  1.571]
      [ 1.732 -2.356  2.186]
@@ -79,14 +79,14 @@ def polar2coords(pcoords):
 
     Parameters
     ----------
-    pcoords : (n,k), array_like
+    pcoords : array_like(Number, shape=(n, k))
         Represents `n` data points of `k` dimensions in a polar coordinate
         system. First column represents the distance to origin of the
         coordinate system. All other columns represent the angles.
 
     Returns
     -------
-    coords : (n,k), array_like
+    coords : array_like(Number, shape=(n, k))
         Represents `n` data points of `k` dimensions in a Cartesian coordinate
         system.
 
@@ -95,9 +95,9 @@ def polar2coords(pcoords):
 
     2D coordinates.
 
-    >>> pcoords = [(0,0),(3,0),(3,np.pi),(4,-0.5*np.pi),(1,0.5)]
+    >>> pcoords = [(0, 0), (3, 0), (3, np.pi), (4, -0.5*np.pi), (1, 0.5)]
     >>> coords = polar2coords(pcoords)
-    >>> print np.round(coords,3)
+    >>> print np.round(coords, 3)
     [[ 0.     0.   ]
      [ 3.     0.   ]
      [-3.     0.   ]
@@ -106,9 +106,9 @@ def polar2coords(pcoords):
 
     2D coordinates.
 
-    >>> pcoords = [(0,0,0),(2,0,0),(4,0,np.pi),(4,0.5*np.pi,0.5)]
+    >>> pcoords = [(0, 0, 0), (2, 0, 0),(4, 0, np.pi), (4, 0.5*np.pi, 0.5)]
     >>> coords = polar2coords(pcoords)
-    >>> print np.round(coords,3)
+    >>> print np.round(coords, 3)
     [[ 0.     0.     0.   ]
      [ 0.     0.     2.   ]
      [ 0.     0.    -4.   ]
