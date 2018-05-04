@@ -1,5 +1,8 @@
+"""Module to handle spatial extends.
+"""
+
 import numpy as np
-import itertools as it
+from . import assertion
 
 # TODO module description
 
@@ -10,8 +13,8 @@ class Extent(np.recarray, object):
 
     Parameters
     ----------
-    ext : (2*k) or (n,k), array_like
-        Defines spatial extent of k dimensions as either minimum corner and
+    ext : array_like(shape=(2*k)) or array_like(shape=(n, k))
+        Defines spatial extent of `k` dimensions as either minimum corner and
         maximum corner or as a set of `n` points. If a set of points is given,
         the extent is calculated based on the coordinates.
 
@@ -19,13 +22,13 @@ class Extent(np.recarray, object):
     ----------
     dim : positive int
         Number of coordinate dimensions.
-    ranges : (self.dim), np.ndarray
+    ranges : np.ndarray(Number, shape=(self.dim))
         Ranges between each coordinate dimension.
-    min_corner : (self.dim), array_like
+    min_corner : array_like(Number, shape=(self.dim))
         Minimum values in each coordinate dimension.
-    max_corner : (self.dim), array_like
+    max_corner : array_like(Number, shape=(self.dim))
         Maximum values in each coordinate dimension
-    center : (self.dim), array_like
+    center : array_like(Number, shape=(self.dim))
         Focal point of the extent.
 
     Examples
@@ -33,14 +36,14 @@ class Extent(np.recarray, object):
 
     Derive extent based on a list of points.
 
-    >>> points = [(0,0),(1,4),(0,1),(1,0.5),(0.5,0.7)]
+    >>> points = [(0, 0), (1, 4), (0, 1), (1, 0.5), (0.5, 0.7)]
     >>> ext = Extent(points)
     >>> print ext
     [0. 0. 1. 4.]
 
     Create extent based on minumum vales and maximum values.
 
-    >>> ext = Extent([-1, 0, 1, 4,])
+    >>> ext = Extent([-1, 0, 1, 4, ])
     >>> print ext
     [-1  0  1  4]
 
@@ -67,17 +70,24 @@ class Extent(np.recarray, object):
     # __new__ to extend np.ndarray
     def __new__(cls, ext):
 
-        assert hasattr(ext, '__getitem__')
-        if not isinstance(ext, np.ndarray):
-            ext = np.array(ext)
+        ext = assertion.ensure_numarray(ext)
 
-        assert len(ext.shape) <= 2
+        if not len(ext.shape) <= 2:
+            raise ValueError('vector or coordinates needed')
 
         if len(ext.shape) == 2:
-            # points given
+            # coordinates
             min_ext = np.amin(ext, axis=0)
             max_ext = np.amax(ext, axis=0)
             ext = np.concatenate((min_ext, max_ext))
+        else:
+            # vector
+            dim = len(ext) / 2
+            if not dim * 2 == len(ext):
+                raise ValueError('malformed extent vector')
+            if not np.all(ext[:dim] <= ext[dim:]):
+                raise ValueError('minima must not be greater then maxima')
+
         return ext.view(cls)
 
     @property
@@ -105,7 +115,7 @@ class Extent(np.recarray, object):
 
         Returns
         -------
-        min_corner, max_corner : (self.dim), np.ndarray
+        min_corner, max_corner : np.ndarray(Number, shape=(self.dim))
             Minimum and maximum values in each coordinate dimension.
         """
         return self.min_corner, self.max_corner
@@ -115,7 +125,7 @@ class Extent(np.recarray, object):
 
         Returns
         -------
-        corners : (2**self.dim,self.dim), np.ndarray
+        corners : np.ndarray(Number, shape=(2**self.dim, self.dim))
             Corners of the extent.
 
         Examples
@@ -123,7 +133,7 @@ class Extent(np.recarray, object):
 
         Two dimensional case.
 
-        >>> ext = Extent([-1,-2,1,2])
+        >>> ext = Extent([-1, -2, 1, 2])
         >>> print ext.corners()
         [[-1 -2]
          [ 1 -2]
@@ -132,7 +142,7 @@ class Extent(np.recarray, object):
 
         Three dimensional case.
 
-        >>> ext = Extent([-1,-2,-3,1,2,3])
+        >>> ext = Extent([-1, -2, -3, 1, 2, 3])
         >>> print ext.corners()
         [[-1 -2 -3]
          [ 1 -2 -3]
@@ -167,14 +177,14 @@ class Extent(np.recarray, object):
 
         Parameters
         ----------
-        coords : (n,k) or (k), array_like
+        coords : array_like(Number, shape=(n, k)) or array_like(Number, shape=(k))
              Represents n data points with k dimensions.
         dim : positive int
             Desired number of dimensions to consider.
 
         Returns
         -------
-        indices : np.ndarray of ints or bool
+        indices : np.ndarray(int, shape=(n)) or np.ndarray(bool, shape=(n))
             Indices of coordinates, which are within the extent. If just a
             single point is given, a boolean value is returned.
 
@@ -183,13 +193,13 @@ class Extent(np.recarray, object):
 
         Point within extent?
 
-        >>> ext = Extent([0,0.5,1,4])
-        >>> print ext.intersection([(0.5,1)])
+        >>> ext = Extent([0, 0.5, 1, 4])
+        >>> print ext.intersection([(0.5, 1)])
         True
 
         Points within extent?
 
-        >>> print ext.intersection([(1,2),(-1,1),(0.5,1)])
+        >>> print ext.intersection([(1, 2), (-1, 1), (0.5, 1)])
         [0 2]
 
         Corners are located within the extent.
@@ -199,21 +209,20 @@ class Extent(np.recarray, object):
 
         """
 
-        assert hasattr(coords, '__iter__')
-
         # normalize data
-        if not isinstance(coords, np.ndarray):
-            coords = np.array(coords)
+        coords = assertion.ensure_numarray(coords)
         if len(coords.shape) == 1:
             coords = np.array([coords])
 
         # set desired dimension
         dim = self.dim if dim is None else dim
-        assert dim > 0
+        if not dim > 0:
+            raise ValueError('dimension "dim" has to be greater zero')
 
         # check
         n, c_dim = coords.shape
-        assert c_dim <= self.dim, 'Dimensions do not match.'
+        if not c_dim <= self.dim:
+            raise ValueError('dimensions do not match')
 
         min_ext, max_ext = self.split()
 
