@@ -29,7 +29,7 @@ def isarray(o):
     return hasattr(o, '__getitem__') and hasattr(o, '__iter__')
 
 
-def isnumeric(arr, dtypes=[np.int64, np.float64]):
+def isnumeric(arr, dtypes=[np.int32, np.int64, np.float32, np.float64]):
     """Checks if the data type of an `numpy.ndarray` is numeric.
 
     Parameters

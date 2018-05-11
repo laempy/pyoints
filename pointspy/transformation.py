@@ -1,9 +1,10 @@
 """Multidimensional transformation matrices and coordinate transformations.
 """
-from numbers import Number
+import cv2
+import warnings
 import numpy as np
 import itertools as it
-import warnings
+from numbers import Number
 
 from . import (
     distance,
@@ -28,6 +29,10 @@ def transform(coords, T, inverse=False):
     coords : np.ndarray(Number, shape=(n,k))
         Transformed coordinates.
 
+    Examples
+    --------
+    TODO
+
     """
     T = assertion.ensure_tmatrix(T)
 
@@ -39,6 +44,9 @@ def transform(coords, T, inverse=False):
             T = np.linalg.pinv(T)
 
     T = np.asarray(T)
+
+    coords = assertion.ensure_coords(coords)
+    return cv2.transform(np.expand_dims(coords, axis=0), T)[0][:,0:-1]
 
     H = homogenious(coords)
     HT = np.dot(H, T.T)

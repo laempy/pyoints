@@ -7,7 +7,7 @@ import numpy as np
 
 
 def load_tests(loader, tests, ignore):
-    tests.addTests(doctest.DocTestSuite(pointspy.georecords))
+    #tests.addTests(doctest.DocTestSuite(pointspy.georecords))
     # tests.addTests(doctest.DocTestSuite(pointspy.fit))
     tests.addTests(doctest.DocTestSuite(pointspy.vector))
     #tests.addTests(doctest.DocTestSuite(pointspy.assign))
