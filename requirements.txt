@@ -1,8 +1,8 @@
 # Just once
 #cd path/to/pointspy
-#virtualenv venv --python=python2.7
+#virtualenv -p python2.7 venv 
 #. venv/bin/activate
-#pip install numpy
+
 #pip install gdal==\`gdal-config --version\` --global-option=build_ext --global-option="-I/usr/include/gdal" 
 
 #sudo apt install gdal-bin
@@ -21,8 +21,8 @@ pyproj
 affine
 dill
 #gdal
+#pygdal
 #pygdal==1.11.3.3
-gdal
 pandas
 configobj
 pyyaml
@@ -31,6 +31,7 @@ Sphinx
 sphinxcontrib-napoleon
 autopep8
 pycodestyle
+opencv-python
 
 # Finally
 #python setup.py install pointspy

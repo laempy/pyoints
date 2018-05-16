@@ -1,6 +1,20 @@
 A python library to conveniently process point cloud data and rasters.
 
 
+
+
+
+## Installation
+
+### Gdal
+sudo apt install gdal-bin
+sudo apt install libgdal-dev
+
+### libspatialindex
+apt install libspatialindex-dev
+
+
+
 # TODO
 
 Packaging
