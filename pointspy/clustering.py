@@ -2,11 +2,11 @@ from collections import defaultdict
 from sklearn.cluster import DBSCAN
 import numpy as np
 
+from .indexkd import IndexKD
 from .classification import (
     mayority,
     classes2dict,
 )
-from .indexkd import IndexKD
 
 
 def clustering(indexKD,

@@ -2,16 +2,60 @@ import numpy as np
 import pandas as pd
 
 from . import transformation
+from . import registration
 from . import nptools
 
 from .georecords import GeoRecords
 from .extent import Extent
 
 
-def corners2Transform(corners, resolutions):
+
+def corners2transform(corners, resolutions):
     # TODO revise
     # TODO nur min und maxcorner
     # TODO: als k-dimensionale Funktion in transformation
+    # TODO rename
+    """Create a transformation matrix based on the corners of a raster.
+
+    Parameters
+    ----------
+
+
+    Examples
+    --------
+
+    >>> T = transformation.matrix(t=[3, 5], r=10)
+    >>> coords = np.array([[0, 0], [0, 1], [1, 1], [1, 0]])
+    >>> coords = Extent([np.zeros(dim), np.ones(dim)]).corners()
+
+    >>> corners = transformation.transform(coords, T)
+    >>> M = corners2transform(corners, [2, 0.5])
+    >>> print T
+
+    >>> print np.round(M, 6)
+
+    """
+
+    dim = corners.shape[1]
+
+    pts = Extent([np.zeros(dim), np.ones(dim)]).corners()
+
+    #T = registration.find_transformation(corners, pts)
+    #print np.round(T, 6)
+    # TODO scaling missing
+    T = registration.find_rototranslation(corners, pts)
+    return T
+    #print np.round(T, 6)
+    return T
+    #print transformation.decomposition(T)
+
+    # TODO 3D
+
+    #get_rototranslation()
+
+    # TODO create matrix based on LGS
+    #corners / corners.max(0)
+    #np.linalg.solve()
 
     sT = transformation.s_matrix(resolutions)
     tT = transformation.t_matrix(corners[0, :])

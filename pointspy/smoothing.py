@@ -1,6 +1,9 @@
+"""Smoothing of point clouds.
+"""
 import numpy as np
 
 from .indexkd import IndexKD
+from . import assertion
 
 
 def mean_ball(coords, r, numIter=1, updatePairs=False):
@@ -9,20 +12,27 @@ def mean_ball(coords, r, numIter=1, updatePairs=False):
 
     Parameters
     ----------
-    coords: (n,k), `numpy.ndarray`
-        Array representing n points with k dimensions.
-    r: `float`
-        Maximum distance to nearby points which are used to calculate the
-        coordinate average.
-    numIter: optional, `int`
+    coords : array_like(Number, shape=(n, k))
+        Array representing `n` points with `k` dimensions.
+    r : Number
+        Maximum distance to nearby points used to average the coordinates.
+    numIter : optional, positive int
         Number of iterations.
-    updatePairs: optional, `bool`
+    updatePairs : optional, bool
         Specifies weather or not point pairs are updated on each iteration.
+
+    See Also
+    --------
+    mean_knn
+
     """
-    assert isinstance(coords, np.ndarray)
-    assert isinstance(r, float) or isinstance(r, int)
-    assert isinstance(numIter, int) and numIter > 0
-    assert isinstance(updatePairs, bool)
+    coords = assertion.ensure_coords(coords)
+    if not assertion.isnumeric(r):
+        raise ValueError("'r' needs to a number")
+    if not (isinstance(numIter, int) and numIter > 0):
+        raise ValueError("'numIter' needs to be an integer greater zero")
+    if not isinstance(updatePairs, bool):
+        raise ValueError("'updatePairs' needs to be boolean")
 
     ids = None
     mCoords = np.copy(coords)
@@ -44,21 +54,27 @@ def mean_knn(coords, k, numIter=1, updatePairs=False):
 
     Parameters
     ----------
-    coords: (n,k), `numpy.ndarray`
-        Array representing n points with k dimensions.
-    k: `float`
-        Number of nearest points which are used to calculate the coordinate
-        average.
-    numIter: optional, `int`
+    coords : array_like(Number, shape=(n, l))
+        Array representing `n` points with `l` dimensions.
+    k : float
+        Number of nearest points used to average the coordinates.
+    numIter : optional, int
         Number of iterations.
-    updatePairs: optional, `bool`
+    updatePairs : optional, bool
         Specifies weather or not point pairs are updated on each iteration.
-    """
 
-    assert isinstance(coords, np.ndarray)
-    assert isinstance(k, int) and k > 0
-    assert isinstance(numIter, int) and numIter > 0
-    assert isinstance(updatePairs, bool)
+    See Also
+    --------
+    mean_ball
+
+    """
+    coords = assertion.ensure_coords(coords)
+    if not (isinstance(k, int) and k > 0):
+        raise ValueError("'k' needs to be an integer greater zero")
+    if not (isinstance(numIter, int) and numIter > 0):
+        raise ValueError("'numIter' needs to be an integer greater zero")
+    if not isinstance(updatePairs, bool):
+        raise ValueError("'updatePairs' needs to be boolean")
 
     ids = None
     mCoords = np.copy(coords)

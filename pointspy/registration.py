@@ -3,24 +3,39 @@ import numpy as np
 from .indexkd import IndexKD
 from . import transformation
 from . import distance
+from . import assertion
 
 
-def get_rototranslation(A, B):
+def find_rototranslation(A, B):
     """Finds the optimal roto-translation matrix `M` between two point sets.
     Each point of point set `A` is associated with exactly one point in point
     set `B`.
 
     Parameters
     ----------
-    A: (n,k), `numpy.ndarray`
-        Array representing n reference points with k dimensions.
-    B: (n,k), `numpy.ndarray`
-        Array representing n points with k dimensions.
+    A : array_like(Number, shape=(n, k))
+        Arrays representing `n` reference points with `k` dimensions.
+
 
     Returns
     -------
-    M: (n,k), `numpy.matrix`
+    M : numpy.matrix(float, shape=(k+1, k+1))
         Roto-translation matrix which maps `B` to `A` with `A = B * M.T`.
+
+    Examples
+    --------
+
+    >>> T = transformation.matrix(t=[3, 5], r=0.8)
+    >>> A = np.array([[0, 0], [0, 1], [1, 1], [1, 0]])
+    >>> B = transformation.transform(A, T)
+    >>> M = find_rototranslation(A, B)
+    >>> C = transformation.transform(B, M, inverse=False)
+    >>> print np.round(C, 2)
+    [[0. 0.]
+     [0. 1.]
+     [1. 1.]
+     [1. 0.]]
+
     """
 
     # TODO
@@ -28,7 +43,11 @@ def get_rototranslation(A, B):
     # http://nghiaho.com/uploads/code/rigid_transform_3D.py_
     # Zhang_2016a
 
-    assert A.shape == B.shape, 'dimensions do not match!'
+    A = assertion.ensure_coords(A)
+    B = assertion.ensure_coords(B)
+
+    if not A.shape == B.shape:
+        raise ValueError('dimensions need to match')
 
     cA = A.mean(0)
     cB = B.mean(0)
@@ -37,26 +56,28 @@ def get_rototranslation(A, B):
     mB = np.matrix(transformation.homogenious(B - cB, value=0))
 
     # Find rotation matrix
-    H = np.transpose(mA) * mB
+    H = mA.T * mB
     USV = np.linalg.svd(H)
     R = USV[0] * USV[2]
 
+
     # reflection case
-    if np.linalg.det(R) < 0:
-        USV[0][2, :] *= -1
-        R = USV[0] * USV[2]
+    #if np.linalg.det(R) < 0:     #   USV[0][-1, :] *= -1
+    #    R = USV[0] * USV[2]
 
     # Create transformation matrix
-    T1 = transformation.tMatrix(-cB)
-    M = (R * T1)
-
-    # TODO mit translationsmatrix!
-    M[:-2, -2] += np.matrix(cA).T
+    T1 = transformation.t_matrix(cA)
+    T2 = transformation.t_matrix(-cB)
+    M = T1 * R * T2
 
     return M
 
 
-def get_transformation(A, B):
+#TODO
+# find_transformation with optional translation, rotation, scaling and skewing
+# take a look at cv2
+
+def find_transformation(A, B):
     """Finds the optimal (non-rigid) transformation matrix `M` between two point
     sets. Each point of point set `A` is associated with exactly one point in
     point set `B`.
@@ -85,7 +106,7 @@ def get_transformation(A, B):
     return M
 
 
-def get_rototranslations(coordsDict, pairs, sWeights=1, oWeights={}):
+def find_rototranslations(coordsDict, pairs, sWeights=1, oWeights={}):
     """Finds the optimal roto-translation matrices between multiple point sets.
     The algorithm assumes infinitissimal rotations between the point sets.
 

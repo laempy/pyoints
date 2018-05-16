@@ -104,7 +104,7 @@ def polar2coords(pcoords):
      [ 0.    -4.   ]
      [ 0.878  0.479]]
 
-    2D coordinates.
+    3D coordinates.
 
     >>> pcoords = [(0, 0, 0), (2, 0, 0),(4, 0, np.pi), (4, 0.5*np.pi, 0.5)]
     >>> coords = polar2coords(pcoords)

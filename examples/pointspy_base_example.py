@@ -1,5 +1,5 @@
 import numpy as np
-#import pointspy
+import pointspy
 
 
 if __name__ == '__main__':
@@ -27,4 +27,4 @@ if __name__ == '__main__':
 
     print geoRecords
     indexKD = geoRecords.indexKD()
-    print indexKD.ball([1,2,3],0.5)
+    print indexKD.ball([1,2,3],3.0)

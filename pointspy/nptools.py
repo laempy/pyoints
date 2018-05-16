@@ -20,9 +20,9 @@ def isarray(o):
     Example
     -------
 
-    >>> isarray([1,2,3])
+    >>> isarray([1, 2, 3])
     True
-    >>> isarray('str')
+    >>> isarray('text')
     False
 
     """
@@ -47,11 +47,11 @@ def isnumeric(arr, dtypes=[np.int64, np.float64]):
     Example
     -------
 
-    >>> isnumeric([1,2,3])
+    >>> isnumeric([1, 2, 3])
     True
-    >>> isnumeric(['1','2','3'])
+    >>> isnumeric(['1', '2', '3'])
     False
-    >>> isnumeric([1,2,None])
+    >>> isnumeric([1, 2, None])
     False
 
     """
@@ -94,6 +94,49 @@ def haskeys(d):
     return hasattr(d, '__getitem__') and hasattr(d, 'keys')
 
 
+def missing(data):
+    """Find missing values.
+
+    Parameters
+    ----------
+    data : array_like
+        A array like object to search missing values for. Missing values are
+        either None or NaN values.
+
+    Returns
+    -------
+    array_like(bool)
+        Boolean values indicate missing values.
+
+    Examples
+    --------
+
+    Finding missing values in a list.
+
+    >>> arr = ['str', 1, None, np.nan, np.NaN]
+    >>> print missing(arr)
+    [False False  True  True  True]
+
+    Finding missing values in multidimensional arrays.
+
+    >>> arr = np.array([(0,np.nan),(None, 1),(2, 3)], dtype=float)
+    >>> print missing(arr)
+    [[False  True]
+     [ True False]
+     [False False]]
+
+    """
+
+    if not hasattr(data, '__len__'):
+        raise ValueError("'data' has be a array like object")
+    strings = np.array(data, dtype=str)
+
+    ismissing = np.equal(data, None)
+    ismissing[strings == 'nan'] = True
+
+    return ismissing
+
+
 def recarray(dataDict, dtype=[], dim=1):
     """Converts a dictionary of array like objects to a numpy record array.
 
@@ -117,10 +160,10 @@ def recarray(dataDict, dtype=[], dim=1):
     Creation of an numpy record array using a dictionary.
 
     >>> rec = recarray({
-    ...    'coords': [ (3,4), (3,2), (0,2), (5,2)],
-    ...    'text': ['text1','text2','text3','text4'],
-    ...    'n':  [1,3,1,2],
-    ...    'missing':  [None,None,'str',None],
+    ...    'coords': [ (3, 4), (3, 2), (0, 2), (5, 2)],
+    ...    'text': ['text1', 'text2', 'text3', 'text4'],
+    ...    'n':  [1, 3, 1, 2],
+    ...    'missing':  [None, None, 'str', None],
     ... })
     >>> rec.dtype.descr
     [('text', '|S5'), ('missing', '|O'), ('coords', '<i8', (2,)), ('n', '<i8')]
@@ -371,8 +414,8 @@ def flatten_dtypes(np_dtypes):
     --------
 
     >>> dtype = np.dtype([
-    ...     ('simple',int),
-    ...     ('multidimensional',float,3),
+    ...     ('simple', int),
+    ...     ('multidimensional', float, 3),
     ... ])
     >>> names, dtypes, shapes = flatten_dtypes(dtype)
     >>> names
@@ -424,13 +467,13 @@ def unnest(rec):
     --------
 
     >>> dtype = [
-    ...    ('regular',np.int,1),
-    ...    ('nested',[
-    ...         ('child1','|S0'),
-    ...         ('child2',np.float,2)
+    ...    ('regular', np.int, 1),
+    ...    ('nested', [
+    ...         ('child1', '|S0'),
+    ...         ('child2', np.float, 2)
     ...    ])
     ... ]
-    >>> rec = np.ones(2,dtype=dtype).view(np.recarray)
+    >>> rec = np.ones(2, dtype=dtype).view(np.recarray)
     >>> print rec.nested.child2
     [[1. 1.]
      [1. 1.]]
@@ -455,49 +498,6 @@ def unnest(rec):
         for name in rec.dtype.names:
             ret.extend(unnest(rec[name]))
     return ret
-
-
-def missing(data):
-    """Find missing values.
-
-    Parameters
-    ----------
-    data : array_like
-        A array like object to search missing values for. Missing values are
-        either None or NaN values.
-
-    Returns
-    -------
-    array_like(bool)
-        Boolean values indicate missing values.
-
-    Examples
-    --------
-
-    Finding missing values in a list.
-
-    >>> arr = ['str',1,None,np.nan,np.NaN]
-    >>> print missing(arr)
-    [False False  True  True  True]
-
-    Finding missing values in multidimensional arrays.
-
-    >>> arr = np.array([(0,np.nan),(None,1),(2,3)],dtype=float)
-    >>> print missing(arr)
-    [[False  True]
-     [ True False]
-     [False False]]
-
-    """
-
-    if not hasattr(data, '__len__'):
-        raise ValueError("'data' has be a array like object")
-    strings = np.array(data, dtype=str)
-
-    ismissing = np.equal(data, None)
-    ismissing[strings == 'nan'] = True
-
-    return ismissing
 
 
 def colzip(arr):
@@ -577,7 +577,7 @@ def apply_function(ndarray, func, dtypes=None):
     Numpy ndarray.
 
     >>> data = { 'a': [0, 1, 2, 3], 'b': [1, 2, 3, 4] }
-    >>> arr = np.ones((2,3), dtype=[('a', int), ('b', int)])
+    >>> arr = np.ones((2, 3), dtype=[('a', int), ('b', int)])
     >>> func = lambda item: item[0] + item[1]
     >>> print apply_function(arr, func)
     [[2 2 2]

@@ -1,16 +1,22 @@
+"""Point filters.
+"""
+
 import numpy as np
-from .indexkd import IndexKD
-from .interpolate import LinearInterpolator
+
+from . import (
+    assertion,
+    interpolate,
+    IndexKD,
+)
 
 
 # TODO density (min neighbours in radius)
-
 
 def extrema(indexKD, attributes, r=1, inverse=False):
 
     coords = indexKD.coords
     order = np.argsort(attributes)
-    notClassified = np.ones(len(order), dtype=np.bool)
+    not_classified = np.ones(len(order), dtype=np.bool)
 
     if inverse:
         def check(id, nIds):
@@ -29,22 +35,99 @@ def extrema(indexKD, attributes, r=1, inverse=False):
         order = order[::-1]
 
     for id in order:
-        if notClassified[id]:
+        if not_classified[id]:
             nIds = indexKD.ball(coords[id, :], r)
-            notClassified[nIds] = False
+            not_classified[nIds] = False
             if check(id, nIds):
                 yield id
 
 
-def hasNeighbour(indexKD, r=1):
-    coords = indexKD.coords
+def has_neighbour(indexKD, r):
+    """Decide whether or not points have neighbouring points.
 
-    notClassified = np.ones(len(indexKD), dtype=np.bool)
-    for pId, coord in enumerate(coords):
-        if notClassified[pId]:
+    Parameters
+    ----------
+    indexKD : IndexKD
+        Spatial index with points to analyze.
+    r : positive Number
+        Maximum distance of a point to a neighbouring point to be still
+        considered as isolated.
+
+    Yields
+    ------
+    positive int
+        Yields the index of each point with at least a neighbouring point with
+        radius less or equal `r`.
+
+    See also
+    --------
+    is_isolated
+
+    Examples
+    --------
+
+    >>> coords = [(0, 0), (0.5, 0.5), (0, 1), (0.7, 0.5), (-1, -1)]
+    >>> indexKD = IndexKD(coords)
+    >>> print list(has_neighbour(indexKD, 0.7))
+    [1, 3]
+
+    """
+    if not isinstance(indexKD, IndexKD):
+        raise ValueError("'indexKD' needs to be an instance of IndexKD")
+    if not (assertion.isnumeric(r) and r > 0):
+        raise ValueError("'r' needs be a number greater zero")
+
+    not_classified = np.ones(len(indexKD), dtype=np.bool)
+    for pId, coord in enumerate(indexKD.coords):
+        if not_classified[pId]:
             nIds = np.array(indexKD.ball(coord, r))
             if len(nIds) > 1:
-                notClassified[nIds] = False
+                not_classified[nIds] = False
+                yield pId
+        else:
+            yield pId
+
+
+def is_isolated(indexKD, r):
+    """Decide whether or not points have neighbouring points.
+
+    Parameters
+    ----------
+    indexKD : IndexKD
+        Spatial index with points to analyze.
+    r : positive Number
+        Maximum distance of a point to a neighbouring point to be still
+        considered as isolated.
+
+    Yields
+    ------
+    positive int
+        Yields the index of each isolated point.
+
+    See Also
+    --------
+    has_neighbour
+
+    Examples
+    --------
+
+    >>> coords = [(0, 0), (0.5, 0.5), (0, 1), (0.7, 0.5), (-1, -1)]
+    >>> indexKD = IndexKD(coords)
+    >>> print list(is_isolated(indexKD, 0.7))
+    [0, 2, 4]
+
+    """
+    if not isinstance(indexKD, IndexKD):
+        raise ValueError("'indexKD' needs to be an instance of IndexKD")
+    if not (assertion.isnumeric(r) and r > 0):
+        raise ValueError("'r' needs be a number greater zero")
+
+    not_classified = np.ones(len(indexKD), dtype=np.bool)
+    for pId, coord in enumerate(indexKD.coords):
+        if not_classified[pId]:
+            nIds = np.array(indexKD.ball(coord, r))
+            if len(nIds) > 1:
+                not_classified[nIds] = False
             else:
                 yield pId
 
@@ -61,20 +144,47 @@ def ball(indexKD, r=1, order=None, inverse=False, axis=-1, min_pts=1):
     if not hasattr(r, '__len__'):
         r = np.repeat(r, len(indexKD))
 
-    notClassified = np.ones(len(order), dtype=np.bool)
+    not_classified = np.ones(len(order), dtype=np.bool)
     for pId in order:
-        if notClassified[pId]:
+        if not_classified[pId]:
             nIds = indexKD.ball(coords[pId], r[pId])
             if len(nIds) >= min_pts:
-                notClassified[nIds] = False
+                not_classified[nIds] = False
                 yield pId
 
 
+def in_convex_hull(hull_coords, coords):
+    """Decide whether or not points are within a convex hull.
 
-def inConvexHull(hullCoords, coords):
-    interpolator = LinearInterpolator(
-        hullCoords, np.zeros(
-            hullCoords.shape[0]))
+    Parameters
+    ----------
+    hull_coords : array_like(Number, shape=(m, k))
+        Represents `m` hull points of `k` dimensions.
+    coords : array_like(Number, shape=(n, k))
+        Represents `n` data points to check whether or not they are located
+        within the convex hull.
+
+    Returns
+    -------
+    array_like(Bool, shape=(n))
+        Indicates whether or not the points are located within the convex hull.
+
+    Examples
+    --------
+
+    >>> hull = [(0, 0), (1, 0), (1, 2)]
+    >>> coords = [(0, 0), (0.5, 0.5), (0, 1), (0.7, 0.5), (-1, -1)]
+    >>> print in_convex_hull(hull, coords)
+    [ True  True False  True False]
+
+    """
+    hull_coords = assertion.ensure_coords(hull_coords)
+    coords = assertion.ensure_coords(coords)
+
+    interpolator = interpolate.LinearInterpolator(
+            hull_coords,
+            np.zeros(hull_coords.shape[0])
+        )
     return ~np.isnan(interpolator(coords))
 
 
@@ -102,11 +212,11 @@ def surface(indexKD, r=1, order=None, inverse=False, axis=-1):
         order = order[::-1]
     inverseOrder = np.argsort(order)
 
-    notClassified = np.ones(len(order), dtype=np.bool)
+    not_classified = np.ones(len(order), dtype=np.bool)
     for pId in order:
-        if notClassified[pId]:
+        if not_classified[pId]:
             nIds = np.array(indexKD.ball(coords[pId, :], r))
-            notClassified[nIds] = False
+            not_classified[nIds] = False
             yield nIds[np.argmin(inverseOrder[nIds])]
 
 # TODO unterschied zu surface

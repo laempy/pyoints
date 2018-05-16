@@ -22,10 +22,10 @@ class IndexKD(object):
 
     Parameters
     ----------
-    coords : array_like(Number, shape=(n,k))
+    coords : array_like(Number, shape=(n, k))
         Represents `n` data points of `k` dimensions in a Cartesian coordinate
         system.
-    transform : optional, np.matrix(Number, shape=(k+1,k+1))
+    transform : optional, np.matrix(Number, shape=(k+1, k+1))
         Represents any kind of transformation matrix applied to the coordinates
         before index computation.
     leafsize : optional, positive, int
@@ -36,9 +36,9 @@ class IndexKD(object):
     ----------
     dim : positive int
         Number of coordinate dimensions
-    transform : (self.dim+1,self.dim+1), array_like
+    transform : (self.dim+1, self.dim+1), array_like
         Transformation matrix.
-    coords : (len(self),self.dim), array_like
+    coords : (len(self), self.dim), array_like
         Coordinates of the spatial index.
     kd_tree : `scipy.spatial.cKDTree`
         KD-tree for rapid neighbourhood queries. Generated on first demand.
@@ -118,7 +118,7 @@ class IndexKD(object):
 
         Parameters
         ----------
-        coords : (n,k), array_like
+        coords : (n, k), array_like
             Represents `n` data points of `k` dimensions.
         r : positive float
             Radius of ball.
@@ -203,7 +203,7 @@ class IndexKD(object):
         ----------
         r : float or iterable of floats
             Iterable radii to query.
-        coords : (n,k), array_like, optional
+        coords : (n, k), array_like, optional
             Represents `n` points of `k` dimensions. If None it is set to
             `self.coords`.
 
@@ -259,7 +259,7 @@ class IndexKD(object):
 
         Parameters
         ----------
-        coords : (n,k), array_like
+        coords : (n, k), array_like
             Represents n data points of k dimensions.
         k : positive int, optional
             Number of nearest numbers to return.
@@ -268,9 +268,9 @@ class IndexKD(object):
 
         Returns
         -------
-        dists, dist : (n,k), list
+        dists, dist : (n, k), list
             Distances to nearest neihbours.
-        indices : (n,k), list
+        indices : (n, k), list
             Indices of nearest neihbours.
 
         See Also
@@ -402,7 +402,7 @@ class IndexKD(object):
     # TODO Documentation
     def slice(self, min_th, max_th, axis=-1):
         """Select points with coordinate value of axis `axis` within range the
-        [`min_th`,`max_th`].
+        [`min_th`, `max_th`].
 
         Parameters
         ----------

@@ -12,5 +12,6 @@ from . import (
     interpolate,
     surface,
     assign,
-    assertion
+    assertion,
+    filters,
 )

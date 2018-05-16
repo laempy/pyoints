@@ -13,14 +13,14 @@ class Interpolator:
 
     Parameters
     ----------
-    coords : (n,k), array_like
+    coords : array_like(Number, shape=(n, k))
         Represents `n` data points of `k` dimensions.
-    values : (n), array_like
+    values : array_like(Number, shape=(n))
         Values to interpolate.
 
     Attributes
     ----------
-    coords : (n,k), array_like
+    coords : np.ndarray(Number, shape=(n, k))
         Represents `n` data points of `k` dimensions.
     dim : positive int
         Number of coordinate dimensions.
@@ -29,8 +29,9 @@ class Interpolator:
 
     def __init__(self, coords, values):
         self._coords = assertion.ensure_coords(coords)
-        assert hasattr(values, '__len__')
-        assert len(self._coords) == len(values)
+        assertion.ensure_numvector(values)
+        if not len(self._coords) == len(values):
+            raise ValueError("Array dimensions do not fit")
         self._shift = self._coords.min(0)
         self._dim = len(self._shift)
 
@@ -74,6 +75,13 @@ class LinearInterpolator(Interpolator):
 class KnnInterpolator(Interpolator):
     """Nearest neighbour interpolation.
 
+    Parameters
+    ----------
+    k : optional, positive int
+        Number of neighbours used for interpolation.
+    max_dist : optional, positive float
+        Maximum distance of a neigbouring point to be used for interpolation.
+
     Examples
     --------
     TODO
@@ -84,28 +92,29 @@ class KnnInterpolator(Interpolator):
 
     """
 
-    def __init__(self, coords, values, k=None, maxDist=None):
+    def __init__(self, coords, values, k=None, max_dist=None):
+        # TODO assetion
         Interpolator.__init__(self, coords, values)
         if k is None:
             k = self.dim + 1
-        if maxDist is None:
-            weightFunction = 'distance'
+        if max_dist is None:
+            weight_function = 'distance'
         else:
-            def weightFunction(dists):
+            def weight_function(dists):
                 w = np.zeros(dists.shape)
                 zeroMask = dists == 0
 
                 w[~zeroMask] = 1.0 / dists[~zeroMask]
-                w[dists > maxDist] = 0
+                w[dists > max_dist] = 0
 
                 w[np.any(zeroMask, axis=1), :] = 0
                 w[zeroMask] = 1
                 return w
 
-        # self._interpolator=NearestNDInterpolator(coords,values)
+        # self._interpolator=NearestNDInterpolator(coords, values)
         self._interpolator = KNeighborsRegressor(
             n_neighbors=k,
-            weights=weightFunction
+            weights=weight_function
         )
         self._interpolator.fit(coords, values)
 
@@ -119,15 +128,20 @@ class PolynomInterpolator(Interpolator):
 
     Parameters
     ----------
-    TODO
-
-    Examples
-    --------
-    TODO
+    deg : optional, positive int
+        TODO
+    weights : optional, TODO
+        TODO
+    interaction_only : optional, bool
+        TODO
 
     See Also
     --------
     Interpolator
+
+    Examples
+    --------
+    TODO
 
     """
 
@@ -138,6 +152,7 @@ class PolynomInterpolator(Interpolator):
             deg=2,
             weights=None,
             interaction_only=False):
+        # TODO assertion
         Interpolator.__init__(self, coords, values)
         self._deg = deg
         self._interaction_only = interaction_only

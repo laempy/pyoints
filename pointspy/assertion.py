@@ -2,7 +2,30 @@
 """
 
 import numpy as np
+from numbers import Number
+
 from . import nptools
+
+
+def isnumeric(value):
+    """Checks if a value is numeric.
+
+    Parameters
+    ----------
+    value : Number
+        Value to validate.
+
+    Returns
+    -------
+    bool
+        Indicates whether or not the value is numeric.
+
+    Raises
+    ------
+    ValueError
+
+    """
+    return isinstance(value, Number)
 
 
 def ensure_numarray(arr):
@@ -17,6 +40,10 @@ def ensure_numarray(arr):
     -------
     np.ndarray(Number)
         Array with guaranteed properties.
+
+    Raises
+    ------
+    ValueError
 
     Examples
     --------
@@ -42,6 +69,10 @@ def ensure_numvector(v):
     ----------
     v : array_like(Number, shape=(k))
         Vector of `k` dimensions.
+
+    Raises
+    ------
+    ValueError
 
     Returns
     -------
@@ -71,6 +102,10 @@ def ensure_coords(coords, by_col=False):
     -------
     coords : np.ndarray(Number, shape=(n,k))
         Coordinates with guaranteed properties.
+
+    Raises
+    ------
+    ValueError
 
     Examples
     --------
@@ -123,6 +158,10 @@ def ensure_polar(pcoords, by_col=False):
         Defines weather or not the coordinates are provided column by column
         instead of row by row.
 
+    Raises
+    ------
+    ValueError
+
     Returns
     -------
     pcoords : np.ndarray(Number, shape=(n,k))
@@ -151,6 +190,10 @@ def ensure_tmatrix(T):
     -------
     T : np.matrix(Number, shape=(k+1,k+1))
         Transformation matrix with guaranteed properties.
+
+    Raises
+    ------
+    ValueError
 
     See Also
     --------

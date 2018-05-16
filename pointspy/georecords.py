@@ -12,8 +12,6 @@ from . import (
 )
 
 # TODO module description
-# TODO examples
-
 
 class GeoRecords(np.recarray, object):
     """Abstraction class to ease handling of point sets as well as structured
@@ -455,8 +453,8 @@ class GeoRecords(np.recarray, object):
 
         Returns
         -------
-        np.recarray
-            Record array similar to `A`, but with additional fields.
+        geo : self.__class__
+            New GeoRecords with additional fields.
 
         See Also
         --------
@@ -496,7 +494,7 @@ class GeoRecords(np.recarray, object):
         Returns
         -------
         geo : self.__class__
-            Geo records.
+            New GeoRecords.
 
         See Also
         --------
@@ -521,12 +519,11 @@ class GeoRecords(np.recarray, object):
         Returns
         -------
         geo : self.__class__
-            Array with shape `self.shape`.
+            New GeoRecords with shape `self.shape`.
 
         See Also
         --------
         nptools.apply_function
-
 
         """
         data = nptools.apply_function(self, func, dtypes=dtypes)

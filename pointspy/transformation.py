@@ -1,5 +1,6 @@
 """Multidimensional transformation matrices and coordinate transformations.
 """
+
 from numbers import Number
 import numpy as np
 import itertools as it
@@ -11,21 +12,20 @@ from . import (
 )
 
 
-
 def transform(coords, T, inverse=False):
     """Performs a linear transformation to coordinates using a transformation
     matrix.
 
     Parameters
     ----------
-    coords : array_like(Number, shape=(n,k))
+    coords : array_like(Number, shape=(n, k))
         Represents n data points of `k` dimensions.
-    T : array_like(Number, shape=(k+1,k+1))
+    T : array_like(Number, shape=(k+1, k+1))
         Transformation matrix.
 
     Returns
     -------
-    coords : np.ndarray(Number, shape=(n,k))
+    coords : np.ndarray(Number, shape=(n, k))
         Transformed coordinates.
 
     """
@@ -53,14 +53,14 @@ def homogenious(coords, value=1):
 
     Parameters
     ----------
-    coords : array_like(Number, shape=(n,k))
+    coords : array_like(Number, shape=(n, k))
         Represents n data points of `k` dimensions.
     value : optional, Number
         Values to set.
 
     Returns
     -------
-    hcoords : np.ndarray(Number, shape=(n,k+1))
+    hcoords : np.ndarray(Number, shape=(n, k+1))
         Homogenious coordinates.
 
     """
@@ -84,7 +84,7 @@ def matrix(t=None, r=None, s=None, order='trs'):
 
     Parameters
     ----------
-    t,r,s : optional, np.ndarray(Number, shape=(k))
+    t, r, s : optional, np.ndarray(Number, shape=(k))
         Transformation coefficients for translation `t`, rotation `r` and
         scale `s`.
     order : optional, string
@@ -93,7 +93,7 @@ def matrix(t=None, r=None, s=None, order='trs'):
 
     Returns
     -------
-    LocalSystem(shape=(k+1,k+1))
+    LocalSystem(shape=(k+1, k+1))
         Transformation matrix according to arguments `t`, `r`, `s` and order
         `order`.
 
@@ -160,7 +160,7 @@ def i_matrix(dim):
 
     Returns
     -------
-    LocalSystem(int, shape=(dim+1,dim+1))
+    LocalSystem(int, shape=(dim+1, dim+1))
         Identity transformation matrix.
 
     See Also
@@ -188,13 +188,13 @@ def t_matrix(t):
 
     Parameters
     ----------
-    t : array_like(Number,shape=(k))
+    t : array_like(Number, shape=(k))
         Translation coefficients for each coordinate dimension. At least two
         coefficients are required.
 
     Returns
     -------
-    LocalSystem(shape=(k+1,k+1))
+    LocalSystem(shape=(k+1, k+1))
         Translation matrix.
 
     See Also
@@ -204,7 +204,7 @@ def t_matrix(t):
     Examples
     --------
 
-    >>> print t_matrix([1,2,3])
+    >>> print t_matrix([1, 2, 3])
     [[1. 0. 0. 1.]
      [0. 1. 0. 2.]
      [0. 0. 1. 3.]
@@ -224,13 +224,13 @@ def s_matrix(s):
 
     Parameters
     ----------
-    s : array_like(Number,shape=(k))
+    s : array_like(Number, shape=(k))
         Scaling coefficients for each coordinate dimension. At least two
         coefficients are required.
 
     Returns
     -------
-    LocalSystem(shape=(k+1,k+1))
+    LocalSystem(shape=(k+1, k+1))
         Scaling matrix.
 
     See Also
@@ -240,7 +240,7 @@ def s_matrix(s):
     Examples
     --------
 
-    >>> print s_matrix([0.5,1,-3])
+    >>> print s_matrix([0.5, 1, -3])
     [[ 0.5  0.   0.   0. ]
      [ 0.   1.   0.   0. ]
      [ 0.   0.  -3.   0. ]
@@ -261,13 +261,13 @@ def r_matrix(a):
 
     Parameters
     ----------
-    r : Number or array_like(Number,shape=(k))
+    r : Number or array_like(Number, shape=(k))
         Rotation coefficients for each coordinate dimension. At least two
         coefficients are required.
 
     Returns
     -------
-    LocalSystem(shape=(k+1,k+1))
+    LocalSystem(shape=(k+1, k+1))
         Rotation matrix.
 
     See Also
@@ -284,22 +284,22 @@ def r_matrix(a):
     Two dimensional case.
 
     >>> R = r_matrix(np.pi/4)
-    >>> print np.round(R,3)
+    >>> print np.round(R, 3)
     [[ 0.707 -0.707  0.   ]
      [ 0.707  0.707  0.   ]
      [ 0.     0.     1.   ]]
 
     Three dimensional case.
 
-    >>> R = r_matrix([np.pi/2,0,np.pi/4])
-    >>> print np.round(R,3)
+    >>> R = r_matrix([np.pi/2, 0, np.pi/4])
+    >>> print np.round(R, 3)
     [[ 0.707 -0.     0.707  0.   ]
      [ 0.707  0.    -0.707  0.   ]
      [ 0.     1.     0.     0.   ]
      [ 0.     0.     0.     1.   ]]
 
     """
-    if isinstance(a, float):
+    if isinstance(a, (float, int)):
         R = np.matrix([
             [np.cos(a), -np.sin(a), 0],
             [np.sin(a), np.cos(a), 0],
@@ -344,12 +344,12 @@ def add_dim(T):
 
     Parameters
     ----------
-    T : array_like(Number, shape=(k+1,k+1))
+    T : array_like(Number, shape=(k+1, k+1))
         Transformation matrix of `k` coordinate dimensions.
 
     Returns
     -------
-    np.matrix(float, shape=(k+2,k+2))
+    np.matrix(float, shape=(k+2, k+2))
         Transformation matrix with an additional dimension.
 
 
@@ -358,7 +358,7 @@ def add_dim(T):
 
     Two dimensional case.
 
-    >>> T = matrix(t=[2,3 ], s=[0.5, 2])
+    >>> T = matrix(t=[2, 3 ], s=[0.5, 2])
     >>> print np.round(T, 3)
     [[0.5 0.  2. ]
      [0.  2.  3. ]
@@ -383,12 +383,12 @@ def decomposition(T):
 
     Parameters
     ----------
-    T : array_like(Number, shape=(k+1,k+1))
+    T : array_like(Number, shape=(k+1, k+1))
         Transformation matrix of `k` coordinate dimensions.
 
     Returns
     -------
-    t,r,s : optional, np.ndarray(Number, shape=(k))
+    t, r, s : optional, np.ndarray(Number, shape=(k))
         Transformation coefficients for translation `t`, rotation `r` and
         scale `s`.
     det : float
@@ -412,10 +412,12 @@ def decomposition(T):
     --------
     matrix
 
+    References
+    ----------
+    https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati
+    https://math.stackexchange.com/questions/13150/extracting-rotation-scale-values-from-2d-transformation-matrix/13165#13165
+
     """
-    # TODO references
-    # https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati
-    # https://math.stackexchange.com/questions/13150/extracting-rotation-scale-values-from-2d-transformation-matrix/13165#13165
 
     T = assertion.ensure_tmatrix(T)
     dim = T.shape[0] - 1
@@ -470,7 +472,7 @@ class LocalSystem(np.matrix, object):
     Examples
     --------
 
-    >>> T = assertion.ensure_tmatrix([(2,-0.5,2),(0.5,1,3),(0,0,1)])
+    >>> T = assertion.ensure_tmatrix([(2, -0.5, 2), (0.5, 1, 3), (0, 0, 1)])
     >>> print  T
     [[ 2.  -0.5  2. ]
      [ 0.5  1.   3. ]
@@ -512,20 +514,20 @@ class LocalSystem(np.matrix, object):
 
         Parameters
         ----------
-        gcoords : array_like(Number, shape=(n,k))
+        gcoords : array_like(Number, shape=(n, k))
             Represents n data points of `k` dimensions in the global coordinate
             system.
 
         Returns
         -------
-        np.ndarray(Number, shape=(n,k))
+        np.ndarray(Number, shape=(n, k))
             Local coordinates.
 
         Examples
         --------
 
-        >>> T = matrix(t=[2, 3],s=[0.5,10])
-        >>> lcoords = T.to_local([(0,0),(0,1),(1,0),(-1,-1)])
+        >>> T = matrix(t=[2, 3], s=[0.5, 10])
+        >>> lcoords = T.to_local([(0, 0), (0, 1), (1, 0), (-1, -1)])
         >>> print lcoords
         [[ 2.   3. ]
          [ 2.  13. ]
@@ -540,20 +542,20 @@ class LocalSystem(np.matrix, object):
 
         Parameters
         ----------
-        lcoords : array_like(Number, shape=(n,k))
+        lcoords : array_like(Number, shape=(n, k))
             Represents n data points of `k` dimensions in the local coordinate
             system.
 
         Returns
         -------
-        np.ndarray(Number, shape=(n,k))
+        np.ndarray(Number, shape=(n, k))
             Global coordinates.
 
         Examples
         --------
 
-        >>> T = matrix(t=[2, 3],s=[0.5,10])
-        >>> lcoords = T.to_global([(2,3),(2,13),(2.5,3),(1.5,-7)])
+        >>> T = matrix(t=[2, 3], s=[0.5, 10])
+        >>> lcoords = T.to_global([(2, 3), (2, 13), (2.5, 3), (1.5, -7)])
         >>> print lcoords
         [[ 0.  0.]
          [ 0.  1.]
@@ -563,17 +565,13 @@ class LocalSystem(np.matrix, object):
         """
         return transform(lcoords, self, inverse=True)
 
-
-
-
-
     # TODO auslagern?
     def explained_variance(self, gcoords):
         """Get explained variance of global coordinates.
 
         Parameters
         ----------
-        gcoords : array_like(Number, shape=(n,k))
+        gcoords : array_like(Number, shape=(n, k))
             Represents n data points of `k` dimensions in the global coordinate
             system.
 
@@ -590,7 +588,7 @@ class LocalSystem(np.matrix, object):
         [[1. 0. 0.]
          [0. 2. 0.]
          [0. 0. 1.]]
-        >>> e = T.explained_variance([(2,1),(0,0),(1,1),(2,3)])
+        >>> e = T.explained_variance([(2, 1), (0, 0), (1, 1), (2, 3)])
         >>> print np.round(e, 3)
         [0.688 4.75 ]
 
@@ -608,7 +606,7 @@ class LocalSystem(np.matrix, object):
 
         Parameters
         ----------
-        gcoords : array_like(Number, shape=(n,k))
+        gcoords : array_like(Number, shape=(n, k))
             Represents n data points of `k` dimensions in the global coordinate
             system.
 
@@ -618,7 +616,6 @@ class LocalSystem(np.matrix, object):
             Relative amount of explained variance by a specific coordinate
             axis.
 
-
         Examples
         --------
 
@@ -627,7 +624,7 @@ class LocalSystem(np.matrix, object):
         [[1. 0. 0.]
          [0. 2. 0.]
          [0. 0. 1.]]
-        >>> e = T.explained_variance_ratio([(2,1),(0,0),(1,1),(2,3)])
+        >>> e = T.explained_variance_ratio([(2, 1), (0, 0), (1, 1), (2, 3)])
         >>> print np.round(e, 3)
         [0.126 0.874]
 
@@ -638,4 +635,3 @@ class LocalSystem(np.matrix, object):
         """
         var = self.explained_variance(gcoords)
         return var / var.sum()
-

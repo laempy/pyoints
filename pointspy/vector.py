@@ -1,26 +1,23 @@
-"""Handling of vectors.
+"""Module to handle vector operations.
 """
+
 import numpy as np
 import math
-from numbers import Number
 
 from . import (
     assertion,
     distance,
     fit,
-    transformation,
     nptools,
 )
 
-
-# TODO module documentation
 
 def rad2deg(rad):
     """Converts angles from radiant to degree.
 
     Parameters
     ----------
-    rad : Numeric or array_like(Number, shape=(k,))
+    rad : Numeric or array_like(Number, shape=(k, ))
         Angle or angles in radiant.
 
     Returns
@@ -37,15 +34,14 @@ def rad2deg(rad):
 
     >>> rad2deg(0.5*np.pi)
     90.0
-    >>> print rad2deg([0,np.pi/4,np.pi,2*np.pi])
+    >>> print rad2deg([0, np.pi/4, np.pi, 2*np.pi])
     [  0.  45. 180. 360.]
 
     """
     if nptools.isarray(rad):
         rad = assertion.ensure_numarray(rad)
-    else:
-        if not isinstance(rad, Number):
-            raise ValueError("'rad' neets to be numeric")
+    elif not assertion.isnumeric(rad):
+        raise ValueError("'rad' neets to be numeric")
     return rad * 180.0 / np.pi
 
 
@@ -54,12 +50,12 @@ def deg2rad(deg):
 
     Parameters
     ----------
-    deg : Number or array_like(Number, shape=(k,))
+    deg : Number or array_like(Number, shape=(k, ))
         Angle or angles in degree.
 
     Returns
     -------
-    Number or np.ndarray(Number, shape=(k,))
+    Number or np.ndarray(Number, shape=(k, ))
         Angle or angles in radiant.
 
     See Also
@@ -75,14 +71,11 @@ def deg2rad(deg):
     >>> print np.round(rad, 3)
     [0.    0.785 3.142 6.283]
 
-
-
     """
     if nptools.isarray(deg):
         deg = assertion.ensure_numarray(deg)
-    else:
-        if not isinstance(deg, Number):
-            raise ValueError("'deg' neets to be numeric")
+    elif not assertion.isnumeric(deg):
+        raise ValueError("'deg' neets to be numeric")
     return deg * np.pi / 180.0
 
 
@@ -91,7 +84,7 @@ def angle(v, w, deg=False):
 
     Parameters
     ----------
-    v, w : array_like(Number, shape=(k,))
+    v, w : array_like(Number, shape=(k, ))
         Vector of length k.
 
     Returns
@@ -104,22 +97,22 @@ def angle(v, w, deg=False):
 
     2D
 
-    >>> angle([0,1],[1,0], deg=True)
+    >>> angle([0, 1], [1, 0], deg=True)
     90.0
-    >>> round(angle([0,1],[1,1], deg=True), 1)
+    >>> round(angle([0, 1], [1, 1], deg=True), 1)
     45.0
-    >>> angle([2,2],[1,1], deg=True)
+    >>> angle([2, 2], [1, 1], deg=True)
     0.0
-    >>> angle([0,0],[1,1], deg=True)
+    >>> angle([0, 0], [1, 1], deg=True)
     inf
 
     3D
 
-    >>> angle([1,0,1],[0,1,0], deg=True)
+    >>> angle([1,0, 1], [0, 1, 0], deg=True)
     90.0
 
     4D
-    >>> angle([1,0,0,0],[0,1,1,0], deg=True)
+    >>> angle([1, 0, 0, 0], [0, 1, 1, 0], deg=True)
     90.0
 
     """
@@ -148,7 +141,7 @@ def zenith(v, axis=-1, deg=False):
 
     Parameters
     ----------
-    v : array_like(Number, shape=(k,))
+    v : array_like(Number, shape=(k, ))
         Vector of length `k`.
     axis : optional, int
         Defines which axis to compare the vector with.
@@ -161,13 +154,13 @@ def zenith(v, axis=-1, deg=False):
     Examples
     --------
 
-    >>> zenith([1,0],deg=True)
+    >>> zenith([1, 0], deg=True)
     90.0
-    >>> zenith([1,0],axis=0)
+    >>> zenith([1, 0], axis=0)
     0.0
-    >>> round(zenith([1,1],deg=True), 1)
+    >>> round(zenith([1, 1], deg=True), 1)
     45.0
-    >>> round(zenith([1,0,1],2,deg=True), 1)
+    >>> round(zenith([1, 0, 1], 2, deg=True), 1)
     45.0
 
     """
@@ -189,7 +182,7 @@ def scalarproduct(v, w):
     ----------
     Parameters
     ----------
-    v, w : array_like(Number, shape=(k,))
+    v, w : array_like(Number, shape=(k, ))
         Vector of length k.
 
     Returns
@@ -200,17 +193,16 @@ def scalarproduct(v, w):
     Examples
     --------
 
-    >>> scalarproduct([1,2],[3,4])
+    >>> scalarproduct([1, 2], [3, 4])
     11
-    >>> scalarproduct([1,2,3],[4,5,6])
+    >>> scalarproduct([1, 2, 3], [4, 5, 6])
     32
 
     othoogonal vectors
 
-    >>> scalarproduct([1,1],[1,-1])
+    >>> scalarproduct([1, 1], [1, -1])
     0
     """
-
     v = assertion.ensure_numvector(v)
     w = assertion.ensure_numvector(w)
     if not len(v) == len(w):
@@ -224,7 +216,7 @@ def orthogonal(v, w):
 
     Parameters
     ----------
-    v, w : array_like(Number, shape=(k,))
+    v, w : array_like(Number, shape=(k, ))
         Vector of length k.
 
     Returns
@@ -235,9 +227,9 @@ def orthogonal(v, w):
     Examples
     --------
 
-    >>> orthogonal([1,1],[1,-1])
+    >>> orthogonal([1, 1], [1, -1])
     True
-    >>> orthogonal([1,1],[1,0])
+    >>> orthogonal([1, 1], [1, 0])
     False
 
     """
@@ -245,7 +237,7 @@ def orthogonal(v, w):
 
 
 def basis(vec):
-    # TODO
+    #TODO
 
     vec = np.array(vec)
     dim = len(vec)
@@ -266,20 +258,20 @@ class Vector(object):
 
     Parameters
     ----------
-    origin, vec : array_like(Number, shape=(k,))
+    origin, vec : array_like(Number, shape=(k, ))
         The arrays `origin` and `vec` define the location and orientation of
         the vector in a `k`-dimensional vector space. The vector `vec` starts
         at point `origin` and points at point `target`.
 
     Attributes
     ----------
-    origin, target, vec : np.ndarray(Number, shape=(k,))
+    origin, target, vec : np.ndarray(Number, shape=(k, ))
         The vector `vec` starts at point `origin` and points at point `target`.
     length : positive float
         Length of the vector `vec`.
     dim : positive int
         Number of coordinate dimensions `k` of the vector.
-    base : np.matrix(Number, shape = (k+1,k+1))
+    base : np.matrix(Number, shape = (k+1, k+1))
         Transformation matrix representation of the local coordinate system
         defined by the vector.
 
@@ -288,7 +280,7 @@ class Vector(object):
 
     Two dimensional case.
 
-    >>> v = Vector((5,7),(3,4))
+    >>> v = Vector((5, 7), (3, 4))
     >>> print v
     origin: [5 7]; vec: [3 4]
     >>> print v.target
@@ -298,7 +290,7 @@ class Vector(object):
 
     Three dimensional case.
 
-    >>> v = Vector((1,1,1),(2,3,4))
+    >>> v = Vector((1, 1, 1), (2, 3, 4))
     >>> print v
     origin: [1 1 1]; vec: [2 3 4]
     >>> print v.target
@@ -306,18 +298,18 @@ class Vector(object):
 
     Edit vector.
 
-    >>> v = Vector((1,1),(3,4))
+    >>> v = Vector((1, 1), (3, 4))
     >>> print v
     origin: [1 1]; vec: [3 4]
-    >>> v.vec = (5,2)
+    >>> v.vec = (5, 2)
     >>> print v
     origin: [1 1]; vec: [5 2]
 
-    >>> v.origin = (-1,-2)
+    >>> v.origin = (-1, -2)
     >>> print v
     origin: [-1 -2]; vec: [5 2]
 
-    >>> v.target = (5,4)
+    >>> v.target = (5, 4)
     >>> print v
     origin: [-1 -2]; vec: [6 6]
 
@@ -397,12 +389,12 @@ class Vector(object):
         Examples
         --------
 
-        >>> v = Vector((1,1,1),(2,3,4))
+        >>> v = Vector((1, 1, 1), (2, 3, 4))
         >>> print v*3
         origin: [1 1 1]; vec: [ 6  9 12]
 
         """
-        if not isinstance(s, Number):
+        if not assertion.isnumeric(s):
             raise ValueError("'s' needs to be a scalar")
         return Vector(self.origin, self.vec*s)
 
@@ -422,35 +414,34 @@ class Vector(object):
         Examples
         --------
 
-        >>> v = Vector((1,1,1),(2,3,4))
+        >>> v = Vector((1, 1, 1), (2, 3, 4))
         >>> print v / 2.0
         origin: [1 1 1]; vec: [1.  1.5 2. ]
 
         """
-        if not isinstance(s, Number):
+        if not assertion.isnumeric(s):
             raise ValueError("'s' needs to be a scalar")
         return Vector(self.origin, self.vec/s)
-
 
     def k(self, gcoords):
         """Calculates the relative position of points in vector direction.
 
         Parameters
         ----------
-        gcoords : array_like(Number, shape=(n,k))
+        gcoords : array_like(Number, shape=(n, k))
             Represents `n` data points of `k` dimensions in a global coordinate
             system.
 
         Returns
         -------
-        np.ndarray(Number, shape=(k,))
+        np.ndarray(Number, shape=(k, ))
             Relative relative position of points in vector direction. The
             `origin` of the vector defines zero and the `target` defines one.
 
         Examples
         --------
 
-        >>> v = Vector((1,1,1),(2,3,4))
+        >>> v = Vector((1, 1, 1), (2, 3, 4))
         >>> print v.k([v.origin, v.target, v.origin - 2 * v.vec])
         [ 0.  1. -2.]
 
@@ -470,7 +461,7 @@ class Vector(object):
 
         Returns
         -------
-        np.ndarray(Number, shape=(n,self.dim))
+        np.ndarray(Number, shape=(n, self.dim))
             Global coordinates.
 
         See Also
@@ -480,7 +471,7 @@ class Vector(object):
         Examples
         --------
 
-        >>> v = Vector((1,1,1),(2,3,4))
+        >>> v = Vector((1, 1, 1), (2, 3, 4))
         >>> print v(2)
         [5 7 9]
         >>> print v([0, 1, -2, 3])
@@ -490,7 +481,7 @@ class Vector(object):
          [ 7 10 13]]
 
         """
-        if isinstance(k, Number):
+        if assertion.isnumeric(k):
             return self.origin + k * self.vec
         else:
             ks = assertion.ensure_numvector(k)
@@ -513,7 +504,7 @@ class Vector(object):
         Examples
         --------
 
-        >>> v = Vector((1,1,1),(2,3,4))
+        >>> v = Vector((1, 1, 1), (2, 3, 4))
         >>> angles = v.angles(deg=True)
         >>> print np.round(angles, 3)
         [68.199 56.145 42.031]
@@ -527,7 +518,7 @@ class Vector(object):
 
         Parameters
         ----------
-        gcoords : array_like(Number, shape=(n,self))
+        gcoords : array_like(Number, shape=(n, self))
             Represents `n` data points.
 
         Returns
@@ -538,8 +529,8 @@ class Vector(object):
         Examples
         --------
 
-        >>> v = Vector((1,-1),(1,2))
-        >>> dist = v.distance([(1,-1),(0,-3),(2,1),(2,-2),(0,0)])
+        >>> v = Vector((1, -1), (1, 2))
+        >>> dist = v.distance([(1, -1), (0, -3), (2, 1), (2, -2), (0, 0)])
         >>> print np.round(dist, 3)
         [0.    0.    0.    1.342 1.342]
         >>> print np.linalg.inv(v.base).origin
@@ -552,7 +543,6 @@ class Vector(object):
         """
         lcoords = self.base.to_local(gcoords)
         return distance.norm(lcoords[:, 1:self.dim])
-
 
     def surface_intersection(self, surface, eps=0.001, max_iter=20):
         """ Approximates the intersection point between the vector and a surface
@@ -573,15 +563,18 @@ class Vector(object):
 
         >>> from pointspy import surface, interpolate
         >>> method = interpolate.LinearInterpolator
-        >>> surface = surface.Surface([(0,0,0),(0,2,0),(2,1,4)],method=method)
-        >>> vec = Vector((1,1,-1), (0,0,1))
+        >>> surface = surface.Surface(
+        ...         [(0, 0, 0), (0, 2, 0), (2, 1, 4)],
+        ...         method=method
+        ...     )
+        >>> vec = Vector((1, 1, -1), (0, 0, 1))
         >>> print vec.surface_intersection(surface)
         [1. 1. 2.]
 
         """
         if not hasattr(surface, '__call__'):
             raise ValueError("'surface' is not callable")
-        if not (isinstance(eps, Number) and eps > 0):
+        if not (assertion.isnumeric(eps) and eps > 0):
             raise ValueError("'eps' needs to be a number greater zero")
         if not (isinstance(max_iter, int) and max_iter > 0):
             raise ValueError("'max_iter' needs to be an integer greater zero")

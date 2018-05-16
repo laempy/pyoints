@@ -1,41 +1,49 @@
 import numpy as np
 
 # TODO module description
+from . import assertion
 
 
 def norm(coords):
-    # TODO
-    """ Normalization of coordinates.
+    """Normalization of coordinates.
 
     Parameters
     ----------
-    coords: (n,k), `array_like`
-        Represents n data points of k dimensions.
+    coords: array_like(shape=(k, )) or array_like(shape=(n, k))
+        Represents `n` points or a single point of `k` dimensions.
 
     Returns
     -------
-    norm: (n), `array_like`
-        TODO
+    array_like(shape=(n, ))
+        Normed values.
+
+    See Also
+    --------
+    snorm
+
     """
     return np.sqrt(snorm(coords))
 
 
 def snorm(coords):
-    # TODO
-    """ Normalization of coordinates.
+    """Squared normalization of coordinates.
 
     Parameters
     ----------
-    coords: (n,k), `array_like`
-        Represents n data points of k dimensions.
+    coords: array_like(shape=(k, )) or array_like(shape=(n, k))
+        Represents `n` points or a single point of `k` dimensions.
 
     Returns
     -------
-    snorm: (n), `array_like`
-        TODO
+    array_like(shape=(n, ))
+        Squared normed values.
+
+    See Also
+    --------
+    norm
+
     """
-    if not isinstance(coords, np.ndarray):
-        coords = np.array(coords)
+    coords = assertion.ensure_numarray(coords)
     if len(coords.shape) == 1:
         res = (coords * coords).sum()
     else:
@@ -44,27 +52,91 @@ def snorm(coords):
 
 
 def dist(p, coords):
+    """Calculates the distances between points.
+
+    Parameters
+    ----------
+    p : array_like(Number, shape=(n, k)) or array_like(Number, shape=(k, ))
+        Represents `n` points or a single point of `k` dimensions.
+    coords : array_like(Number, shape=(n, k))
+        Represents `n` points of `k` dimensions.
+
+    Returns
+    -------
+    array_like(shape=(n, ))
+        Normed values.
+
+    See Also
+    --------
+    sdist
+
+    """
     return np.sqrt(sdist(p, coords))
 
 
 def sdist(p, coords):
-    if not isinstance(p, np.ndarray):
-        p = np.array(p)
-    if not isinstance(coords, np.ndarray):
-        coords = np.array(coords)
-    if len(p.shape) == 1:
-        assert len(p) == coords.shape[1], 'Dimensions do not match!'
-    else:
-        assert p.shape[1] == coords.shape[1], 'Dimensions do not match!'
-    return snorm(coords - p)
+    """Calculates the squared distances between points.
 
-# Quality
+    Parameters
+    ----------
+    p : array_like(Number, shape=(n, k)) or array_like(Number, shape=(k, ))
+        Represents `n` points or a single point of `k` dimensions.
+    coords : array_like(Number, shape=(n, k))
+        Represents `n` points of `k` dimensions.
+
+    Returns
+    -------
+    array_like(shape=(n, ))
+        Squared distances between the points.
+
+    See Also
+    --------
+    dist
+
+    """
+    p = assertion.ensure_numarray(p)
+    coords = assertion.ensure_coords(coords)
+    if len(p.shape) == 1:
+        if not len(p) == coords.shape[1]:
+            raise ValueError('Dimensions do not match!')
+    else:
+        if not p.shape == coords.shape:
+            raise ValueError('Dimensions do not match!')
+
+    return snorm(coords - p)
 
 
 def rmse(A, B):
+    """Calculates the Root Mean Squared Error of corresponding data sets.
+
+    Parameters
+    ----------
+    A, B : array_like(Number, shape=(k, ))
+        Represent `n` points or a single point of `k` dimensions.
+
+    Returns
+    -------
+    Number
+        Root Mean Squared Error.
+
+    """
     return np.sqrt(np.mean(sdist(A, B)))
 
 
 def idw(dists, p=2):
-    # inverse distance weights
+    """Calculates the weights for Inverse Distance Weighting method.
+
+    Parameters
+    ----------
+    dists : Number or array_like(Number, shape=(n, ))
+        Represent `n` distance values.
+    p : optional, Number
+        Weighting power.
+
+    Returns
+    -------
+    Number or array_like(Number, shape=(n, ))
+        Weights according to Inverse Distance Weighting.
+
+    """
     return 1.0 / (1 + dists)**p

@@ -38,7 +38,7 @@ class Proj():
 
     >>> proj = Proj.from_epsg(4326)
     >>> print proj.wkt
-    GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]
+    GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9108"]],AUTHORITY["EPSG","4326"]]
     >>> print proj.proj4
     +proj=longlat +datum=WGS84 +no_defs
 
@@ -48,13 +48,13 @@ class Proj():
     >>> print proj.proj4
     +proj=longlat +datum=WGS84 +no_defs
     >>> print proj.wkt
-    GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]
+    GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9108"]],AUTHORITY["EPSG","4326"]]
 
     Create from Well Known Text.
 
     >>> proj = Proj.from_wkt(proj.wkt)
     >>> print proj.proj4
-    +proj=longlat +datum=WGS84 +no_defs
+    +proj=longlat +ellps=WGS84 +towgs84=0,0,0,0,0,0,0 +no_defs
 
     """
 
@@ -146,10 +146,15 @@ class CoordinateTransform:
     >>> import numpy as np
     >>> wgs84 = Proj.from_epsg(4326)
     >>> gk2 = Proj.from_epsg(31466)
-    >>> coords = [(6.842,49.971),(6.847,49.969),(6.902,49.991),(6.922,50.101)]
-    >>> coordTransfrom = CoordinateTransform(wgs84,gk2)
+    >>> coords = [
+    ...     (6.842, 49.971),
+    ...     (6.847, 49.969),
+    ...     (6.902, 49.991),
+    ...     (6.922, 50.101)
+    ... ]
+    >>> coordTransfrom = CoordinateTransform(wgs84, gk2)
     >>> tCoords = coordTransfrom(coords)
-    >>> print np.round( tCoords,3)
+    >>> print np.round(tCoords, 3)
     [[2560446.801 5537522.386]
      [2560808.009 5537303.984]
      [2564724.211 5539797.116]
@@ -157,7 +162,7 @@ class CoordinateTransform:
 
     Reverse transformation.
 
-    >>> print np.round( coordTransfrom(tCoords,reverse=True) ,3)
+    >>> print np.round( coordTransfrom(tCoords, reverse=True) ,3)
     [[ 6.842 49.971]
      [ 6.847 49.969]
      [ 6.902 49.991]
