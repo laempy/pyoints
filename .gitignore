@@ -1,7 +1,7 @@
 # Generic files to ignore
 *~
 build
-venv
+venv*
 *.egg
 *.egg-info
 
