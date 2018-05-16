@@ -18,7 +18,7 @@ def ball(coords, weights=1.0):
 
     Returns
     -------
-    center : np.ndarray(Number, shape=(k, ))
+    center : (k), np.ndarray
         Center of the sphere.
     R : float
         Radius of the sphere.
@@ -32,19 +32,18 @@ def ball(coords, weights=1.0):
     >>> x = np.arange(-1,1,0.1)
     >>> y = np.sqrt(5**2 - x**2)
     >>> coords = np.array([x,y]).T + [2,4]
-    >>> center,R = ball(coords)
+    >>> center, R = ball(coords)
     >>> print center
     [2. 4.]
-    >>> print np.round(R,2)
+    >>> print np.round(R, 2)
     5.0
 
     """
 
     coords = assertion.ensure_coords(coords)
-    if not assertion.isnumeric(weights):
-        weights = assertion.ensure_numvector(weights)
-        if not len(weights) == coords.shape[0]:
-            raise ValueError("dimensions differ")
+
+    assert (isinstance(weights, int) or isinstance(weights, float)) or \
+        (hasattr(weights, '__len__') and len(weights) == coords.shape[0])
 
     # TODO radius und mittelpunkt vorgeben
 
@@ -129,10 +128,9 @@ def cylinder(origin, coords, p, th):
 
     """
     coords = assertion.ensure_coords(coords)
-    if not coords.shape[1] == 3:
-        raise ValueError("3D coordinates required")
-    if not coords.shape[0] >= 3:
-        raise ValueError("at least 3 coordinates required")
+    # TODO revise
+    assert coords.shape[1] == 3
+    assert coords.shape[0] >= 3
 
     c = coords.mean(0)
     xyz = coords - c
@@ -192,18 +190,8 @@ def cylinder(origin, coords, p, th):
 class PCA(transformation.LocalSystem):
 
     # TODO docstring
-    """Calculates principal components.
-
-    Parameters
-    ----------
-    coords : array_like(Number, shape=(n, k))
-        Represents `n` data points of `k` dimensions in a Cartesian coordinate
-        system.
-
-    """
 
     def __init__(self, coords):
-        # see __new__
         pass
 
     def __new__(cls, coords):
@@ -266,7 +254,7 @@ class PCA(transformation.LocalSystem):
 
         """
         if not (k >= 1 and k <= self.dim):
-            raise ValueError("%i'th principal component not available" % (k))
+            raise ValueError("%'th principal component not available")
 
         pc = self[k-1, :self.dim]
         return np.asarray(pc)[0]

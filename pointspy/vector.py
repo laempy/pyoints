@@ -442,7 +442,8 @@ class Vector(object):
         --------
 
         >>> v = Vector((1, 1, 1), (2, 3, 4))
-        >>> print v.k([v.origin, v.target, v.origin - 2 * v.vec])
+        >>> ks = v.k([v.origin, v.target, v.origin - 2 * v.vec])
+        >>> print np.round(ks, 2)
         [ 0.  1. -2.]
 
         """

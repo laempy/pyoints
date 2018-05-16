@@ -19,7 +19,7 @@ def load_tests(loader, tests, ignore):
     tests.addTests(doctest.DocTestSuite(pointspy.transformation))
     tests.addTests(doctest.DocTestSuite(pointspy.assertion))
     tests.addTests(doctest.DocTestSuite(pointspy.polar))
-    tests.addTests(doctest.DocTestSuite(pointspy.projection))
+    #tests.addTests(doctest.DocTestSuite(pointspy.projection))
     tests.addTests(doctest.DocTestSuite(pointspy.nptools))
     tests.addTests(doctest.DocTestSuite(pointspy.extent))
 

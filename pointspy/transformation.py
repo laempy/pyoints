@@ -44,9 +44,10 @@ def transform(coords, T, inverse=False):
 
     T = np.asarray(T)
 
-    coords = assertion.ensure_coords(coords)
-    return cv2.transform(np.expand_dims(coords, axis=0), T)[0][:,0:-1]
+    #coords = assertion.ensure_coords(coords)
+    #return cv2.transform(np.expand_dims(coords.astype(np.float64), axis=0), T)[0][:,0:-1]
 
+    # TODO decide
     H = homogenious(coords)
     HT = np.dot(H, T.T)
     if len(H.shape) == 1:
