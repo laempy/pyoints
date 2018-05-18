@@ -327,22 +327,31 @@ class IndexKD(object):
             Distances to nearest neihbours.
         indices: (k), list
             Indices of nearest neihbours.
+
+        See Also
+        --------
+        knn, knn_iter
+
         """
         for coord, k in itertools.izip(coords, ks):
             dists, nIds = self.kd_tree.query(
                 coord[:, :self.dim], k=k, **kwargs)
             yield dists, nIds
 
+    @property
     def nn(self, p=2):
-        """Provides nearest neighbours.
+        """Provides the nearest neighbours for each point.
 
-        Parameters
-        ----------
-        p : float, 1<=p<=infinity, optional
-            Minkowski p-norm to use.
+        Returns
+        -------
+        distances : np.ndarray(Number, shape=(n))
+            Distances to each nearest neighbour.
+        indices : np.ndarray(int, shape=(n))
+            Indices of nearest neighbours.
+
         """
         if not hasattr(self, '_NN'):
-            dists, ids = self.knn(self.coords, k=2, p=p)
+            dists, ids = self.knn(self.coords, k=2, p=2)
             self._NN = dists[:, 1], ids[:, 1]
         return self._NN
 
@@ -379,17 +388,17 @@ class IndexKD(object):
         return self.ball(coords, r, p=float('inf'))
 
     def box(self, extent):
-        """Select points within extent.
+        """Select points within a given extent.
 
         Parameters
         ----------
-        extent : (2*self.dim), array_like
+        extent : array_like(Number, shape=(2*self.dim))
             Specifies the points to return. A point p is returned, if
-            p>=extent[0:dim] and p>=extent[dim+1:2*dim]
+            `np.all(p <= extent[0:dim])` and `np.all(p >= extent[dim+1:2*dim])
 
         Returns
         -------
-        indices : list of ints
+        list of ints
             Indices of points within the extent.
 
         See Also
@@ -399,7 +408,28 @@ class IndexKD(object):
         """
         return self.r_tree.intersection(extent, objects='raw')
 
-    # TODO Documentation
+    def count_box(self, extent):
+        """Count all points within a given extent.
+
+        Parameters
+        ----------
+        extent : array_like(Number, shape=(2*self.dim))
+            Specifies the points to return. A point p is returned, if
+            p <= extent[0:dim] and p >= extent[dim+1:2*dim]
+
+        Returns
+        -------
+        list of ints
+            Number of points within the extent.
+
+        See Also
+        --------
+        box
+
+        """
+        # TODO assertion.ensure_extent(extent)
+        return self.tTree.count(extent)
+
     def slice(self, min_th, max_th, axis=-1):
         """Select points with coordinate value of axis `axis` within range the
         [`min_th`, `max_th`].
@@ -433,13 +463,9 @@ class IndexKD(object):
         iMin = bisect.bisect_left(values[order], min_th) - 1
         iMax = bisect.bisect_left(values[order], max_th)
 
-        # return original order (for performance reasons)
+        # get original order (for performance reasons of later operations)
         ids = np.sort(order[iMin:iMax])
         return ids
-
-    # TODO Documentation
-    def countBox(self, extent):
-        return self.tTree.count(extent)
 
     # TODO Documentation
     def ballCut(self,
