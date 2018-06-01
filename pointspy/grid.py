@@ -244,10 +244,6 @@ class Grid(GeoRecords):
         mask = self.keys(shape) + cornerIndex
         return self[zip(mask.T)].reshape(shape)
 
-    def get_gdal_transform(self):
-        return (self.t[0, 2], self.t[0, 0], self.t[1, 0],
-                self.t[1, 2], self.t[0, 1], self.t[1, 1])
-
 
 def voxelize(geoRecords, T, dtypes=[('geoRecords', object)]):
 

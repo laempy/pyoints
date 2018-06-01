@@ -11,6 +11,7 @@ from .BaseGeoHandler import GeoFile
 from .. import (
     grid,
     projection,
+    transformation,
     Extent,
 )
 
@@ -151,7 +152,7 @@ def writeRaster(grid, filename, noData=np.nan):
             band.WriteArray(grid.bands[:, :, i])
             band.FlushCache()
 
-    raster.SetGeoTransform(grid.get_gdal_transform())
+    raster.SetGeoTransform(transformation.matrix_to_gdal(grid.t))
     raster.SetProjection(grid.proj.wkt)
 
     raster.FlushCache()
