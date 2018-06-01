@@ -120,7 +120,7 @@ def missing(data):
     Finding missing values in multidimensional arrays.
 
     >>> arr = np.array([(0,np.nan),(None, 1),(2, 3)], dtype=float)
-    >>> print(missing(arr)
+    >>> print(missing(arr))
     [[False  True]
      [ True False]
      [False False]]
@@ -172,7 +172,7 @@ def recarray(dataDict, dtype=[], dim=1):
      [3 2]
      [0 2]
      [5 2]]
-    >>> print(rec[0]
+    >>> print(rec[0])
     ('text1', None, [3, 4], 1)
 
     Create a two dimensional array.
@@ -267,7 +267,7 @@ def add_fields(arr, dtypes, data=None):
     [('a', '<i8'), ('b', '<f8', (2,)), ('c', '<i8')]
 
     >>> D = add_fields(A, [('d', int), ('e', str)], data=[[1, 2, 3, 4], None])
-    >>> print(D
+    >>> print(D)
     [(0, 1, '') (1, 2, '') (2, 3, '') (3, 4, '')]
 
     """
@@ -322,7 +322,7 @@ def fuse(*recarrays):
     >>> C = fuse(A, B)
     >>> print(C.shape)
     (4,)
-    >>> print(C.dtype.names
+    >>> print(C.dtype.names)
     ('a', 'b')
 
     Two dimensional arrays.
@@ -474,7 +474,7 @@ def unnest(rec):
     ...    ])
     ... ]
     >>> rec = np.ones(2, dtype=dtype).view(np.recarray)
-    >>> print(rec.nested.child2
+    >>> print(rec.nested.child2)
     [[1. 1.]
      [1. 1.]]
     >>> unnested = unnest(rec)
@@ -603,7 +603,7 @@ def apply_function(ndarray, func, dtypes=None):
     Multiple output data types.
 
     >>> func = lambda record: (record.a + record.b, record.a ** record.b)
-    >>> print(apply_function(arr, func, dtypes=[('c', float), ('d', int)])
+    >>> print(apply_function(arr, func, dtypes=[('c', float), ('d', int)]))
     [[(1.,  0) (3.,  1)]
      [(5.,  8) (7., 81)]]
 
