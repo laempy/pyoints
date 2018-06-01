@@ -2,6 +2,7 @@ from collections import defaultdict
 from sklearn.cluster import DBSCAN
 import numpy as np
 
+from . import assertion
 from .indexkd import IndexKD
 from .classification import (
     mayority,
@@ -22,26 +23,27 @@ def clustering(indexKD,
     ----------
     indexKD : IndexKD
         Spatial index with `n` points.
-    r : positive, float
-        Radius to select the cluster ids of neighboured points.
+    r : positive float
+        Radius to select the cluster indices of neighboured points.
         # TODO Wort Klassenzugehoerigkeit
     get_class : function
         Function to define the cluster id of a point. Recieves a list of
         cluster ids of neigboured points to define the cluster id of a point.
         Returns -1 if the point is not associated with any cluster.
-    order : array_like, optional
-        TODO
-        If not defined the order is defined by decreasing point density.
-    clusters : array_like of ints, optional
+    order : optional, array_like(int)
+        Defines the order to apply the clustering algorithm. It can also be
+        used to subsample the points to cluster. If not defined the order is
+        defined by decreasing point density.
+    clusters : optional, array_like(int, shape=(n))
         List of `n` integers. Each element represents the preliminary cluster
         id of a point in `indexKD`. A cluster id is a positive integer. If a
         cluster id of `-1` represents no class. If None, each element is set
         to `-1`. # TODO revise
-    min_size : int, optional
+    min_size : optional, int
         Minimum number of points associated with a cluster. If less than
         `min_size` points are associated with a cluster, the cluster is
         rejected.
-    auto_set : boolean, optional
+    auto_set : optional, bool
         Defines weather or not cluster a id is automatically set, if -1
         (no class) was returned by `get_class`. If True, a new cluster id is
         set to `max(clusters) + 1`.
@@ -51,44 +53,49 @@ def clustering(indexKD,
     dict
         Dictionary of clusters. The keys correspond to the class ids. The
         values correspond to the point indices associated with the cluster.
-    """
 
-    assert isinstance(indexKD, IndexKD)
-    assert (isinstance(r, float) or isinstance(r, int)) and r > 0
+    """
+    if not isinstance(indexKD, IndexKD):
+        raise ValueError("'indexKD' needs to be an instance of IndexKD")
+    if not (assertion.isnumeric(r) and r > 0):
+        raise ValueError("'r' needs to be a number greater zero")
 
     if order is None:
         # order by density
         count = indexKD.countBall(r)
         order = np.argsort(count)[::-1]
         order = order[count[order] > 1]
-    else:
-        assert hasattr(order, '__len__') and len(order) <= len(indexKD)
+    elif not (hasattr(order, '__len__') and len(order) <= len(indexKD)):
+        raise ValueError("'order' needs be an array with length less or equal len(indexKD)")
 
     if clusters is None:
-        outclusters = -np.ones(len(indexKD), dtype=int)
+        out_clusters = -np.ones(len(indexKD), dtype=int)
     else:
+        # TODO replace assert
         assert hasattr(clusters, '__len__') and len(clusters) == len(indexKD)
-        outclusters = np.array(clusters, dtype=int)
-        assert len(outclusters.shape) == 1
+        out_clusters = np.array(clusters, dtype=int)
+        assert len(out_clusters.shape) == 1
 
-    assert isinstance(min_size, int) and min_size >= 0
-    assert isinstance(auto_set, bool)
+    if not (isinstance(min_size, int) and min_size >= 0):
+        raise ValueError("'min_size' needs to be an integer equal or greater zero")
+    if not isinstance(auto_set, bool):
+        raise ValueError("'auto_set' needs to boolean")
 
-    nextId = outclusters.max() + 1
+    nextId = out_clusters.max() + 1
     coords = indexKD.coords()
 
     # calculate spatial neighbourhood
     nIdsIter = indexKD.ball(coords[order, :], r)
 
     for pId, nIds in zip(order, nIdsIter):
-        cIds = [outclusters[nId] for nId in nIds if outclusters[nId] != -1]
+        cIds = [out_clusters[nId] for nId in nIds if out_clusters[nId] != -1]
         if len(cIds) > 0:
-            outclusters[pId] = get_class(cIds)
+            out_clusters[pId] = get_class(cIds)
         elif auto_set:
-            outclusters[pId] = nextId
+            out_clusters[pId] = nextId
             nextId += 1
 
-    return classes2dict(outclusters, min_size=min_size)
+    return classes2dict(out_clusters, min_size=min_size)
 
 
 # TODO vereinfachte clustering funktionen mit vordefinierten gewichten,
@@ -195,5 +202,5 @@ def dbscan(
         epsilon = np.percentile(dists, quantile * 100) * factor
 
     # perform dbscan
-    outclusters = DBSCAN(eps=epsilon, min_samples=min_pts).fit_predict(coords)
-    return classes2dict(outclusters, min_size=min_size, max_size=max_size)
+    out_clusters = DBSCAN(eps=epsilon, min_samples=min_pts).fit_predict(coords)
+    return classes2dict(out_clusters, min_size=min_size, max_size=max_size)
