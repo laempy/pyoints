@@ -14,4 +14,5 @@ from . import (
     assign,
     assertion,
     filters,
+    clustering,
 )
