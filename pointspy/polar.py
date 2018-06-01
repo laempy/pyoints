@@ -2,9 +2,11 @@
 """
 
 import numpy as np
-import distance
 
-from . import assertion
+from .import (
+    distance,
+    assertion,
+)
 
 
 def coords2polar(coords):
