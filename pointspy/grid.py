@@ -1,16 +1,18 @@
 import numpy as np
 import pandas as pd
 
-from . import transformation
-from . import registration
-from . import nptools
+from . import (
+    assertion,
+    transformation,
+    registration,
+    nptools,
+    projection,
+    GeoRecords,
+    Extent,
+)
 
-from .georecords import GeoRecords
-from .extent import Extent
 
-
-
-def corners2transform(corners, resolutions):
+def corners2transform(corners, scale=None):
     # TODO revise
     # TODO nur min und maxcorner
     # TODO: als k-dimensionale Funktion in transformation
@@ -19,32 +21,57 @@ def corners2transform(corners, resolutions):
 
     Parameters
     ----------
-
+    corners : array_like(Number, shape=(2**k, k))
+        Corners of a `k` dimensional grid in a `k` dimensional space.
+    scale : optional, array_like(Number, shape=(k))
+        Optional scale to define the pixel resolution of a raster.
 
     Examples
     --------
 
-    >>> T = transformation.matrix(t=[3, 5], r=10)
-    >>> coords = np.array([[0, 0], [0, 1], [1, 1], [1, 0]])
-    >>> coords = Extent([np.zeros(dim), np.ones(dim)]).corners()
+    Create some corners
 
+    >>> T = transformation.matrix(t=[3, 5], s=[10, 20], r=np.pi/2)
+    >>> coords = Extent([np.zeros(2), np.ones(2)]).corners()
     >>> corners = transformation.transform(coords, T)
-    >>> M = corners2transform(corners, [2, 0.5])
-    >>> print T
 
-    >>> print np.round(M, 6)
+    Create transformation matrix without scale.
+
+    >>> M = corners2transform(corners)
+    >>> print(np.round(M, 3))
+    [[ 0. -1.  3.]
+     [ 1.  0.  5.]
+     [ 0.  0.  1.]]
+
+    Create transformation matrix with a scale.
+
+    >>> M = corners2transform(corners, [0.5, 2])
+    >>> print(np.round(M, 3))
+    [[ 0.  -2.   3. ]
+     [ 0.5  0.   5. ]
+     [ 0.   0.   1. ]]
 
     """
 
+    corners = assertion.ensure_coords(corners)
     dim = corners.shape[1]
-
     pts = Extent([np.zeros(dim), np.ones(dim)]).corners()
 
-    #T = registration.find_transformation(corners, pts)
+    # find transformation matrix
+    T = registration.find_transformation(corners, pts)
+
+    # get translation, rotation and scale
+    t, r, s, det = transformation.decomposition(T)
+
+    return transformation.matrix(t=t, r=r, s=scale)
+    #T = registration.find_transformation(pts, corners)
+
+    #return T
+    #return T
     #print np.round(T, 6)
     # TODO scaling missing
     T = registration.find_rototranslation(corners, pts)
-    return T
+
     #print np.round(T, 6)
     return T
     #print transformation.decomposition(T)
@@ -57,7 +84,7 @@ def corners2transform(corners, resolutions):
     #corners / corners.max(0)
     #np.linalg.solve()
 
-    sT = transformation.s_matrix(resolutions)
+    sT = transformation.s_matrix(scale)
     tT = transformation.t_matrix(corners[0, :])
 
     dX = float(corners[0, 0] - corners[1, 0])
@@ -72,10 +99,35 @@ def corners2transform(corners, resolutions):
 
 
 def transform2corners(T, shape):
-    # TODO revise
-    # TODO: als k-dimensionale Funktion in transformation
-    ext = Extent(np.concatenate([np.zeros(len(shape)), shape]))
-    return Grid.keys2coords(T, ext.corners())
+    """Generates the corners of a grid based on a transformation matrix.
+
+    Parameters
+    ----------
+    T : array_like(Number, shape=(k+1, k+1))
+        Transformation matrix in a `k` dimensional space.
+    shape : array_like(int, shape=(k))
+        Desired shape of the grid
+
+
+    Examples
+    --------
+
+    >>> T = transformation.matrix(t=[10, 20], s=[0.5, 2])
+    >>> print(np.round(T, 3))
+    [[ 0.5  0.  10. ]
+     [ 0.   2.  20. ]
+     [ 0.   0.   1. ]]
+
+    >>> corners = transform2corners(T, (100, 200))
+    >>> print(np.round(corners, 3))
+    [[ 10.  20.]
+     [ 60.  20.]
+     [ 60. 420.]
+     [ 10. 420.]]
+
+    """
+    ext = Extent([np.zeros(len(shape)), shape])
+    return transformation.transform(ext.corners(), T)
 
 
 class Grid(GeoRecords):
@@ -84,27 +136,35 @@ class Grid(GeoRecords):
 
     Parameters
     ----------
-    proj: `Proj`
+    proj : pointspy.projection.Proj
         Projection object provides the geograpic projection of the grid.
-    npRecarray: `numpy.recarray`
+    npRecarray : `numpy.recarray`
         Multidimensional array of objects. Element of the matrix represents a
         object with k coordinate dimension.
-    T: (k+1,k+1), `array_like`
+    T : array_like(Number, shape=(k+1, k+1))
         The  linear transformation matrix to transform the coordinates.
         The translation represents the origin, the rotation the
         orientation and the scale the pixel size of the matrix.
-    """
 
+    TODO: Examples
+    Examples
+    --------
+
+    """
     def __new__(cls, proj, npRecarray, T):
-        assert isinstance(npRecarray, np.recarray)
-        assert len(npRecarray.shape) > 1
-        assert isinstance(T, np.array)
-        assert npRecarray.shape[0] == npRecarray.shape[1]
+
+        if not isinstance(proj, projection.Proj):
+            raise ValueError('"proj" needs to be an instance of Proj')
+        if not isinstance(npRecarray, np.recarray):
+            raise ValueError('numpy record array required')
+        if not len(npRecarray.shape) > 1:
+            raise ValueError('at two dimensions required')
+        T = assertion.ensure_tmatrix(T)
 
         if 'coords' not in npRecarray.dtype.names:
             keys = cls.keys(npRecarray.shape)
             coords = cls.keys2coords(T, keys)
-            data = nptools.add_field(npRecarray, coords, 'coords')
+            data = nptools.add_fields(npRecarray, [('coords', float, coords.shape[-1])], data=coords)
         grid = GeoRecords(proj, data, T=T).reshape(npRecarray.shape).view(cls)
         return grid
 
@@ -114,12 +174,12 @@ class Grid(GeoRecords):
 
         Parameters
         ----------
-        T: (k+1,k+1), `array_like`
+        T : array_like(Number, shape=(k+1,k+1))
             The  linear transformation matrix to transform the coordinates.
             The translation represents the origin, the rotation the
             orientation and the scale the pixel size of the matrix.
-        coords: `numpy.recarray`
-            Coordinates with at least k dimensions to convert to indices.
+        coords : `numpy.recarray`
+            Coordinates with at least `k` dimensions to convert to indices.
 
         Returns
         -------
@@ -140,6 +200,7 @@ class Grid(GeoRecords):
 
     @staticmethod
     def keys2coords(T, keys):
+        # TODO check
         localSystem = transformation.LocalSystem(T)
         dim = localSystem.dim
         s = np.product(keys.shape) / dim

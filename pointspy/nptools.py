@@ -114,13 +114,13 @@ def missing(data):
     Finding missing values in a list.
 
     >>> arr = ['str', 1, None, np.nan, np.NaN]
-    >>> print missing(arr)
+    >>> print(missing(arr))
     [False False  True  True  True]
 
     Finding missing values in multidimensional arrays.
 
     >>> arr = np.array([(0,np.nan),(None, 1),(2, 3)], dtype=float)
-    >>> print missing(arr)
+    >>> print(missing(arr))
     [[False  True]
      [ True False]
      [False False]]
@@ -167,12 +167,12 @@ def recarray(dataDict, dtype=[], dim=1):
     ... })
     >>> rec.dtype.descr
     [('text', '|S5'), ('missing', '|O'), ('coords', '<i8', (2,)), ('n', '<i8')]
-    >>> print rec.coords
+    >>> print(rec.coords)
     [[3 4]
      [3 2]
      [0 2]
      [5 2]]
-    >>> print rec[0]
+    >>> print(rec[0])
     ('text1', None, [3, 4], 1)
 
     Create a two dimensional array.
@@ -186,13 +186,13 @@ def recarray(dataDict, dtype=[], dim=1):
     ...    'values': [[1, 3], [4, 0], [-4, 2]]
     ... }
     >>> rec = recarray(data, dim=2)
-    >>> print rec.shape
+    >>> print(rec.shape)
     (3, 2)
-    >>> print rec.values
+    >>> print(rec.values)
     [[ 1  3]
      [ 4  0]
      [-4  2]]
-    >>> print rec.dtype
+    >>> print(rec.dtype)
     (numpy.record, [('values', '<i8'), ('coords', '<f8', (2,))])
 
     """
@@ -263,11 +263,11 @@ def add_fields(arr, dtypes, data=None):
 
     >>> A = recarray({'a': [0, 1, 2, 3]})
     >>> C = add_fields(A, [('b', float, 2), ('c', int)])
-    >>> print C.dtype.descr
+    >>> print(C.dtype.descr)
     [('a', '<i8'), ('b', '<f8', (2,)), ('c', '<i8')]
 
     >>> D = add_fields(A, [('d', int), ('e', str)], data=[[1, 2, 3, 4], None])
-    >>> print D
+    >>> print(D)
     [(0, 1, '') (1, 2, '') (2, 3, '') (3, 4, '')]
 
     """
@@ -320,9 +320,9 @@ def fuse(*recarrays):
     >>> A = recarray({'a': [0, 1, 2, 3]})
     >>> B = recarray({'b': [4, 5, 6, 7]})
     >>> C = fuse(A, B)
-    >>> print C.shape
+    >>> print(C.shape)
     (4,)
-    >>> print C.dtype.names
+    >>> print(C.dtype.names)
     ('a', 'b')
 
     Two dimensional arrays.
@@ -330,9 +330,9 @@ def fuse(*recarrays):
     >>> A = recarray({'a': [[0, 1], [2, 3]]}, dim = 2)
     >>> B = recarray({'b': [[4, 5], [6, 7]]}, dim = 2)
     >>> C = fuse(A, B)
-    >>> print C.shape
+    >>> print(C.shape)
     (2, 2)
-    >>> print C
+    >>> print(C)
     [[(0, 4) (1, 5)]
      [(2, 6) (3, 7)]]
 
@@ -474,15 +474,15 @@ def unnest(rec):
     ...    ])
     ... ]
     >>> rec = np.ones(2, dtype=dtype).view(np.recarray)
-    >>> print rec.nested.child2
+    >>> print(rec.nested.child2)
     [[1. 1.]
      [1. 1.]]
     >>> unnested = unnest(rec)
-    >>> print unnested[0]
+    >>> print(unnested[0])
     [1 1]
-    >>> print unnested[1]
+    >>> print(unnested[1])
     ['' '']
-    >>> print unnested[2]
+    >>> print(unnested[2])
     [[1. 1.]
      [1. 1.]]
 
@@ -520,7 +520,7 @@ def colzip(arr):
     >>> cols = colzip(arr)
     >>> len(cols)
     3
-    >>> print cols[0]
+    >>> print(cols[0])
     [1 0 0]
 
     """
@@ -579,7 +579,7 @@ def apply_function(ndarray, func, dtypes=None):
     >>> data = { 'a': [0, 1, 2, 3], 'b': [1, 2, 3, 4] }
     >>> arr = np.ones((2, 3), dtype=[('a', int), ('b', int)])
     >>> func = lambda item: item[0] + item[1]
-    >>> print apply_function(arr, func)
+    >>> print(apply_function(arr, func))
     [[2 2 2]
      [2 2 2]]
 
@@ -588,7 +588,7 @@ def apply_function(ndarray, func, dtypes=None):
     >>> data = { 'a': [0, 1, 2, 3], 'b': [1, 2, 3, 4] }
     >>> arr = recarray(data)
     >>> func = lambda record: record.a + record.b
-    >>> print apply_function(arr, func)
+    >>> print(apply_function(arr, func))
     [1 3 5 7]
 
     Two dimensional case.
@@ -596,14 +596,14 @@ def apply_function(ndarray, func, dtypes=None):
     >>> data = { 'a': [[0, 1], [2, 3]], 'b': [[1, 2], [3, 4]] }
     >>> arr = recarray(data, dim=2)
     >>> func = lambda record: record.a ** record.b
-    >>> print apply_function(arr, func)
+    >>> print(apply_function(arr, func))
     [[ 0  1]
      [ 8 81]]
 
     Multiple output data types.
 
     >>> func = lambda record: (record.a + record.b, record.a ** record.b)
-    >>> print apply_function(arr, func, dtypes=[('c', float), ('d', int)])
+    >>> print(apply_function(arr, func, dtypes=[('c', float), ('d', int)]))
     [[(1.,  0) (3.,  1)]
      [(5.,  8) (7., 81)]]
 

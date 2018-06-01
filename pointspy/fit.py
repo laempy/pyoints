@@ -87,12 +87,11 @@ def cylinder(origin, coords, p, th):
     >>> y = y * r
     >>> z = np.ones(len(x)) * 5
     >>> z[::2] = -5
-    >>> coords = np.array([x,y,z]).T
+    >>> coords = np.array([x, y, z]).T
     >>> T = transformation.matrix(t=[1,2,3],r=[0.15,0.2,0.0])
-    >>> print np.round(T,2)
-    T
-    >>> rCoords = transformation.transform(coords,T)
-    >>> M, center, r, success = cylinder(None,rCoords,[0,0,0,0,0],None)
+
+    >>> rCoords = transformation.transform(coords, T)
+    >>> M, center, r, success = cylinder(None, rCoords, [0, 0, 0, 0, 0], None)
     >>> print success
     True
     >>> print np.round(r,2)
@@ -176,7 +175,7 @@ def cylinder(origin, coords, p, th):
     #M = R * T1
 
     M = transformation.LocalSystem(M)
-    center = M.to_global([0, 0, 0])
+    center = M.to_global([[0, 0, 0]])[0]
     #print transformation.decomposition(M)
 
     print (coords[:, 2] < 0).sum()
@@ -203,28 +202,39 @@ class PCA(transformation.LocalSystem):
 
         cCoords = coords - center
 
+        # TODO uebereinstimmung mit vector.basis
         covM = np.cov(cCoords, rowvar=False)
-        evals, evecs = np.linalg.eigh(covM)
-        idx = np.argsort(evals)[::-1]
-        pComponents = evecs[:, idx].T
+        eigen_values, eigen_vecors = np.linalg.eigh(covM)
+
+        order = np.argsort(eigen_values)[::-1]
+        eigen_values = eigen_values[order]
+        eigen_vecors = eigen_vecors[:, order].T
 
         # Orientation
-        pc1 = pComponents[0, :]
+        # reverse orientation if required
+        pc1 = eigen_vecors[0, :]
         mIndex = np.argmax(np.abs(pc1))
         if pc1[mIndex] < 0:
-            #pComponents = -pComponents
-            pComponents[0, :] = -pComponents[0, :]
-        # TODO det gets -1!!!!
-        #pComponents = np.linalg.inv(pComponents)
+            eigen_vecors = -eigen_vecors
+            #eigen_vecors[0, :] = -eigen_vecors[0, :]
+
+        assert np.isclose(abs(np.linalg.det(eigen_vecors)), 1), 'determinant differs from -1 or 1'
+        #eigen_vecors = np.linalg.inv(eigen_vecors)
 
         # Transformation matrix
-        #print pComponents
         T = np.matrix(np.identity(dim + 1))
-        T[:dim, :dim] = pComponents[:dim, :dim]
+        T[:dim, :dim] = eigen_vecors[:dim, :dim]
         T = T * transformation.matrix(-center) # don't edit
         #T = np.linalg.inv(T)
 
-        return transformation.LocalSystem(T).view(cls)
+        M = transformation.LocalSystem(T).view(cls)
+        M._eigen_values = eigen_values
+        return M
+
+    @property
+    def eigen_values(self):
+        return self._eigen_values
+
 
     def pc(self, k):
         """Select a specific principal component.
@@ -242,15 +252,31 @@ class PCA(transformation.LocalSystem):
         Examples
         --------
 
-        >>> T = matrix(t=[2, 3], s=[0.5, 10])
-        >>> print T
-        [[ 0.5  0.   2. ]
-         [ 0.  10.   3. ]
-         [ 0.   0.   1. ]]
-        >>> print T.PC(1)
-        [ 0. 10.]
-        >>> print T.PC(2)
-        [0.5 0. ]
+        >>> coords = [(-1, -2), (0, 0), (1, 2)]
+        >>> T = PCA(coords)
+        >>> print np.round(T, 3)
+        [[ 0.447  0.894  0.   ]
+         [-0.894  0.447  0.   ]
+         [ 0.     0.     1.   ]]
+
+        >>> print np.round(T.pc(1), 3)
+        [0.447 0.894]
+        >>> print np.round(T.pc(2), 3)
+        [-0.894  0.447]
+
+        >>> coords = [(0, 0), (1, 1)]
+        >>> T = PCA(coords)
+        >>> print np.round(T, 3)
+        [[ 0.707  0.707 -0.707]
+         [-0.707  0.707  0.   ]
+         [ 0.     0.     1.   ]]
+        >>> print np.round(np.linalg.inv(T), 3)
+        [[ 0.707 -0.707  0.5  ]
+         [ 0.707  0.707  0.5  ]
+         [ 0.     0.     1.   ]]
+        >>> print np.round(transformation.transform(coords, T), 3)
+        [[-0.707  0.   ]
+         [ 0.707  0.   ]]
 
         """
         if not (k >= 1 and k <= self.dim):

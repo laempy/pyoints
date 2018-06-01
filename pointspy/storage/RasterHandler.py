@@ -1,5 +1,7 @@
 import numpy as np
+import datetime
 from affine import Affine
+
 from osgeo import (
     gdal,
     osr,
@@ -26,7 +28,7 @@ class RasterReader(GeoFile):
         if proj is None:
             wkt = gdalRaster.GetProjection()
             if wkt is not '':
-                self._proj = projection.projFromProj4(
+                self._proj = projection.Proj.from_proj4(
                     osr.SpatialReference(wkt=wkt).ExportToProj4())
         if self._proj is None:
             raise Exception('No projection found')
@@ -104,32 +106,52 @@ class RasterReader(GeoFile):
         pass
 
 
-def writeRaster(geoRecords, file, noData=np.nan):
+def writeRaster(grid, filename, noData=np.nan):
+    """Writes a a pointspy Grid to disc.
+
+    Parameters
+    ----------
+    grid : Grid(shape=(cols, rows))
+        A two dimensional pointspy Grid to be stored with of `cols`
+        columns and `rows` rows.
+    filename : String
+        File to save the raster to.
+
+    Examples
+    --------
+    TODO
+
+    """
+    # TODO test writable file
+
     driver = gdal.GetDriverByName('GTiff')
 
-    if len(geoRecords.bands.shape) == 2:
+    if len(grid.bands.shape) == 2:
         numBands = 1
     else:
-        numBands = geoRecords.bands.shape[2]
+        numBands = grid.bands.shape[2]
 
     raster = driver.Create(
-        file, geoRecords.shape[1],
-        geoRecords.shape[0],
-        numBands, gdal.GDT_Float32)
+        filename,
+        grid.shape[1],
+        grid.shape[0],
+        numBands,
+        gdal.GDT_Float32
+    )
 
     if numBands == 1:
         band = raster.GetRasterBand(1)
         band.SetNoDataValue(noData)
-        band.WriteArray(geoRecords.bands)
+        band.WriteArray(grid.bands)
         band.FlushCache()
     else:
         for i in range(numBands):
             band = raster.GetRasterBand(i + 1)
             band.SetNoDataValue(noData)
-            band.WriteArray(geoRecords.bands[:, :, i])
+            band.WriteArray(grid.bands[:, :, i])
             band.FlushCache()
 
-    raster.SetGeoTransform(geoRecords.gdalGeoTransform())
-    raster.SetProjection(geoRecords.proj.wkt)
+    raster.SetGeoTransform(grid.get_gdal_transform())
+    raster.SetProjection(grid.proj.wkt)
 
     raster.FlushCache()

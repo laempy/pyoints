@@ -9,6 +9,7 @@ from . import (
     distance,
     fit,
     nptools,
+    transformation,
 )
 
 
@@ -202,6 +203,7 @@ def scalarproduct(v, w):
 
     >>> scalarproduct([1, 1], [1, -1])
     0
+
     """
     v = assertion.ensure_numvector(v)
     w = assertion.ensure_numvector(w)
@@ -237,18 +239,106 @@ def orthogonal(v, w):
 
 
 def basis(vec):
-    #TODO
+    """Generates a local coordinate system based on the provided vector. The
+    local coordinate system is represented by a rotation matrix.
 
-    vec = np.array(vec)
+    Parameters
+    ----------
+    vec : array_like(Number, shape=(k))
+        Vector of `k` dimensions to defines the direction of the first
+        coordinate axis of the new coordinate system. The other `k-1` axes are
+        build perpendicular to it and each other.
+
+    Returns
+    -------
+    np.array(Number, shape=(k+1, k+1))
+        Rotation matrix representing the desired coordinate system. Since the
+        norm  of the vector `vec` has no influence on the scale, the norm of
+        all basic vectors of the coordinate system is one.
+
+    Examples
+    --------
+
+    Two dimensional case.
+
+    >>> from pointspy import transformation
+    >>> corners = [(0, 0), (0, 1), (1, 0), (1, 1), (0.5, 0.5), (-1, -1)]
+
+    X-vector changes
+
+    >>> b = basis([1, 0])
+    >>> print(np.round(b, 2))
+    [[1. 0. 0.]
+     [0. 1. 0.]
+     [0. 0. 1.]]
+    >>> local_coords = transformation.transform(corners, b)
+    >>> print(np.round(local_coords, 3))
+    [[ 0.   0. ]
+     [ 0.   1. ]
+     [ 1.   0. ]
+     [ 1.   1. ]
+     [ 0.5  0.5]
+     [-1.  -1. ]]
+
+    >>> b = basis([0, 2])
+    >>> print(np.round(b, 2))
+    [[0. 1. 0.]
+     [1. 0. 0.]
+     [0. 0. 1.]]
+    >>> local_coords = transformation.transform(corners, b)
+    >>> print(np.round(local_coords, 3))
+    [[ 0.   0. ]
+     [ 1.   0. ]
+     [ 0.   1. ]
+     [ 1.   1. ]
+     [ 0.5  0.5]
+     [-1.  -1. ]]
+
+    >>> b = basis([1, 1])
+    >>> print(np.round(b, 2))
+    [[ 0.71  0.71  0.  ]
+     [ 0.71 -0.71  0.  ]
+     [ 0.    0.    1.  ]]
+    >>> local_coords = transformation.transform(corners, b)
+    >>> print(np.round(local_coords, 3))
+    [[ 0.     0.   ]
+     [ 0.707 -0.707]
+     [ 0.707  0.707]
+     [ 1.414  0.   ]
+     [ 0.707  0.   ]
+     [-1.414  0.   ]]
+
+    Three dimensional case.
+
+    >>> b = basis([1, 1, 0])
+    >>> print(np.round(b, 2))
+    [[ 0.71  0.71 -0.    0.  ]
+     [-0.   -0.   -1.    0.  ]
+     [ 0.71 -0.71 -0.    0.  ]
+     [ 0.    0.    0.    1.  ]]
+
+    """
+    vec = assertion.ensure_numvector(vec)
     dim = len(vec)
 
-    # Rotationsmatrix generieren mit vec als 1. Hauptkomponente
-    sCoords = np.array([vec * (float(i) / (dim - 1)) for i in range(dim)]).T
+    # TODO replace by PCA([np.zeros(len(vec)), vec])
+    return fit.PCA([-vec, vec])
+
+    # generate a rotation matrix with vec as 1th princiopal component
+    #vec = vec / distance.norm(vec)
+    sCoords = np.array([vec * (float(dim - i - 1) / (dim - 1)) for i in range(dim)]).T
     covM = np.cov(sCoords)
+
     U = np.linalg.svd(covM)[0]
 
+    pc1 = U[0, :]
+    mIndex = np.argmax(np.abs(pc1))
+    if pc1[mIndex] < 0:
+        U = -U
+
+    # TODO signum?
     T = np.matrix(np.identity(dim + 1))
-    T[0:dim, 0:dim] = -U.T
+    T[0:dim, 0:dim] = U.T
 
     return T
 

@@ -13,6 +13,8 @@ sudo apt install libgdal-dev
 ### libspatialindex
 apt install libspatialindex-dev
 
+### Liblas
+apt install liblas-c3
 
 
 # TODO

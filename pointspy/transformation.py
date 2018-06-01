@@ -134,7 +134,7 @@ def matrix(t=None, r=None, s=None, order='trs'):
         matrices['s'] = s_matrix(s)
         shape = matrices['s'].shape
 
-    # doble check the shape
+    # double check the shape
     assert len(shape) == 2
     assert shape[0] == shape[1]
     assert shape[0] > 1
@@ -442,7 +442,8 @@ def decomposition(T):
     if dim == 2:
         r1 = np.arctan2(R[1, 0], R[1, 1])
         r2 = np.arctan2(-R[0, 1], R[0, 0])
-        assert np.isclose(r1, r2), 'Rotation angles seem to differ.'
+        if not np.isclose(r1, r2):
+            warnings.warn('Rotation angles seem to differ.')
         r = (r1 + r2) * 0.5
     elif dim == 3:
         r_x = np.arctan(R[2, 1] / R[2, 2])
@@ -516,6 +517,7 @@ class LocalSystem(np.matrix, object):
     @property
     def origin(self):
         return np.asarray(self[:self.dim, self.dim]).T[0]
+
 
     def to_local(self, gcoords):
         """Transforms global coordinates into local coordinates.
