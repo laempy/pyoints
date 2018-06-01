@@ -62,8 +62,9 @@ def find_rototranslation(A, B):
 
 
     # reflection case
-    #if np.linalg.det(R) < 0:     #   USV[0][-1, :] *= -1
-    #    R = USV[0] * USV[2]
+    #if np.linalg.det(R) < 0:
+    #    USV[0][-1, :] *= -1
+     #   R = USV[0] * USV[2]
 
     # Create transformation matrix
     T1 = transformation.t_matrix(cA)
@@ -84,21 +85,22 @@ def find_transformation(A, B):
 
     Parameters
     ----------
-    A: (n,k), `numpy.ndarray`
+    A : array_like(Number, shape=(n, k))
         Array representing n reference points with k dimensions.
-    B: (n,k), `numpy.ndarray`
+    B : array_like(Number, shape=(n, k))
         Array representing n points with k dimensions.
 
     Returns
     -------
-    M: (n,k), `numpy.matrix`
+    M : np.matrix(Number, shape = (k+1, k+1)
         Tranformation matrix which maps `B` to `A` with A = `B * M.T`.
     """
 
-    assert A.shape == B.shape, 'dimensions do not match!'
-
     b = transformation.homogenious(A)
     mA = transformation.homogenious(B)
+
+    if not b.shape == mA.shape:
+        raise ValueError('dimensions do not match')
 
     x = np.linalg.lstsq(mA, b)[0]
     M = np.matrix(x).T
@@ -110,20 +112,21 @@ def find_rototranslations(coordsDict, pairs, sWeights=1, oWeights={}):
     """Finds the optimal roto-translation matrices between multiple point sets.
     The algorithm assumes infinitissimal rotations between the point sets.
 
+    # TODO: types
     Parameters
     ----------
-    coordsDict: `dict`
+    coordsDict: dict
         Dictionary of point sets.
-    pairs: `dict`
+    pairs : dict
         Dictionary of point pairs
-    sWeights: optional, `TODO`
+    sWeights : optional, TODO
         Weights for sum of translations and rotations
-    oWeights: optional, `TODO`
+    oWeights : optional, TODO
         Weights try to keep the original location and orientation TOOD
 
     Returns
     -------
-    M: `dict`
+    M : dict
         Dictionary of roto-translation matrices with `B` to `A` with A = `B * M.T`.
     """
 
