@@ -34,7 +34,7 @@ def rad2deg(rad):
 
     >>> rad2deg(0.5*np.pi)
     90.0
-    >>> print rad2deg([0, np.pi/4, np.pi, 2*np.pi])
+    >>> print(rad2deg([0, np.pi/4, np.pi, 2*np.pi]))
     [  0.  45. 180. 360.]
 
     """
@@ -68,7 +68,7 @@ def deg2rad(deg):
     >>> round(deg2rad(90), 3)
     1.571
     >>> rad = deg2rad([0, 45, 180, 360])
-    >>> print np.round(rad, 3)
+    >>> print(np.round(rad, 3)]))
     [0.    0.785 3.142 6.283]
 
     """
@@ -281,36 +281,36 @@ class Vector(object):
     Two dimensional case.
 
     >>> v = Vector((5, 7), (3, 4))
-    >>> print v
+    >>> print(v)
     origin: [5 7]; vec: [3 4]
-    >>> print v.target
+    >>> print(v.target)
     [ 8 11]
-    >>> print v.length
+    >>> print(v.length)
     5.0
 
     Three dimensional case.
 
     >>> v = Vector((1, 1, 1), (2, 3, 4))
-    >>> print v
+    >>> print(v)
     origin: [1 1 1]; vec: [2 3 4]
-    >>> print v.target
+    >>> print(v.target)
     [3 4 5]
 
     Edit vector.
 
     >>> v = Vector((1, 1), (3, 4))
-    >>> print v
+    >>> print(v)
     origin: [1 1]; vec: [3 4]
     >>> v.vec = (5, 2)
-    >>> print v
+    >>> print(v)
     origin: [1 1]; vec: [5 2]
 
     >>> v.origin = (-1, -2)
-    >>> print v
+    >>> print(v)
     origin: [-1 -2]; vec: [5 2]
 
     >>> v.target = (5, 4)
-    >>> print v
+    >>> print(v)
     origin: [-1 -2]; vec: [6 6]
 
     """
@@ -390,7 +390,7 @@ class Vector(object):
         --------
 
         >>> v = Vector((1, 1, 1), (2, 3, 4))
-        >>> print v*3
+        >>> print(v*3)
         origin: [1 1 1]; vec: [ 6  9 12]
 
         """
@@ -415,7 +415,7 @@ class Vector(object):
         --------
 
         >>> v = Vector((1, 1, 1), (2, 3, 4))
-        >>> print v / 2.0
+        >>> print(v / 2.0)
         origin: [1 1 1]; vec: [1.  1.5 2. ]
 
         """
@@ -443,7 +443,7 @@ class Vector(object):
 
         >>> v = Vector((1, 1, 1), (2, 3, 4))
         >>> ks = v.k([v.origin, v.target, v.origin - 2 * v.vec])
-        >>> print np.round(ks, 2)
+        >>> print(np.round(ks, 2))
         [ 0.  1. -2.]
 
         """
@@ -473,9 +473,9 @@ class Vector(object):
         --------
 
         >>> v = Vector((1, 1, 1), (2, 3, 4))
-        >>> print v(2)
+        >>> print(v(2))
         [5 7 9]
-        >>> print v([0, 1, -2, 3])
+        >>> print(v([0, 1, -2, 3]))
         [[ 1  1  1]
          [ 3  4  5]
          [-3 -5 -7]
@@ -507,7 +507,7 @@ class Vector(object):
 
         >>> v = Vector((1, 1, 1), (2, 3, 4))
         >>> angles = v.angles(deg=True)
-        >>> print np.round(angles, 3)
+        >>> print(np.round(angles, 3))
         [68.199 56.145 42.031]
 
         """
@@ -532,13 +532,13 @@ class Vector(object):
 
         >>> v = Vector((1, -1), (1, 2))
         >>> dist = v.distance([(1, -1), (0, -3), (2, 1), (2, -2), (0, 0)])
-        >>> print np.round(dist, 3)
+        >>> print(np.round(dist, 3))
         [0.    0.    0.    1.342 1.342]
-        >>> print np.linalg.inv(v.base).origin
+        >>> print(np.linalg.inv(v.base).origin)
         [ 1. -1.]
-        >>> print v.base.pc(1) * v.length
+        >>> print(v.base.pc(1) * v.length)
         [1. 2.]
-        >>> print v.base.pc(2) * v.length
+        >>> print(v.base.pc(2) * v.length)
         [-2.  1.]
 
         """
@@ -569,7 +569,7 @@ class Vector(object):
         ...         method=method
         ...     )
         >>> vec = Vector((1, 1, -1), (0, 0, 1))
-        >>> print vec.surface_intersection(surface)
+        >>> print(vec.surface_intersection(surface))
         [1. 1. 2.]
 
         """
