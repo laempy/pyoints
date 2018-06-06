@@ -150,6 +150,11 @@ class Grid(GeoRecords):
     Examples
     --------
 
+
+    See Also
+    --------
+    GeoRecords
+
     """
     def __new__(cls, proj, npRecarray, T):
 
@@ -164,7 +169,8 @@ class Grid(GeoRecords):
         if 'coords' not in npRecarray.dtype.names:
             keys = cls.keys(npRecarray.shape)
             coords = cls.keys2coords(T, keys)
-            data = nptools.add_fields(npRecarray, [('coords', float, coords.shape[-1])], data=coords)
+            dtype = [('coords', float, coords.shape[-1])]
+            data = nptools.add_fields(npRecarray, dtype, data=coords)
         grid = GeoRecords(proj, data, T=T).reshape(npRecarray.shape).view(cls)
         return grid
 
@@ -175,23 +181,24 @@ class Grid(GeoRecords):
         Parameters
         ----------
         T : array_like(Number, shape=(k+1,k+1))
-            The  linear transformation matrix to transform the coordinates.
+            A linear transformation matrix to transform the coordinates.
             The translation represents the origin, the rotation the
-            orientation and the scale the pixel size of the matrix.
-        coords : `numpy.recarray`
+            orientation and the scale the pixel size of a raster.
+        coords : array_like(Number, shape=(n, k))
             Coordinates with at least `k` dimensions to convert to indices.
 
         Returns
         -------
-        keys: `numpy.recarray`
-            Indices of the coordinates within the matrix.
+        keys : np.ndarray(int, shape=(n, k))
+            Indices of the coordinates within the grid.
+
         """
-        localSystem = transformation.LocalSystem(T)
-        dim = localSystem.dim
+        T = transformation.LocalSystem(T)
+        dim = T.dim
         # TODO vereinfachen (wie mit strukturierten koordinaten umgehen?
         s = np.product(coords[:, :dim].shape) / dim
-        flatCoords = coords[:, :dim].view().reshape((s, dim))
-        values = localSystem.to_global(flatCoords)
+        flat_coords = coords[:, :dim].view().reshape((s, dim))
+        values = T.to_global(flat_coords)
 
         # TODO Reihenfolge der Spalten?
         # keys=np.array(np.round(values),dtype=int)[:,::-1]
@@ -200,47 +207,122 @@ class Grid(GeoRecords):
 
     @staticmethod
     def keys2coords(T, keys):
-        # TODO check
-        localSystem = transformation.LocalSystem(T)
-        dim = localSystem.dim
-        s = np.product(keys.shape) / dim
-        flatKeys = keys.view().reshape((s, dim))[:, ::-1] + 0.5
-        values = localSystem.to_local(flatKeys)
+        """Converts indices of raster cells to coordinates.
+
+        Parameters
+        ----------
+        T : array_like(Number, shape=(k+1,k+1))
+            The transformation matrix of a `k` dimensional raster.
+        keys : array_like(int, shape=(n, k))
+            Indices of `n` raster cells.
+
+        Returns
+        -------
+        coords : array_like(Number, shape=(n, k))
+            Desired coordinates of the raster cells.
+
+        See Also
+        --------
+        Grid.coords2keys, Grid.coords2coords
+
+        """
+        keys = assertion.ensure_coords(keys)
+        T = transformation.LocalSystem(T)
+        if not keys.shape[1] == T.shape[1] - 1:
+            raise ValueError('dimensions do not match')
+
+        s = np.product(keys.shape) / T.dim
+        flatKeys = keys.view().reshape((s, T.dim))[:, ::-1] + 0.5
+        values = T.to_local(flatKeys)
         coords = np.array(values, dtype=float)
         return coords.reshape(keys.shape)
 
     @staticmethod
-    def coords2coords(transform, coords):
-        return Grid.keys2coords(transform, Grid.coords2keys(transform, coords))
+    def coords2coords(T, coords):
+        """Aligns coordinates with a raster grid.
+
+        Parameters
+        ----------
+        T : array_like(Number, shape=(k+1, k+1))
+            The transformation matrix of a `k` dimensional raster.
+        coords : array_like(Number, shape=(n, k))
+            Coordinates to align with a raster grid.
+
+        Returns
+        -------
+        coords : array_like(Number, shape=(n, k))
+            Desired coordinates aligned with the grid.
+
+        See Also
+        --------
+        Grid.coords2keys, Grid.keys2coords
+
+        """
+        return Grid.keys2coords(T, Grid.coords2keys(T, coords))
 
     @staticmethod
-    def extentinfo(transform, shape, extent):
-        # notwendig?
+    def extentinfo(T, extent):
+        """Recieve information on a raster subset with given boundaries.
+
+        Parameters
+        ----------
+        T : array_like(Number, shape=(k+1,k+1))
+            The transformation matrix of a `k` dimensional raster.
+        extent : array_like(Number, shape=(2 * k))
+            Desired extent.
+
+        Returns
+        -------
+        T : array_like(Number, shape=(k+1,k+1))
+            Extent of the original raster.
+        origin_key : array_like(int, shape=(k))
+            Key or index of the origin of the new transformation matrix.
+        shape : np.array(int, shape=(k))
+            Shape of the raster subset.
+
+        Examples
+        --------
+
+        >>> T = transformation.matrix(t=[100, 200], s=[2, -2])
+        >>> ext = Extent([150, 250, 200, 300])
+        >>> M, min_corner_key, shape = Grid.extentinfo(T, ext)
+        >>> print(M)
+        [[  2.   0. 150.]
+         [  0.  -2. 300.]
+         [  0.   0.   1.]]
+        >>> print(min_corner_key)
+        [-50  25]
+        >>> print(shape)
+        [26 26]
+
+        """
+        # ensure extent
+        extent = Extent(extent)
+        T = assertion.ensure_tmatrix(T)
+
         dim = len(extent) / 2
 
-        cornerIndices = Grid.coords2keys(transform, extent.corners())
+        if not T.shape[0] - 1 == dim:
+            raise ValueError('dimensions do not match')
 
-        shape = np.ptp(cornerIndices, axis=0) + 1
+        corner_keys = Grid.coords2keys(T, extent.corners())
+
+        shape = np.ptp(corner_keys, axis=0) + 1
 
         # Minimum corner
-        minCornerIdx = np.argmin(cornerIndices, axis=0)
-        minCornerIndex = np.array(
-            [cornerIndices[idx, i] for i, idx in enumerate(minCornerIdx)],
-            dtype=int
-        )
-        minCorner = Grid.keys2coords(
-            transform, np.array([minCornerIndex - 0.5]))[0, :]
+        idx = np.argmin(corner_keys, axis=0)
+        origin_key = corner_keys[idx, range(dim)]
+        min_corner = Grid.keys2coords(T, [origin_key - 0.5])[0, :]
 
         # define transformation
-        T = np.copy(transform)
-        T[0:dim, dim] = minCorner
+        t = np.copy(T)
+        t[:-1, dim] = min_corner
 
-        return T, minCornerIndex, shape
+        return t, origin_key, shape
 
     def get_window(self, extent):
         # TODO extentinfo notwendig?
-        T, cornerIndex, shape = self.extentinfo(
-            self.transform, self.shape, extent)
+        T, cornerIndex, shape = self.extentinfo(self.transform, extent)
         mask = self.keys(shape) + cornerIndex
         return self[zip(mask.T)].reshape(shape)
 

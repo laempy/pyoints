@@ -17,9 +17,11 @@ from .. import (
 
 
 class RasterReader(GeoFile):
+    """
+    TODO: docstring
+    """
 
-    def __init__(self, file, date=None, proj=None):
-
+    def __init__(self, file, proj=None, date=None):
         GeoFile.__init__(self, file)
 
         # Read header
@@ -84,7 +86,7 @@ class RasterReader(GeoFile):
         corner = (0, 0)
 
         if extent is not None:
-            T, corner, shape = grid.Grid.extentInfo(T, shape, extent)
+            T, corner, shape = grid.Grid.extentInfo(T, extent)
 
         attr = np.recarray(
             shape, dtype=[

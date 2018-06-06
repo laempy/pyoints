@@ -38,7 +38,7 @@ def transform(coords, T, inverse=False):
     if inverse:
         try:
             T = np.linalg.inv(T)
-        except np.linalg.LinAlgError, e:
+        except np.linalg.LinAlgError(e):
             warnings.warn(e.message)
             T = np.linalg.pinv(T)
 
@@ -472,6 +472,10 @@ def matrix_from_gdal(t):
     LocalSystem(Number, shape=(3, 3))
         Matrix representation of the gdal geotransform array.
 
+    See Also
+    --------
+    matrix_to_gdal, LocalSystem
+
     Examples
     --------
 
@@ -509,6 +513,9 @@ def matrix_to_gdal(T):
     t : array_like(Number, shape=(6))
         Gdal geotransform array.
 
+    See Also
+    --------
+    matrix_from_gdal
 
     Examples
     --------
