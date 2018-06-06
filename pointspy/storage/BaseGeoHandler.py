@@ -15,6 +15,8 @@ class GeoHandler:
     def corners(self):
         raise NotImplementedError()
 
+    # TODO: add T
+
     @property
     def date(self):
         return None
