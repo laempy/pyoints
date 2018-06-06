@@ -128,7 +128,7 @@ class Config(ConfigObj):
 
     def dict(self, *keys):
         values = self.str(*keys)
-        print values
+        print(values)
         if values is '':
             return {}
         return yaml.safe_load(values)
