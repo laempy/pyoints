@@ -2,8 +2,8 @@
 """
 
 import numpy as np
-import distance
 
+from . import distance
 from . import assertion
 
 

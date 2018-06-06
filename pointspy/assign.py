@@ -44,11 +44,11 @@ def pairs(aCoords, bCoords, max_distance=np.inf):
     pairs = []
     for aId in range(len(aIds)):
         if aDists[aId] < max_distance:
-            print aIds
-            print aId
-            print bIds
-            print aIds[aId]
-            print bIds[aIds[aId]]
+            print(aIds)
+            print(aId)
+            print(bIds)
+            print(aIds[aId])
+            print(bIds[aIds[aId]])
             return
             if aId == bIds[aIds[aId]]:
                 pairs.append((aIds[aId], aId))
@@ -73,22 +73,22 @@ def kNN(aCoords, bCoords, dim=None, k=2, distance_upper_bound=np.inf):
 
     keys = zip(*nIds)
     w = dists / np.repeat(dists.sum(1), k).reshape((len(dists), k))
-    print w
-    print w.max()
-    print w.min()
-    print w.sum(1)
-    print aCoords
-    print aCoords[keys, :]
+    print(w)
+    print(w.max())
+    print(w.min())
+    print(w.sum(1))
+    print(aCoords)
+    print(aCoords[keys, :])
     mCoords = (aCoords[keys, :].T * w).T.sum(0)
     # mCoords=aCoords[keys,:].mean(0)
-    print mCoords
-    print mCoords.shape
+    print(mCoords)
+    print(mCoords.shape)
 
     return
     exit(0)
     for i in range(k):
 
-        print aCoords[aIds[:, i], :]
+        print(aCoords[aIds[:, i], :])
 
     pairs = []
     for aId in range(len(aIds)):
