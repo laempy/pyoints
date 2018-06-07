@@ -352,7 +352,7 @@ def add_dim(T):
 
     Parameters
     ----------
-    T : array_like(Number, shape=(k+1, k+1))
+    T : LocalSystem(Number, shape=(k+1, k+1))
         Transformation matrix of `k` coordinate dimensions.
 
     Returns
@@ -383,7 +383,7 @@ def add_dim(T):
     M = np.eye(len(T)+1)
     M[:-2, :-2] = T[:-1, :-1]
     M[:-2, -1] = T[:-1, -1].T
-    return M
+    return LocalSystem(M)
 
 
 def decomposition(T):
@@ -457,6 +457,79 @@ def decomposition(T):
     det = np.linalg.det(T)
 
     return t, r, s, det
+
+
+def matrix_from_gdal(t):
+    """Creates a transformation matrix based on gdal geotransfom array.
+
+    Parameters
+    ----------
+    t : array_like(Number, shape=(6))
+        Gdal geotransform array.
+
+    Returns
+    -------
+    LocalSystem(Number, shape=(3, 3))
+        Matrix representation of the gdal geotransform array.
+
+    See Also
+    --------
+    matrix_to_gdal, LocalSystem
+
+    Examples
+    --------
+
+    >>> T = matrix_from_gdal([-28493, 2, 0.0, 4255884, 0.0, -2.0])
+    >>> print(T.astype(int))
+    [[      2       0  -28493]
+     [      0      -2 4255884]
+     [      0       0       1]]
+
+    """
+    t = assertion.ensure_numvector(t)
+
+    T = np.matrix(np.zeros((3, 3), dtype=np.float))
+    T[0, 2] = t[0]
+    T[0, 0] = t[1]
+    T[1, 0] = t[2]
+    T[1, 2] = t[3]
+    T[0, 1] = t[4]
+    T[1, 1] = t[5]
+    T[2, 2] = 1
+
+    return LocalSystem(T)
+
+
+def matrix_to_gdal(T):
+    """Creates gdal geotransfom array based on a transformation matrix.
+
+    Parameters
+    ----------
+    T : array_like(Number, shape=(3, 3))
+        Matrix representation of the gdal geotransform array.
+
+    Returns
+    -------
+    t : array_like(Number, shape=(6))
+        Gdal geotransform array.
+
+    See Also
+    --------
+    matrix_from_gdal
+
+    Examples
+    --------
+
+    >>> T = np.array([(2, 0, -28493), (0, -2, 4255884), (0, 0, 1)])
+    >>> t = matrix_to_gdal(T)
+    >>> print(t)
+    (-28493, 2, 0, 4255884, 0, -2)
+
+    """
+    T = assertion.ensure_tmatrix(T)
+    if not T.shape[0] == 3:
+        raise ValueError('transformation matrix of shape (3, 3) required')
+    return (T[0, 2], T[0, 0], T[1, 0], T[1, 2], T[0, 1], T[1, 1])
 
 
 class LocalSystem(np.matrix, object):

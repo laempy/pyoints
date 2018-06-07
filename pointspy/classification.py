@@ -56,6 +56,7 @@ def mayority(classes):
     return cId
 
 
+# TODO nur zur Klassifikation benoetigt ==> delete?
 class Sample:
 
     def __init__(self, trainFraction=0.7, classes=None, groups=None):

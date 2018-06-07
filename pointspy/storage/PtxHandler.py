@@ -9,6 +9,25 @@ from .. import (
 
 
 def loadPtx(fileName, sep=' ', proj=None, bulk=500000):
+    """Loads points from a .ptx file.
+
+    Parameters
+    ----------
+    ptx_file : String
+        File to be read.
+    sep : Sting
+        Column seperator string.
+    proj : optional, Proj
+        Projection associated with the points.
+    bulk : optiona, positive int
+        Bulk size.
+
+
+    Notes
+    -----
+    Implemented for testing reasons. Not indended to be used.
+
+    """
 
     # Read
     header = []
@@ -42,5 +61,3 @@ def loadPtx(fileName, sep=' ', proj=None, bulk=500000):
         proj = projection.Proj()
 
     return GeoRecords(proj, records)
-
-    # return records

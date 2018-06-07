@@ -74,6 +74,7 @@ def kNN(aCoords, bCoords, dim=None, k=2, distance_upper_bound=np.inf):
 
     keys = zip(*nIds)
     w = dists / np.repeat(dists.sum(1), k).reshape((len(dists), k))
+
     # TODO
     #print w
     #print w.max()
@@ -89,8 +90,6 @@ def kNN(aCoords, bCoords, dim=None, k=2, distance_upper_bound=np.inf):
     return
     exit(0)
     #for i in range(k):
-
-        #print aCoords[aIds[:, i], :]
 
     pairs = []
     for aId in range(len(aIds)):

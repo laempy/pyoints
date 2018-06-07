@@ -2,7 +2,8 @@
 transformations.
 """
 
-import pyproj 
+import pyproj
+import numpy as np
 from osgeo import osr
 
 from . import assertion
@@ -187,10 +188,11 @@ class CoordinateTransform:
             fromProj = self._fromProj
             toProj = self._toProj
 
-        tCoords = pyproj.transform(
+        tCoords = np.copy(coords)
+        tCoords[:, 0:2] = np.array(pyProj.transform.CoordinateTransformation(
             fromProj.pyproj,
             toProj.pyproj,
             coords[:, 0],
             coords[:, 1]
-        )
-        return assertion.ensure_coords(tCoords, by_col=True)
+        )).T
+        return tCoords

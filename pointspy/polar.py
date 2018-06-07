@@ -8,7 +8,6 @@ from .import (
     assertion,
 )
 
-
 def coords2polar(coords):
     """Converts Cartesian coordinates to polar coordinates.
 

@@ -11,14 +11,17 @@ from .BaseGeoHandler import GeoFile
 from .. import (
     grid,
     projection,
+    transformation,
     Extent,
 )
 
 
 class RasterReader(GeoFile):
+    """
+    TODO: docstring
+    """
 
-    def __init__(self, file, date=None, proj=None):
-
+    def __init__(self, file, proj=None, date=None):
         GeoFile.__init__(self, file)
 
         # Read header
@@ -83,7 +86,7 @@ class RasterReader(GeoFile):
         corner = (0, 0)
 
         if extent is not None:
-            T, corner, shape = grid.Grid.extentInfo(T, shape, extent)
+            T, corner, shape = grid.Grid.extentInfo(T, extent)
 
         attr = np.recarray(
             shape, dtype=[
@@ -151,7 +154,7 @@ def writeRaster(grid, filename, noData=np.nan):
             band.WriteArray(grid.bands[:, :, i])
             band.FlushCache()
 
-    raster.SetGeoTransform(grid.get_gdal_transform())
+    raster.SetGeoTransform(transformation.matrix_to_gdal(grid.t))
     raster.SetProjection(grid.proj.wkt)
 
     raster.FlushCache()

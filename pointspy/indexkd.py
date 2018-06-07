@@ -1,12 +1,11 @@
-import numpy as np
+import bisect
 import itertools
+import numpy as np
 from numbers import Number
 
 from scipy.spatial import cKDTree
 import rtree.index as r_treeIndex
 from rtree import Rtree
-
-import bisect
 
 from . import assertion
 from . import transformation
