@@ -2,9 +2,8 @@
 transformations.
 """
 
+import pyproj 
 from osgeo import osr
-from pyproj import Proj as pyProj
-from pyproj import transform as CoordinateTransformation
 
 from . import assertion
 
@@ -75,7 +74,7 @@ class Proj():
 
     @property
     def pyproj(self):
-        return pyProj(self.proj4)
+        return pyproj.Proj(self.proj4)
 
     def __str__(self):
         return 'proj4: %s' % str(self.proj4)
@@ -188,7 +187,7 @@ class CoordinateTransform:
             fromProj = self._fromProj
             toProj = self._toProj
 
-        tCoords = CoordinateTransformation(
+        tCoords = pyproj.transform(
             fromProj.pyproj,
             toProj.pyproj,
             coords[:, 0],
