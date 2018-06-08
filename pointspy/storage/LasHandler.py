@@ -5,9 +5,10 @@ import laspy
 
 from .. georecords import GeoRecords
 from .. extent import Extent
-from .. import projection
-
-
+from .. import (
+    projection,
+    assertion,
+)
 from .BaseGeoHandler import GeoFile
 
 
@@ -136,19 +137,19 @@ class LasReader(GeoFile):
         pass
 
 
-def writeLas(geoRecords, file, precision=[5, 5, 5]):
+def writeLas(geoRecords, las_file, precision=[5, 5, 5]):
 
     # Create File
     header = laspy.header.Header()
     header.file_sig = 'LASF'
     #header.format = 1.4
     header.data_format_id = 3
-    lasFile = laspy.file.File(file, mode='w', header=header)
+    lasFile = laspy.file.File(las_file, mode='w', header=header)
 
     # Set projection
     # TODO ohne liblas ==>
     # https://github.com/laspy/laspy/blob/master/laspy/header.py
-    headerReader = liblas.file.File(file, mode='r')
+    headerReader = liblas.file.File(las_file, mode='r')
     liblasHeader = headerReader.header
     headerReader.close()
     del headerReader
@@ -157,7 +158,7 @@ def writeLas(geoRecords, file, precision=[5, 5, 5]):
     srs.set_proj4(geoRecords.proj.proj4)
     liblasHeader.srs = srs
 
-    headerWriter = liblas.file.File(file, mode='w', header=liblasHeader)
+    headerWriter = liblas.file.File(las_file, mode='w', header=liblasHeader)
     headerWriter.close()
     del headerWriter
 
@@ -200,7 +201,7 @@ def writeLas(geoRecords, file, precision=[5, 5, 5]):
     lasFile.close()
     del lasFile
 
-    return LasReader(file)
+    return LasReader(las_file)
 
 
 class LasRecords(GeoRecords):
@@ -241,3 +242,32 @@ class LasRecords(GeoRecords):
     @property
     def only_return(self):
         return self.num_returns == 1
+
+
+def updateLasHeader(las_file, offset=None, translate=None, precision=None):
+    lasFile = laspy.file.File(las_file, mode='rw')
+
+    if precision is not None:
+        precision = assertion.ensure_numvector(precision)
+        if not len(precision) == 3:
+            raise ValueError('"precision" has to have a length of 3')
+        scale = np.repeat(10.0, 3)**-np.array(precision)
+        lasFile.header.scale = scale
+
+    if offset is not None:
+        offset = assertion.ensure_numvector(offset)
+        if not len(offset) == 3:
+            raise ValueError('"offset" has to have a length of 3')
+        lasFile.header.offset = offset
+
+    if translate is not None:
+        translate = assertion.ensure_numvector(translate)
+        if not len(translate) == 3:
+            raise ValueError('"translate" has to have a length of 3')
+        lasFile.header.offset += translate
+
+    #lasFile.header.update_min_max()
+    lasFile.close()
+    del lasFile
+
+
