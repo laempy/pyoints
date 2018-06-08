@@ -62,7 +62,7 @@ def ensure_numarray(arr):
     return arr
 
 
-def ensure_numvector(v):
+def ensure_numvector(v, min_length=1, max_length=np.inf):
     """Ensures the properties of a numeric vector.
 
     Parameters
@@ -82,7 +82,11 @@ def ensure_numvector(v):
     """
     v = ensure_numarray(v)
     if not len(v.shape) == 1:
-        raise ValueError("malformed shape of vector 'v'")
+        raise ValueError("one dimensional vector required")
+    if len(v) < min_length:
+        raise ValueError("vector of length >= %i required" % min_length)
+    if len(v) > max_length:
+        raise ValueError("vector of length <= %i required" % max_length)
     return v
 
 

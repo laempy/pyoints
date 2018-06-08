@@ -32,7 +32,7 @@ def corners2transform(corners, scale=None):
     Create some corners
 
     >>> T = transformation.matrix(t=[3, 5], s=[10, 20], r=np.pi/2)
-    >>> coords = Extent([np.zeros(2), np.ones(2)]).corners()
+    >>> coords = Extent([np.zeros(2), np.ones(2)]).corners
     >>> corners = transformation.transform(coords, T)
 
     Create transformation matrix without scale.
@@ -55,7 +55,7 @@ def corners2transform(corners, scale=None):
 
     corners = assertion.ensure_coords(corners)
     dim = corners.shape[1]
-    pts = Extent([np.zeros(dim), np.ones(dim)]).corners()
+    pts = Extent([np.zeros(dim), np.ones(dim)]).corners
 
     # find transformation matrix
     T = registration.find_transformation(corners, pts)
@@ -127,7 +127,7 @@ def transform2corners(T, shape):
 
     """
     ext = Extent([np.zeros(len(shape)), shape])
-    return transformation.transform(ext.corners(), T)
+    return transformation.transform(ext.corners, T)
 
 
 class Grid(GeoRecords):
@@ -305,7 +305,7 @@ class Grid(GeoRecords):
         if not T.shape[0] - 1 == dim:
             raise ValueError('dimensions do not match')
 
-        corner_keys = Grid.coords2keys(T, extent.corners())
+        corner_keys = Grid.coords2keys(T, extent.corners)
 
         shape = np.ptp(corner_keys, axis=0) + 1
 

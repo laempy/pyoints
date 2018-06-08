@@ -177,7 +177,7 @@ class CoordinateTransform:
         self._toProj = toProj
 
     def __call__(self, coords, reverse=False):
-        coords = assertion.ensure_coords(coords)
+        coords = assertion.ensure_numarray(coords)
         if not isinstance(reverse, bool):
             raise ValueError("'reverse' needs to be boolean")
 
@@ -188,11 +188,29 @@ class CoordinateTransform:
             fromProj = self._fromProj
             toProj = self._toProj
 
-        tCoords = np.copy(coords)
-        tCoords[:, 0:2] = np.array(pyProj.transform.CoordinateTransformation(
+        # get x and y coordinates
+        if len(coords.shape) == 1:
+            x, y = coords[0:2]
+        elif len(coords.shape) == 2:
+            coords = assertion.ensure_coords(coords)
+            x = coords[:, 0]
+            y = coords[:, 1]
+        else:
+            raise ValueError('malformed coordinate dimensions')
+
+        # coordinate projection
+        t_xy = np.array(pyproj.transform(
             fromProj.pyproj,
             toProj.pyproj,
-            coords[:, 0],
-            coords[:, 1]
+            x,
+            y
         )).T
+
+        # set new coordinates
+        tCoords = np.copy(coords)
+        if len(coords.shape) == 1:
+            tCoords[0:2] = t_xy
+        else:
+            tCoords[:, 0:2] = t_xy
+
         return tCoords

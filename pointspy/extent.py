@@ -59,7 +59,7 @@ class Extent(np.recarray, object):
     [2 4]
     >>> print(ext.center)
     [0. 2.]
-    >>> print(ext.corners())
+    >>> print(ext.corners)
     [[-1  0]
      [ 1  0]
      [ 1  4]
@@ -120,6 +120,7 @@ class Extent(np.recarray, object):
         """
         return self.min_corner, self.max_corner
 
+    @property
     def corners(self):
         """Provides each corner of the extent box.
 
@@ -134,7 +135,7 @@ class Extent(np.recarray, object):
         Two dimensional case.
 
         >>> ext = Extent([-1, -2, 1, 2])
-        >>> print(ext.corners())
+        >>> print(ext.corners)
         [[-1 -2]
          [ 1 -2]
          [ 1  2]
@@ -143,7 +144,7 @@ class Extent(np.recarray, object):
         Three dimensional case.
 
         >>> ext = Extent([-1, -2, -3, 1, 2, 3])
-        >>> print(ext.corners())
+        >>> print(ext.corners)
         [[-1 -2 -3]
          [ 1 -2 -3]
          [ 1  2 -3]
@@ -200,11 +201,11 @@ class Extent(np.recarray, object):
         Points within extent?
 
         >>> print(ext.intersection([(1, 2), (-1, 1), (0.5, 1)]))
-        [0 2df]
+        [0 2]
 
         Corners are located within the extent.
 
-        >>> print(ext.intersection(ext.corners()))
+        >>> print(ext.intersection(ext.corners))
         [0 1 2 3]
 
         """
