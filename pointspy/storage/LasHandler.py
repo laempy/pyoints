@@ -6,6 +6,7 @@ import laspy
 from .. georecords import GeoRecords
 from .. extent import Extent
 from .. import (
+    transformation,
     projection,
     assertion,
 )
@@ -13,25 +14,27 @@ from .BaseGeoHandler import GeoFile
 
 
 class LasReader(GeoFile):
+    """ TODO: Docstring
 
-    def __init__(self, file, proj=None):
-        GeoFile.__init__(self, file)
+    """
+
+    def __init__(self, filename, proj=None):
+        GeoFile.__init__(self, filename)
 
         lasFile = laspy.file.File(self.file, mode='r')
 
-        self._proj = proj
         if proj is None:
             # headerReader=liblas.file.File(file,mode='r')
-            # self._proj=projection.projFromProj4(headerReader.header.srs.get_proj4())
+            # self.proj=projection.projFromProj4(headerReader.header.srs.get_proj4())
             for vlr in lasFile.header.vlrs:
                 if vlr.record_id == 2112:
                     wtk = vlr.VLR_body
-                    self._proj = projection.Proj.from_wkt(wtk)
+                    self.proj = projection.Proj.from_wkt(wtk)
                     break
+        else:
+            self.proj = proj
 
-        if self._proj is None:
-            raise Exception('No projection found')
-
+        self.t = transformation.t_matrix(lasFile.header.min)
         self._extent = Extent((lasFile.header.min, lasFile.header.max))
         self._count = int(lasFile.header.point_records_count)
 
@@ -42,16 +45,12 @@ class LasReader(GeoFile):
         return self._count
 
     @property
-    def proj(self):
-        return self._proj
-
-    @property
     def extent(self):
         return self._extent
 
     @property
     def corners(self):
-        return Extent(self.extent[[0, 1, 3, 4]]).corners()
+        return Extent(self.extent[[0, 1, 3, 4]]).corners
 
     def load(self, extent=None):
 
@@ -100,7 +99,7 @@ class LasReader(GeoFile):
         if 'flag_byte' in lasFields:
             values = points.flag_byte
             if np.any(values):
-                flag_byte = values[sIds]  # .copy()
+                flag_byte = values  # .copy()
                 dataDict['num_returns'] = flag_byte / 8
                 dataDict['return_num'] = flag_byte % 8
         if 'pt_src_id' in lasFields:
@@ -244,6 +243,7 @@ class LasRecords(GeoRecords):
         return self.num_returns == 1
 
 
+# experimental
 def updateLasHeader(las_file, offset=None, translate=None, precision=None):
     lasFile = laspy.file.File(las_file, mode='rw')
 
@@ -264,7 +264,13 @@ def updateLasHeader(las_file, offset=None, translate=None, precision=None):
         translate = assertion.ensure_numvector(translate)
         if not len(translate) == 3:
             raise ValueError('"translate" has to have a length of 3')
-        lasFile.header.offset += translate
+        print
+        print lasFile.header.offset
+        print translate
+        print lasFile.header.min
+        print lasFile.header.max
+        lasFile.header.offset = lasFile.header.offset + translate
+        print lasFile.header.offset
 
     #lasFile.header.update_min_max()
     lasFile.close()
