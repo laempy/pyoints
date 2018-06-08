@@ -19,7 +19,7 @@ def transform(coords, T, inverse=False):
     Parameters
     ----------
     coords : array_like(Number, shape=(n, k))
-        Represents n data points of `k` dimensions.
+        Represents `n` data points of `k` dimensions.
     T : array_like(Number, shape=(k+1, k+1))
         Transformation matrix.
 
@@ -38,14 +38,14 @@ def transform(coords, T, inverse=False):
     if inverse:
         try:
             T = np.linalg.inv(T)
-        except np.linalg.LinAlgError(e):
+        except np.linalg.LinAlgError as e:
             warnings.warn(e.message)
             T = np.linalg.pinv(T)
 
     T = np.asarray(T)
 
-    #coords = assertion.ensure_coords(coords)
-    #return cv2.transform(np.expand_dims(coords.astype(np.float64), axis=0), T)[0][:,0:-1]
+    coords = assertion.ensure_coords(coords)
+    return cv2.transform(np.expand_dims(coords.astype(np.float64), axis=0), T)[0][:,0:-1]
 
     # TODO decide
     H = homogenious(coords)

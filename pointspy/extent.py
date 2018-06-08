@@ -38,28 +38,28 @@ class Extent(np.recarray, object):
 
     >>> points = [(0, 0), (1, 4), (0, 1), (1, 0.5), (0.5, 0.7)]
     >>> ext = Extent(points)
-    >>> print ext
+    >>> print(ext)
     [0. 0. 1. 4.]
 
     Create extent based on minumum vales and maximum values.
 
     >>> ext = Extent([-1, 0, 1, 4, ])
-    >>> print ext
+    >>> print(ext)
     [-1  0  1  4]
 
     Derive some properties.
 
-    >>> print ext.dim
+    >>> print(ext.dim)
     2
-    >>> print ext.min_corner
+    >>> print(ext.min_corner)
     [-1  0]
-    >>> print ext.max_corner
+    >>> print(ext.max_corner)
     [1 4]
-    >>> print ext.ranges
+    >>> print(ext.ranges)
     [2 4]
-    >>> print ext.center
+    >>> print(ext.center)
     [0. 2.]
-    >>> print ext.corners()
+    >>> print(ext.corners())
     [[-1  0]
      [ 1  0]
      [ 1  4]
@@ -82,7 +82,7 @@ class Extent(np.recarray, object):
             ext = np.concatenate((min_ext, max_ext))
         else:
             # vector
-            dim = len(ext) / 2
+            dim = len(ext) // 2
             if not dim * 2 == len(ext):
                 raise ValueError('malformed extent vector')
             if not np.all(ext[:dim] <= ext[dim:]):
@@ -92,7 +92,7 @@ class Extent(np.recarray, object):
 
     @property
     def dim(self):
-        return len(self) / 2
+        return len(self) // 2
 
     @property
     def ranges(self):
@@ -134,7 +134,7 @@ class Extent(np.recarray, object):
         Two dimensional case.
 
         >>> ext = Extent([-1, -2, 1, 2])
-        >>> print ext.corners()
+        >>> print(ext.corners())
         [[-1 -2]
          [ 1 -2]
          [ 1  2]
@@ -143,7 +143,7 @@ class Extent(np.recarray, object):
         Three dimensional case.
 
         >>> ext = Extent([-1, -2, -3, 1, 2, 3])
-        >>> print ext.corners()
+        >>> print(ext.corners())
         [[-1 -2 -3]
          [ 1 -2 -3]
          [ 1  2 -3]
@@ -194,17 +194,17 @@ class Extent(np.recarray, object):
         Point within extent?
 
         >>> ext = Extent([0, 0.5, 1, 4])
-        >>> print ext.intersection([(0.5, 1)])
+        >>> print(ext.intersection([(0.5, 1)]))
         True
 
         Points within extent?
 
-        >>> print ext.intersection([(1, 2), (-1, 1), (0.5, 1)])
-        [0 2]
+        >>> print(ext.intersection([(1, 2), (-1, 1), (0.5, 1)]))
+        [0 2df]
 
         Corners are located within the extent.
 
-        >>> print ext.intersection(ext.corners())
+        >>> print(ext.intersection(ext.corners()))
         [0 1 2 3]
 
         """

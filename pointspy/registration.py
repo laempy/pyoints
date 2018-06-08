@@ -1,6 +1,6 @@
 import numpy as np
 
-from .indexkd import IndexKD
+from . indexkd import IndexKD
 from . import transformation
 from . import distance
 from . import assertion
@@ -295,8 +295,6 @@ def ICP(coordsDict, maxDist, k=1, p=2, maxIter=10):
         M[key] = transformation.iMatrix(dim)
 
     for numIter in range(maxIter):
-        # TODO: remove print
-        print(numIter)
         pairs = {}
         for keyA in coordsDict:
             pairs[keyA] = {}

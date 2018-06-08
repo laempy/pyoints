@@ -1,16 +1,3 @@
-# Just once
-#cd path/to/pointspy
-#virtualenv -p python2.7 venv 
-#. venv/bin/activate
-
-#pip install gdal==\`gdal-config --version\` --global-option=build_ext --global-option="-I/usr/include/gdal" 
-
-#sudo apt install gdal-bin
-#sudo apt install libgdal-dev libgdal1h
-#sudo apt install libspatialindex-dev
-
-# run with:
-# pip install --global-option=build_ext --global-option="-I/usr/include/gdal" -r requirements.txt
 numpy
 rtree
 liblas
@@ -20,9 +7,6 @@ scikit-learn
 pyproj
 affine
 dill
-#gdal
-#pygdal
-#pygdal==1.11.3.3
 pandas
 configobj
 pyyaml
@@ -32,11 +16,5 @@ sphinxcontrib-napoleon
 autopep8
 pycodestyle
 opencv-python
-
-# Finally
-#python setup.py install pointspy
-
-#python2.7.12
-#apt install python-gdal
-#libgdal-dev>=1.11.3
-#libspatialindex-dev (for rtree)
+ipykernel
+cloudpickle

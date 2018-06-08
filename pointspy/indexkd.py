@@ -7,8 +7,8 @@ from scipy.spatial import cKDTree
 import rtree.index as r_treeIndex
 from rtree import Rtree
 
-from . import transformation
 from . import assertion
+from . import transformation
 
 # TODO module description
 # TODO nested IndexKD?
@@ -200,7 +200,7 @@ class IndexKD(object):
         if not isinstance(bulk, int) and bulk > 0:
             raise ValueError("bulk size has to be a integer greater zero")
 
-        for i in range(coords.shape[0] / bulk + 1):
+        for i in range(coords.shape[0] // bulk + 1):
             # bulk query
             nIds = self.kd_tree.query_ball_point(
                 coords[bulk * i: bulk * (i + 1),
@@ -228,7 +228,7 @@ class IndexKD(object):
         ball, ball_iter
 
         """
-        for coord, r in itertools.izip(coords, radii):
+        for coord, r in zip(coords, radii):
             nIds = self.kd_tree.query_ball_point(coord[:self.dim], r, **kwargs)
             yield nIds
 
@@ -356,10 +356,10 @@ class IndexKD(object):
         if not isinstance(bulk, int) and bulk > 0:
             raise ValueError("bulk size has to be a integer greater zero")
 
-        for i in range(coords.shape[0] / bulk + 1):
+        for i in range(coords.shape[0] // bulk + 1):
             dists, nIds = self.kd_tree.query(
                 coords[bulk * i:bulk * (i + 1), :self.dim], k=k, **kwargs)
-            for d, n in itertools.izip(dists, nIds):
+            for d, n in zip(dists, nIds):
                 yield d, n
 
     def knns_iter(self, coords, ks, **kwargs):
@@ -382,7 +382,7 @@ class IndexKD(object):
         knn, knn_iter
 
         """
-        for coord, k in itertools.izip(coords, ks):
+        for coord, k in zip(coords, ks):
             dists, nIds = self.kd_tree.query(
                 coord[:, :self.dim], k=k, **kwargs)
             yield dists, nIds

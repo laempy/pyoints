@@ -195,7 +195,6 @@ def minFilter(indexKD, r, axis=-1):
     mask = np.zeros(len(indexKD), dtype=bool)
     for nIds in ballIter:
         nId = nIds[np.argmin(coords[nIds, axis])]
-        print(nId)
         mask[nId] = True
     return mask.nonzero()
 

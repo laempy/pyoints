@@ -3,9 +3,10 @@
 
 import numpy as np
 
-from . import distance
-from . import assertion
-
+from .import (
+    distance,
+    assertion,
+)
 
 def coords2polar(coords):
     """Converts Cartesian coordinates to polar coordinates.
