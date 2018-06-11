@@ -194,24 +194,24 @@ def writeLas(geoRecords, outfile):
     # Add attributes
     fields = geoRecords.dtype.names
     if 'intensity' in fields:
-        lasFile.intensity = geoRecords.intensity
+        lasFile.set_intensity(geoRecords.intensity)
     if 'classification' in fields:
-        lasFile.raw_classification = geoRecords.classification
+        lasFile.set_raw_classification(geoRecords.classification)
     if 'user_data' in fields:
-        lasFile.user_data = geoRecords.user_data
+        lasFile.set_user_data(geoRecords.user_data)
     if 'return_num' in fields and 'num_returns' in fields:
         lasFile.set_flag_byte(
             geoRecords.return_num +
             geoRecords.num_returns *
             8)
     if 'gps_time' in fields:
-        lasFile.gps_time = geoRecords.gps_time
+        lasFile.set_gps_time(geoRecords.gps_time)
     if 'pt_src_id' in fields:
-        lasFile.pt_src_id = geoRecords.pt_src_id
+        lasFile.set_pt_src_id(geoRecords.pt_src_id)
     if 'rgb' in fields:
-        lasFile.red = geoRecords.rgb[:, 0]
-        lasFile.green = geoRecords.rgb[:, 1]
-        lasFile.blue = geoRecords.rgb[:, 2]
+        lasFile.set_red(geoRecords.rgb[:, 0])
+        lasFile.set_green(geoRecords.rgb[:, 1])
+        lasFile.set_blue(geoRecords.rgb[:, 2])
 
     # Close file
     lasFile.header.update_min_max()
@@ -272,7 +272,7 @@ class LasRecords(GeoRecords):
             Name of the field to activate.
 
         """
-        return self.add_field(self.FIELDS[field])
+        return self.add_fields([self.FIELDS[field]])
 
     def grd(self):
         """Filter by points classified as ground.
