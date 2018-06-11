@@ -133,6 +133,14 @@ def is_isolated(indexKD, r):
 
 
 def ball(indexKD, r=1, order=None, inverse=False, axis=-1, min_pts=1):
+    """ TODO docstring
+
+    """
+
+    # TODO validation
+    if not isinstance(indexKD, IndexKD):
+        raise ValueError("'indexKD' needs to be an instance of IndexKD")
+
     coords = indexKD.coords
 
     if order is None:
@@ -151,6 +159,7 @@ def ball(indexKD, r=1, order=None, inverse=False, axis=-1, min_pts=1):
             if len(nIds) >= min_pts:
                 not_classified[nIds] = False
                 yield pId
+
 
 
 def in_convex_hull(hull_coords, coords):

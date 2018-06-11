@@ -9,9 +9,7 @@ class GeoFile:
 
     def __init__(self, filename, directory=False):
         if directory:
-            print filename
             if not os.path.isdir(filename):
-                print filename
                 raise IOError('directory "%s" not found' % filename)
         elif not os.path.isfile(filename):
             raise IOError('file "%s" not found' % filename)
@@ -24,7 +22,7 @@ class GeoFile:
 
     @property
     def t(self):
-        return self._T
+        return self._t
 
     @t.setter
     def t(self, t):
@@ -59,5 +57,5 @@ class GeoFile:
     def load(self, extent=None):
         raise NotImplementedError()
 
-    def cleanCache(self):
+    def clean_cache(self):
         raise NotImplementedError()

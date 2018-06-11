@@ -97,9 +97,6 @@ class RasterReader(GeoFile):
 
         return raster
 
-    def cleanCache(self):
-        pass
-
 
 def writeRaster(grid, filename, noData=np.nan):
     """Writes a a pointspy Grid to disc.

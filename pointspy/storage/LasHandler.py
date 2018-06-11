@@ -1,4 +1,6 @@
+import os
 import numpy as np
+import warnings
 
 import liblas
 import laspy
@@ -23,16 +25,16 @@ class LasReader(GeoFile):
 
         lasFile = laspy.file.File(self.file, mode='r')
 
+        print(lasFile.header.vlrs)
         if proj is None:
             # headerReader=liblas.file.File(file,mode='r')
             # self.proj=projection.projFromProj4(headerReader.header.srs.get_proj4())
             for vlr in lasFile.header.vlrs:
                 if vlr.record_id == 2112:
                     wtk = vlr.VLR_body
-                    self.proj = projection.Proj.from_wkt(wtk)
+                    proj = projection.Proj.from_wkt(wtk)
                     break
-        else:
-            self.proj = proj
+        self.proj = proj
 
         self.t = transformation.t_matrix(lasFile.header.min)
         self._extent = Extent((lasFile.header.min, lasFile.header.max))
@@ -132,34 +134,64 @@ class LasReader(GeoFile):
 
         return LasRecords(self.proj, data)
 
-    def cleanCache(self):
-        pass
-
 
 def writeLas(geoRecords, las_file, precision=[5, 5, 5]):
+
+    if not isinstance(geoRecords, GeoRecords):
+        raise ValueError('Type GeoRecords required')
+    if not os.access(las_file, os.W_OK):
+        raise IOError('File %s is not writable' % las_file)
 
     # Create File
     header = laspy.header.Header()
     header.file_sig = 'LASF'
-    #header.format = 1.4
-    header.data_format_id = 3
+    header.format = 1.4
+    header.data_format_id = 6
+
+    # set projection
+
+
     lasFile = laspy.file.File(las_file, mode='w', header=header)
 
-    # Set projection
-    # TODO ohne liblas ==>
-    # https://github.com/laspy/laspy/blob/master/laspy/header.py
-    headerReader = liblas.file.File(las_file, mode='r')
-    liblasHeader = headerReader.header
-    headerReader.close()
-    del headerReader
+    proj_vlr = laspy.header.VLR(
+        user_id="LASF_Projection",
+        record_id=34735, #2112
+        VLR_body=str.encode(geoRecords.proj.wkt),
+        description="OGC Coordinate System WKT"
+    )
+    #lasFile.header.vlrs.append(proj_vlr)
+    #lasFile.header.set_wkt(str.encode(geoRecords.proj.wkt))
+    #lasFile.header.wkt = 1
+    print(lasFile.header.vlrs)
 
-    srs = liblas.srs.SRS()
-    srs.set_proj4(geoRecords.proj.proj4)
-    liblasHeader.srs = srs
+    #
+    #lasFile.header.wkt = 1
+    # Set WKT Global Encoding Bit
 
-    headerWriter = liblas.file.File(las_file, mode='w', header=liblasHeader)
-    headerWriter.close()
-    del headerWriter
+    #lasFile.header.set_wkt(geoRecords.proj.wkt)
+
+    if False:
+        # Set projection
+        # TODO ohne liblas ==>
+        # https://github.com/laspy/laspy/blob/master/laspy/header.py
+        headerReader = liblas.file.File(las_file, mode='r')
+        liblasHeader = headerReader.header
+        headerReader.close()
+        del headerReader
+
+        #lasFile.header.set_wkt(geoRecords.proj.wkt)
+
+        srs = liblas.srs.SRS()
+        try:
+            # TODO python3 problem
+            srs.set_proj4(geoRecords.proj.proj4)
+        except Exception as e:
+            warnings.warn("Could not set projection: %s" % str(e))
+        liblasHeader.srs = srs
+
+        headerWriter = liblas.file.File(las_file, mode='w', header=liblasHeader)
+        headerWriter.close()
+        del headerWriter
 
     # Set values
     offset = geoRecords.extent().min_corner
@@ -264,13 +296,7 @@ def updateLasHeader(las_file, offset=None, translate=None, precision=None):
         translate = assertion.ensure_numvector(translate)
         if not len(translate) == 3:
             raise ValueError('"translate" has to have a length of 3')
-        print
-        print lasFile.header.offset
-        print translate
-        print lasFile.header.min
-        print lasFile.header.max
         lasFile.header.offset = lasFile.header.offset + translate
-        print lasFile.header.offset
 
     #lasFile.header.update_min_max()
     lasFile.close()

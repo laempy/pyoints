@@ -278,7 +278,7 @@ class PostgisHandler(psycopg2._psycopg.connection):
                 try:
                     cursor.execute(query)
                 except Exception as e:
-                    print query
+                    print(query)
                     raise e
             if schema is not None:
                 query = 'SET search_path TO "public";'
@@ -347,9 +347,9 @@ class PostgisHandler(psycopg2._psycopg.connection):
 
         command = 'shp2pgsql -k -I -s %i %s "%s"."%s"  ' % (
             epsg, fileName, schema, outTable)
-        print command
+        print(command)
         query = shell(command)
-        print 'insert DB'
+        print('insert into DB')
         self(query, schema=schema, bulk=bulk)
 
     def importMdb(self, fileName, outTable, schema='public', bulk=500):
@@ -357,19 +357,19 @@ class PostgisHandler(psycopg2._psycopg.connection):
         assert extension == '.mdb', 'File extension has to be ".mdb", not "%s"' % extension
 
         query = 'DROP TABLE IF EXISTS "%s"."%s" CASCADE;' % (schema, outTable)
-        print query
+        print(query)
         self(query)
 
         command = 'mdb-schema "%s" -T %s postgres' % (fileName, outTable)
-        print command
+        print(command)
         query = shell(command)
-        print 'insert DB'
+        print('insert DB')
         self(query, bulk=bulk, schema=schema)
 
         command = 'mdb-export -I postgres -q "\'" %s %s' % (fileName, outTable)
-        print command
+        print(command)
         query = shell(command)
-        print 'insert DB'
+        print('insert DB')
         self(query, bulk=bulk, schema=schema)
 
 

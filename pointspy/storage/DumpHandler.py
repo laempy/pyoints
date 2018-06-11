@@ -19,11 +19,11 @@ class DumpReader(GeoFile):
 
     def load(self):
         if not hasattr(self, '_records'):
-            print 'load'
+            print('load')
             self._records = loadDump(self.filename)
         return self._records
 
-    def cleanCache(self):
+    def clean_cache(self):
         del self._records
 
 

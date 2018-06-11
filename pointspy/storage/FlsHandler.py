@@ -43,5 +43,3 @@ class FlsReader(GeoFile):
             self.t = _meta_extract_transformation(s)
 
         self.proj = proj
-
-
