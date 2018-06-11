@@ -1,8 +1,5 @@
 import os
 import numpy as np
-import warnings
-
-import liblas
 import laspy
 
 from .. georecords import GeoRecords
@@ -16,24 +13,30 @@ from .BaseGeoHandler import GeoFile
 
 
 class LasReader(GeoFile):
-    """ TODO: Docstring
+    """Class to read .las-files.
+
+    Parameters
+    ----------
+    infile : String
+        Las file to be read.
+
+    See Also
+    --------
+    GeoFile
 
     """
-
-    def __init__(self, filename, proj=None):
-        GeoFile.__init__(self, filename)
+    def __init__(self, infile, proj=None):
+        GeoFile.__init__(self, infile)
 
         lasFile = laspy.file.File(self.file, mode='r')
 
-        print(lasFile.header.vlrs)
         if proj is None:
-            # headerReader=liblas.file.File(file,mode='r')
-            # self.proj=projection.projFromProj4(headerReader.header.srs.get_proj4())
             for vlr in lasFile.header.vlrs:
+                # read projection from WKT
                 if vlr.record_id == 2112:
-                    wtk = vlr.VLR_body
-                    proj = projection.Proj.from_wkt(wtk)
+                    proj = projection.Proj.from_wkt(vlr.VLR_body)
                     break
+
         self.proj = proj
 
         self.t = transformation.t_matrix(lasFile.header.min)
@@ -135,69 +138,52 @@ class LasReader(GeoFile):
         return LasRecords(self.proj, data)
 
 
-def writeLas(geoRecords, las_file, precision=[5, 5, 5]):
+def writeLas(geoRecords, outfile):
+    """ Write a LAS file to disc.
 
+    Parameters
+    ----------
+    geoRecords : GeoRecords
+        Points to store to disk.
+    lasfile : String
+        Desired output file.
+
+    """
+    # validate input
     if not isinstance(geoRecords, GeoRecords):
         raise ValueError('Type GeoRecords required')
-    if not os.access(las_file, os.W_OK):
-        raise IOError('File %s is not writable' % las_file)
+    if not os.access(os.path.dirname(outfile), os.W_OK):
+        raise IOError('File %s is not writable' % outfile)
 
-    # Create File
+    # Create file header
     header = laspy.header.Header()
     header.file_sig = 'LASF'
-    header.format = 1.4
-    header.data_format_id = 6
+    header.format = 1.2
+    header.data_format_id = 3
 
-    # set projection
+    # Open file in write mode
+    lasFile = laspy.file.File(outfile, mode='w', header=header)
 
-
-    lasFile = laspy.file.File(las_file, mode='w', header=header)
-
+    # create projection VLR using WKT
     proj_vlr = laspy.header.VLR(
         user_id="LASF_Projection",
-        record_id=34735, #2112
-        VLR_body=str.encode(geoRecords.proj.wkt),
+        record_id=2112,
+        VLR_body=geoRecords.proj.wkt,
         description="OGC Coordinate System WKT"
     )
-    #lasFile.header.vlrs.append(proj_vlr)
-    #lasFile.header.set_wkt(str.encode(geoRecords.proj.wkt))
-    #lasFile.header.wkt = 1
-    print(lasFile.header.vlrs)
 
-    #
-    #lasFile.header.wkt = 1
-    # Set WKT Global Encoding Bit
+    # set VLRs
+    lasFile.header.set_vlrs([proj_vlr])
 
-    #lasFile.header.set_wkt(geoRecords.proj.wkt)
+    # old API
+    # precision=[5, 5, 5]
+    # scale = np.repeat(10.0, 3)**-np.array(precision)
 
-    if False:
-        # Set projection
-        # TODO ohne liblas ==>
-        # https://github.com/laspy/laspy/blob/master/laspy/header.py
-        headerReader = liblas.file.File(las_file, mode='r')
-        liblasHeader = headerReader.header
-        headerReader.close()
-        del headerReader
-
-        #lasFile.header.set_wkt(geoRecords.proj.wkt)
-
-        srs = liblas.srs.SRS()
-        try:
-            # TODO python3 problem
-            srs.set_proj4(geoRecords.proj.proj4)
-        except Exception as e:
-            warnings.warn("Could not set projection: %s" % str(e))
-        liblasHeader.srs = srs
-
-        headerWriter = liblas.file.File(las_file, mode='w', header=liblasHeader)
-        headerWriter.close()
-        del headerWriter
-
-    # Set values
+    # find optimal offset and scale scale to achieve highest precision
     offset = geoRecords.extent().min_corner
-
-    # TODO scale ueberarbeiten
-    scale = np.repeat(10.0, 3)**-np.array(precision)
+    significant_values = np.abs(geoRecords.extent().corners - offset).max(0)
+    leading_digits = np.ceil(np.log10(np.abs(significant_values))).astype(int)
+    scale = np.repeat(10.0, 3) ** - (9 - np.array(leading_digits))
     lasFile.header.scale = scale
     lasFile.header.offset = offset
 
@@ -232,11 +218,27 @@ def writeLas(geoRecords, las_file, precision=[5, 5, 5]):
     lasFile.close()
     del lasFile
 
-    return LasReader(las_file)
+    return LasReader(outfile)
 
 
 class LasRecords(GeoRecords):
+    """Data structure extending GeoRecords to provide an optimized API for LAS
+    data.
 
+    Properties
+    ----------
+    last_return : np.ndarray(bool)
+        Array indicating if a point is a last return point.
+    first_return : np.ndarray(bool)
+        Array indicating if a point is a first return point.
+    only_return : np.ndarray(bool)
+        Array indicating if a point is the only returned point.
+
+    See Also
+    --------
+    GeoRecords
+
+    """
     FIELDS = {
         'coords': ('coords', float, 3),
         'intensity': ('intensity', int),
@@ -249,19 +251,6 @@ class LasRecords(GeoRecords):
         'rgb': ('rgb', np.uint8, 3),
     }
 
-    def activate(self, field):
-        return self.add_field(self.FIELDS[field])
-
-    def grd(self):
-        return self.classes(2, 11)
-
-    def veg(self):
-        return self.classes(3, 4, 5, 20)
-
-    def classes(self, *classes):
-        mask = np.in1d(self.classification, classes)
-        return self[mask]
-
     @property
     def last_return(self):
         return self.return_num == self.num_returns
@@ -273,6 +262,58 @@ class LasRecords(GeoRecords):
     @property
     def only_return(self):
         return self.num_returns == 1
+
+    def activate(self, field):
+        """Activates a desired field on demand.
+
+        Parameters
+        ----------
+        field : String
+            Name of the field to activate.
+
+        """
+        return self.add_field(self.FIELDS[field])
+
+    def grd(self):
+        """Filter by points classified as ground.
+
+        Returns
+        -------
+        LasRecords
+            Filtered records.
+
+        """
+        return self.classes(2, 11)
+
+    def veg(self):
+        """Filter by points classified as vegetation.
+
+        Returns
+        -------
+        LasRecords
+            Filtered records.
+
+        """
+        return self.classes(3, 4, 5, 20)
+
+    def classes(self, *classes):
+        """Filter by classes.
+
+        Parameters
+        ----------
+        *classes : int
+            Classes to filter by.
+
+        Returns
+        -------
+        LasRecords
+            Filtered records.
+
+        """
+        mask = np.in1d(self.classification, classes)
+        return self[mask]
+
+
 
 
 # experimental
