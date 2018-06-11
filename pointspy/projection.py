@@ -129,7 +129,7 @@ class Proj():
         return Proj.from_proj4(proj4)
 
 
-class CoordinateTransform:
+class GeoTransform:
     """Provides a coordinate transformation.
 
     Parameters
@@ -152,8 +152,8 @@ class CoordinateTransform:
     ...     (6.902, 49.991),
     ...     (6.922, 50.101)
     ... ]
-    >>> coordTransfrom = CoordinateTransform(wgs84, gk2)
-    >>> tCoords = coordTransfrom(coords)
+    >>> geoTransfrom = GeoTransform(wgs84, gk2)
+    >>> tCoords = geoTransfrom(coords)
     >>> print np.round(tCoords, 3)
     [[2560446.801 5537522.386]
      [2560808.009 5537303.984]
@@ -162,7 +162,7 @@ class CoordinateTransform:
 
     Reverse transformation.
 
-    >>> print np.round( coordTransfrom(tCoords, reverse=True) ,3)
+    >>> print np.round( geoTransfrom(tCoords, reverse=True) ,3)
     [[ 6.842 49.971]
      [ 6.847 49.969]
      [ 6.902 49.991]

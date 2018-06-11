@@ -119,6 +119,7 @@ class KnnInterpolator(Interpolator):
         self._interpolator.fit(coords, values)
 
     def _interpolate(self, coords):
+        print coords
         pred = self._interpolator.predict(coords)
         return pred
 
