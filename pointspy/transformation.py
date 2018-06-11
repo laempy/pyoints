@@ -487,7 +487,9 @@ def matrix_from_gdal(t):
 
     """
     t = assertion.ensure_numvector(t)
-
+    if not hasattr(t, '__len__') and len(t)==6:
+        raise ValueError('a vector of length 6 is required')
+        
     T = np.matrix(np.zeros((3, 3), dtype=np.float))
     T[0, 2] = t[0]
     T[0, 0] = t[1]
