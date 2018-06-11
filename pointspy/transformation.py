@@ -219,11 +219,9 @@ def t_matrix(t):
      [0. 0. 0. 1.]]
 
     """
-    if not (hasattr(t, '__len__') and len(t) >= 2):
-        raise ValueError("'t' needs have a length greater one")
-    dim = len(t)
-    T = np.identity(dim + 1)
-    T[0:dim, dim] = t
+    t = assertion.ensure_numvector(t, min_length=2)
+    T = np.identity(len(t) + 1)
+    T[:-1, -1] = t
     return LocalSystem(T)
 
 
@@ -486,10 +484,8 @@ def matrix_from_gdal(t):
      [      0       0       1]]
 
     """
-    t = assertion.ensure_numvector(t)
-    if not hasattr(t, '__len__') and len(t)==6:
-        raise ValueError('a vector of length 6 is required')
-        
+    t = assertion.ensure_numvector(t, min_length=6, max_length=6)
+
     T = np.matrix(np.zeros((3, 3), dtype=np.float))
     T[0, 2] = t[0]
     T[0, 0] = t[1]

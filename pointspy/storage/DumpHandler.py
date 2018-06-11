@@ -5,11 +5,11 @@ from .BaseGeoHandler import GeoFile
 
 class DumpReader(GeoFile):
 
-    def __init__(self, file):
-        GeoFile.__init__(self, file)
+    def __init__(self, filename):
+        GeoFile.__init__(self, filename)
 
     @property
-    def proj4(self):
+    def proj(self):
         return self.load().proj4
 
     @property
@@ -20,14 +20,14 @@ class DumpReader(GeoFile):
     def load(self):
         if not hasattr(self, '_records'):
             print 'load'
-            self._records = loadDump(f)
+            self._records = loadDump(self.filename)
         return self._records
 
     def cleanCache(self):
         del self._records
 
 
-def loadDump(file):
+def loadDump(filename):
     with open(file, 'r') as f:
         return pickle.load(f)
 

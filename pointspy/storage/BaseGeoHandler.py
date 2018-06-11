@@ -1,11 +1,45 @@
 import os
+from .. import (
+    assertion,
+    projection
+)
 
 
-class GeoHandler:
+class GeoFile:
+
+    def __init__(self, filename, directory=False):
+        if directory:
+            print filename
+            if not os.path.isdir(filename):
+                print filename
+                raise IOError('directory "%s" not found' % filename)
+        elif not os.path.isfile(filename):
+            raise IOError('file "%s" not found' % filename)
+
+        self.file_name, self.extension = os.path.splitext(
+            os.path.basename(filename))
+        self.extension = self.extension[1:]
+        self.path = os.path.dirname(filename)
+        self.file = os.path.abspath(filename)
+
+    @property
+    def t(self):
+        return self._T
+
+    @t.setter
+    def t(self, t):
+        t = assertion.ensure_tmatrix(t)
+        self._t = t
 
     @property
     def proj(self):
-        raise NotImplementedError()
+        return self._proj
+
+    @proj.setter
+    def proj(self, proj):
+        if not isinstance(proj, projection.Proj):
+            raise ValueError("'proj' needs to be of type 'projection.Proj'")
+        self._proj = proj
 
     @property
     def extent(self):
@@ -14,8 +48,6 @@ class GeoHandler:
     @property
     def corners(self):
         raise NotImplementedError()
-
-    # TODO: add T
 
     @property
     def date(self):
@@ -29,15 +61,3 @@ class GeoHandler:
 
     def cleanCache(self):
         raise NotImplementedError()
-
-
-class GeoFile(GeoHandler):
-
-    def __init__(self, file):
-        if not os.path.isfile(file):
-            raise IOError('File "%s" Not Found' % file)
-        self.fileName, self.extension = os.path.splitext(
-            os.path.basename(file))
-        self.extension = self.extension[1:]
-        self.path = os.path.dirname(file)
-        self.file = os.path.abspath(file)
