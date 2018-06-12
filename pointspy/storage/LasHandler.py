@@ -1,4 +1,5 @@
 import os
+import sys
 import numpy as np
 import laspy
 
@@ -176,24 +177,20 @@ def writeLas(geoRecords, outfile):
     # set VLRs
     lasFile.header.set_vlrs([proj_vlr])
 
-    # old API
-    # precision=[5, 5, 5]
-    # scale = np.repeat(10.0, 3)**-np.array(precision)
-
     # find optimal offset and scale scale to achieve highest precision
     offset = geoRecords.extent().min_corner
-    significant_values = np.abs(geoRecords.extent().corners - offset).max(0)
-    print(significant_values)
-    significant_values = geoRecords.extent().max_corner - offset
-    print(significant_values)
-    leading_digits = np.ceil(np.log10(np.abs(significant_values))).astype(int)
-    scale = np.repeat(10.0, 3) ** - (9 - np.array(leading_digits))
+
+    max_values = np.abs(geoRecords.extent().corners - offset).max(0)
+    max_digits = 2**30  # long
+    scale = max_values / max_digits
+
     lasFile.header.scale = scale
     lasFile.header.offset = offset
 
-    lasFile.x = geoRecords.coords[:, 0]
-    lasFile.y = geoRecords.coords[:, 1]
-    lasFile.z = geoRecords.coords[:, 2]
+    # save coordinates
+    lasFile.set_x_scaled(geoRecords.coords[:, 0])
+    lasFile.set_y_scaled(geoRecords.coords[:, 1])
+    lasFile.set_z_scaled(geoRecords.coords[:, 2])
 
     # Add attributes
     fields = geoRecords.dtype.names
