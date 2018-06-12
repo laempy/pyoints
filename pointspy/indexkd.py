@@ -259,7 +259,7 @@ class IndexKD(object):
             nIdsGen = self.balls_iter(coords, r, p=p)
         else:
             nIdsGen = self.ball_iter(coords, r, p=p)
-        return np.array(map(len, nIdsGen), dtype=int)
+        return np.array(list(map(len, nIdsGen)), dtype=int)
 
     def sphere(self, coord, r_min, r_max, **kwargs):
         """Counts numbers of neighbours within radius.

@@ -35,7 +35,8 @@ class LasReader(GeoFile):
             for vlr in lasFile.header.vlrs:
                 # read projection from WKT
                 if vlr.record_id == 2112:
-                    proj = projection.Proj.from_wkt(str(vlr.VLR_body))
+                    wkt = str(vlr.VLR_body.decode('utf-8'))
+                    proj = projection.Proj.from_wkt(wkt)
                     break
 
         self.proj = proj
