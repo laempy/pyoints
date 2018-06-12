@@ -136,7 +136,9 @@ class LasReader(GeoFile):
         lasFile.close()
         del lasFile
 
-        return LasRecords(self.proj, data)
+        t = transformation.t_matrix(offset)
+
+        return LasRecords(self.proj, data, T=t)
 
 
 def writeLas(geoRecords, outfile):
@@ -178,7 +180,7 @@ def writeLas(geoRecords, outfile):
     lasFile.header.set_vlrs([proj_vlr])
 
     # find optimal offset and scale scale to achieve highest precision
-    offset = geoRecords.extent().min_corner
+    offset = np.asarray(geoRecords.t)[:-1, -1]
 
     max_values = np.abs(geoRecords.extent().corners - offset).max(0)
     max_digits = 2**30  # long
