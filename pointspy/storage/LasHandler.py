@@ -34,7 +34,7 @@ class LasReader(GeoFile):
             for vlr in lasFile.header.vlrs:
                 # read projection from WKT
                 if vlr.record_id == 2112:
-                    proj = projection.Proj.from_wkt(vlr.VLR_body)
+                    proj = projection.Proj.from_wkt(str(vlr.VLR_body))
                     break
 
         self.proj = proj
@@ -168,9 +168,10 @@ def writeLas(geoRecords, outfile):
     proj_vlr = laspy.header.VLR(
         user_id="LASF_Projection",
         record_id=2112,
-        VLR_body=geoRecords.proj.wkt,
+        VLR_body=str.encode(geoRecords.proj.wkt),
         description="OGC Coordinate System WKT"
     )
+    proj_vlr.parse_data()
 
     # set VLRs
     lasFile.header.set_vlrs([proj_vlr])
@@ -182,6 +183,9 @@ def writeLas(geoRecords, outfile):
     # find optimal offset and scale scale to achieve highest precision
     offset = geoRecords.extent().min_corner
     significant_values = np.abs(geoRecords.extent().corners - offset).max(0)
+    print(significant_values)
+    significant_values = geoRecords.extent().max_corner - offset
+    print(significant_values)
     leading_digits = np.ceil(np.log10(np.abs(significant_values))).astype(int)
     scale = np.repeat(10.0, 3) ** - (9 - np.array(leading_digits))
     lasFile.header.scale = scale
