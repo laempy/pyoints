@@ -13,6 +13,8 @@ from .. import (
 from .BaseGeoHandler import GeoFile
 
 
+
+
 class LasReader(GeoFile):
     """Class to read .las-files.
 
@@ -181,7 +183,7 @@ def writeLas(geoRecords, outfile):
     lasFile.header.set_vlrs([proj_vlr])
 
     # find optimal offset and scale scale to achieve highest precision
-    offset = np.asarray(geoRecords.t)[:-1, -1]
+    offset = geoRecords.t.origin
 
     max_values = np.abs(geoRecords.extent().corners - offset).max(0)
     max_digits = 2**30  # long
@@ -190,12 +192,28 @@ def writeLas(geoRecords, outfile):
     lasFile.header.scale = scale
     lasFile.header.offset = offset
 
+    # create user defined fields
+    for name in geoRecords.dtype.names:
+        if name not in LasRecords.FIELDS:
+            dtype = geoRecords.dtype[name]
+            # seee https://pythonhosted.org/laspy/tut_part_3.html
+            if dtype.kind in np.typecodes['AllInteger']:
+                type_id = 6  # long
+            else:
+                type_id = 10  # double
+            lasFile.define_new_dimension(name, type_id, '')
+
+    # set user defined fields
+    for name in geoRecords.dtype.names:
+        if name not in LasRecords.FIELDS:
+            lasFile._writer.set_dimension(name, geoRecords[name])
+
     # save coordinates
     lasFile.set_x_scaled(geoRecords.coords[:, 0])
     lasFile.set_y_scaled(geoRecords.coords[:, 1])
     lasFile.set_z_scaled(geoRecords.coords[:, 2])
 
-    # Add attributes
+    # set default fields
     fields = geoRecords.dtype.names
     if 'intensity' in fields:
         lasFile.set_intensity(geoRecords.intensity)

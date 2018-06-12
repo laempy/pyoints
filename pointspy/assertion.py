@@ -7,13 +7,15 @@ from numbers import Number
 from . import nptools
 
 
-def isnumeric(value):
+def isnumeric(value, min_th=-np.inf, max_th=np.inf):
     """Checks if a value is numeric.
 
     Parameters
     ----------
     value : Number
         Value to validate.
+    min_th, max_th : optional, Number
+        Minimum and maximum value allowed range.
 
     Returns
     -------
@@ -25,7 +27,7 @@ def isnumeric(value):
     ValueError
 
     """
-    return isinstance(value, Number)
+    return isinstance(value, Number) and value >= min_th and value <= max_th
 
 
 def ensure_numarray(arr):
@@ -90,17 +92,19 @@ def ensure_numvector(v, min_length=1, max_length=np.inf):
     return v
 
 
-def ensure_coords(coords, by_col=False):
+def ensure_coords(coords, by_col=False, min_dim=2, max_dim=np.inf):
     """Ensures all required properties of a coordinate like array.
 
     Parameters
     ----------
-    coords : array_like(Number, shape=(n,k))
+    coords : array_like(Number, shape=(n, k))
         Represents `n` data points of `k` dimensions in a Cartesian coordinate
         system.
     by_col : optional, bool
         Defines weather or not the coordinates are provided column by column
         instead of row by row.
+    min_dim, max_dim : optional
+        Minimum and maximum number of coordinate dimensions.
 
     Returns
     -------
@@ -144,8 +148,10 @@ def ensure_coords(coords, by_col=False):
         coords = coords.T
     if not len(coords.shape) == 2:
         raise ValueError("malformed shape of 'coords', got '%s'"%str(coords.shape))
-    if not coords.shape[1] > 1:
-        raise ValueError("at least two coordinate dimensions needed")
+    if coords.shape[1] < min_dim:
+        raise ValueError("at least %i coordinate dimensions needed" % min_dim)
+    if coords.shape[1] > max_dim:
+        raise ValueError("at most %i coordinate dimensions needed" % max_dim)
 
     return coords
 

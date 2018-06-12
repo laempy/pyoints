@@ -5,4 +5,5 @@ from .CsvHandler import *
 from .DumpHandler import *
 from .PostgisHandler import *
 from .FlsHandler import FlsReader
+from .PlyHandler import *
 from .base import *
