@@ -18,3 +18,5 @@ pycodestyle
 opencv-python
 ipykernel
 cloudpickle
+#cython
+#pdal
