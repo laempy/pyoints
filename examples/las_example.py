@@ -18,6 +18,39 @@ from pointspy import (
     filters,
 )
 
+
+infile = '/daten/Seafile/PANTHEON_Data/Campaign_May_2018/field18/Las/Scan_070.las'
+outfile = '/home/sebastian/Schreibtisch/test.las'
+
+wgs84 = projection.Proj.from_epsg(4326)
+proj_rome = projection.Proj.from_epsg(26592)
+project = projection.GeoTransform(wgs84, proj_rome)
+
+t = project([(12.29821763, 42.27982770, 279.664)])[0, :]
+T = transformation.t_matrix(t)
+
+lasReader = storage.LasReader(infile, proj=proj_rome)
+print lasReader.proj.proj4
+las = lasReader.load()
+las.t = T
+las.coords = transformation.transform(las.coords, las.t)
+
+#las = las.add_fields([('lol', float)])
+las = las.add_fields([('new_awsom_field', 'i4'), ('z', float)])
+las.new_awsom_field = np.arange(len(las))
+las.z = las.coords[:, 2]
+print las.extent()
+
+print np.round(las.t, 2)
+
+lasReader = storage.writeLas(las, outfile)
+print lasReader.proj.proj4
+las = lasReader.load()
+print las.extent()
+print np.round(las.t.astype(float), 2)
+
+asd
+
 # config
 laspath = '/daten/Seafile/PANTHEON_Data/Campaign_May_2018/field18/Las/'
 flspath = '/daten/Seafile/PANTHEON_Data/Campaign_May_2018/field18/Faro/'
@@ -29,6 +62,7 @@ wgs84 = projection.Proj.from_epsg(4326)
 italy_rome = projection.Proj.from_epsg(26592)
 project = projection.CoordinateTransform(wgs84, italy_rome)
 
+t = project([(42.27982770, 12.29821763, 279.664)])[0, :]
 
 # get files
 lasfiles = glob.glob(os.path.join(laspath, '*.las'))
