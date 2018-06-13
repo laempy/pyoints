@@ -5,6 +5,7 @@ import numpy as np
 
 from . import (
     assertion,
+    distance,
     interpolate,
     IndexKD,
 )
@@ -87,7 +88,7 @@ def has_neighbour(indexKD, r):
         else:
             yield pId
 
-
+# TODO: difference to has_neighbour? (only reverse?)
 def is_isolated(indexKD, r):
     """Decide whether or not points have neighbouring points.
 
@@ -197,10 +198,10 @@ def in_convex_hull(hull_coords, coords):
     return ~np.isnan(interpolator(coords))
 
 
-def minFilter(indexKD, r, axis=-1):
+def min_filter(indexKD, r, axis=-1):
     coords = indexKD.coords
 
-    ballIter = indexKD.ball_iter(coords, r, bulk = 1000)
+    ballIter = indexKD.ball_iter(coords, r, bulk=1000)
     mask = np.zeros(len(indexKD), dtype=bool)
     for nIds in ballIter:
         nId = nIds[np.argmin(coords[nIds, axis])]
@@ -256,3 +257,74 @@ def dem(coords, r, order=None, inverse=False, axis=-1):
             break
 
     return fIds
+
+
+def radial_dem_filter(coords, angle_res, center=None):
+    """Filter surface points with decreasing resolution with increasing
+    distance to coordinate center.
+
+    Parameters
+    ----------
+    coords : array_like(Number, shape=(n, k))
+        Points to filter.
+    angle_res : positive Number
+        Filter resolution expressed as an angle.
+    center : optional, array_like(Number, shape=(k))
+        Desired center.
+
+    Returns
+    -------
+    array_like(int, shape=(m))
+        Indices of filtered points.
+
+    """
+    coords = assertion.ensure_coords(coords, min_dim=2)
+    if center is None:
+        center = [0, 0]
+    center = assertion.ensure_numvector(center, min_length=2)
+    if not (assertion.isnumeric(angle_res) and angle_res > 0):
+        raise ValueError('angle greater zero required')
+
+    # TODO center?
+    dist = distance.dist(center[0:2], coords[:, 0:2])
+    radii = dist * np.sin(angle_res / 180.0 * np.pi)
+    fIds = dem(coords, radii)
+    return fIds
+
+# TODO revise and docs
+def radial_noise(indexKD, angle_res, center=None):
+    """TODO
+
+    Parameters
+    ----------
+    coords : array_like(Number, shape=(n, k))
+        Points to filter.
+    angle_res : positive Number
+        Filter resolution expressed as an angle.
+    center : optional, array_like(Number, shape=(k))
+        Desired center.
+
+    Returns
+    -------
+    array_like(int, shape=(m))
+        Indices of filtered points.
+
+    """
+    if center is None:
+        center = np.zeros(indexKD.dim)
+    center = assertion.ensure_numvector(center, min_length=2)
+    if not (assertion.isnumeric(angle_res) and angle_res > 0):
+        raise ValueError('angle greater zero required')
+
+    # TODO center?
+    dist = distance.dist(center, indexKD.coords)
+    radii = dist * np.sin(angle_res / 180.0 * np.pi)
+
+    not_classified = np.ones(len(indexKD), dtype=np.bool)
+    for pId, coord in enumerate(indexKD.coords):
+        if not_classified[pId]:
+            nIds = np.array(indexKD.ball(coord, radii[pId]))
+            if len(nIds) > 1:
+                not_classified[nIds] = False
+            else:
+                yield pId
