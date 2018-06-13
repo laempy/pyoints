@@ -7,21 +7,21 @@ import numpy as np
 
 
 def load_tests(loader, tests, ignore):
-    tests.addTests(doctest.DocTestSuite(pointspy.filters))
+    #tests.addTests(doctest.DocTestSuite(pointspy.filters))
     #tests.addTests(doctest.DocTestSuite(pointspy.grid))
-    tests.addTests(doctest.DocTestSuite(pointspy.registration))
-    tests.addTests(doctest.DocTestSuite(pointspy.georecords))
+    #tests.addTests(doctest.DocTestSuite(pointspy.registration))
+    #tests.addTests(doctest.DocTestSuite(pointspy.georecords))
     # tests.addTests(doctest.DocTestSuite(pointspy.fit))
-    tests.addTests(doctest.DocTestSuite(pointspy.vector))
+    #tests.addTests(doctest.DocTestSuite(pointspy.vector))
     #tests.addTests(doctest.DocTestSuite(pointspy.assign))
-    tests.addTests(doctest.DocTestSuite(pointspy.surface))
-    tests.addTests(doctest.DocTestSuite(pointspy.interpolate))
-    tests.addTests(doctest.DocTestSuite(pointspy.transformation))
-    tests.addTests(doctest.DocTestSuite(pointspy.assertion))
-    tests.addTests(doctest.DocTestSuite(pointspy.polar))
-    #tests.addTests(doctest.DocTestSuite(pointspy.projection))
-    tests.addTests(doctest.DocTestSuite(pointspy.nptools))
-    tests.addTests(doctest.DocTestSuite(pointspy.extent))
+    #tests.addTests(doctest.DocTestSuite(pointspy.surface))
+    #tests.addTests(doctest.DocTestSuite(pointspy.interpolate))
+    #tests.addTests(doctest.DocTestSuite(pointspy.transformation))
+    #tests.addTests(doctest.DocTestSuite(pointspy.assertion))
+    #tests.addTests(doctest.DocTestSuite(pointspy.polar))
+    tests.addTests(doctest.DocTestSuite(pointspy.projection))
+    #tests.addTests(doctest.DocTestSuite(pointspy.nptools))
+    #tests.addTests(doctest.DocTestSuite(pointspy.extent))
 
     #filename = '/daten/Seafile/promotion/Projekte/PANtHEOn/Seafile/TestData/Faro_Focus_S70/Outdoor/LAS_preliminary/Scan_006.las'
     #from pointspy.projection import Proj
@@ -170,13 +170,23 @@ class test_extent(unittest.TestCase):
                 [1, 2]))
 
 
+class test_docs(unittest.TestCase):
+
+    def suite():
+        suite = unittest.TestSuite()
+        suite.addTest(doctest.DocTestSuite(pointspy.extent))
+        return suite
+
+
 if __name__ == '__main__':
 
-    print 'main'
+    print('unittest main')
 
-    # doctest.testmod()
-
-    #import unittest
-    #import doctest
+    #doctest.testmod()
 
     unittest.main()
+
+#doctest.testmod()
+#suite = unittest.TestSuite()
+#suite.addTest(doctest.DocTestSuite(pointspy.extent))
+#unittest.TextTestRunner(verbosity=1).run(suite)
