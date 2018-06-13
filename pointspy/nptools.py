@@ -227,7 +227,7 @@ def recarray(dataDict, dtype=[], dim=1):
     outDtypes = []
     for key in dataDict.keys():
         if key in dtype.names:
-            dt = dtype[key]
+            dt = (key, dtype[key].descr[0][1], dtype[key].descr[0][1])
         else:
             arr = dataDict[key]
             dt = (key, arr.dtype.descr[0][1], arr.shape[dim:])

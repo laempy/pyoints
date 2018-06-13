@@ -15,4 +15,5 @@ from . import (
     assertion,
     filters,
     clustering,
+    storage,
 )

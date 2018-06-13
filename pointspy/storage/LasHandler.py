@@ -9,9 +9,9 @@ from .. import (
     transformation,
     projection,
     assertion,
+    nptools,
 )
 from .BaseGeoHandler import GeoFile
-
 
 
 
@@ -67,7 +67,7 @@ class LasReader(GeoFile):
 
         scale = np.array(lasFile.header.scale, dtype=np.float64)
         offset = np.array(lasFile.header.offset, dtype=np.float64)
-        lasFields = [dim.name for dim in lasFile.point_format]
+        lasFields = [dim.name.encode('utf-8') for dim in lasFile.point_format]
 
         points = lasFile.points.view(np.recarray).point
 
@@ -88,59 +88,35 @@ class LasReader(GeoFile):
         coords[:, 2] = points.Z * scale[2] + offset[2]
 
         # grep data
-        dataDict = {'coords': coords}
-        if 'intensity' in lasFields:
-            values = points.intensity
-            if np.any(values):
-                dataDict['intensity'] = values  # .copy()
-        if 'raw_classification' in lasFields:
-            values = points.raw_classification
-            if np.any(values):
-                dataDict['classification'] = values  # .copy()
-        if 'user_data' in lasFields:
-            values = points.user_data
-            if np.any(values):
-                dataDict['user_data'] = values  # .copy()
-        if 'gps_time' in lasFields:
-            values = points.gps_time
-            if np.any(values):
-                dataDict['gps_time'] = values  # .copy()
-        if 'flag_byte' in lasFields:
-            values = points.flag_byte
-            if np.any(values):
-                flag_byte = values  # .copy()
-                dataDict['num_returns'] = flag_byte / 8
-                dataDict['return_num'] = flag_byte % 8
-        if 'pt_src_id' in lasFields:
-            values = points.pt_src_id
-            if np.any(values):
-                dataDict['pt_src_id'] = values  # .copy()
-        if 'red' in lasFields and 'green' in lasFields and 'blue' in lasFields:
-            red = points.red
-            green = points.green
-            blue = points.blue
-            if np.any(red) or np.any(green) or np.any(blue):
-                values = np.vstack([red, green, blue]).T  # .copy()
-                dataDict['rgb'] = values
-
+        omit_fields = ('X', 'Y', 'Z')
         dtypes = []
-        for key in dataDict:
-            dtypes.append(LasRecords.FIELDS[key])
+        dataDict = {'coords': coords}
+        for name in lasFields:
+            if name == 'flag_byte':
+                values = points.flag_byte
+                if np.any(values):
+                    dataDict['num_returns'] = values / 8
+                    dataDict['return_num'] = values % 8
+            elif name == 'raw_classification':
+                values = points.raw_classification
+                if np.any(values):
+                    dataDict['classification'] = values
+            elif name not in omit_fields:
+                values = points[name]
+                if np.any(values):
+                    dataDict[name] = values
 
-        # Create recarray
-        data = np.recarray((len(points),), dtype=dtypes)
-        for key in dataDict:
-            data[key] = dataDict[key]
-
-        if len(points) == 0:
-            return data.view(LasRecords)
+        # create recarray
+        data = nptools.recarray(dataDict, dtype=dtypes)
 
         # Close File
         lasFile.close()
         del lasFile
 
-        t = transformation.t_matrix(offset)
+        if len(points) == 0:
+            return data.view(LasRecords)
 
+        t = transformation.t_matrix(offset)
         return LasRecords(self.proj, data, T=t)
 
 
@@ -192,9 +168,12 @@ def writeLas(geoRecords, outfile):
     lasFile.header.scale = scale
     lasFile.header.offset = offset
 
+    # get default fields
+    lasFields = [dim.name.encode('utf-8') for dim in lasFile.point_format]
+
     # create user defined fields
     for name in geoRecords.dtype.names:
-        if name not in LasRecords.FIELDS:
+        if name not in lasFields and name not in LasRecords.USER_DEFINED_FIELDS:
             dtype = geoRecords.dtype[name]
             # seee https://pythonhosted.org/laspy/tut_part_3.html
             if dtype.kind in np.typecodes['AllInteger']:
@@ -205,10 +184,10 @@ def writeLas(geoRecords, outfile):
 
     # set user defined fields
     for name in geoRecords.dtype.names:
-        if name not in LasRecords.FIELDS:
+        if name not in LasRecords.USER_DEFINED_FIELDS:
             lasFile._writer.set_dimension(name, geoRecords[name])
 
-    # save coordinates
+    # set coordinates
     lasFile.set_x_scaled(geoRecords.coords[:, 0])
     lasFile.set_y_scaled(geoRecords.coords[:, 1])
     lasFile.set_z_scaled(geoRecords.coords[:, 2])
@@ -230,10 +209,12 @@ def writeLas(geoRecords, outfile):
         lasFile.set_gps_time(geoRecords.gps_time)
     if 'pt_src_id' in fields:
         lasFile.set_pt_src_id(geoRecords.pt_src_id)
-    if 'rgb' in fields:
-        lasFile.set_red(geoRecords.rgb[:, 0])
-        lasFile.set_green(geoRecords.rgb[:, 1])
-        lasFile.set_blue(geoRecords.rgb[:, 2])
+    if 'red' in fields:
+        lasFile.set_red(geoRecords.red)
+    if 'green' in fields:
+        lasFile.set_green(geoRecords.green)
+    if 'blue' in fields:
+        lasFile.set_blue(geoRecords.blue)
 
     # Close file
     lasFile.header.update_min_max()
@@ -261,16 +242,11 @@ class LasRecords(GeoRecords):
     GeoRecords
 
     """
-    FIELDS = {
-        'coords': ('coords', float, 3),
-        'intensity': ('intensity', int),
-        'classification': ('classification', int),
-        'user_data': ('user_data', np.uint8),
-        'gps_time': ('gps_time', float),
+    USER_DEFINED_FIELDS = {
+        'coords': ('coords', np.float, 3),
+        'classification': ('classification', np.int),
         'num_returns': ('num_returns', np.uint8),
         'return_num': ('return_num', np.uint8),
-        'pt_src_id': ('pt_src_id', float),
-        'rgb': ('rgb', np.uint8, 3),
     }
 
     @property
