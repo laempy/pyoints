@@ -185,6 +185,7 @@ def writeLas(geoRecords, outfile):
     # set user defined fields
     for name in geoRecords.dtype.names:
         if name not in LasRecords.USER_DEFINED_FIELDS:
+            print 'set %s' % name
             lasFile._writer.set_dimension(name, geoRecords[name])
 
     # set coordinates
@@ -192,29 +193,13 @@ def writeLas(geoRecords, outfile):
     lasFile.set_y_scaled(geoRecords.coords[:, 1])
     lasFile.set_z_scaled(geoRecords.coords[:, 2])
 
-    # set default fields
+    # set special fields
     fields = geoRecords.dtype.names
-    if 'intensity' in fields:
-        lasFile.set_intensity(geoRecords.intensity)
     if 'classification' in fields:
         lasFile.set_raw_classification(geoRecords.classification)
-    if 'user_data' in fields:
-        lasFile.set_user_data(geoRecords.user_data)
     if 'return_num' in fields and 'num_returns' in fields:
-        lasFile.set_flag_byte(
-            geoRecords.return_num +
-            geoRecords.num_returns *
-            8)
-    if 'gps_time' in fields:
-        lasFile.set_gps_time(geoRecords.gps_time)
-    if 'pt_src_id' in fields:
-        lasFile.set_pt_src_id(geoRecords.pt_src_id)
-    if 'red' in fields:
-        lasFile.set_red(geoRecords.red)
-    if 'green' in fields:
-        lasFile.set_green(geoRecords.green)
-    if 'blue' in fields:
-        lasFile.set_blue(geoRecords.blue)
+        flay_byte = geoRecords.return_num + geoRecords.num_returns * 8
+        lasFile.set_flag_byte(flay_byte)
 
     # Close file
     lasFile.header.update_min_max()
@@ -310,8 +295,6 @@ class LasRecords(GeoRecords):
         """
         mask = np.in1d(self.classification, classes)
         return self[mask]
-
-
 
 
 # experimental
