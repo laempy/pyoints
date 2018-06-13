@@ -18,3 +18,4 @@ pycodestyle
 opencv-python
 ipykernel
 cloudpickle
+plyfile
