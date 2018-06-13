@@ -589,6 +589,11 @@ class LocalSystem(np.matrix, object):
     def origin(self):
         return np.asarray(self[:self.dim, self.dim]).T[0]
 
+    @origin.setter
+    def origin(self, origin):
+        origin = assertion.ensure_numarray([origin]).T
+        self[:self.dim, self.dim] = origin
+
 
     def to_local(self, gcoords):
         """Transforms global coordinates into local coordinates.

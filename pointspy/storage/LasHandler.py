@@ -1,4 +1,5 @@
 import os
+import sys
 import numpy as np
 import laspy
 
@@ -10,6 +11,8 @@ from .. import (
     assertion,
 )
 from .BaseGeoHandler import GeoFile
+
+
 
 
 class LasReader(GeoFile):
@@ -34,7 +37,8 @@ class LasReader(GeoFile):
             for vlr in lasFile.header.vlrs:
                 # read projection from WKT
                 if vlr.record_id == 2112:
-                    proj = projection.Proj.from_wkt(vlr.VLR_body)
+                    wkt = str(vlr.VLR_body.decode('utf-8'))
+                    proj = projection.Proj.from_wkt(wkt)
                     break
 
         self.proj = proj
@@ -135,7 +139,9 @@ class LasReader(GeoFile):
         lasFile.close()
         del lasFile
 
-        return LasRecords(self.proj, data)
+        t = transformation.t_matrix(offset)
+
+        return LasRecords(self.proj, data, T=t)
 
 
 def writeLas(geoRecords, outfile):
@@ -168,30 +174,46 @@ def writeLas(geoRecords, outfile):
     proj_vlr = laspy.header.VLR(
         user_id="LASF_Projection",
         record_id=2112,
-        VLR_body=geoRecords.proj.wkt,
+        VLR_body=str.encode(geoRecords.proj.wkt),
         description="OGC Coordinate System WKT"
     )
+    proj_vlr.parse_data()
 
     # set VLRs
     lasFile.header.set_vlrs([proj_vlr])
 
-    # old API
-    # precision=[5, 5, 5]
-    # scale = np.repeat(10.0, 3)**-np.array(precision)
-
     # find optimal offset and scale scale to achieve highest precision
-    offset = geoRecords.extent().min_corner
-    significant_values = np.abs(geoRecords.extent().corners - offset).max(0)
-    leading_digits = np.ceil(np.log10(np.abs(significant_values))).astype(int)
-    scale = np.repeat(10.0, 3) ** - (9 - np.array(leading_digits))
+    offset = geoRecords.t.origin
+
+    max_values = np.abs(geoRecords.extent().corners - offset).max(0)
+    max_digits = 2**30  # long
+    scale = max_values / max_digits
+
     lasFile.header.scale = scale
     lasFile.header.offset = offset
 
-    lasFile.x = geoRecords.coords[:, 0]
-    lasFile.y = geoRecords.coords[:, 1]
-    lasFile.z = geoRecords.coords[:, 2]
+    # create user defined fields
+    for name in geoRecords.dtype.names:
+        if name not in LasRecords.FIELDS:
+            dtype = geoRecords.dtype[name]
+            # seee https://pythonhosted.org/laspy/tut_part_3.html
+            if dtype.kind in np.typecodes['AllInteger']:
+                type_id = 6  # long
+            else:
+                type_id = 10  # double
+            lasFile.define_new_dimension(name, type_id, '')
 
-    # Add attributes
+    # set user defined fields
+    for name in geoRecords.dtype.names:
+        if name not in LasRecords.FIELDS:
+            lasFile._writer.set_dimension(name, geoRecords[name])
+
+    # save coordinates
+    lasFile.set_x_scaled(geoRecords.coords[:, 0])
+    lasFile.set_y_scaled(geoRecords.coords[:, 1])
+    lasFile.set_z_scaled(geoRecords.coords[:, 2])
+
+    # set default fields
     fields = geoRecords.dtype.names
     if 'intensity' in fields:
         lasFile.set_intensity(geoRecords.intensity)

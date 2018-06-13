@@ -3,20 +3,6 @@ import numpy as np
 from .. import nptools
 
 
-def writeCsv(data, fileName, sep=';', header=None):
-    if header is None and hasattr(
-            data, 'dtype') and data.dtype.names is not None:
-        header = sep.join(data.dtype.names)
-    if header is None:
-        header = ''
-    np.savetxt(
-        fileName,
-        data,
-        fmt='%s',
-        delimiter=sep,
-        header=header,
-        comments='')
-
 
 def loadCsv(fileName, sep=';', bulk=1000000, dtype=None, header=True):
 
@@ -37,3 +23,18 @@ def loadCsv(fileName, sep=';', bulk=1000000, dtype=None, header=True):
     # records=np.genfromtxt(fileName,delimiter=sep,names=True).view(np.recarray)
     records = nptools.loadCsv(fileName, dtype, skip=skip, bulk=bulk, sep=sep)
     return records
+
+
+def writeCsv(data, filename, sep=';', header=None):
+    if header is None and hasattr(
+            data, 'dtype') and data.dtype.names is not None:
+        header = sep.join(data.dtype.names)
+    if header is None:
+        header = ''
+    np.savetxt(
+        filename,
+        data,
+        fmt='%s',
+        delimiter=sep,
+        header=header,
+        comments='')
