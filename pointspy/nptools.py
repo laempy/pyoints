@@ -215,7 +215,7 @@ def recarray(dataDict, dtype=[], dim=1):
             dataDict[key] = np.array(dataDict[key], copy=False)
 
     # get shape
-    shape = dataDict[dataDict.keys()[0]].shape
+    shape = next(iter(dataDict.values())).shape
     for key in dataDict.keys():
         s = dataDict[key].shape
         if len(s) < dim:
