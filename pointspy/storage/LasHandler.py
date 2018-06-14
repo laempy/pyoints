@@ -12,6 +12,118 @@ from .. import (
 )
 from .BaseGeoHandler import GeoFile
 
+"""
+# seee https://pythonhosted.org/laspy/tut_part_3.html
+0 	Raw Extra Bytes 	Value of "options"
+1 	unsigned char 	1 byte
+2 	Char 	1 byte
+3 	unsigned short 	2 bytes
+4 	Short 	2 bytes
+5 	unsigned long 	4 bytes
+6 	Long 	4 bytes
+7 	unsigned long long 	8 bytes
+8 	long long 	8 bytes
+9 	Float 	4 bytes
+10 	Double 	8 bytes
+11 	unsigned char[2] 	2 byte
+12 	char[2] 	2 byte
+13 	unsigned short[2] 	4 bytes
+14 	short[2] 	4 bytes
+15 	unsigned long[2] 	8 bytes
+16 	long[2] 	8 bytes
+17 	unsigned long long[2] 	16 bytes
+18 	long long[2] 	16 bytes
+19 	float[2] 	8 bytes
+20 	double[2] 	16 bytes
+21 	unsigned char[3] 	3 byte
+22 	char[3] 	3 byte
+23 	unsigned short[3] 	6 bytes
+24 	short[3] 	6 bytes
+25 	unsigned long[3] 	12 bytes
+26 	long[3] 	12 bytes
+27 	unsigned long long[3] 	24 bytes
+28 	long long[3] 	24 bytes
+29 	float[3] 	12 bytes
+30 	double[3] 	24 bytes
+
+]
+"""
+
+# Type conversion
+
+LASPY_TYPE_MAP = [
+    (1, ['|u1']),
+    (2, ['|S1']),
+    (3, ['<u2']),
+    (4, ['<i2']),
+    (5, ['<u4']),
+    (6, ['<i4', '<i8']),
+    (7, ['<u8']),
+    (8, []),
+    (9, ['<f4']),
+    (10, ['<f8']),
+    (11, ['|V2']),
+    (12, ['|S2']),
+]
+
+LASPY_TO_NUMPY_TYPE = {}
+for dim in range(1, 4):
+    for key, t in LASPY_TYPE_MAP:
+        if len(t)>0:
+            type_id = key + (len(LASPY_TYPE_MAP)-1) * (dim-1)
+            LASPY_TO_NUMPY_TYPE[type_id] = (t[0], dim)
+
+NUMPY_TO_LASPY_TYPE = {}
+for dim in range(1, 4):
+    NUMPY_TO_LASPY_TYPE[dim] = {}
+    for t, p in LASPY_TYPE_MAP:
+        type_id = t + (len(LASPY_TYPE_MAP)-1) * (dim-1)
+        for key in p:
+            NUMPY_TO_LASPY_TYPE[dim][key] = type_id
+
+def _dtype_to_laspy_type_id(dtype):
+    if dtype.subdtype is None:
+        dt = dtype
+        type_name = dt.str
+        type_dim = dt.shape[0] if len(dt.shape) > 0 else 1
+    else:
+        dt = dtype.subdtype
+        type_name = dt[0].str
+        type_dim = dt[1][0] if len(dt[1]) > 0 else 1
+    return NUMPY_TO_LASPY_TYPE[type_dim][type_name]
+
+
+def createTypeTestLas(outfile):
+
+    # Create file header
+    header = laspy.header.Header()
+    header.file_sig = 'LASF'
+    header.format = 1.2
+    header.data_format_id = 3
+
+    # Open file in write mode
+    lasFile = laspy.file.File(outfile, mode='w', header=header)
+
+    lasFile.header.scale = [1, 1, 1]
+    lasFile.header.offset = [0, 0, 0]
+
+    names = []
+    for type_id in range(1, 31):
+        name = 'field_%i' % type_id
+        if type_id not in [8, 18, 28]:
+            lasFile.define_new_dimension(name, type_id, '')
+            names.append(name)
+
+    k = 10
+    lasFile.x = np.random.rand(k)
+    lasFile.y = np.random.rand(k)
+    lasFile.z = np.random.rand(k)
+
+    lasFile.header.update_min_max()
+    lasFile.close()
+    del lasFile
+
+
 
 class LasReader(GeoFile):
     """Class to read .las-files.
@@ -65,7 +177,7 @@ class LasReader(GeoFile):
 
         scale = np.array(lasFile.header.scale, dtype=np.float64)
         offset = np.array(lasFile.header.offset, dtype=np.float64)
-        lasFields = [dim.name.encode('utf-8') for dim in lasFile.point_format]
+        lasFields = [dim.name for dim in lasFile.point_format]
 
         points = lasFile.points.view(np.recarray).point
 
@@ -86,14 +198,14 @@ class LasReader(GeoFile):
         coords[:, 2] = points.Z * scale[2] + offset[2]
 
         # grep data
-        omit_fields = ('X', 'Y', 'Z')
+        omit_fields = ['X', 'Y', 'Z']
         dtypes = []
         dataDict = {'coords': coords}
         for name in lasFields:
             if name == 'flag_byte':
                 values = points.flag_byte
                 if np.any(values):
-                    dataDict['num_returns'] = values / 8
+                    dataDict['num_returns'] = values // 8
                     dataDict['return_num'] = values % 8
             elif name == 'raw_classification':
                 values = points.raw_classification
@@ -167,39 +279,39 @@ def writeLas(geoRecords, outfile):
     lasFile.header.offset = offset
 
     # get default fields
-    lasFields = [dim.name.encode('utf-8') for dim in lasFile.point_format]
+    lasFields = [dim.name for dim in lasFile.point_format]
 
     # create user defined fields
+    additional_fields = []
+    omit_fields = lasFields + list(np.dtype(LasRecords.USER_DEFINED_FIELDS).names)
     for name in geoRecords.dtype.names:
-        if name not in lasFields and name not in LasRecords.USER_DEFINED_FIELDS:
+        if name not in omit_fields:
             dtype = geoRecords.dtype[name]
-            # seee https://pythonhosted.org/laspy/tut_part_3.html
-            if dtype.kind in np.typecodes['AllInteger']:
-                type_id = 6  # long
-            else:
-                type_id = 10  # double
+            type_id = _dtype_to_laspy_type_id(dtype)
             lasFile.define_new_dimension(name, type_id, '')
+            additional_fields.append(name)
 
-    # set user defined fields
+    # set additional fields
+    for name in additional_fields:
+        lasFile._writer.set_dimension(name, geoRecords[name])
+
+    # set fields
+    omit_fields = ['X', 'Y', 'Z']
     for name in geoRecords.dtype.names:
-        if name not in LasRecords.USER_DEFINED_FIELDS:
+        if name == 'coords':
+            lasFile.set_x_scaled(geoRecords.coords[:, 0])
+            lasFile.set_y_scaled(geoRecords.coords[:, 1])
+            lasFile.set_z_scaled(geoRecords.coords[:, 2])
+        elif name == 'classification':
+            lasFile.set_raw_classification(geoRecords.classification)
+        elif name == 'return_num':
+            lasFile.flag_byte += geoRecords.return_num
+        elif name == 'num_returns':
+            lasFile.flag_byte += geoRecords.num_returns * 8
+        elif name not in omit_fields:
             lasFile._writer.set_dimension(name, geoRecords[name])
 
-    # set coordinates
-    lasFile.set_x_scaled(geoRecords.coords[:, 0])
-    lasFile.set_y_scaled(geoRecords.coords[:, 1])
-    lasFile.set_z_scaled(geoRecords.coords[:, 2])
-
-    # set special fields
-    fields = geoRecords.dtype.names
-    if 'classification' in fields:
-        print('set_c')
-        lasFile.set_raw_classification(geoRecords.classification)
-    if 'return_num' in fields and 'num_returns' in fields:
-        flay_byte = geoRecords.return_num + geoRecords.num_returns * 8
-        lasFile.set_flag_byte(flay_byte)
-
-    # Close file
+    # close file
     lasFile.header.update_min_max()
     lasFile.close()
     del lasFile
@@ -225,12 +337,12 @@ class LasRecords(GeoRecords):
     GeoRecords
 
     """
-    USER_DEFINED_FIELDS = {
-        'coords': ('coords', np.float, 3),
-        'classification': ('classification', np.uint8),
-        'num_returns': ('num_returns', np.uint8),
-        'return_num': ('return_num', np.uint8),
-    }
+    USER_DEFINED_FIELDS = [
+        ('coords', np.float, 3),
+        ('classification', np.uint8),
+        ('num_returns', np.uint8),
+        ('return_num', np.uint8),
+    ]
 
     @property
     def last_return(self):
@@ -244,16 +356,20 @@ class LasRecords(GeoRecords):
     def only_return(self):
         return self.num_returns == 1
 
-    def activate(self, field):
+    def activate(self, field_name):
         """Activates a desired field on demand.
 
         Parameters
         ----------
-        field : String
+        field_name : String
             Name of the field to activate.
 
         """
-        return self.add_fields([self.USER_DEFINED_FIELDS[field]])
+        for field in self.USER_DEFINED_FIELDS:
+            if field[0] == field_name:
+                return self.add_fields([field])
+        raise ValueError('field "%s" not found' % field_name)
+                
 
     def grd(self):
         """Filter by points classified as ground.
