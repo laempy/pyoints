@@ -1,5 +1,4 @@
 import os
-import sys
 import numpy as np
 import laspy
 
@@ -12,7 +11,6 @@ from .. import (
     nptools,
 )
 from .BaseGeoHandler import GeoFile
-
 
 
 class LasReader(GeoFile):
@@ -185,7 +183,6 @@ def writeLas(geoRecords, outfile):
     # set user defined fields
     for name in geoRecords.dtype.names:
         if name not in LasRecords.USER_DEFINED_FIELDS:
-            print 'set %s' % name
             lasFile._writer.set_dimension(name, geoRecords[name])
 
     # set coordinates
@@ -196,6 +193,7 @@ def writeLas(geoRecords, outfile):
     # set special fields
     fields = geoRecords.dtype.names
     if 'classification' in fields:
+        print('set_c')
         lasFile.set_raw_classification(geoRecords.classification)
     if 'return_num' in fields and 'num_returns' in fields:
         flay_byte = geoRecords.return_num + geoRecords.num_returns * 8
@@ -229,7 +227,7 @@ class LasRecords(GeoRecords):
     """
     USER_DEFINED_FIELDS = {
         'coords': ('coords', np.float, 3),
-        'classification': ('classification', np.int),
+        'classification': ('classification', np.uint8),
         'num_returns': ('num_returns', np.uint8),
         'return_num': ('return_num', np.uint8),
     }
@@ -255,7 +253,7 @@ class LasRecords(GeoRecords):
             Name of the field to activate.
 
         """
-        return self.add_fields([self.FIELDS[field]])
+        return self.add_fields([self.USER_DEFINED_FIELDS[field]])
 
     def grd(self):
         """Filter by points classified as ground.

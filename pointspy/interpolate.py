@@ -111,10 +111,9 @@ class KnnInterpolator(Interpolator):
                 w[zeroMask] = 1
                 return w
 
-        # self._interpolator=NearestNDInterpolator(coords, values)
         self._interpolator = KNeighborsRegressor(
             n_neighbors=k,
-            weights=weight_function
+            weights=weight_function,
         )
         self._interpolator.fit(coords, values)
 

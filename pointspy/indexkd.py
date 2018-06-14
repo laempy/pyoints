@@ -470,7 +470,7 @@ class IndexKD(object):
         """
         return self.r_tree.intersection(extent, objects='raw')
 
-    def count_box(self, extent):
+    def box_count(self, extent):
         """Count all points within a given extent.
 
         Parameters
@@ -530,17 +530,17 @@ class IndexKD(object):
         return ids
 
     # TODO Documentation
-    def ballCut(self,
-                coord,
-                delta,
-                p=2,
-                filter=lambda pA, pB: pA[-1] < pB[-1]):
+    def ball_cut(self,
+                 coord,
+                 delta,
+                 p=2,
+                 filter=lambda pA, pB: pA[-1] < pB[-1]):
         nIds = self.ball(coord, delta, p=p)
         coords = self.coords
         return [nId for nId in nIds if filter(coord, coords[nId, :])]
 
     # TODO Documentation
-    def upperBall(self, coord, delta, p=2, axis=-1):
+    def upper_ball(self, coord, delta, p=2, axis=-1):
         return self.ballCut(
             coord,
             delta,
@@ -548,7 +548,7 @@ class IndexKD(object):
             filter=lambda pA, pB: pA[axis] > pB[axis])
 
     # TODO Documentation
-    def lowerBall(self, coord, delta, p=2, axis=-1):
+    def lower_ball(self, coord, delta, p=2, axis=-1):
         return self.ballCut(
             coord,
             delta,
