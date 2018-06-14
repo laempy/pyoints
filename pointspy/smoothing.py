@@ -6,7 +6,7 @@ from .indexkd import IndexKD
 from . import assertion
 
 
-def mean_ball(coords, r, numIter=1, updatePairs=False):
+def mean_ball(coords, r, num_iter=1, update_pairs=False):
     """Smoothing of spatial structures by averaging neighboured point
     coordinates.
 
@@ -16,9 +16,9 @@ def mean_ball(coords, r, numIter=1, updatePairs=False):
         Array representing `n` points with `k` dimensions.
     r : Number
         Maximum distance to nearby points used to average the coordinates.
-    numIter : optional, positive int
+    num_iter : optional, positive int
         Number of iterations.
-    updatePairs : optional, bool
+    update_pairs : optional, bool
         Specifies weather or not point pairs are updated on each iteration.
 
     See Also
@@ -29,18 +29,18 @@ def mean_ball(coords, r, numIter=1, updatePairs=False):
     coords = assertion.ensure_coords(coords)
     if not assertion.isnumeric(r):
         raise ValueError("'r' needs to a number")
-    if not (isinstance(numIter, int) and numIter > 0):
-        raise ValueError("'numIter' needs to be an integer greater zero")
-    if not isinstance(updatePairs, bool):
-        raise ValueError("'updatePairs' needs to be boolean")
+    if not (isinstance(num_iter, int) and num_iter > 0):
+        raise ValueError("'num_iter' needs to be an integer greater zero")
+    if not isinstance(update_pairs, bool):
+        raise ValueError("'update_pairs' needs to be boolean")
 
     ids = None
     mCoords = np.copy(coords)
-    for _ in range(numIter):
+    for _ in range(num_iter):
 
-        if ids is None or updatePairs:
+        if ids is None or update_pairs:
             indexKD = IndexKD(mCoords)
-            ids = indexKD.ball(indexKD.coords(), r)
+            ids = indexKD.ball(indexKD.coords, r)
 
         # averaging
         mCoords = np.array([mCoords[nIds, :].mean(0) for nIds in ids])
@@ -48,7 +48,7 @@ def mean_ball(coords, r, numIter=1, updatePairs=False):
     return mCoords
 
 
-def mean_knn(coords, k, numIter=1, updatePairs=False):
+def mean_knn(coords, k, num_iter=1, update_pairs=False):
     """Smoothing of spatial structures by averaging neighboured point
     coordinates.
 
@@ -58,9 +58,9 @@ def mean_knn(coords, k, numIter=1, updatePairs=False):
         Array representing `n` points with `l` dimensions.
     k : float
         Number of nearest points used to average the coordinates.
-    numIter : optional, int
+    num_iter : optional, int
         Number of iterations.
-    updatePairs : optional, bool
+    update_pairs : optional, bool
         Specifies weather or not point pairs are updated on each iteration.
 
     See Also
@@ -71,16 +71,16 @@ def mean_knn(coords, k, numIter=1, updatePairs=False):
     coords = assertion.ensure_coords(coords)
     if not (isinstance(k, int) and k > 0):
         raise ValueError("'k' needs to be an integer greater zero")
-    if not (isinstance(numIter, int) and numIter > 0):
-        raise ValueError("'numIter' needs to be an integer greater zero")
-    if not isinstance(updatePairs, bool):
-        raise ValueError("'updatePairs' needs to be boolean")
+    if not (isinstance(num_iter, int) and num_iter > 0):
+        raise ValueError("'num_iter' needs to be an integer greater zero")
+    if not isinstance(update_pairs, bool):
+        raise ValueError("'update_pairs' needs to be boolean")
 
     ids = None
     mCoords = np.copy(coords)
-    for _ in range(numIter):
+    for _ in range(num_iter):
 
-        if ids is None or updatePairs:
+        if ids is None or update_pairs:
             indexKD = IndexKD(mCoords)
             ids = indexKD.kNN(indexKD.coords(), k=k)[1]
 
