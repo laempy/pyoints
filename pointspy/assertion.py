@@ -92,6 +92,36 @@ def ensure_numvector(v, min_length=1, max_length=np.inf):
     return v
 
 
+def ensure_indices(v, min_value=0, max_value=np.inf):
+    """Ensures an index array to be in a specific range.
+
+    Parameters
+    ----------
+    v : array_like(int, shape=(n))
+        Arrray of indices to check.
+    min_value : optional, int
+        Minumum allowed value of `v`.
+    min_value : optional, int
+        Maximum allowed value of `v`.
+
+    Returns
+    -------
+    np.ndarray(int, shape=(n))
+        Array of indices.
+
+    """
+    v = ensure_numvector(v)
+    if v.dtype.kind not in ('i', 'u'):
+        raise ValueError('integer array required')
+    if not v.max() <= max_value:
+        m = "index %i out of range [%i, %i]" % (v.max(), min_value, max_value)
+        raise ValueError(m)
+    if not v.min() >= min_value:
+        m = "index %i out of range [%i, %i]" % (v.min(), min_value, max_value)
+        raise ValueError(m)
+    return v
+
+
 def ensure_coords(coords, by_col=False, min_dim=2, max_dim=np.inf):
     """Ensures all required properties of a coordinate like array.
 
@@ -147,7 +177,8 @@ def ensure_coords(coords, by_col=False, min_dim=2, max_dim=np.inf):
     if by_col:
         coords = coords.T
     if not len(coords.shape) == 2:
-        raise ValueError("malformed shape of 'coords', got '%s'"%str(coords.shape))
+        m = "malformed shape of 'coords', got '%s'" % str(coords.shape)
+        raise ValueError(m)
     if coords.shape[1] < min_dim:
         raise ValueError("at least %i coordinate dimensions needed" % min_dim)
     if coords.shape[1] > max_dim:

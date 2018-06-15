@@ -12,7 +12,7 @@ from . import (
 
 
 # TODO density (min neighbours in radius)
-
+# TODO deutlich einfacher mit order?
 def extrema(indexKD, attributes, r=1, inverse=False):
 
     coords = indexKD.coords
@@ -133,26 +133,53 @@ def is_isolated(indexKD, r):
                 yield pId
 
 
-def ball(indexKD, r=1, order=None, inverse=False, axis=-1, min_pts=1):
-    """ TODO docstring
+def ball(indexKD, r, order=None, inverse=False, axis=-1, min_pts=1):
+    """Filter coordinates by radius.
+
+    Parameters
+    ----------
+    indexKD : IndexKD
+        IndexKD containing `n` points to filter.
+    r : positive float or array_like(float, shape=(n))
+        Ball radius or radii to apply.
+    order : array_like(int, shape=(m))
+        Order to proceed. If m < n, only a subset of points is investigated.
+    axis : optional, int
+        Axis to use for generating the order.
+    min_pts : optional int
+        Specifies how many neighbouring points within radius `r` are needed to
+        yield a filtered point.
+
+    Yields
+    ------
+    positive int
+        Indices of the filtered points.
+
+    Notes
+    -----
+    The filter guarantees the distance of neighboured points in a range of
+    ]r, 2*r[.
 
     """
 
-    # TODO validation
+    # validation
     if not isinstance(indexKD, IndexKD):
         raise ValueError("'indexKD' needs to be an instance of IndexKD")
-
     coords = indexKD.coords
 
     if order is None:
         order = np.argsort(coords[:, axis])[::-1]
-
+    order = assertion.ensure_indices(order, max_value=len(indexKD)-1)
     if inverse:
         order = order[::-1]
 
     if not hasattr(r, '__len__'):
         r = np.repeat(r, len(indexKD))
+    r = assertion.ensure_numvector(r)
+    if not np.all(r) > 0:
+        raise ValueError("radius greater zero required")
 
+    # filtering
     not_classified = np.ones(len(order), dtype=np.bool)
     for pId in order:
         if not_classified[pId]:
@@ -160,7 +187,6 @@ def ball(indexKD, r=1, order=None, inverse=False, axis=-1, min_pts=1):
             if len(nIds) >= min_pts:
                 not_classified[nIds] = False
                 yield pId
-
 
 
 def in_convex_hull(hull_coords, coords):
@@ -198,6 +224,7 @@ def in_convex_hull(hull_coords, coords):
     return ~np.isnan(interpolator(coords))
 
 
+# TODO durch order deutlich einfacher
 def min_filter(indexKD, r, axis=-1):
     coords = indexKD.coords
 
@@ -209,7 +236,6 @@ def min_filter(indexKD, r, axis=-1):
     return mask.nonzero()
 
 
-# TODO unterschied zu dem
 def surface(indexKD, r=1, order=None, inverse=False, axis=-1):
 
     coords = indexKD.coords
@@ -228,21 +254,37 @@ def surface(indexKD, r=1, order=None, inverse=False, axis=-1):
             not_classified[nIds] = False
             yield nIds[np.argmin(inverseOrder[nIds])]
 
-# TODO unterschied zu surface
-def dem(coords, r, order=None, inverse=False, axis=-1):
-    dim = coords.shape[1]
-    assert dim >= 3
 
-    if order is None:
-        order = np.argsort(coords[:, axis])
-    if inverse:
-        order = order[::-1]
-    if not hasattr(r, '__getitem__'):
+def dem_filter(coords, r):
+    """Select points suitable for generating a digital elevation model.
+
+    Parameters
+    ----------
+    coords : array_like(Number, shape=(n, k))
+        Represents `n` points of `k` dimensions to filter.
+    r : Number or array_like(Number, shape=(n))
+        Radius or radii to apply..
+
+    Returns
+    -------
+    array_like(int, shape=(m))
+        Desired indices of points suitable for generating a surface model.
+
+    See Also
+    --------
+    radial_dem_filter
+
+    """
+    coords = assertion.ensure_coords(coords, min_dim=3)
+    order = np.argsort(coords[:, -1])
+
+    if not hasattr(r, '__getitem__') and assertion.isnumeric(r):
         r = np.repeat(r, len(order))
+    r = assertion.ensure_numvector(r)
 
     # filter
-    ballGen = ball(IndexKD(coords[:, :-1]), r, order=order)
-    fIds = np.array(list(ballGen), dtype=int)
+    ball_gen = ball(IndexKD(coords[:, :-1]), r, order=order)
+    fIds = np.array(list(ball_gen), dtype=int)
 
     # ensure neighbours
     count = IndexKD(coords[fIds, :]).ball_count(2 * r[fIds])
@@ -277,54 +319,19 @@ def radial_dem_filter(coords, angle_res, center=None):
     array_like(int, shape=(m))
         Indices of filtered points.
 
+    See Also
+    --------
+    dem_filter
+
     """
-    coords = assertion.ensure_coords(coords, min_dim=2)
+    coords = assertion.ensure_coords(coords, min_dim=3)
     if center is None:
-        center = [0, 0]
-    center = assertion.ensure_numvector(center, min_length=2)
+        center = np.zeros(coords.shape[1], dtype=float)
+    center = assertion.ensure_numvector(center, min_length=3)
     if not (assertion.isnumeric(angle_res) and angle_res > 0):
         raise ValueError('angle greater zero required')
 
-    # TODO center?
-    dist = distance.dist(center[0:2], coords[:, 0:2])
+    dist = distance.dist(center[:-1], coords[:, :-1])
     radii = dist * np.sin(angle_res / 180.0 * np.pi)
-    fIds = dem(coords, radii)
+    fIds = dem_filter(coords, radii)
     return fIds
-
-# TODO revise and docs
-def radial_noise(indexKD, angle_res, center=None):
-    """TODO
-
-    Parameters
-    ----------
-    coords : array_like(Number, shape=(n, k))
-        Points to filter.
-    angle_res : positive Number
-        Filter resolution expressed as an angle.
-    center : optional, array_like(Number, shape=(k))
-        Desired center.
-
-    Returns
-    -------
-    array_like(int, shape=(m))
-        Indices of filtered points.
-
-    """
-    if center is None:
-        center = np.zeros(indexKD.dim)
-    center = assertion.ensure_numvector(center, min_length=2)
-    if not (assertion.isnumeric(angle_res) and angle_res > 0):
-        raise ValueError('angle greater zero required')
-
-    # TODO center?
-    dist = distance.dist(center, indexKD.coords)
-    radii = dist * np.sin(angle_res / 180.0 * np.pi)
-
-    not_classified = np.ones(len(indexKD), dtype=np.bool)
-    for pId, coord in enumerate(indexKD.coords):
-        if not_classified[pId]:
-            nIds = np.array(indexKD.ball(coord, radii[pId]))
-            if len(nIds) > 1:
-                not_classified[nIds] = False
-            else:
-                yield pId
