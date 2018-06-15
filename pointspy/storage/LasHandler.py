@@ -177,7 +177,9 @@ class LasReader(GeoFile):
 
         scale = np.array(lasFile.header.scale, dtype=np.float64)
         offset = np.array(lasFile.header.offset, dtype=np.float64)
-        lasFields = [dim.name for dim in lasFile.point_format]
+        las_fields = [
+                str(dim.name.encode().decode()) for dim in lasFile.point_format
+            ]  # ugly workaround to get actual strings
 
         points = lasFile.points.view(np.recarray).point
 
@@ -201,7 +203,7 @@ class LasReader(GeoFile):
         omit_fields = ['X', 'Y', 'Z']
         dtypes = []
         dataDict = {'coords': coords}
-        for name in lasFields:
+        for name in las_fields:
             if name == 'flag_byte':
                 values = points.flag_byte
                 if np.any(values):
@@ -296,12 +298,12 @@ def writeLas(geoRecords, outfile):
         lasFile._writer.set_dimension(name, geoRecords[name])
 
     field_names = geoRecords.dtype.names
-    
+
     if 'return_num' in field_names or 'num_returns' in field_names:
         lasFile.flag_byte = np.zeros(len(geoRecords), dtype=np.uint)
-        
+
     # set fields
-    omit_fields = ['X', 'Y', 'Z']    
+    omit_fields = ['X', 'Y', 'Z']
     for name in field_names:
         if name == 'coords':
             lasFile.set_x_scaled(geoRecords.coords[:, 0])

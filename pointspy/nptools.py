@@ -224,17 +224,17 @@ def recarray(dataDict, dtype=[], dim=1):
             raise ValueError('incompatible shape of field "key"' % key)
 
     # get data types
-    outDtypes = []
+    out_dtypes = []
     for key in dataDict.keys():
         if key in dtype.names:
             dt = (key, dtype[key].descr[0][1], dtype[key].descr[0][1])
         else:
             arr = dataDict[key]
             dt = (key, arr.dtype.descr[0][1], arr.shape[dim:])
-        outDtypes.append(dt)
+        out_dtypes.append(dt)
 
     # define array
-    rec = np.recarray(shape[:dim], dtype=outDtypes)
+    rec = np.recarray(shape[:dim], dtype=out_dtypes)
     for key in dataDict.keys():
         rec[key][:] = dataDict[key]
 
