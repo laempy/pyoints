@@ -295,9 +295,14 @@ def writeLas(geoRecords, outfile):
     for name in additional_fields:
         lasFile._writer.set_dimension(name, geoRecords[name])
 
+    field_names = geoRecords.dtype.names
+    
+    if 'return_num' in field_names or 'num_returns' in field_names:
+        lasFile.flag_byte = np.zeros(len(geoRecords), dtype=np.uint)
+        
     # set fields
-    omit_fields = ['X', 'Y', 'Z']
-    for name in geoRecords.dtype.names:
+    omit_fields = ['X', 'Y', 'Z']    
+    for name in field_names:
         if name == 'coords':
             lasFile.set_x_scaled(geoRecords.coords[:, 0])
             lasFile.set_y_scaled(geoRecords.coords[:, 1])
@@ -369,7 +374,6 @@ class LasRecords(GeoRecords):
             if field[0] == field_name:
                 return self.add_fields([field])
         raise ValueError('field "%s" not found' % field_name)
-                
 
     def grd(self):
         """Filter by points classified as ground.
@@ -380,7 +384,7 @@ class LasRecords(GeoRecords):
             Filtered records.
 
         """
-        return self.classes(2, 11)
+        return self[self.class_indices(2, 11)]
 
     def veg(self):
         """Filter by points classified as vegetation.
@@ -391,9 +395,9 @@ class LasRecords(GeoRecords):
             Filtered records.
 
         """
-        return self.classes(3, 4, 5, 20)
+        return self[self.class_indices(3, 4, 5, 20)]
 
-    def classes(self, *classes):
+    def class_indices(self, *classes):
         """Filter by classes.
 
         Parameters
@@ -403,12 +407,11 @@ class LasRecords(GeoRecords):
 
         Returns
         -------
-        LasRecords
-            Filtered records.
+        np.ndarray(int)
+            Filtered record indices.
 
         """
-        mask = np.in1d(self.classification, classes)
-        return self[mask]
+        return np.where(np.in1d(self.classification, classes))[0]
 
 
 # experimental

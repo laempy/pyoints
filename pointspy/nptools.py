@@ -280,6 +280,8 @@ def add_fields(arr, dtypes, data=None):
 
     # check for duplicate fields
     for name in dtypes.names:
+        if hasattr(arr, name):
+            raise ValueError('can not overwrite attribute "%s"' % name)
         if name in arr.dtype.names:
             raise ValueError('field "%s" already exists' % name)
 
