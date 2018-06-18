@@ -1,5 +1,4 @@
 import bisect
-import itertools
 import numpy as np
 from numbers import Number
 
@@ -12,7 +11,6 @@ from . import transformation
 
 # TODO module description
 # TODO nested IndexKD?
-# ==>
 class IndexKD(object):
     """Wrapper class of serveral spatial indices to speed up spatial queries
     and ease usage.
@@ -43,6 +41,11 @@ class IndexKD(object):
         KD-tree for rapid neighbourhood queries. Generated on first demand.
     r_tree : `rtree.Rtree`
         R-tree for rapid box queries. Generated on first demand.
+
+    Notes
+    -----
+    Most spatial index operations are time critical. So it is usualla avoided
+    to check each input parameter in detail.
 
     Examples
     --------
@@ -441,13 +444,17 @@ class IndexKD(object):
             return dists[1], nIds[1]
 
     def cube(self, coords, r, **kwargs):
-        """Provides points within a cube. Wrapper to self.ball with `p=infinity`
+        """Provides points within a cube.
+
+        Notes
+        -----
+        Wrapper of self.ball with `p=np.inf`.
 
         See Also
         --------
         ball
         """
-        return self.ball(coords, r, p=float('inf'))
+        return self.ball(coords, r, p=np.inf, **kwargs)
 
     def box(self, extent):
         """Select points within a given extent.
@@ -489,8 +496,7 @@ class IndexKD(object):
         box
 
         """
-        # TODO assertion.ensure_extent(extent)
-        return self.tTree.count(extent)
+        return self.r_tree.count(extent)
 
     def slice(self, min_th, max_th, axis=-1):
         """Select points with coordinate value of axis `axis` within range the
@@ -530,27 +536,25 @@ class IndexKD(object):
         return ids
 
     # TODO Documentation
-    def ball_cut(self,
-                 coord,
-                 delta,
-                 p=2,
-                 filter=lambda pA, pB: pA[-1] < pB[-1]):
-        nIds = self.ball(coord, delta, p=p)
+    def filtered_ball(self,
+                      coord,
+                      r,
+                      filter=lambda pA, pB: pA[-1] < pB[-1],
+                      **kwargs):
+        nIds = self.ball(coord, r, **kwargs)
         coords = self.coords
         return [nId for nId in nIds if filter(coord, coords[nId, :])]
 
     # TODO Documentation
-    def upper_ball(self, coord, delta, p=2, axis=-1):
-        return self.ballCut(
-            coord,
-            delta,
-            p=p,
-            filter=lambda pA, pB: pA[axis] > pB[axis])
+    def upper_ball(self, coord, r, axis=-1, **kwargs):
+        return self.filtered_ball(coord,
+                                  r,
+                                  filter=lambda pA, pB: pA[axis] > pB[axis],
+                                  **kwargs)
 
     # TODO Documentation
-    def lower_ball(self, coord, delta, p=2, axis=-1):
-        return self.ballCut(
-            coord,
-            delta,
-            p=p,
-            filter=lambda pA, pB: pA[axis] < pB[axis])
+    def lower_ball(self, coord, r, axis=-1, **kwargs):
+        return self.filtered_ball(coord,
+                                  r,
+                                  filter=lambda pA, pB: pA[axis] < pB[axis],
+                                  **kwargs)
