@@ -154,6 +154,11 @@ class GeoRecords(np.recarray, object):
         self._t = t
         self._clear_cache()
 
+    def transform(self, T):
+        T = assertion.ensure_tmatrix(T, min_dim=self.dim, max_dim=self.dim)
+        self.coords = transformation.transform(self.coords, T)
+        self.t = T * self.t
+
     @property
     def proj(self):
         return self._proj

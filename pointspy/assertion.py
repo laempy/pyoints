@@ -219,7 +219,7 @@ def ensure_polar(pcoords, by_col=False):
     return pcoords
 
 
-def ensure_tmatrix(T):
+def ensure_tmatrix(T, min_dim=2, max_dim=np.inf):
     """Ensures the properties of transformation matrix.
 
     Parameters
@@ -252,7 +252,9 @@ def ensure_tmatrix(T):
         raise ValueError("malformed shape of transformation matrix")
     if not T.shape[0] == T.shape[1]:
         raise ValueError("transformation matrix is not a square matrix")
-    if not T.shape[0] > 2:
-        raise ValueError("at least two coordinate dimensions needed")
+    if not T.shape[0] > min_dim:
+        raise ValueError("at least %s coordinate dimensions needed" % min_dim)
+    if not T.shape[0] <= max_dim + 1:
+        raise ValueError("at most %s coordinate dimensions needed" % max_dim)
 
     return T
