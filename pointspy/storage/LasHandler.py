@@ -62,22 +62,20 @@ LASPY_TYPE_MAP = [
     (8, []),
     (9, ['<f4']),
     (10, ['<f8']),
-    (11, ['|V2']),
-    (12, ['|S2']),
 ]
 
 LASPY_TO_NUMPY_TYPE = {}
 for dim in range(1, 4):
     for key, t in LASPY_TYPE_MAP:
         if len(t)>0:
-            type_id = key + (len(LASPY_TYPE_MAP)-1) * (dim-1)
+            type_id = key + len(LASPY_TYPE_MAP) * (dim-1)
             LASPY_TO_NUMPY_TYPE[type_id] = (t[0], dim)
 
 NUMPY_TO_LASPY_TYPE = {}
 for dim in range(1, 4):
     NUMPY_TO_LASPY_TYPE[dim] = {}
     for t, p in LASPY_TYPE_MAP:
-        type_id = t + (len(LASPY_TYPE_MAP)-1) * (dim-1)
+        type_id = t + len(LASPY_TYPE_MAP) * (dim-1)
         for key in p:
             NUMPY_TO_LASPY_TYPE[dim][key] = type_id
 
