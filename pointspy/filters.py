@@ -12,35 +12,77 @@ from . import (
 
 
 # TODO density (min neighbours in radius)
-# TODO deutlich einfacher mit order?
-def extrema(indexKD, attributes, r=1, inverse=False):
+def extrema(indexKD, attributes, r, inverse=False):
+    """Find local maxima or minima for a given point set.
+
+    Parameters
+    ----------
+    indexKD : IndexKD
+        Spatial index of `n` points to filter.
+    attributes : array_like(Number, shape=(n))
+        Attributes to search for extrema.
+    r : positive Number
+        Maximum distance between two points to be considered as neighbours.
+    inverse : optional, bool
+        Indicates if local maxima (False) or minima (True) shall be identfied.
+
+    Yields
+    ------
+    positive int
+        Indices of local maxima or minima.
+
+    """
+
+    # validation
+    if not isinstance(indexKD, IndexKD):
+        raise ValueError("'indexKD' needs to be an instance of IndexKD")
+    if not (assertion.isnumeric(r) and r > 0):
+        raise ValueError("'r' needs be a number greater zero")
+    attributes = assertion.ensure_numvector(
+        attributes,
+        min_length=len(indexKD),
+        max_length=len(indexKD)
+    )
 
     coords = indexKD.coords
     order = np.argsort(attributes)
     not_classified = np.ones(len(order), dtype=np.bool)
 
+    # define filter function
     if inverse:
-        def check(id, nIds):
-            value = attributes[id]
+        def check(pId, nIds):
+            value = attributes[pId]
             for nId in nIds:
                 if attributes[nId] < value:
                     return False
             return True
     else:
-        def check(id, nIds):
-            value = attributes[id]
+        def check(pId, nIds):
+            value = attributes[pId]
             for nId in nIds:
                 if attributes[nId] > value:
                     return False
             return True
         order = order[::-1]
 
-    for id in order:
-        if not_classified[id]:
-            nIds = indexKD.ball(coords[id, :], r)
+    # filtering
+    for pId in order:
+        if not_classified[pId]:
+            nIds = indexKD.ball(coords[pId, :], r)
             not_classified[nIds] = False
-            if check(id, nIds):
-                yield id
+            if check(pId, nIds):
+                yield pId
+
+
+def min_filter(indexKD, r, axis=-1):
+    coords = indexKD.coords
+
+    ballIter = indexKD.ball_iter(coords, r, bulk=1000)
+    mask = np.zeros(len(indexKD), dtype=bool)
+    for nIds in ballIter:
+        nId = nIds[np.argmin(coords[nIds, axis])]
+        mask[nId] = True
+    return mask.nonzero()
 
 
 def has_neighbour(indexKD, r):
@@ -49,7 +91,7 @@ def has_neighbour(indexKD, r):
     Parameters
     ----------
     indexKD : IndexKD
-        Spatial index with points to analyze.
+        Spatial index of `n` points to filter.
     r : positive Number
         Maximum distance of a point to a neighbouring point to be still
         considered as isolated.
@@ -222,18 +264,6 @@ def in_convex_hull(hull_coords, coords):
             np.zeros(hull_coords.shape[0])
         )
     return ~np.isnan(interpolator(coords))
-
-
-# TODO durch order deutlich einfacher
-def min_filter(indexKD, r, axis=-1):
-    coords = indexKD.coords
-
-    ballIter = indexKD.ball_iter(coords, r, bulk=1000)
-    mask = np.zeros(len(indexKD), dtype=bool)
-    for nIds in ballIter:
-        nId = nIds[np.argmin(coords[nIds, axis])]
-        mask[nId] = True
-    return mask.nonzero()
 
 
 def surface(indexKD, r=1, order=None, inverse=False, axis=-1):
