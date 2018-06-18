@@ -71,7 +71,7 @@ def find_rototranslation(A, B):
     T2 = transformation.t_matrix(-cB)
     M = T1 * R * T2
 
-    return M
+    return transformation.LocalSystem(M)
 
 
 #TODO
@@ -140,9 +140,9 @@ def find_rototranslations(coordsDict, pairs, sWeights=1, oWeights={}):
             'C': { 'B': pairsBC },
             'D': { 'D': pairsAD },
         }
-    pairsAB = np.recarray(dtype=[('A',int),('B',int),('weights',float)])
-    #pairsAB=[(idA0,idB0),(idA1,idB1),(idA2,idB2)] or
-    #pairsAB=[(idA0,idB0,w0),(idA1,idB1,w1),(idA2,idB2,w2)]
+    pairsAB = np.recarray(dtype=[('A', int), ('B', int), ('weights', float)])
+    #pairsAB=[(idA0, idB0), (idA1, idB1), (idA2, idB2)] or
+    #pairsAB=[(idA0, idB0, w0),( idA1, idB1, w1),(idA2, idB2, w2)]
     '''
 
     # TODO asserts
@@ -272,13 +272,13 @@ def find_rototranslations(coordsDict, pairs, sWeights=1, oWeights={}):
     # Extract roto-transformation matrices
     res = {}
     for iA, keyA in enumerate(coordsDict):
-        T = transformation.tMatrix(M[iA * dim * 2:iA * dim * 2 + dim])
-        R = transformation.rMatrix(M[iA * dim * 2 + dim:(iA + 1) * dim * 2])
+        T = transformation.t_matrix(M[iA * dim * 2:iA * dim * 2 + dim])
+        R = transformation.r_matrix(M[iA * dim * 2 + dim:(iA + 1) * dim * 2])
         res[keyA] = T * R
     return res
 
 
-def ICP(coordsDict, maxDist, k=1, p=2, maxIter=10):
+def ICP(coordsDict, max_dist, k=1, p=2, max_iter=10):
     # TODO docu
 
     # iterative closest point
@@ -292,9 +292,9 @@ def ICP(coordsDict, maxDist, k=1, p=2, maxIter=10):
         if dim is None:
             dim = coords.shape[1]
         assert coords.shape[1] == dim, 'Dimensions do not match!'
-        M[key] = transformation.iMatrix(dim)
+        M[key] = transformation.i_matrix(dim)
 
-    for numIter in range(maxIter):
+    for numIter in range(max_iter):
         pairs = {}
         for keyA in coordsDict:
             pairs[keyA] = {}
@@ -306,10 +306,10 @@ def ICP(coordsDict, maxDist, k=1, p=2, maxIter=10):
 
                     coordsB = transformation.transform(
                         coordsDict[keyB], M[keyB])
-                    dists, kNN = indexKD.kNN(
+                    dists, kNN = indexKD.knn(
                         coordsB,
                         k=k,
-                        distance_upper_bound=maxDist
+                        distance_upper_bound=max_dist
                     )
 
                     if k == 1:
@@ -323,7 +323,7 @@ def ICP(coordsDict, maxDist, k=1, p=2, maxIter=10):
                     for i in range(k):
                         bIds = np.where(dists[:, i] < np.inf)[0]
                         aIds = kNN[:, i][bIds]
-                        w = distance.IDW(dists[bIds, i], p=p)
+                        w = distance.idw(dists[bIds, i], p=p)
                         aIdsList.extend(aIds)
                         bIdsList.extend(bIds)
                         wList.extend(w)
@@ -344,7 +344,7 @@ def ICP(coordsDict, maxDist, k=1, p=2, maxIter=10):
 
         #print '-----'
         # printDists(M)
-        M = networkBalancing(coordsDict, pairs)
+        M = find_rototranslations(coordsDict, pairs)
         # printDists(M)
 
     return M
