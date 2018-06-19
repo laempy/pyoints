@@ -2,12 +2,11 @@ from collections import defaultdict
 from sklearn.cluster import DBSCAN
 import numpy as np
 
-from . import assertion
-from .indexkd import IndexKD
-from .classification import (
-    mayority,
-    classes2dict,
+from . import (
+    assertion,
+    classification,
 )
+from .indexkd import IndexKD
 
 
 def clustering(indexKD,
@@ -95,7 +94,7 @@ def clustering(indexKD,
             out_clusters[pId] = nextId
             nextId += 1
 
-    return classes2dict(out_clusters, min_size=min_size)
+    return classifictation.classes_to_dict(out_clusters, min_size=min_size)
 
 
 # TODO vereinfachte clustering funktionen mit vordefinierten gewichten,
@@ -127,7 +126,7 @@ def mayorityclusters(
     return clustering(
         indexKD,
         r,
-        mayority,
+        classification.mayority,
         order,
         clusters,
         min_size,
@@ -203,4 +202,4 @@ def dbscan(
 
     # perform dbscan
     out_clusters = DBSCAN(eps=epsilon, min_samples=min_pts).fit_predict(coords)
-    return classes2dict(out_clusters, min_size=min_size, max_size=max_size)
+    return classification.classes_to_dict(out_clusters, min_size=min_size, max_size=max_size)

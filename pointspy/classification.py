@@ -1,41 +1,127 @@
 import numpy as np
 from collections import defaultdict
 
-
-def splitByBreaks(values, breaks):
-    classes = np.digitize(values, breaks)
-    for i in range(len(breaks)):
-        yield np.where(classes == i)[0]
+from . import assertion
 
 
-def renameDict(classDict, ids=None):
-    if ids is None:
-        ids = range(len(classDict))
-    return dict(zip(ids, classDict.values()))
+def classes_to_dict(classification, ids=None, min_size=1, max_size=np.inf):
+    """Converts a list of class indices to an dictionary of grouped classes.
+
+    Parameters
+    ----------
+
+    Returns
+    -------
 
 
-def dict2classes(classes, n, minPts=1):
-    classification = -np.ones(n, dtype=int)
-    for cId, ids in classes.iteritems():
-        if len(ids) >= minPts:
-            classification[ids] = cId
-    return classification
+    See Also
+    --------
+    dict_to_classes
 
+    Examples
+    --------
 
-def classes2dict(classification, ids=None, min_size=1, max_size=np.inf):
-    classes = defaultdict(lambda: [])
+    >>> classes = [0, 0, 1, 2, 1, 0, 3, 3, 5, 3, 2, 1, 0]
+    >>> print(classes_to_dict(classes))
+    {0: [0, 1, 5, 12], 1: [2, 4, 11], 2: [3, 10], 3: [6, 7, 9], 5: [8]}
+
+    """
     if ids is None:
         ids = range(len(classification))
 
+    # initialize
+    classes = {}
+    for cId in classification:
+        classes[cId] = []
+
+    # set values
     for id, cId in zip(ids, classification):
         classes[cId].append(id)
 
+    # check size
     if min_size > 1 or max_size < np.inf:
         for key in classes.keys():
             s = len(classes[key])
             if s < min_size or s > max_size:
                 del classes[key]
+
     return classes
+
+
+def dict_to_classes(classes_dict, n, min_pts=1):
+    """Converts a dictionary of classes to a list of classes.
+
+    Parameters
+    ----------
+    classes_dict : dict
+        Dictionary of classes.
+    n : positive int
+        Size of output array.
+    min_pts : int
+        Minimum size of a class to be kept.
+
+    Returns
+    -------
+    np.ndarray(int, shape=(n))
+
+    See Also
+    --------
+    classes_to_dict
+
+    Examples
+    --------
+
+    >>> classes_dict = {0: [0, 1, 5], 1: [3, 6], 2: [7, 2]}
+    >>> print(dict_to_classes(classes_dict, 10))
+
+    """
+    # TODO validation
+
+    classification = -np.ones(n, dtype=int)
+    for cId, ids in classes_dict.iteritems():
+        if len(ids) >= min_pts:
+            classification[ids] = cId
+    return classification
+
+
+def split_by_breaks(values, breaks):
+    """Assign classes to values using specific value ranges.
+
+    Parameters
+    ----------
+    values : array_like(Number, shape=(n))
+        Values to classify.
+    breaks : array_like(Number, shape=(m))
+        Series of value ranges.
+
+    Returns
+    -------
+    dict
+        Dictionary of length `m` + 1. Each key corresponds to a class id. The
+        dictionary values correspond to the value indices.
+
+    Examples
+    --------
+
+    >>> values = np.arange(10)
+    >>> breaks = [0.5, 5, 7.5]
+    >>> classes = split_by_breaks(values, breaks)
+    >>> print(classes)
+    [0 1 1 1 1 2 2 2 3 3]
+
+    """
+    values = assertion.ensure_numvector(values)
+    breaks = assertion.ensure_numvector(breaks)
+
+    return np.digitize(values, breaks)
+
+
+
+def rename_dict(class_dict, ids=None):
+    if ids is None:
+        ids = range(len(class_dict))
+    return dict(zip(ids, class_dict.values()))
+
 
 
 def mayority(classes):
