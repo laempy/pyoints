@@ -1,3 +1,6 @@
+"""Fit shapes or functions to points.
+"""
+
 import numpy as np
 from scipy import optimize
 
@@ -187,19 +190,42 @@ def cylinder(origin, coords, p, th):
 
 
 class PCA(transformation.LocalSystem):
+    """Principal component analysis.
 
-    # TODO docstring
+    Parameters
+    ----------
+    coords : TODO
+    TODO: parameters
 
-    def __init__(self, coords):
+    Examples
+    --------
+
+    >>> coords = [(0, 0), (1, 1)]
+    >>> T = PCA(coords)
+    >>> print np.round(T, 3)
+    [[ 0.707  0.707 -0.707]
+     [-0.707  0.707  0.   ]
+     [ 0.     0.     1.   ]]
+    >>> print np.round(np.linalg.inv(T), 3)
+    [[ 0.707 -0.707  0.5  ]
+     [ 0.707  0.707  0.5  ]
+     [ 0.     0.     1.   ]]
+    >>> print np.round(transformation.transform(coords, T), 3)
+    [[-0.707  0.   ]
+     [ 0.707  0.   ]]
+
+    """
+
+    def __init__(self, coords, origin=None):
         pass
 
     def __new__(cls, coords):
 
+        # validation
         coords = assertion.ensure_coords(coords)
+        dim = coords.shape[1]
 
         center = coords.mean(0)
-        dim = len(center)
-
         cCoords = coords - center
 
         # TODO uebereinstimmung mit vector.basis
@@ -224,8 +250,8 @@ class PCA(transformation.LocalSystem):
         # Transformation matrix
         T = np.matrix(np.identity(dim + 1))
         T[:dim, :dim] = eigen_vecors[:dim, :dim]
-        T = T * transformation.matrix(-center) # don't edit
-        #T = np.linalg.inv(T)
+        T = T * transformation.t_matrix(-center) # don't edit
+        T = np.linalg.inv(T)
 
         M = transformation.LocalSystem(T).view(cls)
         M._eigen_values = eigen_values
@@ -263,20 +289,6 @@ class PCA(transformation.LocalSystem):
         [0.447 0.894]
         >>> print np.round(T.pc(2), 3)
         [-0.894  0.447]
-
-        >>> coords = [(0, 0), (1, 1)]
-        >>> T = PCA(coords)
-        >>> print np.round(T, 3)
-        [[ 0.707  0.707 -0.707]
-         [-0.707  0.707  0.   ]
-         [ 0.     0.     1.   ]]
-        >>> print np.round(np.linalg.inv(T), 3)
-        [[ 0.707 -0.707  0.5  ]
-         [ 0.707  0.707  0.5  ]
-         [ 0.     0.     1.   ]]
-        >>> print np.round(transformation.transform(coords, T), 3)
-        [[-0.707  0.   ]
-         [ 0.707  0.   ]]
 
         """
         if not (k >= 1 and k <= self.dim):

@@ -1,3 +1,6 @@
+"""Generic data structure to handle point data.
+"""
+
 import warnings
 import numpy as np
 
@@ -11,7 +14,6 @@ from . import (
     nptools,
 )
 
-# TODO module description
 
 class GeoRecords(np.recarray, object):
     """Abstraction class to ease handling of point sets as well as structured

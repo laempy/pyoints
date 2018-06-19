@@ -1,3 +1,6 @@
+"""Handling of grided data, like voxels or rasters.
+"""
+
 import numpy as np
 import pandas as pd
 
@@ -12,7 +15,7 @@ from . import (
 )
 
 
-def corners2transform(corners, scale=None):
+def corners_to_transform(corners, scale=None):
     # TODO revise
     # TODO nur min und maxcorner
     # TODO: als k-dimensionale Funktion in transformation
@@ -37,7 +40,7 @@ def corners2transform(corners, scale=None):
 
     Create transformation matrix without scale.
 
-    >>> M = corners2transform(corners)
+    >>> M = corners_to_transform(corners)
     >>> print(np.round(M, 3))
     [[ 0. -1.  3.]
      [ 1.  0.  5.]
@@ -45,7 +48,7 @@ def corners2transform(corners, scale=None):
 
     Create transformation matrix with a scale.
 
-    >>> M = corners2transform(corners, [0.5, 2])
+    >>> M = corners_to_transform(corners, [0.5, 2])
     >>> print(np.round(M, 3))
     [[ 0.  -2.   3. ]
      [ 0.5  0.   5. ]
@@ -98,7 +101,7 @@ def corners2transform(corners, scale=None):
     return T
 
 
-def transform2corners(T, shape):
+def transform_to_corners(T, shape):
     """Generates the corners of a grid based on a transformation matrix.
 
     Parameters
@@ -118,7 +121,7 @@ def transform2corners(T, shape):
      [ 0.   2.  20. ]
      [ 0.   0.   1. ]]
 
-    >>> corners = transform2corners(T, (100, 200))
+    >>> corners = transform_to_corners(T, (100, 200))
     >>> print(np.round(corners, 3))
     [[ 10.  20.]
      [ 60.  20.]
@@ -168,14 +171,14 @@ class Grid(GeoRecords):
 
         if 'coords' not in npRecarray.dtype.names:
             keys = cls.keys(npRecarray.shape)
-            coords = cls.keys2coords(T, keys)
+            coords = cls.keys_to_coords(T, keys)
             dtype = [('coords', float, coords.shape[-1])]
             data = nptools.add_fields(npRecarray, dtype, data=coords)
         grid = GeoRecords(proj, data, T=T).reshape(npRecarray.shape).view(cls)
         return grid
 
     @staticmethod
-    def coords2keys(T, coords):
+    def coords_to_keys(T, coords):
         """Transforms coordinates to matrix indices.
 
         Parameters
@@ -206,7 +209,7 @@ class Grid(GeoRecords):
         return keys.reshape(coords[:, :dim].shape)
 
     @staticmethod
-    def keys2coords(T, keys):
+    def keys_to_coords(T, keys):
         """Converts indices of raster cells to coordinates.
 
         Parameters
@@ -223,7 +226,7 @@ class Grid(GeoRecords):
 
         See Also
         --------
-        Grid.coords2keys, Grid.coords2coords
+        Grid.coords_to_keys, Grid.coords2coords
 
         """
         keys = assertion.ensure_coords(keys)
@@ -255,10 +258,10 @@ class Grid(GeoRecords):
 
         See Also
         --------
-        Grid.coords2keys, Grid.keys2coords
+        Grid.coords_to_keys, Grid.keys_to_coords
 
         """
-        return Grid.keys2coords(T, Grid.coords2keys(T, coords))
+        return Grid.keys_to_coords(T, Grid.coords_to_keys(T, coords))
 
     @staticmethod
     def extentinfo(T, extent):
@@ -305,14 +308,14 @@ class Grid(GeoRecords):
         if not T.shape[0] - 1 == dim:
             raise ValueError('dimensions do not match')
 
-        corner_keys = Grid.coords2keys(T, extent.corners)
+        corner_keys = Grid.coords_to_keys(T, extent.corners)
 
         shape = np.ptp(corner_keys, axis=0) + 1
 
         # Minimum corner
         idx = np.argmin(corner_keys, axis=0)
         origin_key = corner_keys[idx, range(dim)]
-        min_corner = Grid.keys2coords(T, [origin_key - 0.5])[0, :]
+        min_corner = Grid.keys_to_coords(T, [origin_key - 0.5])[0, :]
 
         # define transformation
         t = np.copy(T)
@@ -329,7 +332,7 @@ class Grid(GeoRecords):
 
 def voxelize(geoRecords, T, dtypes=[('geoRecords', object)]):
 
-    keys = Grid.coords2keys(T, geoRecords.records().coords)
+    keys = Grid.coords_to_keys(T, geoRecords.records().coords)
     shape = tuple(keys.max(0) + 1)
 
     lookUp = np.vectorize(
@@ -340,9 +343,9 @@ def voxelize(geoRecords, T, dtypes=[('geoRecords', object)]):
             dtype=list))
 
     # Gruppieren der keys
-    df = pd.DataFrame({'indices': keys2indices(keys, shape)})
+    df = pd.DataFrame({'indices': keys_to_indices(keys, shape)})
     groupDict = df.groupby(by=df.indices).groups
-    keys = indices2keys(groupDict.keys(), shape)
+    keys = indices_to_keys(groupDict.keys(), shape)
 
     lookUp[keys.T.tolist()] = groupDict.values()
 
@@ -353,14 +356,14 @@ def voxelize(geoRecords, T, dtypes=[('geoRecords', object)]):
     return Grid(geoRecords.proj, cells.T, T)
 
 
-def keys2indices(keys, shape):
+def keys_to_indices(keys, shape):
     # TODO stimmt mit Georecords keys ueberein
     w = np.concatenate(
         (np.array([np.product(shape[i:]) for i in range(len(shape))])[1:], [1]))
     return (keys * w).sum(1)
 
 
-def indices2keys(indices, shape):
+def indices_to_keys(indices, shape):
     # TODO stimmt mit Georecords indices ueberein
     keys = []
     w = np.concatenate(

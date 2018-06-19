@@ -13,7 +13,7 @@ from . import (
 )
 
 
-def rad2deg(rad):
+def rad_to_deg(rad):
     """Converts angles from radiant to degree.
 
     Parameters
@@ -28,14 +28,14 @@ def rad2deg(rad):
 
     See Also
     --------
-    deg2rad
+    deg_to_rad
 
     Examples
     --------
 
-    >>> rad2deg(0.5*np.pi)
+    >>> rad_to_deg(0.5*np.pi)
     90.0
-    >>> print(rad2deg([0, np.pi/4, np.pi, 2*np.pi]))
+    >>> print(rad_to_deg([0, np.pi/4, np.pi, 2*np.pi]))
     [  0.  45. 180. 360.]
 
     """
@@ -46,7 +46,7 @@ def rad2deg(rad):
     return rad * 180.0 / np.pi
 
 
-def deg2rad(deg):
+def deg_to_rad(deg):
     """Converts angles from degree to radiant.
 
     Parameters
@@ -61,15 +61,15 @@ def deg2rad(deg):
 
     See Also
     --------
-    rad2deg
+    rad_to_deg
 
     Examples
     --------
 
-    >>> round(deg2rad(90), 3)
+    >>> round(deg_to_rad(90), 3)
     1.571
-    >>> rad = deg2rad([0, 45, 180, 360])
-    >>> print(np.round(rad, 3)]))
+    >>> rad = deg_to_rad([0, 45, 180, 360])
+    >>> print(np.round(rad, 3))
     [0.    0.785 3.142 6.283]
 
     """
@@ -131,7 +131,7 @@ def angle(v, w, deg=False):
     if(b > 0):
         a = math.acos(a / b)
         if deg:
-            a = rad2deg(a)
+            a = rad_to_deg(a)
     else:
         a = float('inf')
     return a
@@ -172,7 +172,7 @@ def zenith(v, axis=-1, deg=False):
     length = distance.norm(v)
     a = math.acos(v[axis] / length)
     if deg:
-        a = rad2deg(a)
+        a = rad_to_deg(a)
     return a
 
 
@@ -238,7 +238,7 @@ def orthogonal(v, w):
     return scalarproduct(v, w) == 0
 
 
-def basis(vec):
+def basis(vec, origin=None):
     """Generates a local coordinate system based on the provided vector. The
     local coordinate system is represented by a rotation matrix.
 
@@ -264,7 +264,7 @@ def basis(vec):
     >>> from pointspy import transformation
     >>> corners = [(0, 0), (0, 1), (1, 0), (1, 1), (0.5, 0.5), (-1, -1)]
 
-    X-vector changes
+    Flip the coordinate axes.
 
     >>> b = basis([1, 0])
     >>> print(np.round(b, 2))
@@ -280,67 +280,58 @@ def basis(vec):
      [ 0.5  0.5]
      [-1.  -1. ]]
 
-    >>> b = basis([0, 2])
+    Keep the original orientation, but also set a new origin.
+
+    >>> b = basis([0, 2], origin=[2, 3])
     >>> print(np.round(b, 2))
-    [[0. 1. 0.]
-     [1. 0. 0.]
+    [[0. 1. 2.]
+     [1. 0. 3.]
      [0. 0. 1.]]
     >>> local_coords = transformation.transform(corners, b)
     >>> print(np.round(local_coords, 3))
-    [[ 0.   0. ]
-     [ 1.   0. ]
-     [ 0.   1. ]
-     [ 1.   1. ]
-     [ 0.5  0.5]
-     [-1.  -1. ]]
+    [[2.  3. ]
+     [3.  3. ]
+     [2.  4. ]
+     [3.  4. ]
+     [2.5 3.5]
+     [1.  2. ]]
+
+    Diagonal basis.
 
     >>> b = basis([1, 1])
     >>> print(np.round(b, 2))
-    [[ 0.71  0.71  0.  ]
-     [ 0.71 -0.71  0.  ]
+    [[ 0.71 -0.71  0.  ]
+     [ 0.71  0.71  0.  ]
      [ 0.    0.    1.  ]]
     >>> local_coords = transformation.transform(corners, b)
     >>> print(np.round(local_coords, 3))
     [[ 0.     0.   ]
-     [ 0.707 -0.707]
+     [-0.707  0.707]
      [ 0.707  0.707]
-     [ 1.414  0.   ]
-     [ 0.707  0.   ]
-     [-1.414  0.   ]]
+     [ 0.     1.414]
+     [ 0.     0.707]
+     [ 0.    -1.414]]
 
     Three dimensional case.
 
     >>> b = basis([1, 1, 0])
     >>> print(np.round(b, 2))
-    [[ 0.71  0.71 -0.    0.  ]
-     [-0.   -0.   -1.    0.  ]
-     [ 0.71 -0.71 -0.    0.  ]
+    [[ 0.71  0.   -0.71  0.  ]
+     [ 0.71  0.    0.71  0.  ]
+     [ 0.    1.    0.    0.  ]
      [ 0.    0.    0.    1.  ]]
 
     """
     vec = assertion.ensure_numvector(vec)
-    dim = len(vec)
-
-    # TODO replace by PCA([np.zeros(len(vec)), vec])
-    return fit.PCA([-vec, vec])
-
-    # generate a rotation matrix with vec as 1th princiopal component
-    #vec = vec / distance.norm(vec)
-    sCoords = np.array([vec * (float(dim - i - 1) / (dim - 1)) for i in range(dim)]).T
-    covM = np.cov(sCoords)
-
-    U = np.linalg.svd(covM)[0]
-
-    pc1 = U[0, :]
-    mIndex = np.argmax(np.abs(pc1))
-    if pc1[mIndex] < 0:
-        U = -U
-
-    # TODO signum?
-    T = np.matrix(np.identity(dim + 1))
-    T[0:dim, 0:dim] = U.T
-
-    return T
+    if origin is None:
+        origin = np.zeros(len(vec))
+    else:
+        origin = assertion.ensure_numvector(
+                origin,
+                min_length=len(vec),
+                max_length=len(vec)
+            )
+    return fit.PCA([origin - vec, origin + vec])
 
 
 class Vector(object):
@@ -447,18 +438,25 @@ class Vector(object):
     def target(self, target):
         self.vec = assertion.ensure_numvector(target) - self.origin
 
-    def _clear_cache(self):
-        if hasattr(self, '_base'):
-            del self._base
-
     @property
-    def base(self):
-        if not hasattr(self, '_base'):
-            v = self.origin - self.vec
-            w = self.origin + self.vec
-            self._base = fit.PCA([v, w])
-            assert np.all(np.isclose(self._base.pc(1) * self.length, self.vec))
-        return self._base
+    def t(self):
+        if not hasattr(self, '_t'):
+            self._t = np.linalg.inv(basis(self.vec, self.origin))
+            assert np.all(np.isclose(self._t.pc(1) * self.length, self.vec))
+        return self._t
+
+    def _clear_cache(self):
+        if hasattr(self, '_t'):
+            del self._t
+
+    #@property
+    #def base(self):
+    #    if not hasattr(self, '_t'):
+    #        v = self.origin - self.vec
+    #        w = self.origin + self.vec
+    #        self._base = fit.PCA([v, w])
+    #        assert np.all(np.isclose(self._base.pc(1) * self.length, self.vec))
+    #    return self._base
 
     def __str__(self):
         return 'origin: %s; vec: %s' % (str(self.origin), str(self.vec))
@@ -537,7 +535,7 @@ class Vector(object):
         [ 0.  1. -2.]
 
         """
-        lcoords = self.base.to_local(gcoords)
+        lcoords = self.t.to_local(gcoords)
         return lcoords[:, 0] / self.length
 
     def __call__(self, k):
@@ -624,20 +622,20 @@ class Vector(object):
         >>> dist = v.distance([(1, -1), (0, -3), (2, 1), (2, -2), (0, 0)])
         >>> print(np.round(dist, 3))
         [0.    0.    0.    1.342 1.342]
-        >>> print(np.linalg.inv(v.base).origin)
+        >>> print(np.linalg.inv(v.t).origin)
         [ 1. -1.]
-        >>> print(v.base.pc(1) * v.length)
+        >>> print(v.t.pc(1) * v.length)
         [1. 2.]
-        >>> print(v.base.pc(2) * v.length)
+        >>> print(v.t.pc(2) * v.length)
         [-2.  1.]
 
         """
-        lcoords = self.base.to_local(gcoords)
+        lcoords = self.t.to_local(gcoords)
         return distance.norm(lcoords[:, 1:self.dim])
 
     def surface_intersection(self, surface, eps=0.001, max_iter=20):
-        """ Approximates the intersection point between the vector and a surface
-        iteratively.
+        """ Approximates the intersection point between the vector and a
+        surface iteratively.
 
         Parameters
         ----------
