@@ -20,50 +20,70 @@ def extrema(indexKD, attributes, r, inverse=False):
     indexKD : IndexKD
         Spatial index of `n` points to filter.
     attributes : array_like(Number, shape=(n))
-        Attributes to search for extrema.
+        Attributes to search for extrema. If None the last coordinate dimension
+        is used.
     r : positive Number
         Maximum distance between two points to be considered as neighbours.
     inverse : optional, bool
-        Indicates if local maxima (False) or minima (True) shall be identfied.
+        Indicates if local maxima (False) or local minima (True) shall be
+        identfied.
 
     Yields
     ------
     positive int
         Indices of local maxima or minima.
 
+    Examples
+    --------
+
+    Local maxima.
+
+    >>> indexKD = IndexKD([(0, 0), (0, 1), (1, 1), (1, 0), (0.5, 0.5) ])
+    >>> attributes = [2, 0.1, 1, 0, 0.5]
+    >>> fIds = list(extrema(indexKD, attributes, 1.1))
+    >>> print(fIds)
+    [0, 2]
+
+    Local minima.
+
+    >>> fIds = list(extrema(indexKD, attributes, 1.1, inverse=True))
+    >>> print(fIds)
+    [3, 1]
+
+    Just one local minimum.
+
+    >>> fIds = list(extrema(indexKD, attributes, 1.5, inverse=True))
+    >>> print(fIds)
+    [3]
+
     """
 
-    # validation
+    # type validation
+
     if not isinstance(indexKD, IndexKD):
         raise ValueError("'indexKD' needs to be an instance of IndexKD")
     if not (assertion.isnumeric(r) and r > 0):
         raise ValueError("'r' needs be a number greater zero")
+
     attributes = assertion.ensure_numvector(
         attributes,
         min_length=len(indexKD),
         max_length=len(indexKD)
     )
+    if not inverse:
+        attributes = -attributes
 
     coords = indexKD.coords
     order = np.argsort(attributes)
     not_classified = np.ones(len(order), dtype=np.bool)
 
     # define filter function
-    if inverse:
-        def check(pId, nIds):
-            value = attributes[pId]
-            for nId in nIds:
-                if attributes[nId] < value:
-                    return False
-            return True
-    else:
-        def check(pId, nIds):
-            value = attributes[pId]
-            for nId in nIds:
-                if attributes[nId] > value:
-                    return False
-            return True
-        order = order[::-1]
+    def check(pId, nIds):
+        value = attributes[pId]
+        for nId in nIds:
+            if attributes[nId] < value:
+                return False
+        return True
 
     # filtering
     for pId in order:
@@ -74,13 +94,48 @@ def extrema(indexKD, attributes, r, inverse=False):
                 yield pId
 
 
-def min_filter(indexKD, r, axis=-1):
-    coords = indexKD.coords
+def min_filter(indexKD, attributes, r, inverse=False):
+    """Find minima or maxima within a specified radius.
 
-    ballIter = indexKD.ball_iter(coords, r, bulk=1000)
+    Parameters
+    ----------
+    indexKD : IndexKD
+        Spatial index of `n` points to filter.
+    attributes : array_like(Number, shape=(n))
+        Attributes to search for extrema. If None the last coordinate dimension
+        is used.
+    r : positive Number
+        Local radius to search for a minimum.
+    inverse : optional, bool
+        Indicates if local minima (False) or local maxima (True) shall be
+        identfied.
+
+    Returns
+    -------
+    np.ndarray(int, shape=(n))
+        Filtered point indices.
+
+    """
+
+    # type validation
+    if not isinstance(indexKD, IndexKD):
+        raise ValueError("'indexKD' needs to be an instance of IndexKD")
+    if not (assertion.isnumeric(r) and r > 0):
+        raise ValueError("'r' needs be a number greater zero")
+
+    attributes = assertion.ensure_numvector(
+        attributes,
+        min_length=len(indexKD),
+        max_length=len(indexKD)
+    )
+    if inverse:
+        attributes = -attributes
+
+    # filtering
+    ballIter = indexKD.ball_iter(indexKD.coords, r, bulk=1000)
     mask = np.zeros(len(indexKD), dtype=bool)
     for nIds in ballIter:
-        nId = nIds[np.argmin(coords[nIds, axis])]
+        nId = nIds[np.argmin(attributes[nIds])]
         mask[nId] = True
     return mask.nonzero()
 
@@ -322,10 +377,10 @@ def dem_filter(coords, r):
 
     # subsequent filter
     while True:
-        l = len(fIds)
+        m = len(fIds)
         count = IndexKD(coords[fIds, :]).ball_count(2 * r[fIds])
         fIds = fIds[count >= 3]
-        if l == len(fIds):
+        if m == len(fIds):
             break
 
     return fIds
