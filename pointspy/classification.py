@@ -1,7 +1,13 @@
+"""Collection of fucntions which help to classify, reclassify or clustering.
+"""
+
 import numpy as np
 from collections import defaultdict
 
-from . import assertion
+from . import (
+    assertion,
+    nptools,
+)
 
 
 def classes_to_dict(classification, ids=None, min_size=1, max_size=np.inf):
@@ -9,10 +15,21 @@ def classes_to_dict(classification, ids=None, min_size=1, max_size=np.inf):
 
     Parameters
     ----------
+    classification : array_like(shape=(n))
+        Array of classes
+    ids : optional, array_like(int, shape=(n))
+        Desired indices or IDs of classes in the output. If None, the indices
+        are numbered consecutively.
+    min_size : optional, positive int
+        Minimum desired size of a class to be kept in the result.
+    max_size : optional, positive int
+        Maximum desired size of a class to be kept in the result.
 
     Returns
     -------
-
+    dict
+        Dictionary of class indices. The dictionary keys represent the class
+        ids, while the values represent the indices in the original array.
 
     See Also
     --------
@@ -21,20 +38,26 @@ def classes_to_dict(classification, ids=None, min_size=1, max_size=np.inf):
     Examples
     --------
 
+    >>> classes = ['cat', 'cat', 'dog', 'bird', 'dog', 'bird', 'cat', 'dog']
+    >>> print(classes_to_dict(classes))
+    {'cat': [0, 1, 6], 'bird': [3, 5], 'dog': [2, 4, 7]}
+
     >>> classes = [0, 0, 1, 2, 1, 0, 3, 3, 5, 3, 2, 1, 0]
     >>> print(classes_to_dict(classes))
     {0: [0, 1, 5, 12], 1: [2, 4, 11], 2: [3, 10], 3: [6, 7, 9], 5: [8]}
 
     """
+    if not nptools.isarray(classification):
+        raise ValueError("'classification' needs to an array like object")
+
     if ids is None:
         ids = range(len(classification))
-
-    # initialize
-    classes = {}
-    for cId in classification:
-        classes[cId] = []
+    elif not len(ids) == len(classification):
+        m = "'classification' and 'ids' must have the same length"
+        raise ValueError(m)
 
     # set values
+    classes = defaultdict(list)
     for id, cId in zip(ids, classification):
         classes[cId].append(id)
 
@@ -45,20 +68,23 @@ def classes_to_dict(classification, ids=None, min_size=1, max_size=np.inf):
             if s < min_size or s > max_size:
                 del classes[key]
 
-    return classes
+    return dict(classes)
 
 
-def dict_to_classes(classes_dict, n, min_pts=1):
+def dict_to_classes(classes_dict, n, min_size=1, missing_value=-1):
     """Converts a dictionary of classes to a list of classes.
 
     Parameters
     ----------
     classes_dict : dict
-        Dictionary of classes.
+        Dictionary of class indices.
     n : positive int
-        Size of output array.
-    min_pts : int
-        Minimum size of a class to be kept.
+        Desired size of the output array. It must be at least the size of the
+        maximum class index.
+    min_pts : optional, int
+        Minimum size of a class to be kept in the result.
+    missing_value : optional, object
+        Default value for missing class.
 
     Returns
     -------
@@ -68,19 +94,47 @@ def dict_to_classes(classes_dict, n, min_pts=1):
     --------
     classes_to_dict
 
+    Notes
+    -----
+    Only a limited input validation is provided.
+
     Examples
     --------
 
+    Alphanumeric classes.
+
+    >>> classes_dict = {'bird': [0, 1, 5, 4], 'dog': [3, 6, 8], 'cat': [7]}
+    >>> print(dict_to_classes(classes_dict, 10, missing_value=''))
+    ['bird' 'bird' '' 'dog' 'bird' 'bird' 'dog' 'cat' 'dog' '']
+
+    Omit small classes.
+
+    >>> print(dict_to_classes(classes_dict, 10, min_size=2))
+    ['bird' 'bird' '-1' 'dog' 'bird' 'bird' 'dog' '-1' 'dog' '-1']
+
+
+    Numeric classes.
+
     >>> classes_dict = {0: [0, 1, 5], 1: [3, 6], 2: [7, 2]}
-    >>> print(dict_to_classes(classes_dict, 10))
+    >>> print(dict_to_classes(classes_dict, 9))
+    [ 0  0  2  1 -1  0  1  2 -1]
 
     """
-    # TODO validation
+    # type validation
+    if not isinstance(classes_dict, dict):
+        raise ValueError("dictionary required")
+    if not isinstance(n, int) and n > 0:
+        raise ValueError("'n' needs to be an integer greater zero")
 
-    classification = -np.ones(n, dtype=int)
+    # prepare output
+    dt = np.array(classes_dict.keys()).dtype
+    classification = np.full(n, missing_value, dtype=dt)
+
+    # assign classes
     for cId, ids in classes_dict.iteritems():
-        if len(ids) >= min_pts:
+        if len(ids) >= min_size:
             classification[ids] = cId
+
     return classification
 
 
@@ -116,29 +170,96 @@ def split_by_breaks(values, breaks):
     return np.digitize(values, breaks)
 
 
+def rename_dict(d, ids=None):
+    """Assigns new key names to a dictionary.
 
-def rename_dict(class_dict, ids=None):
+    Parameters
+    ----------
+    d : dict
+        Dictionary to rename
+    ids : optional, array_like(shape=(len(d)))
+        Desired key names. If None the keys are numbered consecutively.
+
+    Returns
+    -------
+    dict
+        Dictionary with new names.
+
+    Examples
+    --------
+
+    >>> d = {1: [0, 1], 2: None, 3: 'text'}
+    >>> print(rename_dict(d, ['first', 'second', 'last']))
+    {'second': None, 'last': 'text', 'first': [0, 1]}
+
+    """
+
+    if not isinstance(d, dict):
+        raise ValueError("dictionary required")
     if ids is None:
-        ids = range(len(class_dict))
-    return dict(zip(ids, class_dict.values()))
+        ids = range(len(d))
+    elif not len(ids) == len(d):
+        raise ValueError("same number of keys required")
+
+    return dict(zip(ids, d.values()))
 
 
+def mayority(classes, empty_value=-1):
+    """Find most frequent class or value in an array.
 
-def mayority(classes):
-    k = len(classes) / 2
-    cCount = defaultdict(lambda: 0)
+    Parameters
+    ----------
+    classes : array_like(object, shape=(n))
+        Classes or values to check.
+    empty_value : object
+        Class value in case that no decision can be made.
+
+    Returns
+    -------
+    object
+        Most frequent class.
+
+    Notes
+    -----
+    Only a limited input validation is provided.
+
+    Examples
+    --------
+
+    Find mayority class.
+
+    >>> classes =['cat', 'dog', 'dog', 'bird', 'cat', 'dog']
+    >>> print(mayority(classes))
+    dog
+
+    >>> classes =[1, 8, 9, 0, 0, 2, 4, 2, 4, 3, 2, 3, 5, 6]
+    >>> print(mayority(classes))
+    2
+
+    No decision possible.
+
+    >>> classes =[1, 2, 3, 4, 4, 3]
+    >>> print(mayority(classes))
+    -1
+
+    """
+    if not nptools.isarray(classes):
+        raise ValueError("'classes' needs to be an array like object")
+
+    k = len(classes) // 2
+    count = defaultdict(lambda: 0)
     for cId in classes:
-        cCount[cId] += 1
-        if cCount[cId] > k:
+        count[cId] += 1
+        if count[cId] > k:
             return cId
 
-    for key in cCount:
-        if cCount[key] > cCount[cId]:
+    for key in count:
+        if count[key] > count[cId]:
             cId = key
 
-    for key in cCount:
-        if cCount[key] == cCount[cId] and key != cId:
-            return -1
+    for key in count:
+        if count[key] == count[cId] and key != cId:
+            return empty_value
     return cId
 
 
@@ -167,8 +288,8 @@ class Sample:
         # print groupKeys
 
         ids = np.arange(len(classes))
-        tIds = defaultdict(lambda: [])
-        vIds = defaultdict(lambda: [])
+        tIds = defaultdict(list)
+        vIds = defaultdict(list)
 
         for classKey in classKeys:
             cIds = ids[classes == classKey]
