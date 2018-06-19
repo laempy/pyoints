@@ -67,7 +67,7 @@ LASPY_TYPE_MAP = [
 LASPY_TO_NUMPY_TYPE = {}
 for dim in range(1, 4):
     for key, t in LASPY_TYPE_MAP:
-        if len(t)>0:
+        if len(t) > 0:
             type_id = key + len(LASPY_TYPE_MAP) * (dim-1)
             LASPY_TO_NUMPY_TYPE[type_id] = (t[0], dim)
 
@@ -78,6 +78,7 @@ for dim in range(1, 4):
         type_id = t + len(LASPY_TYPE_MAP) * (dim-1)
         for key in p:
             NUMPY_TO_LASPY_TYPE[dim][key] = type_id
+
 
 def _dtype_to_laspy_type_id(dtype):
     if dtype.subdtype is None:
@@ -122,7 +123,6 @@ def createTypeTestLas(outfile):
     del lasFile
 
 
-
 class LasReader(GeoFile):
     """Class to read .las-files.
 
@@ -130,6 +130,9 @@ class LasReader(GeoFile):
     ----------
     infile : String
         Las file to be read.
+    proj : optional, Proj
+        Spatial reference system. Usually just provided, if the spatial
+        reference has not be set yet.
 
     See Also
     --------
@@ -141,14 +144,13 @@ class LasReader(GeoFile):
 
         lasFile = laspy.file.File(self.file, mode='r')
 
+        # try to read projection from WKT
         if proj is None:
             for vlr in lasFile.header.vlrs:
-                # read projection from WKT
                 if vlr.record_id == 2112:
                     wkt = str(vlr.VLR_body.decode('utf-8'))
                     proj = projection.Proj.from_wkt(wkt)
                     break
-
         self.proj = proj
 
         self.t = transformation.t_matrix(lasFile.header.min)
@@ -198,7 +200,7 @@ class LasReader(GeoFile):
         coords[:, 2] = points.Z * scale[2] + offset[2]
 
         # grep data
-        omit_fields = ['X', 'Y', 'Z']
+        omit = ['X', 'Y', 'Z']
         dtypes = []
         dataDict = {'coords': coords}
         for name in las_fields:
@@ -211,7 +213,7 @@ class LasReader(GeoFile):
                 values = points.raw_classification
                 if np.any(values):
                     dataDict['classification'] = values
-            elif name not in omit_fields:
+            elif name not in omit:
                 values = points[name]
                 if np.any(values):
                     dataDict[name] = values
@@ -283,9 +285,9 @@ def writeLas(geoRecords, outfile):
 
     # create user defined fields
     additional_fields = []
-    omit_fields = lasFields + list(np.dtype(LasRecords.USER_DEFINED_FIELDS).names)
+    omit = lasFields + list(np.dtype(LasRecords.USER_DEFINED_FIELDS).names)
     for name in geoRecords.dtype.names:
-        if name not in omit_fields:
+        if name not in omit:
             dtype = geoRecords.dtype[name]
             type_id = _dtype_to_laspy_type_id(dtype)
             lasFile.define_new_dimension(name, type_id, '')
@@ -301,7 +303,7 @@ def writeLas(geoRecords, outfile):
         lasFile.flag_byte = np.zeros(len(geoRecords), dtype=np.uint)
 
     # set fields
-    omit_fields = ['X', 'Y', 'Z']
+    omit = ['X', 'Y', 'Z']
     for name in field_names:
         if name == 'coords':
             lasFile.set_x_scaled(geoRecords.coords[:, 0])
@@ -313,7 +315,7 @@ def writeLas(geoRecords, outfile):
             lasFile.flag_byte += geoRecords.return_num
         elif name == 'num_returns':
             lasFile.flag_byte += geoRecords.num_returns * 8
-        elif name not in omit_fields:
+        elif name not in omit:
             lasFile._writer.set_dimension(name, geoRecords[name])
 
     # close file

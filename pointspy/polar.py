@@ -1,4 +1,4 @@
-"""Provides functions to handle polar coordinates.
+"""Handling of polar coordinates.
 """
 
 import numpy as np
@@ -8,7 +8,8 @@ from .import (
     assertion,
 )
 
-def coords2polar(coords):
+
+def coords_to_polar(coords):
     """Converts Cartesian coordinates to polar coordinates.
 
     Parameters
@@ -30,7 +31,7 @@ def coords2polar(coords):
     2D coordinates.
 
     >>> coords = [(0, 0), (0, 1), (1, 0), (1, 1), (-1, 1), (2, -5)]
-    >>> pcoords = coords2polar(coords)
+    >>> pcoords = coords_to_polar(coords)
     >>> print(np.round(pcoords, 3))
     [[ 0.     0.   ]
      [ 1.     1.571]
@@ -42,7 +43,7 @@ def coords2polar(coords):
     3D coordinates.
 
     >>> coords = [(0, 0, 0), (1, 1, 0), (-1, -1, -1), (2, -5, 9)]
-    >>> pcoords = coords2polar(coords)
+    >>> pcoords = coords_to_polar(coords)
     >>> print(np.round(pcoords, 3))
     [[ 0.     0.     0.   ]
      [ 1.414  0.785  1.571]
@@ -75,7 +76,7 @@ def coords2polar(coords):
         raise ValueError('%i dimensions are not supported yet.' % dim)
 
 
-def polar2coords(pcoords):
+def polar_to_coords(pcoords):
     """Converts polar coordinates to Cartesian coordinates.
 
     Parameters
@@ -97,7 +98,7 @@ def polar2coords(pcoords):
     2D coordinates.
 
     >>> pcoords = [(0, 0), (3, 0), (3, np.pi), (4, -0.5*np.pi), (1, 0.5)]
-    >>> coords = polar2coords(pcoords)
+    >>> coords = polar_to_coords(pcoords)
     >>> print(np.round(coords, 3))
     [[ 0.     0.   ]
      [ 3.     0.   ]
@@ -108,7 +109,7 @@ def polar2coords(pcoords):
     3D coordinates.
 
     >>> pcoords = [(0, 0, 0), (2, 0, 0),(4, 0, np.pi), (4, 0.5*np.pi, 0.5)]
-    >>> coords = polar2coords(pcoords)
+    >>> coords = polar_to_coords(pcoords)
     >>> print(np.round(coords, 3))
     [[ 0.     0.     0.   ]
      [ 0.     0.     2.   ]

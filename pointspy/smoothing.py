@@ -1,5 +1,6 @@
 """Smoothing of point clouds.
 """
+
 import numpy as np
 
 from .indexkd import IndexKD

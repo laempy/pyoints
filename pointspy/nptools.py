@@ -1,4 +1,4 @@
-"""Provides functions for convienient handling of numpy arrays.
+"""Functions for convienient handling of numpy arrays.
 """
 
 import numpy as np

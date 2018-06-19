@@ -1,3 +1,6 @@
+"""Registration or alignment of point sets.
+"""
+
 import numpy as np
 
 from . indexkd import IndexKD
