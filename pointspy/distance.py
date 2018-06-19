@@ -1,6 +1,8 @@
+"""Distance metrics.
+"""
+
 import numpy as np
 
-# TODO module description
 from . import assertion
 
 
@@ -9,7 +11,7 @@ def norm(coords):
 
     Parameters
     ----------
-    coords: array_like(shape=(k, )) or array_like(shape=(n, k))
+    coords: array_like(shape=(k)) or array_like(shape=(n, k))
         Represents `n` points or a single point of `k` dimensions.
 
     Returns
@@ -30,7 +32,7 @@ def snorm(coords):
 
     Parameters
     ----------
-    coords: array_like(shape=(k, )) or array_like(shape=(n, k))
+    coords: array_like(shape=(k)) or array_like(shape=(n, k))
         Represents `n` points or a single point of `k` dimensions.
 
     Returns
@@ -56,7 +58,7 @@ def dist(p, coords):
 
     Parameters
     ----------
-    p : array_like(Number, shape=(n, k)) or array_like(Number, shape=(k, ))
+    p : array_like(Number, shape=(n, k)) or array_like(Number, shape=(k))
         Represents `n` points or a single point of `k` dimensions.
     coords : array_like(Number, shape=(n, k))
         Represents `n` points of `k` dimensions.
@@ -128,14 +130,14 @@ def idw(dists, p=2):
 
     Parameters
     ----------
-    dists : Number or array_like(Number, shape=(n, ))
+    dists : Number or array_like(Number, shape=(n))
         Represent `n` distance values.
     p : optional, Number
         Weighting power.
 
     Returns
     -------
-    Number or array_like(Number, shape=(n, ))
+    Number or array_like(Number, shape=(n))
         Weights according to Inverse Distance Weighting.
 
     """

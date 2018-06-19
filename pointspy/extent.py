@@ -1,10 +1,9 @@
-"""Module to handle spatial extends.
+"""Handle spatial extends.
 """
 
 import numpy as np
-from . import assertion
 
-# TODO module description
+from . import assertion
 
 
 class Extent(np.recarray, object):

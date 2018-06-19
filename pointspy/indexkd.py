@@ -1,3 +1,6 @@
+"""Generic spatial index.
+"""
+
 import bisect
 import numpy as np
 from numbers import Number
@@ -9,7 +12,7 @@ from rtree import Rtree
 from . import assertion
 from . import transformation
 
-# TODO module description
+
 # TODO nested IndexKD?
 class IndexKD(object):
     """Wrapper class of serveral spatial indices to speed up spatial queries
