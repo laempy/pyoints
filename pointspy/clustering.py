@@ -66,7 +66,8 @@ def clustering(indexKD,
         order = np.argsort(count)[::-1]
         order = order[count[order] > 1]
     elif not (hasattr(order, '__len__') and len(order) <= len(indexKD)):
-        raise ValueError("'order' needs be an array with length less or equal len(indexKD)")
+        m = "'order' needs be an array with length less or equal len(indexKD)"
+        raise ValueError(m)
 
     if clusters is None:
         out_clusters = -np.ones(len(indexKD), dtype=int)
@@ -77,7 +78,8 @@ def clustering(indexKD,
         assert len(out_clusters.shape) == 1
 
     if not (isinstance(min_size, int) and min_size >= 0):
-        raise ValueError("'min_size' needs to be an integer equal or greater zero")
+        m = "'min_size' needs to be an integer equal or greater zero"
+        raise ValueError(m)
     if not isinstance(auto_set, bool):
         raise ValueError("'auto_set' needs to boolean")
 
