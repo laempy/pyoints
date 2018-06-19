@@ -206,15 +206,19 @@ class IndexKD(object):
         if not isinstance(bulk, int) and bulk > 0:
             raise ValueError("bulk size has to be a integer greater zero")
 
-        for i in range(coords.shape[0] // bulk + 1):
-            # bulk query
-            nIds = self.kd_tree.query_ball_point(
-                coords[bulk * i: bulk * (i + 1),
-                       : self.dim],
-                r, n_jobs=-1, **kwargs)
-            # yield neighbours
-            for nId in nIds:
-                yield nId
+        if coords.shape[0] > 0:
+            for i in range(coords.shape[0] // bulk + 1):
+                # bulk query
+                bulk_min = bulk * i
+                bulk_max = bulk * (i + 1)
+                nIds = self.kd_tree.query_ball_point(
+                    coords[bulk_min:bulk_max, :self.dim],
+                    r,
+                    n_jobs=-1,
+                    **kwargs
+                )
+                for nId in nIds:
+                    yield nId
 
     def balls_iter(self, coords, radii, **kwargs):
         """Similar to `ball_iter`, but with differing radii.
@@ -238,7 +242,7 @@ class IndexKD(object):
             nIds = self.kd_tree.query_ball_point(coord[:self.dim], r, **kwargs)
             yield nIds
 
-    def ball_count(self, r, coords=None, p=2):
+    def ball_count(self, r, coords=None, **kwargs):
         """Counts numbers of neighbours within radius.
 
         Parameters
@@ -262,9 +266,9 @@ class IndexKD(object):
         if coords is None:
             coords = self.coords
         if hasattr(r, '__iter__'):
-            nIdsGen = self.balls_iter(coords, r, p=p)
+            nIdsGen = self.balls_iter(coords, r, **kwargs)
         else:
-            nIdsGen = self.ball_iter(coords, r, p=p)
+            nIdsGen = self.ball_iter(coords, r, **kwargs)
         return np.array(list(map(len, nIdsGen)), dtype=int)
 
     def sphere(self, coord, r_min, r_max, **kwargs):
@@ -394,7 +398,7 @@ class IndexKD(object):
             yield dists, nIds
 
     @property
-    def nn(self, p=2):
+    def nn(self):
         """Provides the nearest neighbours for each point.
 
         Returns
