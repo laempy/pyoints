@@ -272,18 +272,20 @@ def writeLas(geoRecords, outfile):
     # set VLRs
     lasFile.header.set_vlrs([proj_vlr])
 
-    # find optimal offset and scale scale to achieve highest precision
-    offset = geoRecords.t.origin
-
-    max_values = np.abs(records.extent().corners - offset).max(0)
-    max_digits = 2**30  # long
-    scale = max_values / max_digits
-
     dim = min(geoRecords.dim, 3)
-    lasFile.header.scale = np.ones(3)
-    lasFile.header.scale[:dim] = scale[:dim]
-    lasFile.header.offset = np.zeros(3)
-    lasFile.header.offset[:dim] = offset[:dim]
+
+    # find optimal offset and scale scale to achieve highest precision
+    offset = np.zeros(3)
+    scale = np.ones(3)
+
+    offset[:dim] = geoRecords.t.origin
+
+    max_values = np.abs(records.extent().corners - offset[:dim]).max(0)
+    max_digits = 2**30  # long
+    scale[:dim] = max_values / max_digits
+
+    lasFile.header.scale = scale
+    lasFile.header.offset = offset
 
     # get default fields
     las_fields = [field.name for field in lasFile.point_format]
