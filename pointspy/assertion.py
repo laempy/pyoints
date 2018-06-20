@@ -64,31 +64,56 @@ def ensure_numarray(arr):
     return arr
 
 
-def ensure_numvector(v, min_length=1, max_length=np.inf):
+def ensure_numvector(v, length=None, min_length=1, max_length=np.inf):
     """Ensures the properties of a numeric vector.
 
     Parameters
     ----------
     v : array_like(Number, shape=(k))
-        Vector of `k` dimensions.
+        Vector of length `n`.
+    length, min_length, max_length : optional, positive int
+        Minimum and maximum allowed length of the vector. If `length` is
+        provided `n` has to be exactly `length`.
+
+    Returns
+    -------
+    v : np.ndarray(Number, shape=(n))
+        Vector with guaranteed properties.
+
+    Examples
+    --------
+
+    Valid vector.
+
+    >>> v = (3, 2, 4, 4)
+    >>> v = ensure_numvector(v)
+    >>> print(v)
+    [3 2 4 4]
+
+    Vector of insufficient length.
+
+    >>> try:
+    ...     ensure_numvector(v, length=5)
+    ... except ValueError as e:
+    ...     print(e)
+    vector of length 5 required
 
     Raises
     ------
     ValueError
 
-    Returns
-    -------
-    v : np.ndarray(Number, shape=(k))
-        Vector with guaranteed properties.
-
     """
     v = ensure_numarray(v)
     if not len(v.shape) == 1:
         raise ValueError("one dimensional vector required")
-    if len(v) < min_length:
-        raise ValueError("vector of length >= %i required" % min_length)
-    if len(v) > max_length:
-        raise ValueError("vector of length <= %i required" % max_length)
+    if length is not None:
+        if not len(v) == length:
+            raise ValueError("vector of length %i required" % length)
+    else:
+        if len(v) < min_length:
+            raise ValueError("vector of length >= %i required" % min_length)
+        if len(v) > max_length:
+            raise ValueError("vector of length <= %i required" % max_length)
     return v
 
 
