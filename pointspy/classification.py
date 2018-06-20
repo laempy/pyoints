@@ -63,7 +63,7 @@ def classes_to_dict(classification, ids=None, min_size=1, max_size=np.inf):
 
     # check size
     if min_size > 1 or max_size < np.inf:
-        for key in classes.keys():
+        for key in list(classes.keys()):
             s = len(classes[key])
             if s < min_size or s > max_size:
                 del classes[key]
