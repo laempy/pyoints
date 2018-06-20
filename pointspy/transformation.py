@@ -647,7 +647,6 @@ class LocalSystem(np.matrix, object):
         """
         return transform(lcoords, self, inverse=True)
 
-    # TODO auslagern?
     def explained_variance(self, gcoords):
         """Get explained variance of global coordinates.
 
@@ -682,7 +681,6 @@ class LocalSystem(np.matrix, object):
         lcoords = self.to_local(gcoords)
         return np.var(lcoords, axis=0)
 
-    # TODO auslagern?
     def explained_variance_ratio(self, gcoords):
         """Get relative amount of explained variance of global coordinates.
 

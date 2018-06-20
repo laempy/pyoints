@@ -187,15 +187,19 @@ def cylinder(origin, coords, p, th):
     return M, center, r, success
 
 
-
-
 class PCA(transformation.LocalSystem):
-    """Principal component analysis.
+    """Principal Component Analysis (PCA).
 
     Parameters
     ----------
-    coords : TODO
-    TODO: parameters
+    coords : array_like(Number, shape=(n, k))
+        Represents `n` data points of `k` dimensions. These coordinates are
+        used to fit a PCA.
+
+    Attributes
+    ----------
+    eigen_values : np.ndarray(Number, shape=(k))
+        Characteristic Eigen Values of the PCA.
 
     Examples
     --------
@@ -220,37 +224,32 @@ class PCA(transformation.LocalSystem):
         pass
 
     def __new__(cls, coords):
-
-        # validation
         coords = assertion.ensure_coords(coords)
         dim = coords.shape[1]
-
         center = coords.mean(0)
-        cCoords = coords - center
 
-        # TODO uebereinstimmung mit vector.basis
-        covM = np.cov(cCoords, rowvar=False)
-        eigen_values, eigen_vecors = np.linalg.eigh(covM)
+        covM = np.cov(coords - center, rowvar=False)
+        eigen_values, eigen_vectors = np.linalg.eigh(covM)
 
+        # order eigenvalues and eigenvectors
         order = np.argsort(eigen_values)[::-1]
         eigen_values = eigen_values[order]
-        eigen_vecors = eigen_vecors[:, order].T
+        eigen_vectors = eigen_vectors[:, order].T
 
-        # Orientation
         # reverse orientation if required
-        pc1 = eigen_vecors[0, :]
+        pc1 = eigen_vectors[0, :]
         mIndex = np.argmax(np.abs(pc1))
         if pc1[mIndex] < 0:
-            eigen_vecors = -eigen_vecors
-            #eigen_vecors[0, :] = -eigen_vecors[0, :]
+            eigen_vectors = -eigen_vectors
+            # eigen_vectors[0, :] = -eigen_vectors[0, :]
 
-        assert np.isclose(abs(np.linalg.det(eigen_vecors)), 1), 'determinant differs from -1 or 1'
-        #eigen_vecors = np.linalg.inv(eigen_vecors)
+        close = np.isclose(abs(np.linalg.det(eigen_vectors)), 1)
+        assert close, "determinant differs from -1 or 1"
 
         # Transformation matrix
         T = np.matrix(np.identity(dim + 1))
-        T[:dim, :dim] = eigen_vecors[:dim, :dim]
-        T = T * transformation.t_matrix(-center) # don't edit
+        T[:dim, :dim] = eigen_vectors[:dim, :dim]
+        T = T * transformation.t_matrix(-center)  # don not edit!
 
         M = transformation.LocalSystem(T).view(cls)
         M._eigen_values = eigen_values
