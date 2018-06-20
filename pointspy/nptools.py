@@ -219,9 +219,9 @@ def recarray(dataDict, dtype=[], dim=1):
     for key in dataDict.keys():
         s = dataDict[key].shape
         if len(s) < dim:
-            raise ValueError('shape "%s" needs to be least of dimension "%i"' % (str(s), dim))
+            raise ValueError("shape '%s' needs to be least of dimension '%i'" % (str(s), dim))
         if not s[:dim] == shape[:dim]:
-            raise ValueError('incompatible shape of field "key"' % key)
+            raise ValueError("incompatible shape of field '%s'" % key)
 
     # get data types
     out_dtypes = []
