@@ -153,7 +153,7 @@ class GeoRecords(np.recarray, object):
         t = assertion.ensure_tmatrix(t)
         if not t.shape[0] == self.dim + 1:
             raise ValueError('dimensions do not fit')
-        self._t = t
+        self._t = transformation.LocalSystem(t)
         self._clear_cache()
 
     def transform(self, T):

@@ -19,11 +19,14 @@ def find_rototranslation(A, B):
     A : array_like(Number, shape=(n, k))
         Arrays representing `n` reference points with `k` dimensions.
 
-
     Returns
     -------
     M : numpy.matrix(float, shape=(k+1, k+1))
         Roto-translation matrix which maps `B` to `A` with `A = B * M.T`.
+
+    References
+    ----------
+    http://nghiaho.com/?page_id=671
 
     Examples
     --------
@@ -50,7 +53,7 @@ def find_rototranslation(A, B):
     B = assertion.ensure_coords(B)
 
     if not A.shape == B.shape:
-        raise ValueError('dimensions need to match')
+        raise ValueError("coordinate dimensions do not match")
 
     cA = A.mean(0)
     cB = B.mean(0)
@@ -60,19 +63,23 @@ def find_rototranslation(A, B):
 
     # Find rotation matrix
     H = mA.T * mB
-    USV = np.linalg.svd(H)
-    R = USV[0] * USV[2]
-
+    U, S, V = np.linalg.svd(H)
+    R = U * V
 
     # reflection case
-    #if np.linalg.det(R) < 0:
-    #    USV[0][-1, :] *= -1
-     #   R = USV[0] * USV[2]
+    if np.linalg.det(R) < 0:
+        R[-1, :] = -R[-1, :]
+        # TODO test
 
     # Create transformation matrix
     T1 = transformation.t_matrix(cA)
     T2 = transformation.t_matrix(-cB)
     M = T1 * R * T2
+
+    # validate result
+    ixd = (0, -1)
+    close = np.isclose(transformation.transform(B[ixd, :], M), A[ixd, :])
+    assert np.all(close), "could not find an appropiate transformation matrix"
 
     return transformation.LocalSystem(M)
 
@@ -105,7 +112,7 @@ def find_transformation(A, B):
     if not b.shape == mA.shape:
         raise ValueError('dimensions do not match')
 
-    x = np.linalg.lstsq(mA, b)[0]
+    x = np.linalg.lstsq(mA, b, rcond=None)[0]
     M = np.matrix(x).T
 
     return M
@@ -270,7 +277,7 @@ def find_rototranslations(coordsDict, pairs, sWeights=1, oWeights={}):
     # solve linear equation system
     mA = np.vstack(mA)
     mB = np.hstack(mB)
-    M = np.linalg.lstsq(mA, mB)[0]
+    M = np.linalg.lstsq(mA, mB, rcond=None)[0]
 
     # Extract roto-transformation matrices
     res = {}

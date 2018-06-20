@@ -276,6 +276,9 @@ def writeLas(geoRecords, outfile):
     max_values = np.abs(geoRecords.extent().corners - offset).max(0)
     max_digits = 2**30  # long
     scale = max_values / max_digits
+    if geoRecords.dim < 3:
+        scale = (scale[0], scale[1], 1)
+        offset = (offset[0], offset[1], 1)
 
     lasFile.header.scale = scale
     lasFile.header.offset = offset
@@ -308,7 +311,8 @@ def writeLas(geoRecords, outfile):
         if name == 'coords':
             lasFile.set_x_scaled(geoRecords.coords[:, 0])
             lasFile.set_y_scaled(geoRecords.coords[:, 1])
-            lasFile.set_z_scaled(geoRecords.coords[:, 2])
+            if geoRecords.dim > 2:
+                lasFile.set_z_scaled(geoRecords.coords[:, 2])
         elif name == 'classification':
             lasFile.set_raw_classification(geoRecords.classification)
         elif name == 'return_num':

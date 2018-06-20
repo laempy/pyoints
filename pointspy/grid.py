@@ -16,10 +16,6 @@ from . import (
 
 
 def corners_to_transform(corners, scale=None):
-    # TODO revise
-    # TODO nur min und maxcorner
-    # TODO: als k-dimensionale Funktion in transformation
-    # TODO rename
     """Create a transformation matrix based on the corners of a raster.
 
     Parameters
@@ -32,7 +28,7 @@ def corners_to_transform(corners, scale=None):
     Examples
     --------
 
-    Create some corners
+    Create some corners.
 
     >>> T = transformation.matrix(t=[3, 5], s=[10, 20], r=np.pi/2)
     >>> coords = Extent([np.zeros(2), np.ones(2)]).corners
@@ -64,41 +60,9 @@ def corners_to_transform(corners, scale=None):
     T = registration.find_transformation(corners, pts)
 
     # get translation, rotation and scale
-    t, r, s, det = transformation.decomposition(T)
+    t, r, s, det = transformation.decomposition(T, assume_rigid=False)
 
     return transformation.matrix(t=t, r=r, s=scale)
-    #T = registration.find_transformation(pts, corners)
-
-    #return T
-    #return T
-    #print np.round(T, 6)
-    # TODO scaling missing
-    T = registration.find_rototranslation(corners, pts)
-
-    #print np.round(T, 6)
-    return T
-    #print transformation.decomposition(T)
-
-    # TODO 3D
-
-    #get_rototranslation()
-
-    # TODO create matrix based on LGS
-    #corners / corners.max(0)
-    #np.linalg.solve()
-
-    sT = transformation.s_matrix(scale)
-    tT = transformation.t_matrix(corners[0, :])
-
-    dX = float(corners[0, 0] - corners[1, 0])
-    dY = float(corners[0, 1] - corners[1, 1])
-
-    alpha = np.tan(dY / dX)
-    rT = transformation.r_matrix(alpha)
-    #raise NotImplementedError()
-    T = tT * sT * rT
-    # T=tT*sT#*rT
-    return T
 
 
 def transform_to_corners(T, shape):
@@ -172,10 +136,17 @@ class Grid(GeoRecords):
         if 'coords' not in npRecarray.dtype.names:
             keys = cls.keys(npRecarray.shape)
             coords = cls.keys_to_coords(T, keys)
-            dtype = [('coords', float, coords.shape[-1])]
+            dtype = [('coords', float, len(npRecarray.shape))]
             data = nptools.add_fields(npRecarray, dtype, data=coords)
         grid = GeoRecords(proj, data, T=T).reshape(npRecarray.shape).view(cls)
         return grid
+
+    # overwrite
+    def transform(self, T):
+        T = assertion.ensure_tmatrix(T, min_dim=self.dim, max_dim=self.dim)
+        self.t = T * self.t
+        keys = self.keys(self.shape)
+        self.coords = self.keys_to_coords(self.t, keys)
 
     @staticmethod
     def coords_to_keys(T, coords):
@@ -196,7 +167,7 @@ class Grid(GeoRecords):
             Indices of the coordinates within the grid.
 
         """
-        T = transformation.LocalSystem(T)
+        T = assertion.ensure_tmatrix(T)
         dim = T.dim
         # TODO vereinfachen (wie mit strukturierten koordinaten umgehen?
         s = np.product(coords[:, :dim].shape) / dim
@@ -226,12 +197,12 @@ class Grid(GeoRecords):
 
         See Also
         --------
-        Grid.coords_to_keys, Grid.coords2coords
+        Grid.coords_to_keys, Grid.coords_to_coords
 
         """
-        keys = assertion.ensure_coords(keys)
+        keys = assertion.ensure_numarray(keys)
         T = transformation.LocalSystem(T)
-        if not keys.shape[1] == T.shape[1] - 1:
+        if not keys.shape[-1] == T.shape[1] - 1:
             raise ValueError('dimensions do not match')
 
         s = np.product(keys.shape) / T.dim
@@ -241,7 +212,7 @@ class Grid(GeoRecords):
         return coords.reshape(keys.shape)
 
     @staticmethod
-    def coords2coords(T, coords):
+    def coords_to_coords(T, coords):
         """Aligns coordinates with a raster grid.
 
         Parameters
@@ -325,6 +296,7 @@ class Grid(GeoRecords):
 
     def get_window(self, extent):
         # TODO extentinfo notwendig?
+        #M, min_corner_key, shape = self.extentinfo(self.transform, extent)
         T, cornerIndex, shape = self.extentinfo(self.transform, extent)
         mask = self.keys(shape) + cornerIndex
         return self[zip(mask.T)].reshape(shape)
@@ -335,7 +307,7 @@ def voxelize(geoRecords, T, dtypes=[('geoRecords', object)]):
     keys = Grid.coords_to_keys(T, geoRecords.records().coords)
     shape = tuple(keys.max(0) + 1)
 
-    lookUp = np.vectorize(
+    lookup = np.vectorize(
         lambda key: list(),
         otypes=[list])(
         np.empty(
@@ -347,11 +319,11 @@ def voxelize(geoRecords, T, dtypes=[('geoRecords', object)]):
     groupDict = df.groupby(by=df.indices).groups
     keys = indices_to_keys(groupDict.keys(), shape)
 
-    lookUp[keys.T.tolist()] = groupDict.values()
+    lookup[keys.T.tolist()] = groupDict.values()
 
     # Aggregate per cell
     records = geoRecords.records()
-    cells = nptools.map(lambda ids: (records[ids],), lookUp, dtypes=dtypes)
+    cells = nptools.map(lambda ids: (records[ids],), lookup, dtypes=dtypes)
 
     return Grid(geoRecords.proj, cells.T, T)
 

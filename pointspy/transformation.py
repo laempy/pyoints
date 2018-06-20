@@ -12,20 +12,20 @@ from . import (
 )
 
 
-def transform(coords, T, inverse=False):
+def transform(coords, T, inverse=False, extra_precise=False):
     """Performs a linear transformation to coordinates using a transformation
     matrix.
 
     Parameters
     ----------
-    coords : array_like(Number, shape=(n, k))
+    coords : array_like(Number, shape=(n, k)) or array_like(Number, shape=(k))
         Represents `n` data points of `k` dimensions.
     T : array_like(Number, shape=(k+1, k+1))
         Transformation matrix.
 
     Returns
     -------
-    coords : np.ndarray(Number, shape=(n, k))
+    coords : np.ndarray(Number, shape=(n, k)) or np.ndarray(Number, shape=(k))
         Transformed coordinates.
 
     Examples
@@ -44,16 +44,24 @@ def transform(coords, T, inverse=False):
 
     T = np.asarray(T)
 
-    coords = assertion.ensure_coords(coords)
-    return cv2.transform(np.expand_dims(coords.astype(np.float64), axis=0), T)[0][:,0:-1]
+    coords = assertion.ensure_numarray(coords)
 
-    # TODO decide
-    H = homogenious(coords)
-    HT = np.dot(H, T.T)
-    if len(H.shape) == 1:
-        return HT[0:-1]
+    if len(coords.shape) == 1 and coords.shape[0] == T.shape[0] - 1:
+        # single point
+        return np.dot(np.append(coords, 1), T.T)[0: -1]
+    elif len(coords.shape) == 2 and coords.shape[1] == T.shape[0] - 1:
+        # multiple points
+        if extra_precise:
+            # precise, but slow
+            return np.dot(homogenious(coords), T.T)[:, 0:-1]
+        else:
+            # fast, but not very precise
+            return cv2.transform(
+                        np.expand_dims(coords.astype(np.float64), axis=0),
+                        T
+                    )[0][:, 0:-1]
     else:
-        return HT[:, 0:-1]
+        raise ValueError("dimensions do not match")
 
 
 def homogenious(coords, value=1):
@@ -384,7 +392,7 @@ def add_dim(T):
     return LocalSystem(M)
 
 
-def decomposition(T):
+def decomposition(T, ignore_warnings=False):
     """Determinates most important parameters of a transformation matrix.
 
     Parameters
@@ -440,8 +448,8 @@ def decomposition(T):
     if dim == 2:
         r1 = np.arctan2(R[1, 0], R[1, 1])
         r2 = np.arctan2(-R[0, 1], R[0, 0])
-        if not np.isclose(r1, r2):
-            warnings.warn('Rotation angles seem to differ.')
+        if not ignore_warnings and not np.isclose(r1, r2):
+            warnings.warn("Rotation angles seem to differ.")
         r = (r1 + r2) * 0.5
     elif dim == 3:
         r_x = np.arctan(R[2, 1] / R[2, 2])
