@@ -70,7 +70,7 @@ def homogenious(coords, value=1):
     Parameters
     ----------
     coords : array_like(Number, shape=(n, k))
-        Represents n data points of `k` dimensions.
+        Represents `n` data points of `k` dimensions.
     value : optional, Number
         Values to set.
 
@@ -366,7 +366,6 @@ def add_dim(T):
     np.matrix(float, shape=(k+2, k+2))
         Transformation matrix with an additional dimension.
 
-
     Examples
     --------
 
@@ -560,18 +559,14 @@ class LocalSystem(np.matrix, object):
     Examples
     --------
 
-    >>> T = assertion.ensure_tmatrix([(2, -0.5, 2), (0.5, 1, 3), (0, 0, 1)])
-    >>> print  T
+    >>> L = LocalSystem([(2, -0.5, 2), (0.5, 1, 3), (0, 0, 1)])
+    >>> print(L)
     [[ 2.  -0.5  2. ]
      [ 0.5  1.   3. ]
      [ 0.   0.   1. ]]
-    >>> L = LocalSystem(T)
-    >>> L.dim
+    >>> print(L.dim)
     2
-    >>> print np.round(L.components, 3)
-    [[ 2.  -0.5]
-     [ 0.5  1. ]]
-    >>> print np.round(L.origin, 3)
+    >>> print(np.round(L.origin, 3))
     [2. 3.]
 
     See Also
@@ -587,12 +582,6 @@ class LocalSystem(np.matrix, object):
     def dim(self):
         return len(self) - 1
 
-    # TODO notwendig?
-    @property
-    def components(self):
-        # TODO here might be a sign error
-        return np.asarray(self[:self.dim, :self.dim])
-
     @property
     def origin(self):
         return np.asarray(self[:self.dim, self.dim]).T[0]
@@ -601,7 +590,6 @@ class LocalSystem(np.matrix, object):
     def origin(self, origin):
         origin = assertion.ensure_numarray([origin]).T
         self[:self.dim, self.dim] = origin
-
 
     def to_local(self, gcoords):
         """Transforms global coordinates into local coordinates.

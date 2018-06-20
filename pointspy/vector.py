@@ -284,54 +284,51 @@ def basis(vec, origin=None):
 
     >>> b = basis([0, 2], origin=[2, 3])
     >>> print(np.round(b, 2))
-    [[0. 1. 2.]
-     [1. 0. 3.]
-     [0. 0. 1.]]
+    [[ 0.  1. -3.]
+     [ 1.  0. -2.]
+     [ 0.  0.  1.]]
     >>> local_coords = transformation.transform(corners, b)
     >>> print(np.round(local_coords, 3))
-    [[2.  3. ]
-     [3.  3. ]
-     [2.  4. ]
-     [3.  4. ]
-     [2.5 3.5]
-     [1.  2. ]]
+    [[-3.  -2. ]
+     [-2.  -2. ]
+     [-3.  -1. ]
+     [-2.  -1. ]
+     [-2.5 -1.5]
+     [-4.  -3. ]]
 
     Diagonal basis.
 
     >>> b = basis([1, 1])
     >>> print(np.round(b, 2))
-    [[ 0.71 -0.71  0.  ]
-     [ 0.71  0.71  0.  ]
+    [[ 0.71  0.71  0.  ]
+     [-0.71  0.71  0.  ]
      [ 0.    0.    1.  ]]
     >>> local_coords = transformation.transform(corners, b)
     >>> print(np.round(local_coords, 3))
     [[ 0.     0.   ]
-     [-0.707  0.707]
      [ 0.707  0.707]
-     [ 0.     1.414]
-     [ 0.     0.707]
-     [ 0.    -1.414]]
+     [ 0.707 -0.707]
+     [ 1.414  0.   ]
+     [ 0.707  0.   ]
+     [-1.414  0.   ]]
 
     Three dimensional case.
 
     >>> b = basis([1, 1, 0])
     >>> print(np.round(b, 2))
-    [[ 0.71  0.   -0.71  0.  ]
-     [ 0.71  0.    0.71  0.  ]
-     [ 0.    1.    0.    0.  ]
+    [[ 0.71  0.71  0.    0.  ]
+     [ 0.    0.    1.    0.  ]
+     [-0.71  0.71  0.    0.  ]
      [ 0.    0.    0.    1.  ]]
+
 
     """
     vec = assertion.ensure_numvector(vec)
     if origin is None:
         origin = np.zeros(len(vec))
     else:
-        origin = assertion.ensure_numvector(
-                origin,
-                min_length=len(vec),
-                max_length=len(vec)
-            )
-    return fit.PCA([origin - vec, origin + vec])
+        origin = assertion.ensure_numvector(origin, length=len(vec))
+    return fit.PCA([origin - vec, origin, origin + vec])
 
 
 class Vector(object):
@@ -399,10 +396,39 @@ class Vector(object):
         self.origin = origin
         self.vec = vec
 
-    def __array_finalize__(self, obj):
-        if obj is None:
-            return
-        self._target = getattr(obj, '_target', None)
+    @classmethod
+    def from_coords(cls, coords):
+        """Vector creation from coordinates using Principal Component Analysis.
+
+        Parameters
+        ----------
+        coords : array_like(Number, shape=(n, k))
+            Represents `n` data points of `k` dimensions. These coordinates are
+            used to fit a PCA.
+
+        See Also
+        --------
+        fit.PCA
+
+        Examples
+        --------
+
+        >>> v = Vector.from_coords([(0, 1), (0, 2), (0, 6)])
+        >>> print(v)
+        origin: [0. 3.]; vec: [0. 1.]
+        >>> print(v.t)
+        [[ 0.  1. -3.]
+         [ 1.  0.  0.]
+         [ 0.  0.  1.]]
+
+        """
+        coords = assertion.ensure_coords(coords)
+        pca = fit.PCA(coords)
+
+        vec = Vector(coords.mean(0), pca.pc(1))
+        vec._t = pca
+
+        return vec
 
     @property
     def dim(self):
@@ -441,22 +467,13 @@ class Vector(object):
     @property
     def t(self):
         if not hasattr(self, '_t'):
-            self._t = np.linalg.inv(basis(self.vec, self.origin))
+            self._t = basis(self.vec, self.origin)
             assert np.all(np.isclose(self._t.pc(1) * self.length, self.vec))
         return self._t
 
     def _clear_cache(self):
         if hasattr(self, '_t'):
             del self._t
-
-    #@property
-    #def base(self):
-    #    if not hasattr(self, '_t'):
-    #        v = self.origin - self.vec
-    #        w = self.origin + self.vec
-    #        self._base = fit.PCA([v, w])
-    #        assert np.all(np.isclose(self._base.pc(1) * self.length, self.vec))
-    #    return self._base
 
     def __str__(self):
         return 'origin: %s; vec: %s' % (str(self.origin), str(self.vec))
@@ -530,9 +547,9 @@ class Vector(object):
         --------
 
         >>> v = Vector((1, 1, 1), (2, 3, 4))
-        >>> ks = v.k([v.origin, v.target, v.origin - 2 * v.vec])
+        >>> ks = v.k([v.origin - v.vec, v.target, v.origin - 2 * v.vec])
         >>> print(np.round(ks, 2))
-        [ 0.  1. -2.]
+        [-1.  1. -2.]
 
         """
         lcoords = self.t.to_local(gcoords)

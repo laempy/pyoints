@@ -60,7 +60,7 @@ def corners_to_transform(corners, scale=None):
     T = registration.find_transformation(corners, pts)
 
     # get translation, rotation and scale
-    t, r, s, det = transformation.decomposition(T, assume_rigid=False)
+    t, r, s, det = transformation.decomposition(T)
 
     return transformation.matrix(t=t, r=r, s=scale)
 

@@ -216,7 +216,7 @@ class PCA(transformation.LocalSystem):
 
     """
 
-    def __init__(self, coords, origin=None):
+    def __init__(self, coords):
         pass
 
     def __new__(cls, coords):
@@ -251,7 +251,6 @@ class PCA(transformation.LocalSystem):
         T = np.matrix(np.identity(dim + 1))
         T[:dim, :dim] = eigen_vecors[:dim, :dim]
         T = T * transformation.t_matrix(-center) # don't edit
-        T = np.linalg.inv(T)
 
         M = transformation.LocalSystem(T).view(cls)
         M._eigen_values = eigen_values
@@ -260,7 +259,6 @@ class PCA(transformation.LocalSystem):
     @property
     def eigen_values(self):
         return self._eigen_values
-
 
     def pc(self, k):
         """Select a specific principal component.
