@@ -199,15 +199,18 @@ def dbscan(
     Parameters
     ----------
     indexKD : IndexKD
-        Spatial index with `n` points.
+        Spatial index with `n` points to cluster.
     min_pts : int
-        'min_pts' parameter of DBSCAN.
+        Corresponds to the `min_pts` parameter of the DBSCAN algorithm.
     epsilon : optional, positive float
-        'min_pts' parameter of DBSCAN.
+        Corresponds to the `epsilon` parameter of DBSCAN algorithm. If None,
+        it a suitable value is estimated by investigating the nearest neighbour
+        distances `dists` of all points in `indexKD` with ```epsilon =
+        np.percentile(dists, quantile * 100) * factor```.
     quantile : optional, positive float
-        TODO: Quantile
+        Used to calculate `epsilon`.
     factor: optional, positive float
-        TODO: factor
+        Used to calculate `epsilon`.
 
     Examples
     --------

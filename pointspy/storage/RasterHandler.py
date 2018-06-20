@@ -41,7 +41,7 @@ class RasterReader(GeoFile):
         self._shape = (gdalRaster.RasterYSize, gdalRaster.RasterXSize)
         self._num_bands = gdalRaster.RasterCount
 
-        self._corners = grid.transform2corners(self.t, self._shape)
+        self._corners = grid.transform_to_corners(self.t, self._shape)
         self._extent = Extent(self._corners)
 
         # try to read date

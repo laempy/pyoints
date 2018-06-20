@@ -6,7 +6,7 @@ from . import assertion
 
 
 class Surface:
-    """Creates a surface model based on points representing the surface.
+    """Creates a surface model based on representative points.
 
     Parameters
     ----------
