@@ -249,6 +249,8 @@ def writeLas(geoRecords, outfile):
     if not os.access(os.path.dirname(outfile), os.W_OK):
         raise IOError('File %s is not writable' % outfile)
 
+    records = geoRecords.records()
+
     # Create file header
     header = laspy.header.Header()
     header.file_sig = 'LASF'
@@ -273,54 +275,54 @@ def writeLas(geoRecords, outfile):
     # find optimal offset and scale scale to achieve highest precision
     offset = geoRecords.t.origin
 
-    max_values = np.abs(geoRecords.extent().corners - offset).max(0)
+    max_values = np.abs(records.extent().corners - offset).max(0)
     max_digits = 2**30  # long
     scale = max_values / max_digits
-    if geoRecords.dim < 3:
-        scale = (scale[0], scale[1], 1)
-        offset = (offset[0], offset[1], 1)
 
-    lasFile.header.scale = scale
-    lasFile.header.offset = offset
+    dim = min(geoRecords.dim, 3)
+    lasFile.header.scale = np.ones(3)
+    lasFile.header.scale[:dim] = scale[:dim]
+    lasFile.header.offset = np.zeros(3)
+    lasFile.header.offset[:dim] = offset[:dim]
 
     # get default fields
-    lasFields = [dim.name for dim in lasFile.point_format]
+    las_fields = [field.name for field in lasFile.point_format]
 
     # create user defined fields
     additional_fields = []
-    omit = lasFields + list(np.dtype(LasRecords.USER_DEFINED_FIELDS).names)
-    for name in geoRecords.dtype.names:
+    omit = las_fields + list(np.dtype(LasRecords.USER_DEFINED_FIELDS).names)
+    for name in records.dtype.names:
         if name not in omit:
-            dtype = geoRecords.dtype[name]
+            dtype = records.dtype[name]
             type_id = _dtype_to_laspy_type_id(dtype)
             lasFile.define_new_dimension(name, type_id, '')
             additional_fields.append(name)
 
     # set additional fields
     for name in additional_fields:
-        lasFile._writer.set_dimension(name, geoRecords[name])
+        lasFile._writer.set_dimension(name, records[name])
 
-    field_names = geoRecords.dtype.names
+    field_names = records.dtype.names
 
     if 'return_num' in field_names or 'num_returns' in field_names:
-        lasFile.flag_byte = np.zeros(len(geoRecords), dtype=np.uint)
+        lasFile.flag_byte = np.zeros(len(records), dtype=np.uint)
 
     # set fields
     omit = ['X', 'Y', 'Z']
     for name in field_names:
         if name == 'coords':
-            lasFile.set_x_scaled(geoRecords.coords[:, 0])
-            lasFile.set_y_scaled(geoRecords.coords[:, 1])
-            if geoRecords.dim > 2:
-                lasFile.set_z_scaled(geoRecords.coords[:, 2])
+            lasFile.set_x_scaled(records.coords[:, 0])
+            lasFile.set_y_scaled(records.coords[:, 1])
+            if records.dim > 2:
+                lasFile.set_z_scaled(records.coords[:, 2])
         elif name == 'classification':
-            lasFile.set_raw_classification(geoRecords.classification)
+            lasFile.set_raw_classification(records.classification)
         elif name == 'return_num':
-            lasFile.flag_byte += geoRecords.return_num
+            lasFile.flag_byte += records.return_num
         elif name == 'num_returns':
-            lasFile.flag_byte += geoRecords.num_returns * 8
+            lasFile.flag_byte += records.num_returns * 8
         elif name not in omit:
-            lasFile._writer.set_dimension(name, geoRecords[name])
+            lasFile._writer.set_dimension(name, records[name])
 
     # close file
     lasFile.header.update_min_max()
