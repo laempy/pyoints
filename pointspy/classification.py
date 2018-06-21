@@ -10,7 +10,12 @@ from . import (
 )
 
 
-def classes_to_dict(classification, ids=None, min_size=1, max_size=np.inf):
+def classes_to_dict(
+        classification,
+        ids=None,
+        min_size=1,
+        max_size=np.inf,
+        missing_value=-1):
     """Converts a list of class indices to an dictionary of grouped classes.
 
     Parameters
@@ -24,6 +29,8 @@ def classes_to_dict(classification, ids=None, min_size=1, max_size=np.inf):
         Minimum desired size of a class to be kept in the result.
     max_size : optional, positive int
         Maximum desired size of a class to be kept in the result.
+    missing_value : optional, object
+        Default value for missing class.
 
     Returns
     -------
@@ -59,7 +66,8 @@ def classes_to_dict(classification, ids=None, min_size=1, max_size=np.inf):
     # set values
     classes = defaultdict(list)
     for id, cId in zip(ids, classification):
-        classes[cId].append(id)
+        if not cId == missing_value:
+            classes[cId].append(id)
 
     # check size
     if min_size > 1 or max_size < np.inf:
@@ -71,7 +79,12 @@ def classes_to_dict(classification, ids=None, min_size=1, max_size=np.inf):
     return dict(classes)
 
 
-def dict_to_classes(classes_dict, n, min_size=1, missing_value=-1):
+def dict_to_classes(
+        classes_dict,
+        n,
+        min_size=1,
+        max_size=np.inf,
+        missing_value=-1):
     """Converts a dictionary of classes to a list of classes.
 
     Parameters
@@ -83,6 +96,10 @@ def dict_to_classes(classes_dict, n, min_size=1, missing_value=-1):
         maximum class index.
     min_pts : optional, int
         Minimum size of a class to be kept in the result.
+    min_size : optional, positive int
+        Minimum desired size of a class to be kept in the result.
+    max_size : optional, positive int
+        Maximum desired size of a class to be kept in the result.
     missing_value : optional, object
         Default value for missing class.
 
@@ -132,7 +149,7 @@ def dict_to_classes(classes_dict, n, min_size=1, missing_value=-1):
 
     # assign classes
     for cId, ids in classes_dict.iteritems():
-        if len(ids) >= min_size:
+        if len(ids) >= min_size and len(ids) <= max_size:
             classification[ids] = cId
 
     return classification
