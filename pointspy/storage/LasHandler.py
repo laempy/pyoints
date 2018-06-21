@@ -81,6 +81,7 @@ for dim in range(1, 4):
 
 
 def _dtype_to_laspy_type_id(dtype):
+    # convert numpy type to laspy type id
     if dtype.subdtype is None:
         dt = dtype
         type_name = dt.str
@@ -89,6 +90,10 @@ def _dtype_to_laspy_type_id(dtype):
         dt = dtype.subdtype
         type_name = dt[0].str
         type_dim = dt[1][0] if len(dt[1]) > 0 else 1
+    if type_dim not in NUMPY_TO_LASPY_TYPE.keys():
+        return None
+    if type_name not in NUMPY_TO_LASPY_TYPE[type_dim].keys():
+        return None
     return NUMPY_TO_LASPY_TYPE[type_dim][type_name]
 
 
@@ -289,28 +294,28 @@ def writeLas(geoRecords, outfile):
 
     # get default fields
     las_fields = [field.name for field in lasFile.point_format]
-
+    field_names = records.dtype.names
+    
+    # Fields to omit
+    omit = ['X', 'Y', 'Z']
+    omit.extend(las_fields)
+    omit.extend(np.dtype(LasRecords.USER_DEFINED_FIELDS).names)
+    
     # create user defined fields
-    additional_fields = []
-    omit = las_fields + list(np.dtype(LasRecords.USER_DEFINED_FIELDS).names)
-    for name in records.dtype.names:
+    for name in field_names:
         if name not in omit:
             dtype = records.dtype[name]
             type_id = _dtype_to_laspy_type_id(dtype)
-            lasFile.define_new_dimension(name, type_id, '')
-            additional_fields.append(name)
+            if type_id is None:
+                omit.append(name)
+            else:
+                lasFile.define_new_dimension(name, type_id, '')
 
-    # set additional fields
-    for name in additional_fields:
-        lasFile._writer.set_dimension(name, records[name])
-
-    field_names = records.dtype.names
-
+    # initialize
     if 'return_num' in field_names or 'num_returns' in field_names:
         lasFile.flag_byte = np.zeros(len(records), dtype=np.uint)
-
+        
     # set fields
-    omit = ['X', 'Y', 'Z']
     for name in field_names:
         if name == 'coords':
             lasFile.set_x_scaled(records.coords[:, 0])
@@ -320,9 +325,9 @@ def writeLas(geoRecords, outfile):
         elif name == 'classification':
             lasFile.set_raw_classification(records.classification)
         elif name == 'return_num':
-            lasFile.flag_byte += records.return_num
+            lasFile.flag_byte = lasFile.flag_byte + records.return_num
         elif name == 'num_returns':
-            lasFile.flag_byte += records.num_returns * 8
+            lasFile.flag_byte = lasFile.flag_byte + records.num_returns * 8
         elif name not in omit:
             lasFile._writer.set_dimension(name, records[name])
 
