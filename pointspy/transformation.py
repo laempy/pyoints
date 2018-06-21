@@ -581,9 +581,17 @@ class LocalSystem(np.matrix, object):
     def __new__(cls, T):
         return assertion.ensure_tmatrix(T).view(cls)
 
+    def reflect(self):
+        R = np.matrix(-np.eye(self.dim + 1))
+        self[:, :] = self * R
+
     @property
     def dim(self):
         return len(self) - 1
+
+    @property
+    def det(self):
+        return np.linalg.det(self)
 
     @property
     def origin(self):
@@ -718,3 +726,104 @@ class LocalSystem(np.matrix, object):
         """
         var = self.explained_variance(gcoords)
         return var / var.sum()
+
+
+class PCA(LocalSystem):
+    """Principal Component Analysis (PCA).
+
+    Parameters
+    ----------
+    coords : array_like(Number, shape=(n, k))
+        Represents `n` data points of `k` dimensions. These coordinates are
+        used to fit a PCA.
+
+    Attributes
+    ----------
+    eigen_values : np.ndarray(Number, shape=(k))
+        Characteristic Eigen Values of the PCA.
+
+    Examples
+    --------
+
+    >>> coords = [(0, 0), (1, 1)]
+    >>> T = PCA(coords)
+    >>> print np.round(T, 3)
+    [[ 0.707  0.707 -0.707]
+     [-0.707  0.707  0.   ]
+     [ 0.     0.     1.   ]]
+    >>> print np.round(np.linalg.inv(T), 3)
+    [[ 0.707 -0.707  0.5  ]
+     [ 0.707  0.707  0.5  ]
+     [ 0.     0.     1.   ]]
+    >>> print np.round(transform(coords, T), 3)
+    [[-0.707  0.   ]
+     [ 0.707  0.   ]]
+
+    """
+
+    def __init__(self, coords):
+        pass
+
+    def __new__(cls, coords):
+        coords = assertion.ensure_coords(coords)
+        dim = coords.shape[1]
+        center = coords.mean(0)
+
+        covM = np.cov(coords - center, rowvar=False)
+        eigen_values, eigen_vectors = np.linalg.eigh(covM)
+
+        # order eigenvalues and eigenvectors
+        order = np.argsort(eigen_values)[::-1]
+        eigen_values = eigen_values[order]
+        eigen_vectors = eigen_vectors[:, order].T
+
+        close = np.isclose(abs(np.linalg.det(eigen_vectors)), 1)
+        assert close, "determinant unexpectedly differs from -1 or 1"
+
+        # Transformation matrix
+        T = np.matrix(np.identity(dim + 1))
+        T[:dim, :dim] = eigen_vectors[:dim, :dim]
+        T = T * t_matrix(-center)  # don not edit!
+
+        M = LocalSystem(T).view(cls)
+        M._eigen_values = eigen_values
+        return M
+
+    @property
+    def eigen_values(self):
+        return self._eigen_values
+
+    def pc(self, k):
+        """Select a specific principal component.
+
+        Parameters
+        ----------
+        k : positive int
+            `k` th principal component to select.
+
+        Returns
+        -------
+        np.ndarray(Number, shape=(self.dim))
+            `k` th principal component.
+
+        Examples
+        --------
+
+        >>> coords = [(-1, -2), (0, 0), (1, 2)]
+        >>> T = PCA(coords)
+        >>> print np.round(T, 3)
+        [[ 0.447  0.894  0.   ]
+         [-0.894  0.447  0.   ]
+         [ 0.     0.     1.   ]]
+
+        >>> print np.round(T.pc(1), 3)
+        [0.447 0.894]
+        >>> print np.round(T.pc(2), 3)
+        [-0.894  0.447]
+
+        """
+        if not (k >= 1 and k <= self.dim):
+            raise ValueError("%'th principal component not available")
+
+        pc = self[k-1, :self.dim]
+        return np.asarray(pc)[0]

@@ -1,13 +1,12 @@
 """Module to handle vector operations.
 """
 
-import numpy as np
 import math
+import numpy as np
 
 from . import (
     assertion,
     distance,
-    fit,
     nptools,
     transformation,
 )
@@ -328,7 +327,7 @@ def basis(vec, origin=None):
         origin = np.zeros(len(vec))
     else:
         origin = assertion.ensure_numvector(origin, length=len(vec))
-    return fit.PCA([origin - vec, origin + vec])
+    return transformation.PCA([origin - vec, origin + vec])
 
 
 class Vector(object):
@@ -408,7 +407,7 @@ class Vector(object):
 
         See Also
         --------
-        fit.PCA
+        transformation.PCA
 
         Examples
         --------
@@ -423,7 +422,7 @@ class Vector(object):
 
         """
         coords = assertion.ensure_coords(coords)
-        pca = fit.PCA(coords)
+        pca = transformation.PCA(coords)
 
         vec = Vector(coords.mean(0), pca.pc(1))
         vec._t = pca
@@ -469,9 +468,18 @@ class Vector(object):
         if not hasattr(self, '_t'):
             self._t = basis(self.vec, self.origin)
             vec = self._t.pc(1) * self.length
-            if not  np.all(np.isclose(vec, self.vec)):
-                m = "vectors '%s' and '%s' differ unexpectedly"
-                raise RuntimeError(m % (np.round(vec, 2), np.round(self.vec, 2)))
+
+            # revert direction if required
+            if not np.all(np.isclose(vec, self.vec)):
+                self._t.reflect()
+
+            vec = self._t.pc(1) * self.length
+            assert np.all(np.isclose(vec, self.vec)), (
+                    "vectors '%s' and '%s' differ unexpectedly" % (
+                            np.round(vec, 2), np.round(self.vec, 2)
+                        )
+                    )
+
         return self._t
 
     def _clear_cache(self):
