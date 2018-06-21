@@ -331,12 +331,21 @@ def fuse(*recarrays):
 
     >>> A = recarray({'a': [[0, 1], [2, 3]]}, dim = 2)
     >>> B = recarray({'b': [[4, 5], [6, 7]]}, dim = 2)
-    >>> C = fuse(A, B)
-    >>> print(C.shape)
+    >>> C = recarray({
+    ...         'c1': [['c1', 'c2'], ['c3', 'c4']],
+    ...         'c2': [[0.1, 0.2], [0.3, 0.3]],
+    ...     }, dim = 2)
+    >>> D = fuse(A, B, C)
+    >>> print(D.shape)
     (2, 2)
-    >>> print(C)
-    [[(0, 4) (1, 5)]
-     [(2, 6) (3, 7)]]
+    >>> print(D)
+    [[(0, 4, 0.1, 'c1') (1, 5, 0.2, 'c2')]
+     [(2, 6, 0.3, 'c3') (3, 7, 0.3, 'c4')]]
+    >>> print(D.dtype.descr)
+    [('a', '<i8'), ('b', '<i8'), ('c2', '<f8'), ('c1', '|S2')]
+    >>> print(D.c1)
+    [['c1' 'c2']
+     ['c3' 'c4']]
 
     """
 
@@ -362,37 +371,100 @@ def fuse(*recarrays):
     return fused
 
 
-def merge(*arrays):
+def merge(arrays, f=np.concatenate):
     """Merges multiple arrays.
 
     Parameters
     ----------
-    arrays : array_like
-        List of numpy arrays to merge.
+    arrays : list of np.recarray
+        Numpy arrays to merge.
+    f : optional, function
+        Aggregate function. Suggested values: np.conatenate, np.hstack,
+        np.vstack, np.dstack.
 
     Returns
     -------
-    np.ndarray
-        Merged numpy record array.
+    np.recarray
+        Merged numpy record array of same data type as the first input array.
 
     Examples
     --------
 
     One dimensional arrays.
 
-    >>> A = recarray({'a': [0, 1, 2, 3]})
-    >>> B = recarray({'b': [4, 5, 6, 7]})
-    >>> C = merge(A.a, B.b)
+    >>> A = recarray({'a': [(0, 1), (2, 3), (4, 5)], 'b': ['e', 'f', 'g']})
+    >>> B = recarray({'a': [(6, 7), (8, 9), (0, 1)], 'b': ['h', 'i', 'j']})
+    >>> C = recarray({'a': [(2, 3), (4, 5), (6, 7)], 'b': ['k', 'l', 'm']})
+
+    >>> D = merge((A, B, C))
+    >>> print(D.dtype.descr)
+    [('a', '<i8', (2,)), ('b', '|S1')]
+    >>> print(D.b)
+    ['e' 'f' 'g' 'h' 'i' 'j' 'k' 'l' 'm']
+    >>> print(D.shape)
+    (9,)
+
+    >>> D = merge((A, B, C), f=np.hstack)
+    >>> print(D.shape)
+    (9,)
+
+    >>> D = merge((A, B, C), f=np.vstack)
+    >>> print(D.shape)
+    (3, 3)
+
+    >>> D = merge((A, B, C), f=np.dstack)
+    >>> print(D.shape)
+    (1, 3, 3)
+
+    Two dimensional arrays.
+
+    >>> A = recarray({
+    ...     'a': [(0, 1), (2, 3)], 'b': [('e', 'f'), ('g', 'h')]
+    ... }, dim=2)
+    >>> B = recarray({
+    ...     'a': [(4, 5), (6, 7)], 'b': [('i', 'j'), ('k', 'l')]
+    ... }, dim=2)
+    >>> C = recarray({
+    ...     'a': [(1, 3), (7, 2)], 'b': [('m', 'n'), ('o', 'p')]
+    ... }, dim=2)
+    >>> D = merge((A, B, C))
+
+    >>> print(D.dtype.descr)
+    [('a', '<i8'), ('b', '|S1')]
+    >>> print(D.b)
+    [['e' 'f']
+     ['g' 'h']
+     ['i' 'j']
+     ['k' 'l']
+     ['m' 'n']
+     ['o' 'p']]
+    >>> print(D.shape)
+    (6, 2)
+
+    >>> D = merge((A, B, C), f=np.hstack)
+    >>> print(D.shape)
+    (2, 6)
+
+    >>> D = merge((A, B, C), f=np.vstack)
+    >>> print(D.shape)
+    (6, 2)
+
+    >>> D = merge((A, B, C), f=np.dstack)
+    >>> print(D.shape)
+    (2, 2, 3)
+
+    >>> D = merge((A, B, C), f=np.concatenate)
+    >>> print(D.shape)
+    (6, 2)
+
 
     """
-    # TODO enable for np.recarray
+    # validate input
     for arr in arrays:
-        # TODO welcher typ?
-        if not isinstance(arr, np.ndarray):
+        if not isinstance(arr, np.recarray):
             TypeError("all values have to be of type 'np.recarray'")
 
-    # TODO bug
-    return arrays[0].__array_wrap__(np.hstack(arrays))
+    return arrays[0].__array_wrap__(f(arrays))
 
 
 def flatten_dtypes(np_dtypes):
