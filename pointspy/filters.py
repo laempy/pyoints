@@ -61,7 +61,7 @@ def extrema(indexKD, attributes, r, inverse=False):
     # type validation
 
     if not isinstance(indexKD, IndexKD):
-        raise ValueError("'indexKD' needs to be an instance of IndexKD")
+        raise TypeError("'indexKD' needs to be an instance of 'IndexKD'")
     if not (assertion.isnumeric(r) and r > 0):
         raise ValueError("'r' needs be a number greater zero")
 
@@ -119,7 +119,7 @@ def min_filter(indexKD, attributes, r, inverse=False):
 
     # type validation
     if not isinstance(indexKD, IndexKD):
-        raise ValueError("'indexKD' needs to be an instance of IndexKD")
+        raise TypeError("'indexKD' needs to be of type 'IndexKD'")
     if not (assertion.isnumeric(r) and r > 0):
         raise ValueError("'r' needs be a number greater zero")
 
@@ -171,7 +171,7 @@ def has_neighbour(indexKD, r):
 
     """
     if not isinstance(indexKD, IndexKD):
-        raise ValueError("'indexKD' needs to be an instance of IndexKD")
+        raise TypeError("'indexKD' needs to be of type 'IndexKD'")
     if not (assertion.isnumeric(r) and r > 0):
         raise ValueError("'r' needs be a number greater zero")
 
@@ -216,7 +216,7 @@ def is_isolated(indexKD, r):
 
     """
     if not isinstance(indexKD, IndexKD):
-        raise ValueError("'indexKD' needs to be an instance of IndexKD")
+        raise TypeError("'indexKD' needs to be of type 'IndexKD'")
     if not (assertion.isnumeric(r) and r > 0):
         raise ValueError("'r' needs be a number greater zero")
 
@@ -261,7 +261,7 @@ def ball(indexKD, r, order=None, inverse=False, axis=-1, min_pts=1):
 
     # validation
     if not isinstance(indexKD, IndexKD):
-        raise ValueError("'indexKD' needs to be an instance of IndexKD")
+        raise TypeError("'indexKD' needs to be an instance of 'IndexKD'")
     coords = indexKD.coords
 
     if order is None:

@@ -51,7 +51,7 @@ def clustering(indexKD,
 
     """
     if not isinstance(indexKD, IndexKD):
-        raise ValueError("'indexKD' needs to be an instance of IndexKD")
+        raise TypeError("'indexKD' needs to be of type 'IndexKD'")
     if not (assertion.isnumeric(r) and r > 0):
         raise ValueError("'r' needs to be a number greater zero")
 
@@ -71,7 +71,7 @@ def clustering(indexKD,
                 max_length=len(indexKD)
         )
     if not isinstance(auto_set, bool):
-        raise ValueError("'auto_set' needs to be of type boolean")
+        raise TypeError("'auto_set' needs to be of type boolean")
 
     nextId = out_clusters.max() + 1
     coords = indexKD.coords
@@ -238,7 +238,7 @@ def dbscan(
 
     """
     if not isinstance(indexKD, IndexKD):
-        raise ValueError("'indexKD' needs to be an instance of IndexKD")
+        raise TypeError("'indexKD' needs to be of type 'IndexKD'")
 
     coords = indexKD.coords
 

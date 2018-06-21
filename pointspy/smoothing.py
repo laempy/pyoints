@@ -29,11 +29,11 @@ def mean_ball(coords, r, num_iter=1, update_pairs=False):
     """
     coords = assertion.ensure_coords(coords)
     if not assertion.isnumeric(r):
-        raise ValueError("'r' needs to a number")
+        raise TypeError("'r' needs to a number")
     if not (isinstance(num_iter, int) and num_iter > 0):
         raise ValueError("'num_iter' needs to be an integer greater zero")
     if not isinstance(update_pairs, bool):
-        raise ValueError("'update_pairs' needs to be boolean")
+        raise TypeError("'update_pairs' needs to be boolean")
 
     ids = None
     mCoords = np.copy(coords)
@@ -75,7 +75,7 @@ def mean_knn(coords, k, num_iter=1, update_pairs=False):
     if not (isinstance(num_iter, int) and num_iter > 0):
         raise ValueError("'num_iter' needs to be an integer greater zero")
     if not isinstance(update_pairs, bool):
-        raise ValueError("'update_pairs' needs to be boolean")
+        raise TypeError("'update_pairs' needs to be boolean")
 
     ids = None
     mCoords = np.copy(coords)

@@ -364,7 +364,7 @@ class IndexKD(object):
 
         """
         if not isinstance(bulk, int) and bulk > 0:
-            raise ValueError("bulk size has to be a integer greater zero")
+            raise ValueError("bulk size has to be an integer greater zero")
 
         for i in range(coords.shape[0] // bulk + 1):
             dists, nIds = self.kd_tree.query(

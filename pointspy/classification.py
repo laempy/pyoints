@@ -122,7 +122,7 @@ def dict_to_classes(classes_dict, n, min_size=1, missing_value=-1):
     """
     # type validation
     if not isinstance(classes_dict, dict):
-        raise ValueError("dictionary required")
+        raise TypeError("dictionary required")
     if not isinstance(n, int) and n > 0:
         raise ValueError("'n' needs to be an integer greater zero")
 
@@ -195,7 +195,7 @@ def rename_dict(d, ids=None):
     """
 
     if not isinstance(d, dict):
-        raise ValueError("dictionary required")
+        raise TypeError("dictionary required")
     if ids is None:
         ids = range(len(d))
     elif not len(ids) == len(d):

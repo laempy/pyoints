@@ -119,7 +119,7 @@ def angle(v, w, deg=False):
     """
     # TODO ValueError
     if not isinstance(deg, bool):
-        raise ValueError("'deg' has to be boolean")
+        raise TypeError("'deg' has to be boolean")
 
     v = assertion.ensure_numvector(v)
     w = assertion.ensure_numvector(w)
@@ -328,7 +328,7 @@ def basis(vec, origin=None):
         origin = np.zeros(len(vec))
     else:
         origin = assertion.ensure_numvector(origin, length=len(vec))
-    return fit.PCA([origin - vec, origin, origin + vec])
+    return fit.PCA([origin - vec, origin + vec])
 
 
 class Vector(object):
@@ -468,7 +468,10 @@ class Vector(object):
     def t(self):
         if not hasattr(self, '_t'):
             self._t = basis(self.vec, self.origin)
-            assert np.all(np.isclose(self._t.pc(1) * self.length, self.vec))
+            vec = self._t.pc(1) * self.length
+            if not  np.all(np.isclose(vec, self.vec)):
+                m = "vectors '%s' and '%s' differ unexpectedly"
+                raise RuntimeError(m % (np.round(vec, 2), np.round(self.vec, 2)))
         return self._t
 
     def _clear_cache(self):
@@ -683,7 +686,7 @@ class Vector(object):
         if not (assertion.isnumeric(eps) and eps > 0):
             raise ValueError("'eps' needs to be a number greater zero")
         if not (isinstance(max_iter, int) and max_iter > 0):
-            raise ValueError("'max_iter' needs to be an integer greater zero")
+            raise TypeError("'max_iter' needs to be an integer greater zero")
 
         coord = np.copy(self.target)
 

@@ -110,7 +110,7 @@ class GeoRecords(np.recarray, object):
         if isinstance(rec, dict):
             rec = nptools.recarray(rec)
         elif not isinstance(rec, np.recarray):
-            raise ValueError("'rec' needs to be of type 'np.recarray'")
+            raise TypeError("'rec' needs to be of type 'np.recarray'")
         if 'coords' not in rec.dtype.names:
             raise ValueError("field 'coords' needed")
         if not len(rec.dtype['coords'].shape) == 1:

@@ -34,7 +34,7 @@ class Interpolator:
         self._coords = assertion.ensure_coords(coords)
         assertion.ensure_numvector(values)
         if not len(self._coords) == len(values):
-            raise ValueError("Array dimensions do not fit")
+            raise ValueError("array dimensions do not fit")
         self._shift = self._coords.min(0)
         self._dim = len(self._shift)
 

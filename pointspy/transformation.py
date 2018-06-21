@@ -46,7 +46,10 @@ def transform(coords, T, inverse=False, extra_precise=False):
 
     coords = assertion.ensure_numarray(coords)
 
-    if len(coords.shape) == 1 and coords.shape[0] == T.shape[0] - 1:
+    if len(coords) == 0 or coords.shape[0] == 0:
+        raise ValueError("can not transform empty array")
+
+    elif len(coords.shape) == 1 and coords.shape[0] == T.shape[0] - 1:
         # single point
         return np.dot(np.append(coords, 1), T.T)[0: -1]
     elif len(coords.shape) == 2 and coords.shape[1] == T.shape[0] - 1:
@@ -123,7 +126,7 @@ def matrix(t=None, r=None, s=None, order='trs'):
     orders = [''.join(o) for o in it.permutations(keys)]
 
     if not isinstance(order, str):
-        raise ValueError("order needs to be of type string")
+        raise TypeError("'order' needs to be a string")
     if order not in orders:
         raise ValueError("order '%s' unknown" % order)
 

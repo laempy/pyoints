@@ -56,11 +56,11 @@ def isnumeric(arr, dtypes=[np.int32, np.int64, np.float32, np.float64]):
 
     """
     if not isarray(arr):
-        raise ValueError("'arr' needs to an array like object")
+        raise TypeError("'arr' needs to an array like object")
     if not isinstance(arr, np.ndarray):
         arr = np.array(arr)
     if not isinstance(dtypes, list):
-        raise ValueError("'dtypes' needs to be a list. got %s" % (str(dtypes)))
+        raise TypeError("'dtypes' needs to be a list. got %s" % (str(dtypes)))
     for dtype in dtypes:
         if np.issubdtype(arr.dtype.type, np.dtype(dtype).type):
             return True
@@ -272,7 +272,7 @@ def add_fields(arr, dtypes, data=None):
 
     """
     if not isinstance(arr, np.ndarray):
-        raise ValueError("'arr' has to be an instance of 'np.ndarray'")
+        raise TypeError("'arr' has to be an instance of 'np.ndarray'")
     if data is not None and not hasattr(data, '__iter__'):
         raise ValueError("'data' has to be iterable")
 
@@ -281,9 +281,9 @@ def add_fields(arr, dtypes, data=None):
     # check for duplicate fields
     for name in dtypes.names:
         if hasattr(arr, name):
-            raise ValueError('can not overwrite attribute "%s"' % name)
+            raise ValueError("can not overwrite attribute '%s'" % name)
         if name in arr.dtype.names:
-            raise ValueError('field "%s" already exists' % name)
+            raise ValueError("field '%s' already exists" % name)
 
     newDtypes = arr.dtype.descr + dtypes.descr
 
@@ -344,7 +344,7 @@ def fuse(*recarrays):
     dtype = []
     for arr in recarrays:
         if not isinstance(arr, np.recarray):
-            raise ValueError("all arrays have to be of type 'np.recarray'")
+            raise TypeError("all arrays have to be of type 'np.recarray'")
         dtype.extend(arr.dtype.descr)
 
         # check shape
@@ -389,7 +389,7 @@ def merge(*arrays):
     for arr in arrays:
         # TODO welcher typ?
         if not isinstance(arr, np.ndarray):
-            ValueError("all values have to be of type 'np.recarray'")
+            TypeError("all values have to be of type 'np.recarray'")
 
     # TODO bug
     return arrays[0].__array_wrap__(np.hstack(arrays))
@@ -491,7 +491,7 @@ def unnest(rec):
     """
 
     if not isinstance(rec, (np.recarray, np.ndarray)):
-        raise ValueError("'rec' has to a 'np.recarray' or 'np.ndarray'")
+        raise TypeError("'rec' has to a 'np.recarray' or 'np.ndarray'")
 
     if rec.dtype.names is None:
         ret = [rec]
@@ -549,7 +549,7 @@ def fields_view(arr, fields, dtype=None):
 
     """
     if not isinstance(arr, np.ndarray):
-        raise ValueError("'arr' has be a 'np.ndarray'")
+        raise TypeError("'arr' has be a 'np.ndarray'")
 
     if dtype is None:
         dtype = np.dtype({name: arr.dtype.fields[name] for name in fields})
@@ -613,7 +613,7 @@ def apply_function(ndarray, func, dtypes=None):
     if not hasattr(func, '__call__'):
         raise ValueError("'func' needs to be callable")
     if not isinstance(ndarray, np.ndarray):
-        raise ValueError("'ndarray' needs to an instance of np.ndarray")
+        raise TypeError("'ndarray' needs to an instance of np.ndarray")
     if dtypes is not None:
         dtypes = np.dtype(dtypes)
 

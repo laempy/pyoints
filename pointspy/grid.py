@@ -126,11 +126,11 @@ class Grid(GeoRecords):
     def __new__(cls, proj, npRecarray, T):
 
         if not isinstance(proj, projection.Proj):
-            raise ValueError('"proj" needs to be an instance of Proj')
+            raise TypeError("'proj' needs to be of type 'Proj'")
         if not isinstance(npRecarray, np.recarray):
-            raise ValueError('numpy record array required')
+            raise TypeError('numpy record array required')
         if not len(npRecarray.shape) > 1:
-            raise ValueError('at two dimensions required')
+            raise ValueError('at least two dimensions required')
         T = assertion.ensure_tmatrix(T)
 
         if 'coords' not in npRecarray.dtype.names:

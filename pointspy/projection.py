@@ -103,7 +103,7 @@ class Proj():
 
         """
         if not isinstance(wkt, str):
-            raise ValueError("'wkt' needs to be a string")
+            raise TypeError("'wkt' needs to be a string")
         proj4 = osr.SpatialReference(wkt=wkt).ExportToProj4()
         if proj4 is '':
             raise ValueError("WKT unknown")
@@ -120,7 +120,7 @@ class Proj():
 
         """
         if not isinstance(epsg, int):
-            raise ValueError("'epsg' needs to be an integer")
+            raise TypeError("'epsg' needs to be an integer")
         sr = osr.SpatialReference()
         sr.ImportFromEPSG(epsg)
         proj4 = sr.ExportToProj4()
@@ -172,14 +172,14 @@ class GeoTransform:
 
     def __init__(self, fromProj, toProj):
         if not isinstance(fromProj, Proj) or not isinstance(toProj, Proj):
-            raise ValueError("objects of type 'Proj' required")
+            raise TypeError("objects of type 'Proj' required")
         self._fromProj = fromProj
         self._toProj = toProj
 
     def __call__(self, coords, reverse=False):
         coords = assertion.ensure_numarray(coords)
         if not isinstance(reverse, bool):
-            raise ValueError("'reverse' needs to be boolean")
+            raise TypeError("'reverse' needs to be boolean")
 
         if reverse:
             fromProj = self._toProj

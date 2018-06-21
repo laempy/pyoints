@@ -245,7 +245,7 @@ def writeLas(geoRecords, outfile):
     """
     # validate input
     if not isinstance(geoRecords, GeoRecords):
-        raise ValueError('Type GeoRecords required')
+        raise TypeError("'geoRecords' needs to be of type 'GeoRecords'")
     if not os.access(os.path.dirname(outfile), os.W_OK):
         raise IOError('File %s is not writable' % outfile)
 

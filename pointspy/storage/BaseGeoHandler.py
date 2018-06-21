@@ -66,7 +66,7 @@ class GeoFile:
     @proj.setter
     def proj(self, proj):
         if not isinstance(proj, projection.Proj):
-            raise ValueError("'proj' needs to be of type 'projection.Proj'")
+            raise TypeError("'proj' needs to be of type 'projection.Proj'")
         self._proj = proj
 
     @property
