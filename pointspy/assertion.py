@@ -147,7 +147,7 @@ def ensure_indices(v, min_value=0, max_value=np.inf):
     return v
 
 
-def ensure_coords(coords, by_col=False, min_dim=2, max_dim=np.inf):
+def ensure_coords(coords, by_col=False, dim=None, min_dim=2, max_dim=np.inf):
     """Ensures all required properties of a coordinate like array.
 
     Parameters
@@ -158,8 +158,10 @@ def ensure_coords(coords, by_col=False, min_dim=2, max_dim=np.inf):
     by_col : optional, bool
         Defines weather or not the coordinates are provided column by column
         instead of row by row.
-    min_dim, max_dim : optional
-        Minimum and maximum number of coordinate dimensions.
+    dim, min_dim, max_dim : optional, positive int
+        Allowed coordinate dimensions. If `dim` is provided the dimension must
+        match exactly. If not, the coordinate dimension must be in range
+        `[min_dim, max_dim]`.
 
     Returns
     -------
@@ -204,11 +206,17 @@ def ensure_coords(coords, by_col=False, min_dim=2, max_dim=np.inf):
     if not len(coords.shape) == 2:
         m = "malformed shape of 'coords', got '%s'" % str(coords.shape)
         raise ValueError(m)
-    if coords.shape[1] < min_dim:
-        raise ValueError("at least %i coordinate dimensions needed" % min_dim)
-    if coords.shape[1] > max_dim:
-        raise ValueError("at most %i coordinate dimensions needed" % max_dim)
-
+    if dim is not None:
+        if not coords.shape[1] == dim:
+            m = "%i coordinate dimensions required" % dim
+            raise ValueError(m)
+    else:
+        if coords.shape[1] < min_dim:
+            m = "at least %i coordinate dimensions required" % min_dim
+            raise ValueError(m)
+        if coords.shape[1] > max_dim:
+            m = "at most %i coordinate dimensions required" % max_dim
+            raise ValueError(m)
     return coords
 
 
