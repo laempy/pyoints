@@ -4,9 +4,12 @@
 import numpy as np
 from scipy import optimize
 
-from . import nptools
-from . import transformation
-from . import assertion
+from . import (
+    nptools,
+    transformation,
+    assertion,
+    distance,
+)
 
 
 def ball(coords, weights=1.0):
@@ -80,10 +83,21 @@ def cylinder(origin, coords, p, th):
     TODO
     TODO referenz
 
+    Returns
+    -------
+    TODO: Returns
+
+
+    References
+    ----------
+    TODO: References
+
+
     Examples
     --------
+
     >>> r = 2.5
-    >>> x = np.arange(-1,1,0.01)
+    >>> x = np.arange(-1, 1, 0.01)
     >>> y = np.sqrt(1**2 - x**2)
     >>> y[::2] = - y[::2]
     >>> x = x * r
@@ -91,7 +105,7 @@ def cylinder(origin, coords, p, th):
     >>> z = np.ones(len(x)) * 5
     >>> z[::2] = -5
     >>> coords = np.array([x, y, z]).T
-    >>> T = transformation.matrix(t=[1,2,3],r=[0.15,0.2,0.0])
+    >>> T = transformation.matrix(t=[1, 2, 3], r=[0.15, 0.2, 0.0])
 
     >>> rCoords = transformation.transform(coords, T)
     >>> M, center, r, success = cylinder(None, rCoords, [0, 0, 0, 0, 0], None)
@@ -106,8 +120,11 @@ def cylinder(origin, coords, p, th):
      [ 0.  1.  0. -2.]
      [ 0. -0.  1. -3.]
      [ 0.  0.  0.  1.]]
-    >>> print np.round(transformation.transform(rCoords,M,inverse=True),3)
+    >>> tCoords = transformation.transform(rCoords,M,inverse=True)
 
+    >>> print(np.round(tCoords, 3))
+
+    >>> print(np.round(distance.rmse(coords, tCoords), 3))
 
     # https://stackoverflow.com/questions/42157604/how-to-fit-a-cylindrical-model-to-scattered-3d-xyz-point-data/42163007
     # https://stackoverflow.com/questions/43784618/fit-a-cylinder-to-scattered-3d-xyz-point-data-with-python
@@ -115,7 +132,7 @@ def cylinder(origin, coords, p, th):
     # Chan_2012a !!!
 
     This is a fitting for a vertical cylinder fitting
-    Reference:
+    Reference
     http://www.int-arch-photogramm-remote-sens-spatial-inf-sci.net/XXXIX-B5/169/2012/isprsarchives-XXXIX-B5-169-2012.pdf
 
     xyz is a matrix contain at least 5 rows, and each row stores x y z of a cylindrical surface
@@ -129,9 +146,8 @@ def cylinder(origin, coords, p, th):
     th, threshold for the convergence of the least squares
 
     """
-    coords = assertion.ensure_coords(coords)
+    coords = assertion.ensure_coords(coords, dim=3)
     # TODO revise
-    assert coords.shape[1] == 3
     assert coords.shape[0] >= 3
 
     c = coords.mean(0)
@@ -156,13 +172,17 @@ def cylinder(origin, coords, p, th):
     m = np.pi * 0.5
 
     # test three perpendicular directions
-    ps = [(0, 0, 0, 0, 0), (0, 0, 0, 0, m), (0, 0, 0, m, 0)]
+   # ps = [(0, 0, 0, 0, 0), (0, 0, 0, 0, m), (0, 0, 0, m, 0)]
+    ps = [(0, 0, 0, 0, 1), (0, 0, 0, m, 1), (0, 0, m, 0, 1)]
+
     for p in ps:
         est_p, success = optimize.leastsq(
             errfunc, p, args=(x, y, z),
-            maxfev=100000000)
+            maxfev=1000000)
+        print success
         success = success in (1, 2, 3, 4)
         if success:
+            print 'succ'
             break
     #print errfunc(las.coords)
 
@@ -174,8 +194,10 @@ def cylinder(origin, coords, p, th):
     #T0 = transformation.tMatrix(-origin)
     #M = R*T1
     M = R * T0 * T1
+    print c
     M = T0 * T1 * R
-    #M = R * T1
+    #M = T0 * R * T1
+    #M = T1 * R * T0
 
     M = transformation.LocalSystem(M)
     center = M.to_global([[0, 0, 0]])[0]

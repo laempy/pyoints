@@ -17,4 +17,5 @@ from . import (
     filters,
     clustering,
     storage,
+    fit,
 )
