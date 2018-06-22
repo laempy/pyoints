@@ -2,6 +2,7 @@
 """
 
 import math
+import warnings
 import numpy as np
 
 from . import (
@@ -394,6 +395,16 @@ class Vector(object):
     def __init__(self, origin, vec):
         self.origin = origin
         self.vec = vec
+        # TODO: remove self.t (testing)
+        self.t
+
+    @classmethod
+    def from_anges(cls, origin, rot):
+        x = np.sin(rot[0]) * np.cos(rot[1])
+        z = np.sin(rot[0]) * np.sin(rot[1])
+        y = np.cos(rot[1])
+        vec = [x, y, z]
+        return cls(origin, vec)
 
     @classmethod
     def from_coords(cls, coords):
@@ -424,7 +435,7 @@ class Vector(object):
         coords = assertion.ensure_coords(coords)
         pca = transformation.PCA(coords)
 
-        vec = Vector(coords.mean(0), pca.pc(1))
+        vec = cls(coords.mean(0), pca.pc(1))
         vec._t = pca
 
         return vec
@@ -466,19 +477,40 @@ class Vector(object):
     @property
     def t(self):
         if not hasattr(self, '_t'):
-            self._t = basis(self.vec, self.origin)
-            vec = self._t.pc(1) * self.length
+            self._t = basis(self.vec, origin=self.origin)
 
-            # revert direction if required
-            if not np.all(np.isclose(vec, self.vec)):
+            # check reflection case
+            e = np.eye(1, self.dim)[0] * self.length
+            t = self._t.to_local(self.target)
+            if not np.all(np.isclose(t, e)):
                 self._t.reflect()
 
-            vec = self._t.pc(1) * self.length
-            assert np.all(np.isclose(vec, self.vec)), (
-                    "vectors '%s' and '%s' differ unexpectedly" % (
-                            np.round(vec, 2), np.round(self.vec, 2)
-                        )
+            # TODO: in tests
+
+            # double check target
+            t = self._t.to_local(self.target)
+            assert np.all(np.isclose(t, e)), (
+                    "target '%s' and '%s' differ" % (
+                            np.round(t, 2), np.round(e, 2)
                     )
+                )
+
+            # double check origin
+            e = np.zeros(self.dim)
+            t = self._t.to_local(self.origin)
+            assert np.all(np.isclose(t, e)), (
+                    "origin '%s' and '%s' differ" % (
+                            np.round(t, 2), np.round(e, 2)
+                    )
+                )
+
+            # double check PC1
+            t = self._t.pc(1) * self.length
+            assert np.all(np.isclose(t, self.vec)), (
+                    "PC1 '%s' and vector '%s' differ unexpectedly" % (
+                            np.round(t, 2), np.round(self.vec, 2)
+                    )
+                )
 
         return self._t
 

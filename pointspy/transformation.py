@@ -582,8 +582,16 @@ class LocalSystem(np.matrix, object):
         return assertion.ensure_tmatrix(T).view(cls)
 
     def reflect(self):
-        R = np.matrix(-np.eye(self.dim + 1))
+        R = np.matrix(np.zeros((self.dim + 1, self.dim + 1)))
+        np.fill_diagonal(R, -1)
+        #R[-1, -1] = 1
         self[:, :] = self * R
+        #R = np.eye(self.dim + 1)
+        #R[0, 0] = -1
+
+        #self[:, :] = np.linalg.inv(np.linalg.inv(self) * R)
+        #self[:, :] = -self[:, :]
+        #self[:, :] = self * R
 
     @property
     def dim(self):
@@ -592,6 +600,10 @@ class LocalSystem(np.matrix, object):
     @property
     def det(self):
         return np.linalg.det(self)
+
+    @property
+    def inv(self):
+        return np.linalg.inv(self).view(self.__class__)
 
     @property
     def origin(self):
@@ -759,23 +771,28 @@ class PCA(LocalSystem):
     [[-0.707  0.   ]
      [ 0.707  0.   ]]
 
+
     """
 
     def __init__(self, coords):
         pass
 
     def __new__(cls, coords):
-        coords = assertion.ensure_coords(coords)
-        dim = coords.shape[1]
-        center = coords.mean(0)
 
+        # Do not edit anything!!!
+
+        # mean centering
+        coords = assertion.ensure_coords(coords)
+        center = coords.mean(0)
+        dim = coords.shape[1]
+
+        # calculate eigenvectors
         covM = np.cov(coords - center, rowvar=False)
         eigen_values, eigen_vectors = np.linalg.eigh(covM)
 
-        # order eigenvalues and eigenvectors
-        order = np.argsort(eigen_values)[::-1]
-        eigen_values = eigen_values[order]
-        eigen_vectors = eigen_vectors[:, order].T
+        # eigen_values in descending order ==> reverse
+        eigen_values = eigen_values[::-1]
+        eigen_vectors = eigen_vectors.T[::-1, :]
 
         close = np.isclose(abs(np.linalg.det(eigen_vectors)), 1)
         assert close, "determinant unexpectedly differs from -1 or 1"
@@ -787,6 +804,10 @@ class PCA(LocalSystem):
 
         M = LocalSystem(T).view(cls)
         M._eigen_values = eigen_values
+
+        valid = np.all(np.isclose(M.to_local(center), np.zeros(len(center))))
+        assert valid, "transformation of origin failed"
+
         return M
 
     @property
