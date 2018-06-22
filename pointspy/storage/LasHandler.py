@@ -1,3 +1,6 @@
+"""Hanlding of .las-files.
+"""
+
 import os
 import numpy as np
 import laspy
@@ -10,6 +13,7 @@ from .. import (
     assertion,
     nptools,
 )
+
 from .BaseGeoHandler import GeoFile
 
 """
@@ -295,12 +299,12 @@ def writeLas(geoRecords, outfile):
     # get default fields
     las_fields = [field.name for field in lasFile.point_format]
     field_names = records.dtype.names
-    
+
     # Fields to omit
     omit = ['X', 'Y', 'Z']
     omit.extend(las_fields)
     omit.extend(np.dtype(LasRecords.USER_DEFINED_FIELDS).names)
-    
+
     # create user defined fields
     for name in field_names:
         if name not in omit:
@@ -314,7 +318,7 @@ def writeLas(geoRecords, outfile):
     # initialize
     if 'return_num' in field_names or 'num_returns' in field_names:
         lasFile.flag_byte = np.zeros(len(records), dtype=np.uint)
-        
+
     # set fields
     for name in field_names:
         if name == 'coords':
@@ -452,8 +456,6 @@ def updateLasHeader(las_file, offset=None, translate=None, precision=None):
             raise ValueError('"translate" has to have a length of 3')
         lasFile.header.offset = lasFile.header.offset + translate
 
-    #lasFile.header.update_min_max()
+    lasFile.header.update_min_max()
     lasFile.close()
     del lasFile
-
-
