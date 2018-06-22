@@ -1,6 +1,5 @@
 numpy
 rtree
-liblas
 laspy
 scipy
 scikit-learn
@@ -19,5 +18,7 @@ opencv-python
 ipykernel
 cloudpickle
 plyfile
+networkx
 #cython
 #pdal
+cylinder_fitting

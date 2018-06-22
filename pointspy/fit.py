@@ -9,6 +9,7 @@ from . import (
     transformation,
     assertion,
     distance,
+    vector,
 )
 
 
@@ -91,7 +92,7 @@ def cylinder(origin, coords, p, th):
     References
     ----------
     TODO: References
-
+    https://stackoverflow.com/questions/43784618/fit-a-cylinder-to-scattered-3d-xyz-point-data-with-python
 
     Examples
     --------
@@ -105,29 +106,30 @@ def cylinder(origin, coords, p, th):
     >>> z = np.ones(len(x)) * 5
     >>> z[::2] = -5
     >>> coords = np.array([x, y, z]).T
-    >>> T = transformation.matrix(t=[1, 2, 3], r=[0.15, 0.2, 0.0])
+    >>> T = transformation.matrix(t=[10, 20, 30], r=[0.15, 0.1, 0.0])
 
     >>> rCoords = transformation.transform(coords, T)
-    >>> M, center, r, success = cylinder(None, rCoords, [0, 0, 0, 0, 0], None)
+    >>> vec, r, success = cylinder(None, rCoords, [0, 0, 0, 0, 0], None)
     >>> print success
     True
     >>> print np.round(r,2)
     2.5
-    >>> print np.round(center,2)
+    >>> print np.round(vec.origin, 2)
     [1. 2. 3.]
-    >>> print np.round(M,3)
+    >>> print np.round(vec.t, 3)
     [[ 1.  0. -0. -1.]
      [ 0.  1.  0. -2.]
      [ 0. -0.  1. -3.]
      [ 0.  0.  0.  1.]]
-    >>> tCoords = transformation.transform(rCoords,M,inverse=True)
+    >>> tCoords = vec.t.to_local(rCoords)
 
-    >>> print(np.round(tCoords, 3))
+    >>> # print(np.round(tCoords, 3))
 
     >>> print(np.round(distance.rmse(coords, tCoords), 3))
 
-    # https://stackoverflow.com/questions/42157604/how-to-fit-a-cylindrical-model-to-scattered-3d-xyz-point-data/42163007
     # https://stackoverflow.com/questions/43784618/fit-a-cylinder-to-scattered-3d-xyz-point-data-with-python
+
+    # https://stackoverflow.com/questions/42157604/how-to-fit-a-cylindrical-model-to-scattered-3d-xyz-point-data/42163007
     # https://de.mathworks.com/help/vision/ref/pcfitcylinder.html?requestedDomain=www.mathworks.com
     # Chan_2012a !!!
 
@@ -150,20 +152,30 @@ def cylinder(origin, coords, p, th):
     # TODO revise
     assert coords.shape[0] >= 3
 
+    import cylinder_fitting
+    vec, origin, r, residuals = cylinder_fitting.fit(coords)
+
+    v = vector.Vector(origin, vec)
+
+    return v, r, residuals
+
+
+    print w_fit, C_fit, r_fit, fit_err
+    return w_fit, C_fit, r_fit, fit_err
+
     c = coords.mean(0)
     xyz = coords - c
 
     def fitfunc(p, x, y, z):
         # fit function
         return (
-            - np.cos(p[3]) * (p[0] - x)
-            - z * np.cos(p[2]) * np.sin(p[3])
-            - np.sin(p[2]) * np.sin(p[3]) * (p[1] - y)
-        )**2 + (
-            z * np.sin(p[2])
-            - np.cos(p[2]) * (p[1] - y)
-        )**2
-
+                    - np.cos(p[3]) * (p[0] - x)
+                    - z * np.cos(p[2]) * np.sin(p[3])
+                    - np.sin(p[2]) * np.sin(p[3]) * (p[1] - y)
+                )**2 + (
+                    z * np.sin(p[2])
+                    - np.cos(p[2]) * (p[1] - y)
+                )**2
     def errfunc(p, x, y, z):
         return fitfunc(p, x, y, z) - p[4]**2  # error function
 
@@ -177,8 +189,7 @@ def cylinder(origin, coords, p, th):
 
     for p in ps:
         est_p, success = optimize.leastsq(
-            errfunc, p, args=(x, y, z),
-            maxfev=1000000)
+            errfunc, p, args=(x, y, z))
         print success
         success = success in (1, 2, 3, 4)
         if success:
@@ -188,22 +199,28 @@ def cylinder(origin, coords, p, th):
 
     r = est_p[4]
 
+
     T0 = transformation.t_matrix(c)
     R = transformation.r_matrix([est_p[2], est_p[3], 0])
+    print np.round(R, 2)
     T1 = transformation.t_matrix([est_p[0], est_p[1], 0])
+
     #T0 = transformation.tMatrix(-origin)
     #M = R*T1
-    M = R * T0 * T1
-    print c
-    M = T0 * T1 * R
-    #M = T0 * R * T1
+    #M = R * T0 * T1
+    #M = T0 * T1 * R
+    M = T0 * R * T1
+    M = R
     #M = T1 * R * T0
+    print c
+    print np.round(T0, 2)
+    print np.round(R, 2)
+    print np.round(T1, 2)
 
     M = transformation.LocalSystem(M)
-    center = M.to_global([[0, 0, 0]])[0]
-    #print transformation.decomposition(M)
-
-    print (coords[:, 2] < 0).sum()
-    print (coords[:, 2] > 0).sum()
+    center = M.to_local([[0, 0, 0]])[0]
+    print transformation.decomposition(M)
+    print est_p
+    print center
 
     return M, center, r, success
