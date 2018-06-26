@@ -137,6 +137,40 @@ def missing(data):
     return ismissing
 
 
+def dtype_subset(dtype, names):
+    """Creates a subset of a numpy type object.
+
+    Parameters
+    ----------
+    dtype : list or np.dtype
+        Numpy data type.
+    names : list of str
+        Fields to select.
+
+    Returns
+    -------
+    list
+        Desired subest of numpy data type descriptions.
+
+    Examples
+    --------
+
+    >>> dtypes = [('coords', float, 3), ('values', int), ('text', str)]
+    >>> print(dtype_subset(dtypes, ['text', 'coords']))
+    [('text', '|S0'), ('coords', '<f8', (3,))]
+
+    """
+    if not hasattr(names, '__iter__'):
+        raise ValueError("'names' needs to be iterable")
+    descr = np.dtype(dtype).descr
+    out_dtype = []
+    for name in names:
+        for dt in descr:
+            if dt[0] == name:
+                out_dtype.append(dt)
+    return out_dtype
+
+
 def recarray(dataDict, dtype=[], dim=1):
     """Converts a dictionary of array like objects to a numpy record array.
 
@@ -211,15 +245,20 @@ def recarray(dataDict, dtype=[], dim=1):
 
     # convert to numpy arrays if neccessary
     for key in dataDict.keys():
-        if not isinstance(dataDict[key], (np.ndarray, np.recarray)) and key not in dtype.names:
-            dataDict[key] = np.array(dataDict[key], copy=False)
+        if not isinstance(dataDict[key], (np.ndarray, np.recarray)):
+            if key in dtype.names:
+                dt = dtype_subset(dtype, [key])
+                dataDict[key] = np.array(dataDict[key], dtype=dt, copy=False)
+            else:
+                dataDict[key] = np.array(dataDict[key], copy=False)
 
     # get shape
     shape = next(iter(dataDict.values())).shape
     for key in dataDict.keys():
         s = dataDict[key].shape
         if len(s) < dim:
-            raise ValueError("shape '%s' needs to be least of dimension '%i'" % (str(s), dim))
+            m = "shape '%s' needs to be least of length '%i'" % (str(s), dim)
+            raise ValueError(m)
         if not s[:dim] == shape[:dim]:
             raise ValueError("incompatible shape of field '%s'" % key)
 
@@ -227,7 +266,7 @@ def recarray(dataDict, dtype=[], dim=1):
     out_dtypes = []
     for key in dataDict.keys():
         if key in dtype.names:
-            dt = (key, dtype[key].descr[0][1], dtype[key].descr[0][1])
+            dt = dtype_subset(dtype, [key])[0]
         else:
             arr = dataDict[key]
             dt = (key, arr.dtype.descr[0][1], arr.shape[dim:])
@@ -235,8 +274,9 @@ def recarray(dataDict, dtype=[], dim=1):
 
     # define array
     rec = np.recarray(shape[:dim], dtype=out_dtypes)
-    for key in dataDict.keys():
-        rec[key][:] = dataDict[key]
+    if len(rec) > 0:
+        for key in dataDict.keys():
+            rec[key][:] = dataDict[key]
 
     return rec
 
@@ -459,20 +499,23 @@ def merge(arrays, f=np.concatenate):
 
 
 
-    >>> A = np.recarray(3, dtype=[('a', object)])
-    >>> B = np.recarray(5, dtype=[('a', object)])
-    >>> print(A)
+    >>> A = np.recarray(1, dtype=[('a', object, 2), ('b', str)])
+    >>> B = np.recarray(2, dtype=[('a', object, 2), ('b', str)])
     >>> D = merge((A, B), f=np.concatenate)
     >>> print(D)
+    [([None, None], '') ([None, None], '') ([None, None], '')]
 
     """
     # validate input
-    dtype = arrays[0].dtype.descr
+    if not hasattr(arrays, '__iter__'):
+        raise TypeError("'arrays' needs to be iterable")
+    dtype = None
     for arr in arrays:
-        if not isinstance(arr, np.recarray):
-            raise TypeError("all values have to be of type 'np.recarray'")
-        print arr.dtype.descr
-        if not arr.dtype.descr == dtype:
+        if not isinstance(arr, (np.recarray, np.ndarray)):
+            raise TypeError("'array' needs to be an iterable of 'np.recarray'")
+        if dtype is None:
+            dtype = arrays[0].dtype.descr
+        elif not arr.dtype.descr == dtype:
             raise TypeError("all data types need to match")
 
     return arrays[0].__array_wrap__(f(arrays))
