@@ -2,9 +2,46 @@
 
 import numpy as np
 
-from . indexkd import IndexKD
+from . import (
+    assertion,
+    transformation,
+    IndexKD,
+)
 
 
+class Pairs:
+
+    def __init__(self, coords, radii):
+
+        # validate input
+        coords = assertion.ensure_coords(coords)
+        radii = assertion.ensure_numvector(radii, length=coords.shape[1])
+
+        S = transformation.s_matrix(1.0 / radii)
+        self.rIndexKD = IndexKD(coords, S)
+
+    def __call__(self, coords):
+
+        mIndexKD = IndexKD(coords, self.rIndexKD.t)
+        rIndexKD = self.rIndexKD
+
+        rDists, rIds = rIndexKD.knn(
+            mIndexKD.coords, k=1, distance_upper_bound=1)
+
+        mDists, mIds = mIndexKD.knn(
+            rIndexKD.coords, k=1, distance_upper_bound=1)
+
+        pairs = []
+        for rId in range(len(rIds)):
+            if rDists[rId] <= 1:
+                if rId == mIds[rIds[rId]]:
+                    pairs.append((rIds[rId], rId))
+
+        return np.array(pairs, dtype=int)
+
+
+
+# TODO class Pairs ==> indexKD reuse
 def pairs(aCoords, bCoords, max_distance=np.inf):
     """Find pairs of points using nearest neighbour method.
 
@@ -40,15 +77,6 @@ def pairs(aCoords, bCoords, max_distance=np.inf):
     bIndexKD = IndexKD(bCoords)
     bDists, bIds = bIndexKD.knn(
         aCoords, k=1, distance_upper_bound=max_distance)
-
-    print aDists
-
-    for aId in range(len(aIds)):
-        if aDists[aId] < max_distance:
-            print aDists[aId]
-            print aIds[aId]
-            print bIds
-    return
 
     pairs = []
     for aId in range(len(aIds)):

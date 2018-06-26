@@ -36,7 +36,7 @@ class IndexKD(object):
     ----------
     dim : positive int
         Number of coordinate dimensions
-    transform : (self.dim+1, self.dim+1), array_like
+    t : (self.dim+1, self.dim+1), array_like
         Transformation matrix.
     coords : (len(self), self.dim), array_like
         Coordinates of the spatial index.
@@ -77,10 +77,10 @@ class IndexKD(object):
 
         if transform is None:
             self._coords = coords
-            self._transform = transformation.i_matrix(self._coords.shape[1])
+            self._t = transformation.i_matrix(self._coords.shape[1])
         else:
-            self._transform = assertion.ensure_tmatrix(transform)
-            self._coords = transformation.transform(coords, self._transform)
+            self._t = assertion.ensure_tmatrix(transform)
+            self._coords = transformation.transform(coords, self._t)
 
     def __len__(self):
         """Number of points of the spatial index.
@@ -113,8 +113,8 @@ class IndexKD(object):
         return self._coords
 
     @property
-    def transform(self):
-        return self._transform
+    def t(self):
+        return self._t
 
     @property
     def kd_tree(self):

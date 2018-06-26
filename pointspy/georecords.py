@@ -183,7 +183,7 @@ class GeoRecords(np.recarray, object):
         return np.product(self.shape)
 
     @staticmethod
-    def keys(shape):
+    def keys(shape, flatten=False):
         """Keys or indices of a numpy ndarray.
 
         Parameters
@@ -203,17 +203,17 @@ class GeoRecords(np.recarray, object):
         One dimensional case.
 
         >>> keys = GeoRecords.keys(9)
-        >>> keys.shape
+        >>> print(keys.shape)
         (9,)
-        >>> print keys
+        >>> print(keys)
         [0 1 2 3 4 5 6 7 8]
 
         Two dimensional case.
 
-        >>> keys = GeoRecords.keys((3,4))
+        >>> keys = GeoRecords.keys((3, 4))
         >>> keys.shape
         (3, 4, 2)
-        >>> print keys
+        >>> print(keys)
         [[[0 0]
           [0 1]
           [0 2]
@@ -229,6 +229,24 @@ class GeoRecords(np.recarray, object):
           [2 2]
           [2 3]]]
 
+
+        Get iterable of indices.
+
+        >>> keys = GeoRecords.keys((3, 4), flatten=True)
+        >>> print(keys)
+        [[0 0]
+         [0 1]
+         [0 2]
+         [0 3]
+         [1 0]
+         [1 1]
+         [1 2]
+         [1 3]
+         [2 0]
+         [2 1]
+         [2 2]
+         [2 3]]
+
         """
         if isinstance(shape, int):
             return np.arange(shape)
@@ -236,7 +254,13 @@ class GeoRecords(np.recarray, object):
             shape = assertion.ensure_numvector(shape)
             if not nptools.isnumeric(shape, dtypes=[int]):
                 raise ValueError("'shape' values have to be integers")
-            return np.moveaxis(np.indices(shape), 0, -1)
+            keys = np.indices(shape)
+            if flatten:
+                keys = keys.reshape(-1, np.product(shape)).T
+            else:
+                keys = np.moveaxis(keys, 0, -1)
+
+            return keys
 
     def records(self):
         """Provides the flattened data records. Usefull if structured data
