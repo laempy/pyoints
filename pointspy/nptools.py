@@ -458,11 +458,22 @@ def merge(arrays, f=np.concatenate):
     (6, 2)
 
 
+
+    >>> A = np.recarray(3, dtype=[('a', object)])
+    >>> B = np.recarray(5, dtype=[('a', object)])
+    >>> print(A)
+    >>> D = merge((A, B), f=np.concatenate)
+    >>> print(D)
+
     """
     # validate input
+    dtype = arrays[0].dtype.descr
     for arr in arrays:
         if not isinstance(arr, np.recarray):
-            TypeError("all values have to be of type 'np.recarray'")
+            raise TypeError("all values have to be of type 'np.recarray'")
+        print arr.dtype.descr
+        if not arr.dtype.descr == dtype:
+            raise TypeError("all data types need to match")
 
     return arrays[0].__array_wrap__(f(arrays))
 

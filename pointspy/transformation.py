@@ -316,13 +316,13 @@ def r_matrix(a):
      [ 0.     0.     0.     1.   ]]
 
     """
-    if isinstance(a, (float, int)):
+    if assertion.isnumeric(a):
         R = np.matrix([
             [np.cos(a), -np.sin(a), 0],
             [np.sin(a), np.cos(a), 0],
             [0, 0, 1]
         ])
-    elif hasattr(a, '__getitem__'):
+    else:
         a = assertion.ensure_numvector(a)
         if len(a) == 2:
             raise ValueError('rotation in 2D requires one angle only')
@@ -350,8 +350,6 @@ def r_matrix(a):
             raise ValueError(
                 '%i-dimensional rotations are not supported yet' %
                 len(a))
-    else:
-        raise ValueError("'r' needs be numeric or an iterable of numbers")
 
     return LocalSystem(R)
 
@@ -581,18 +579,6 @@ class LocalSystem(np.matrix, object):
     def __new__(cls, T):
         return assertion.ensure_tmatrix(T).view(cls)
 
-    def reflect(self):
-        R = np.matrix(np.zeros((self.dim + 1, self.dim + 1)))
-        np.fill_diagonal(R, -1)
-        #R[-1, -1] = 1
-        self[:, :] = self * R
-        #R = np.eye(self.dim + 1)
-        #R[0, 0] = -1
-
-        #self[:, :] = np.linalg.inv(np.linalg.inv(self) * R)
-        #self[:, :] = -self[:, :]
-        #self[:, :] = self * R
-
     @property
     def dim(self):
         return len(self) - 1
@@ -613,6 +599,13 @@ class LocalSystem(np.matrix, object):
     def origin(self, origin):
         origin = assertion.ensure_numarray([origin]).T
         self[:self.dim, self.dim] = origin
+
+    def reflect(self):
+        """Reflects the first principal component.
+        """
+        R = np.eye(self.dim + 1)
+        R[0, 0] = -1
+        self[:, :] = np.linalg.inv(np.linalg.inv(self) * R)
 
     def to_local(self, gcoords):
         """Transforms global coordinates into local coordinates.

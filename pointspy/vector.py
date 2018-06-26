@@ -423,19 +423,20 @@ class Vector(object):
         Examples
         --------
 
-        >>> v = Vector.from_coords([(0, 1), (0, 2), (0, 6)])
+        >>> v = Vector.from_coords([(1, 1), (1, 2), (1, 6)])
         >>> print(v)
-        origin: [0. 3.]; vec: [0. 1.]
+        origin: [1. 3.]; vec: [0. 3.]
         >>> print(v.t)
         [[ 0.  1. -3.]
-         [ 1.  0.  0.]
+         [ 1.  0. -1.]
          [ 0.  0.  1.]]
 
         """
         coords = assertion.ensure_coords(coords)
         pca = transformation.PCA(coords)
 
-        vec = cls(coords.mean(0), pca.pc(1))
+        length = pca.to_local(coords)[:, 0].max()
+        vec = cls(coords.mean(0), pca.pc(1) * length)
         vec._t = pca
 
         return vec

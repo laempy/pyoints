@@ -106,26 +106,30 @@ def cylinder(origin, coords, p, th):
     >>> z = np.ones(len(x)) * 5
     >>> z[::2] = -5
     >>> coords = np.array([x, y, z]).T
-    >>> T = transformation.matrix(t=[10, 20, 30], r=[0.15, 0.1, 0.0])
+    >>> T = transformation.matrix(t=[10, 20, 30], r=[0.55, 0.21, 0.0])
 
     >>> rCoords = transformation.transform(coords, T)
-    >>> vec, r, success = cylinder(None, rCoords, [0, 0, 0, 0, 0], None)
+    >>> M, r, success = cylinder(None, rCoords, [0, 0, 0, 0, 0], None)
     >>> print success
     True
     >>> print np.round(r,2)
     2.5
-    >>> print np.round(vec.origin, 2)
+    >>> print np.round(M.origin, 2)
     [1. 2. 3.]
-    >>> print np.round(vec.t, 3)
+
+    >>> tCoords = M.to_local(rCoords)
+
+    >>> print(np.round(tCoords, 3))
+
+    >>> print(np.round(distance.rmse(coords, tCoords[:, (2, 0, 1)]), 3))
+
+
+    >>> print np.round(M, 3)
     [[ 1.  0. -0. -1.]
      [ 0.  1.  0. -2.]
      [ 0. -0.  1. -3.]
      [ 0.  0.  0.  1.]]
-    >>> tCoords = vec.t.to_local(rCoords)
 
-    >>> # print(np.round(tCoords, 3))
-
-    >>> print(np.round(distance.rmse(coords, tCoords), 3))
 
     # https://stackoverflow.com/questions/43784618/fit-a-cylinder-to-scattered-3d-xyz-point-data-with-python
 
@@ -160,8 +164,8 @@ def cylinder(origin, coords, p, th):
     return v, r, residuals
 
 
-    print w_fit, C_fit, r_fit, fit_err
-    return w_fit, C_fit, r_fit, fit_err
+    #print w_fit, C_fit, r_fit, fit_err
+    #return w_fit, C_fit, r_fit, fit_err
 
     c = coords.mean(0)
     xyz = coords - c
@@ -210,12 +214,8 @@ def cylinder(origin, coords, p, th):
     #M = R * T0 * T1
     #M = T0 * T1 * R
     M = T0 * R * T1
-    M = R
+
     #M = T1 * R * T0
-    print c
-    print np.round(T0, 2)
-    print np.round(R, 2)
-    print np.round(T1, 2)
 
     M = transformation.LocalSystem(M)
     center = M.to_local([[0, 0, 0]])[0]
@@ -223,4 +223,4 @@ def cylinder(origin, coords, p, th):
     print est_p
     print center
 
-    return M, center, r, success
+    return M, r, success
