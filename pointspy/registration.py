@@ -206,6 +206,8 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     if not isinstance(coords_dict, dict):
         raise TypeError("'coords_dict' of type 'dict' required")
     k = len(coords_dict)  # number of point clouds
+    if k < 2:
+        raise ValueError("at least 2 point sets required")
 
     # check dimensions
     dim = None
@@ -220,7 +222,8 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
         assert coords_dict[key].shape[1] == dim, 'Dimensions do not match!'
 
     if not dim == 3:
-        raise ValueError("Sorry, just 3 dimensions are currently supported")
+        print(dim)
+        raise ValueError("%i dimensions are not supported yet" % dim)
 
     # pairs
     wPairs = {}
