@@ -174,12 +174,12 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     Prepare coordinates.
 
     >>> coordsA = [(-1, -2, 3), (-1, 2, 4), (1, 2, 5), (1, -2, 6)]
-    >>> T = transformation.matrix(t=[10, 20, 30], r=[0.01, 0.01, -0.002])
+    >>> T = transformation.matrix(t=[10000, 20000, 3000], r=[0.01, 0.01, -0.002], order='trs')
     >>> coordsB = transformation.transform(coordsA, T)
 
     >>> coords_dict = {'A': coordsA, 'B': coordsB}
     >>> pairs_dict = { 'A': { 'B': [(0, 0), (1, 1), (2, 2)] } }
-    >>> weights = {'A': [0, 1, 1, 1, 1, 1], 'B': [1, 0, 0, 0, 0, 0]}
+    >>> weights = {'A': [1, 1, 1, 1, 1, 1], 'B': [0, 0, 0, 0, 0, 0]}
 
     >>> res = find_rototranslations(coords_dict, pairs_dict, weights=weights)
     >>> print(list(res.keys()))
@@ -197,7 +197,6 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
      [ 1.  2.  5.]
      [ 1. -2.  6.]]
     >>> print(np.round(coordsA, 2))
-    >>> print(transformation.decomposition(res['B']))
 
     """
 
@@ -282,7 +281,13 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
 
         return np.vstack((Mx, My, Mz))
 
+
+    centers = {}
+    for key in coords_dict:
+        centers[key] = coords_dict[key].mean(0)
+
     # build linear equation system mA = mB * M
+
     mA = []
     mB = []
     for iA, keyA in enumerate(coords_dict):
@@ -292,8 +297,8 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
 
                     # get pairs of points
                     p = wPairs[keyA][keyB]
-                    A = coords_dict[keyA][p.A, :]
-                    B = coords_dict[keyB][p.B, :]
+                    A = coords_dict[keyA][p.A, :] - centers[keyA]
+                    B = coords_dict[keyB][p.B, :] - centers[keyB]
 
                     # set equations
                     a = np.zeros((A.shape[0] * dim, k * dim * 2))
@@ -317,9 +322,17 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
             a = np.eye(dim * 2, k * dim * 2, k=i * dim * 2)
             b = np.zeros(2 * dim)
 
+            a = np.eye(dim * 2, k * dim * 2, k=i * dim * 2)
+
+            b = np.hstack([centers[key], np.zeros(dim)])
+            #b = np.hstack([np.ones(dim), np.zeros(dim)])
+            #b = np.hstack([np.zeros(dim), np.zeros(dim)])
+
             w = oWeights[key]
             a = (a.T * w).T
             b = b * w
+            print(a)
+            print(b)
 
             mA.append(a)
             mB.append(b)
@@ -334,9 +347,17 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     for iA, keyA in enumerate(coords_dict):
         t = M[iA * dim * 2:iA * dim * 2 + dim]
         r = M[iA * dim * 2 + dim:(iA + 1) * dim * 2]
-        T = transformation.t_matrix(t)
+        #print(t)
+        #T = transformation.t_matrix(t + centers[keyA])
+        #R = transformation.r_matrix(r)
+        #res[keyA] = T * R   # do not edit!!!
+        #res[keyA] = TC * R
+
+        T1 = transformation.t_matrix(-centers[keyA])
+        T2 = transformation.t_matrix(t)
         R = transformation.r_matrix(r)
-        res[keyA] = T * R   # do not edit!!!
+        res[keyA] = T2 * R * T1
+
     return res
 
 
