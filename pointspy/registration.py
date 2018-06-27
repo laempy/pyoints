@@ -4,9 +4,12 @@
 import numpy as np
 
 from . indexkd import IndexKD
-from . import transformation
-from . import distance
-from . import assertion
+from . import (
+    assertion,
+    transformation,
+    distance,
+    nptools
+)
 
 
 def find_rototranslation(A, B):
@@ -31,7 +34,7 @@ def find_rototranslation(A, B):
     Examples
     --------
 
-    >>> T = transformation.matrix(t=[3, 5], r=0.8)
+    >>> T = transformation.matrix(t=[3, 5], r=0.3)
     >>> A = np.array([[0, 0], [0, 1], [1, 1], [1, 0]])
     >>> B = transformation.transform(A, T)
     >>> M = find_rototranslation(A, B)
@@ -76,10 +79,10 @@ def find_rototranslation(A, B):
     T2 = transformation.t_matrix(-cB)
     M = T1 * R * T2
 
-    # validate result
-    ixd = (0, -1)
-    close = np.isclose(transformation.transform(B[ixd, :], M), A[ixd, :])
-    assert np.all(close), "could not find an appropiate transformation matrix"
+    # validate result (only if no residuals in input)
+    #ixd = (0, -1)
+    #close = np.isclose(transformation.transform(B[ixd, :], M), A[ixd, :])
+    #assert np.all(close), "could not find an appropiate transformation matrix"
 
     return transformation.LocalSystem(M)
 
@@ -118,86 +121,141 @@ def find_transformation(A, B):
     return M
 
 
-def find_rototranslations(coordsDict, pairs, sWeights=1, oWeights={}):
+def find_rototranslations(coords_dict, pairs_dict, weights=None):
     """Finds the optimal roto-translation matrices between multiple point sets.
     The algorithm assumes infinitissimal rotations between the point sets.
 
     # TODO: types
     Parameters
     ----------
-    coordsDict: dict
-        Dictionary of point sets.
-    pairs : dict
-        Dictionary of point pairs
-    sWeights : optional, TODO
-        Weights for sum of translations and rotations
-    oWeights : optional, TODO
-        Weights try to keep the original location and orientation TOOD
+    coords_dict: dict
+        Dictionary of point sets with `k` dimensions.
+    pairs_dict : dict
+        Dictionary of point pairs.
+    weights : optional, dict or list or int.
+        Try to keep the original location and orientation by weighting. Each
+        point set can be weighted by a list of `2 * k` values. The first `k`
+        values represent the weighting factors for location. The last `k`
+        values represent the weighting factors for orientation (angles).
+        The weights can be provided for each point set individially in form
+        of a dictionary weights. If not provided, weights of zero are assumed.
 
     Returns
     -------
     M : dict
-        Dictionary of roto-translation matrices with `B` to `A` with A = `B * M.T`.
-    """
+        Dictionary of roto-translation matrices with `B` to `A` with
+        `A = B * M.T`.
 
-    # basics: http://geomatica.como.polimi.it/corsi/def_monitoring/roto-translationsb.pdf
-    # Zhang_2016a
-    '''
-    coordsDict = { 'A': A, 'B': B, 'C': C, 'D': D }
-    pairs = {
+    Notes
+    -----
+    Currently just three dimensions are supported.
+    coords_dict = { 'A': A, 'B': B, 'C': C, 'D': D }
+    pairs_dict = {
             'A': { 'B': pairsAB, 'C': pairsAC, 'D': pairsAD },
             'B': { 'A': pairsBA, 'B': pairsBC },
             'C': { 'B': pairsBC },
             'D': { 'D': pairsAD },
         }
     pairsAB = np.recarray(dtype=[('A', int), ('B', int), ('weights', float)])
-    #pairsAB=[(idA0, idB0), (idA1, idB1), (idA2, idB2)] or
-    #pairsAB=[(idA0, idB0, w0),( idA1, idB1, w1),(idA2, idB2, w2)]
-    '''
+    or
+    pairsAB=[(idA0, idB0), (idA1, idB1), (idA2, idB2)]
+    or
+    pairsAB=[(idA0, idB0, w0), ( idA1, idB1, w1), (idA2, idB2, w2)]
 
-    # TODO asserts
+    References
+    ----------
+    Basic idea: http://geomatica.como.polimi.it/corsi/def_monitoring/roto-translationsb.pdf
+    # Zhang_2016a
+
+
+    Examples
+    --------
+
+    Prepare coordinates.
+
+    >>> coordsA = [(-1, -2, 3), (-1, 2, 4), (1, 2, 5), (1, -2, 6)]
+    >>> T = transformation.matrix(t=[10, 20, 30], r=[0.01, 0.01, -0.002])
+    >>> coordsB = transformation.transform(coordsA, T)
+
+    >>> coords_dict = {'A': coordsA, 'B': coordsB}
+    >>> pairs_dict = { 'A': { 'B': [(0, 0), (1, 1), (2, 2)] } }
+    >>> weights = {'A': [0, 1, 1, 1, 1, 1], 'B': [1, 0, 0, 0, 0, 0]}
+
+    >>> res = find_rototranslations(coords_dict, pairs_dict, weights=weights)
+    >>> print(list(res.keys()))
+    ['A', 'B']
+    >>> tA = res['A'].to_local(coords_dict['A'])
+    >>> print(np.round(tA, 2))
+    [[-1. -2.  3.]
+     [-1.  2.  4.]
+     [ 1.  2.  5.]
+     [ 1. -2.  6.]]
+    >>> tB = res['B'].to_local(coords_dict['B'])
+    >>> print(np.round(tB, 2))
+    [[-1. -2.  3.]
+     [-1.  2.  4.]
+     [ 1.  2.  5.]
+     [ 1. -2.  6.]]
+    >>> print(np.round(coordsA, 2))
+    >>> print(transformation.decomposition(res['B']))
+
+    """
+
     # TODO 2D?
 
-    k = len(coordsDict)  # number of point clouds
+    if not isinstance(coords_dict, dict):
+        raise TypeError("'coords_dict' of type 'dict' required")
+    k = len(coords_dict)  # number of point clouds
 
     # check dimensions
     dim = None
-    for key in coordsDict:
+    for key in coords_dict:
+        coords_dict[key] = assertion.ensure_coords(
+            coords_dict[key],
+            min_dim=2,
+            max_dim=3
+        )
         if dim is None:
-            dim = coordsDict[key].shape[1]
-        assert coordsDict[key].shape[1] == dim, 'Dimensions do not match!'
+            dim = coords_dict[key].shape[1]
+        assert coords_dict[key].shape[1] == dim, 'Dimensions do not match!'
+
+    if not dim == 3:
+        raise ValueError("Sorry, just 3 dimensions are currently supported")
 
     # pairs
     wPairs = {}
-    for keyA in pairs:
+    dtype_pairs = [('A', int), ('B', int), ('weights', float)]
+    for keyA in pairs_dict:
         wPairs[keyA] = {}
-        for keyB in pairs[keyA]:
-            p = np.array(pairs[keyA][keyB])
-            if len(p) < 3:
-                w = np.ones(len(p[0]))
-            n = p[0].shape[0]
-            assigned = np.recarray(
-                n, dtype=[('A', int),
-                          ('B', int),
-                          ('weights', float)])
-            assigned.A = p[0]
-            assigned.B = p[1]
-            assigned.weights = 1
+        for keyB in pairs_dict[keyA]:
+            p = np.array(pairs_dict[keyA][keyB])
+            if p.shape[1] < 3:
+                w = np.ones(len(p))
+            n = p.shape[0]
+            assigned = np.recarray(n, dtype=dtype_pairs)
 
+            assigned.A = p[:, 0]
+            assigned.B = p[:, 1]
+            assigned.weights = w
             wPairs[keyA][keyB] = assigned
 
-    # try to keep the sum of translations and rotations close to zero
-    if hasattr(sWeights, '__len__'):
-        assert len(sWeights) == 2 * dim
-    else:
-        sWeights = np.repeat(sWeights, 2 * dim)
-
     # try to keep the original location and orientation
-    if isinstance(oWeights, dict):
-        for iA, keyA in enumerate(coordsDict):
-            if keyA not in oWeights:
-                oWeights[keyA] = np.zeros(dim * 2)
-            oWeights[keyA] = np.array(oWeights[keyA], dtype=float)
+    oWeights = {}
+    if weights is not None:
+        if isinstance(weights, dict):
+            for key in weights:
+                oWeights[key] = assertion.ensure_numvector(
+                    weights[key],
+                    length=2 * dim
+                ).astype(float)
+        else:
+            if nptools.isarray(weights):
+                weights = assertion.ensure_numvector(weights, length=2 * dim)
+            else:
+                m = "type '%' of 'weights' not supported" % type(weights)
+                raise ValueError(m)
+            for key in coords_dict.keys():
+                oWeights[key] = weights
 
     # helper function
     # TODO n-dimensional
@@ -224,16 +282,15 @@ def find_rototranslations(coordsDict, pairs, sWeights=1, oWeights={}):
     # build linear equation system mA = mB * M
     mA = []
     mB = []
-    for iA, keyA in enumerate(coordsDict):
-        if keyA in pairs:
-
-            for iB, keyB in enumerate(coordsDict):
-                if keyB in pairs[keyA]:
+    for iA, keyA in enumerate(coords_dict):
+        if keyA in pairs_dict:
+            for iB, keyB in enumerate(coords_dict):
+                if keyB in pairs_dict[keyA]:
 
                     # get pairs of points
                     p = wPairs[keyA][keyB]
-                    A = coordsDict[keyA][p.A, :]
-                    B = coordsDict[keyB][p.B, :]
+                    A = coords_dict[keyA][p.A, :]
+                    B = coords_dict[keyB][p.B, :]
 
                     # set equations
                     a = np.zeros((A.shape[0] * dim, k * dim * 2))
@@ -250,29 +307,19 @@ def find_rototranslations(coordsDict, pairs, sWeights=1, oWeights={}):
                     mA.append(a)
                     mB.append(b)
 
-    # try to keep the sum of translations and rotations close to zero
-    a = np.tile(np.eye(dim * 2 * k, dim * 2), k)
-    b = np.zeros(dim * 2 * k)
-
-    w = np.tile(sWeights, k)
-    a = (a.T * w).T
-    b = b * w
-
-    mA.append(a)
-    mB.append(b)
-
     # try to keep the original locations and orientations
-    for iA, keyA in enumerate(coordsDict):
+    for i, key in enumerate(coords_dict):
+        if key in oWeights:
 
-        a = np.eye(dim * 2, k * dim * 2, k=iA * dim * 2)
-        b = np.hstack((coordsDict[keyA].mean(0), np.zeros(dim)))
+            a = np.eye(dim * 2, k * dim * 2, k=i * dim * 2)
+            b = np.zeros(2 * dim)
 
-        w = oWeights[keyA]
-        a = (a.T * w).T
-        b = b * w
+            w = oWeights[key]
+            a = (a.T * w).T
+            b = b * w
 
-        mA.append(a)
-        mB.append(b)
+            mA.append(a)
+            mB.append(b)
 
     # solve linear equation system
     mA = np.vstack(mA)
@@ -281,24 +328,26 @@ def find_rototranslations(coordsDict, pairs, sWeights=1, oWeights={}):
 
     # Extract roto-transformation matrices
     res = {}
-    for iA, keyA in enumerate(coordsDict):
-        T = transformation.t_matrix(M[iA * dim * 2:iA * dim * 2 + dim])
-        R = transformation.r_matrix(M[iA * dim * 2 + dim:(iA + 1) * dim * 2])
-        res[keyA] = T * R
+    for iA, keyA in enumerate(coords_dict):
+        t = M[iA * dim * 2:iA * dim * 2 + dim]
+        r = M[iA * dim * 2 + dim:(iA + 1) * dim * 2]
+        T = transformation.t_matrix(t)
+        R = transformation.r_matrix(r)
+        res[keyA] = T * R   # do not edit!!!
     return res
 
 
-def ICP(coordsDict, max_dist, k=1, p=2, max_iter=10):
+def ICP(coords_dict, max_dist, k=1, p=2, max_iter=10):
     # TODO docu
 
     # iterative closest point
 
     assert k > 0
-    assert isinstance(coordsDict, dict)
+    assert isinstance(coords_dict, dict)
 
     dim = None
     M = {}  # Translation matrices
-    for key, coords in coordsDict.items():
+    for key, coords in coords_dict.items():
         if dim is None:
             dim = coords.shape[1]
         assert coords.shape[1] == dim, 'Dimensions do not match!'
@@ -306,16 +355,16 @@ def ICP(coordsDict, max_dist, k=1, p=2, max_iter=10):
 
     for numIter in range(max_iter):
         pairs = {}
-        for keyA in coordsDict:
+        for keyA in coords_dict:
             pairs[keyA] = {}
-            coordsA = transformation.transform(coordsDict[keyA], M[keyA])
+            coordsA = transformation.transform(coords_dict[keyA], M[keyA])
             indexKD = IndexKD(coordsA)
 
-            for keyB in coordsDict:
+            for keyB in coords_dict:
                 if keyB != keyA:
 
                     coordsB = transformation.transform(
-                        coordsDict[keyB], M[keyB])
+                        coords_dict[keyB], M[keyB])
                     dists, kNN = indexKD.knn(
                         coordsB,
                         k=k,
@@ -343,18 +392,18 @@ def ICP(coordsDict, max_dist, k=1, p=2, max_iter=10):
         # def printDists(M):
         #    print
         #    print 'Dists'
-        #    for keyA in coordsDict:
-        #        coordsA = transformation.transform(coordsDict[keyA],M[keyA])
-        #        for keyB in coordsDict:
+        #    for keyA in coords_dict:
+        #        coordsA = transformation.transform(coords_dict[keyA],M[keyA])
+        #        for keyB in coords_dict:
         #            if keyB != keyA:
-        #                coordsB = transformation.transform(coordsDict[keyB],M[keyB])
+        #                coordsB = transformation.transform(coords_dict[keyB],M[keyB])
         #                print keyA,keyB
         #                assigned=pairs[keyA][keyB]
         #                print distance.rmse(coordsA[assigned[0],:],coordsB[assigned[1],:])
 
         #print '-----'
         # printDists(M)
-        M = find_rototranslations(coordsDict, pairs)
+        M = find_rototranslations(coords_dict, pairs)
         # printDists(M)
 
     return M
