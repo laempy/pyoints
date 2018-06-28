@@ -13,7 +13,6 @@ from . import assertion
 from . import transformation
 
 
-# TODO nested IndexKD?
 class IndexKD(object):
     """Wrapper class of serveral spatial indices to speed up spatial queries
     and ease usage.
@@ -541,27 +540,3 @@ class IndexKD(object):
         # get original order (for performance reasons of later operations)
         ids = np.sort(order[iMin:iMax])
         return ids
-
-    # TODO Documentation
-    def filtered_ball(self,
-                      coord,
-                      r,
-                      filter=lambda pA, pB: pA[-1] < pB[-1],
-                      **kwargs):
-        nIds = self.ball(coord, r, **kwargs)
-        coords = self.coords
-        return [nId for nId in nIds if filter(coord, coords[nId, :])]
-
-    # TODO Documentation
-    def upper_ball(self, coord, r, axis=-1, **kwargs):
-        return self.filtered_ball(coord,
-                                  r,
-                                  filter=lambda pA, pB: pA[axis] > pB[axis],
-                                  **kwargs)
-
-    # TODO Documentation
-    def lower_ball(self, coord, r, axis=-1, **kwargs):
-        return self.filtered_ball(coord,
-                                  r,
-                                  filter=lambda pA, pB: pA[axis] < pB[axis],
-                                  **kwargs)
