@@ -1,0 +1,3 @@
+"""Some settings"""
+
+DEBUG = True
