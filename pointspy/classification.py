@@ -282,31 +282,46 @@ def mayority(classes, empty_value=-1):
 
 # TODO nur zur Klassifikation benoetigt ==> delete?
 class Sample:
+    """Class to randomly split a data set into a trainin and validation part.
 
-    def __init__(self, trainFraction=0.7, classes=None, groups=None):
+    Parameters
+    ----------
+    train_fraction : optional, float in ]0, 1[
+        Fraction of training data.
+    classes : array_like(shape=(n))
+        TODO
+    groups : array_like(shape=(n))
+        TODO
 
-        if groups is None:
-            assert classes is not None and hasattr(classes, '__len__')
+    """
+
+    def __init__(self, train_fraction=0.7, classes=None, groups=None):
+
+        # validate
+        if not assertion.isnumeric(train_fraction):
+            raise TypeError("'train_fraction' needs to be numeric")
+
+        if train_fraction <= 0 or train_fraction >= 1:
+            raise ValueError("'train_fraction' needs to be in range ]0, 1[")
+
+        if groups is not None:
+            groups = assertion.ensure_numvector(groups)
 
         if classes is None:
-            assert groups is not None and hasattr(groups, '__len__')
-            n = len(groups)
-            classes = np.random.permutation(range(n)) <= n
-        if groups is not None:
-            groups = np.array(groups)
+            classes = assertion.ensure_numvector(classes)
+        else:
+            if groups is None:
+                raise ValueError("parameter 'groups' required")
+            classes = np.random.permutation(range(len(groups))) <= len(groups)
 
-        self.classes = classes
+        # set validation and training ids
 
-        # classKeys=np.unique(classes)
         classKeys = list(set(classes))
-        # print classKeys
-        # groupKeys=np.unique(groups)
         groupKeys = list(set(groups))
-        # print groupKeys
 
         ids = np.arange(len(classes))
-        tIds = defaultdict(list)
-        vIds = defaultdict(list)
+        t_ids = defaultdict(list)
+        v_ids = defaultdict(list)
 
         for classKey in classKeys:
             cIds = ids[classes == classKey]
@@ -314,14 +329,14 @@ class Sample:
             cIds = np.random.permutation(cIds)
 
             if groups is None:
-                tMask = np.arange(n) < trainFraction * n
-                vMask = ~tMask
+                t_mask = np.arange(n) < train_fraction * n
+                v_mask = ~t_mask
             else:
                 # avoid same group within class
                 # mask=np.zeros(len(cIds),dtype=bool)
                 # for groupKey in np.random.permutation(groupKeys):
                 #    mask[groups[cIds]==groupKey]=True
-                #    if mask.sum()>=trainFraction*n:
+                #    if mask.sum()>=train_fraction*n:
                 #        break
 
                 # Optimal split
@@ -330,47 +345,67 @@ class Sample:
                     counts[groupKey] = (groups[cIds] == groupKey).sum()
 
                 order = np.argsort(counts.values())[::-1]
-                vMask = np.zeros(len(cIds), dtype=bool)
-                tMask = np.zeros(len(cIds), dtype=bool)
+                v_mask = np.zeros(len(cIds), dtype=bool)
+                t_mask = np.zeros(len(cIds), dtype=bool)
                 for groupKey in np.array(counts.keys())[order]:
                     mask = groups[cIds] == groupKey
                     if counts[groupKey] > 0:
-                        if tMask.sum() == 0 and vMask.sum() == 0:
+
+                        if t_mask.sum() == 0 and v_mask.sum() == 0:
                             f = 0
                         else:
-                            f = 1.0 * tMask.sum() / (tMask.sum() + vMask.sum())
-                        if f < trainFraction:
-                            tMask[mask] = True
+                            t_sum = t_mask.sum()
+                            v_sum = v_mask.sum()
+                            f = 1.0 * t_sum / (t_sum + v_sum)
+                        if f < train_fraction:
+                            t_mask[mask] = True
                         else:
-                            vMask[mask] = True
+                            v_mask[mask] = True
 
-            tIds[classKey] = cIds[tMask]
-            vIds[classKey] = cIds[vMask]
+            t_ids[classKey] = cIds[t_mask]
+            v_ids[classKey] = cIds[v_mask]
 
-        self._tIds = tIds
-        self._vIds = vIds
-
-    @property
-    def tIds(self):
-        return self._tIds
+        self._t_ids = t_ids
+        self._v_ids = v_ids
+        self._classes = classes
 
     @property
-    def vIds(self):
-        return self._vIds
+    def classes(self):
+        return self._classes
 
     @property
-    def tMask(self):
+    def t_ids(self):
+        return self._t_ids
+
+    @property
+    def v_ids(self):
+        return self._v_ids
+
+    @property
+    def t_mask(self):
         mask = np.zeros(len(self.classes), dtype=bool)
-        for tIds in self.tIds.values():
-            mask[tIds] = True
+        for t_ids in self.t_ids.values():
+            mask[t_ids] = True
         return mask
 
     @property
-    def vMask(self):
+    def v_mask(self):
         mask = np.zeros(len(self.classes), dtype=bool)
-        for vIds in self.vIds.values():
-            mask[vIds] = True
+        for v_ids in self.v_ids.values():
+            mask[v_ids] = True
         return mask
+
+    @property
+    def t_counts(self):
+        return self.counts(self.t_mask)
+
+    @property
+    def v_counts(self):
+        return self.counts(self.v_mask)
+
+    @property
+    def masks(self):
+        return self.t_mask, self.v_mask
 
     def keys(self):
         return np.unique(self.classes)
@@ -382,15 +417,3 @@ class Sample:
         for key in self.keys():
             counts[key] = (self.classes[mask] == key).sum()
         return counts
-
-    @property
-    def tCounts(self):
-        return self.counts(self.tMask)
-
-    @property
-    def vCounts(self):
-        return self.counts(self.vMask)
-
-    @property
-    def masks(self):
-        return self.tMask, self.vMask
