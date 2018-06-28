@@ -41,6 +41,33 @@ class Pairs:
 
 
 
+class BallAssign:
+
+
+    def __init__(self, coords, radii):
+
+        # validate input
+        coords = assertion.ensure_coords(coords)
+        radii = assertion.ensure_numvector(radii, length=coords.shape[1])
+
+        S = transformation.s_matrix(1.0 / radii)
+        self.rIndexKD = IndexKD(coords, S)
+
+
+    def __call__(self, coords):
+        mIndexKD = IndexKD(coords, self.rIndexKD.t)
+        rIndexKD = self.rIndexKD
+        
+        pairs = []
+        ball_gen = rIndexKD.ball_iter(mIndexKD.coords, 1)
+        for mId, rIds in enumerate(ball_gen):
+            for rId in rIds:
+                pairs.append((rId, mId))
+                
+        return np.array(pairs, dtype=int)
+
+
+
 # TODO class Pairs ==> indexKD reuse
 def pairs(aCoords, bCoords, max_distance=np.inf):
     """Find pairs of points using nearest neighbour method.
