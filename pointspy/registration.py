@@ -201,7 +201,6 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
      [-1.  2.  4.]
      [ 1.  2.  5.]
      [ 1. -2.  6.]]
-    >>> print(np.round(coordsA, 2))
 
     """
 
