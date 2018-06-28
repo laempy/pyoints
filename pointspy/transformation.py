@@ -430,7 +430,7 @@ def decomposition(T, ignore_warnings=False):
     ----------
     https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati
     https://math.stackexchange.com/questions/13150/extracting-rotation-scale-values-from-2d-transformation-matrix/13165#13165
-
+    https://www.learnopencv.com/rotation-matrix-to-euler-angles/
     """
 
     T = assertion.ensure_tmatrix(T)
@@ -444,7 +444,6 @@ def decomposition(T, ignore_warnings=False):
 
     # rotation
     R = T[:-1, :-1] / s
-
     if dim == 2:
         r1 = np.arctan2(R[1, 0], R[1, 1])
         r2 = np.arctan2(-R[0, 1], R[0, 0])
@@ -452,9 +451,16 @@ def decomposition(T, ignore_warnings=False):
             warnings.warn("Rotation angles seem to differ.")
         r = (r1 + r2) * 0.5
     elif dim == 3:
-        r_x = np.arctan(R[2, 1] / R[2, 2])
-        r_y = -np.arcsin(R[2, 0])
-        r_z = np.arctan(R[1, 0] / R[0, 0])
+        sy = np.sqrt(R[0, 0] * R[0, 0] + R[1, 0] * R[1, 0])
+        singular = sy < 1e-6
+        if not singular:
+            r_x = np.arctan2(R[2, 1], R[2, 2])
+            r_y = np.arctan2(-R[2, 0], sy)
+            r_z = np.arctan2(R[1, 0], R[0, 0])
+        else:
+            r_x = np.arctan2(-R[1, 2], R[1, 1])
+            r_y = np.arctan2(-R[2, 0], sy)
+            r_z = 0
         r = np.array([r_x, r_y, r_z])
     else:
         raise ValueError('Only %s dimensions are not supported jet' % dim)
