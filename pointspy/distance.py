@@ -11,7 +11,7 @@ def norm(coords):
 
     Parameters
     ----------
-    coords: array_like(shape=(k)) or array_like(shape=(n, k))
+    coords : array_like(Number, shape=(k)) or array_like(Number, shape=(n, k))
         Represents `n` points or a single point of `k` dimensions.
 
     Returns
@@ -32,12 +32,12 @@ def snorm(coords):
 
     Parameters
     ----------
-    coords: array_like(shape=(k)) or array_like(shape=(n, k))
+    coords: array_like(Number, shape=(k)) or array_like(Number, shape=(n, k))
         Represents `n` points or a single point of `k` dimensions.
 
     Returns
     -------
-    array_like(shape=(n, ))
+    Number or array_like(Number, shape=(n))
         Squared normed values.
 
     See Also
@@ -65,7 +65,7 @@ def dist(p, coords):
 
     Returns
     -------
-    array_like(shape=(n, ))
+    Number or array_like(Number, shape=(n))
         Normed values.
 
     See Also
@@ -81,14 +81,14 @@ def sdist(p, coords):
 
     Parameters
     ----------
-    p : array_like(Number, shape=(n, k)) or array_like(Number, shape=(k, ))
+    p : array_like(Number, shape=(n, k)) or array_like(Number, shape=(k))
         Represents `n` points or a single point of `k` dimensions.
     coords : array_like(Number, shape=(n, k))
         Represents `n` points of `k` dimensions.
 
     Returns
     -------
-    array_like(shape=(n, ))
+    Number or array_like(Number, shape=(n))
         Squared distances between the points.
 
     See Also
@@ -113,7 +113,7 @@ def rmse(A, B):
 
     Parameters
     ----------
-    A, B : array_like(Number, shape=(k, ))
+    A, B : array_like(Number, shape=(n, k))
         Represent `n` points or a single point of `k` dimensions.
 
     Returns

@@ -3,14 +3,10 @@
 
 import numpy as np
 import cylinder_fitting
-from scipy import optimize
-
 
 from . import (
-    nptools,
     transformation,
     assertion,
-    distance,
     vector,
 )
 

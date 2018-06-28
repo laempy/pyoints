@@ -10,7 +10,8 @@ from . import assertion
 
 
 # Global proj4 definitions
-WGS84 = '+proj=latlong +datum=WGS84 +to +proj=latlong +datum=WGS84 +units=m +no_defs'
+WGS84 = '+proj=latlong +datum=WGS84 +to +proj=latlong +datum=WGS84 +units=m ' \
+    '+no_defs'
 
 
 class Proj():

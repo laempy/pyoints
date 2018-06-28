@@ -134,4 +134,4 @@ def polar_to_coords(pcoords):
         z = d * np.cos(omega)
         return assertion.ensure_coords([x, y, z], by_col=True)
     else:
-        raise ValueError('%i dimensions are not supported yet.' % dim)
+        raise ValueError('%i dimensions are not supported yet' % dim)

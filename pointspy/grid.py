@@ -296,7 +296,7 @@ class Grid(GeoRecords):
 
     def get_window(self, extent):
         # TODO extentinfo notwendig?
-        #M, min_corner_key, shape = self.extentinfo(self.transform, extent)
+        # M, min_corner_key, shape = self.extentinfo(self.transform, extent)
         T, cornerIndex, shape = self.extentinfo(self.transform, extent)
         mask = self.keys(shape) + cornerIndex
         return self[zip(mask.T)].reshape(shape)

@@ -58,12 +58,10 @@ def find_rototranslation(A, B):
     if not A.shape == B.shape:
         raise ValueError("coordinate dimensions do not match")
 
-
     cA = A.mean(0)
     cB = B.mean(0)
     mA = np.matrix(transformation.homogenious(A - cA, value=0))
     mB = np.matrix(transformation.homogenious(B - cB, value=0))
-
 
     # Find rotation matrix
     H = mA.T * mB
@@ -80,17 +78,8 @@ def find_rototranslation(A, B):
     T2 = transformation.t_matrix(-cB)
     M = T1 * R * T2
 
-    # validate result (only if no residuals in input)
-    #ixd = (0, -1)
-    #close = np.isclose(transformation.transform(B[ixd, :], M), A[ixd, :])
-    #assert np.all(close), "could not find an appropiate transformation matrix"
-
     return transformation.LocalSystem(M)
 
-
-#TODO
-# find_transformation with optional translation, rotation, scaling and skewing
-# take a look at cv2
 
 def find_transformation(A, B):
     """Finds the optimal (non-rigid) transformation matrix `M` between two point
@@ -165,10 +154,8 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
 
     References
     ----------
-    Basic idea taken from
+    Basic idea taken from:
     http://geomatica.como.polimi.it/corsi/def_monitoring/roto-translationsb.pdf
-    # Zhang_2016a
-
 
     Examples
     --------
@@ -203,8 +190,7 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
      [ 1. -2.  6.]]
 
     """
-
-    # TODO 2D?
+    # TODO 2D support
 
     if not isinstance(coords_dict, dict):
         raise TypeError("'coords_dict' of type 'dict' required")
@@ -217,7 +203,7 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     for key in coords_dict:
         coords_dict[key] = assertion.ensure_coords(
             coords_dict[key],
-            min_dim=3,  # TODO add 2D support
+            min_dim=3,
             max_dim=3
         )
         if dim is None:

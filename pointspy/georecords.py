@@ -229,7 +229,6 @@ class GeoRecords(np.recarray, object):
           [2 2]
           [2 3]]]
 
-
         Get iterable of indices.
 
         >>> keys = GeoRecords.keys((3, 4), flatten=True)
