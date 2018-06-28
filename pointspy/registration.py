@@ -209,6 +209,8 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     if not isinstance(coords_dict, dict):
         raise TypeError("'coords_dict' of type 'dict' required")
     k = len(coords_dict)  # number of point clouds
+    if k < 2:
+        raise ValueError("at least 2 point sets required")
 
     # check dimensions
     dim = None
