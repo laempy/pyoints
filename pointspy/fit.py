@@ -45,7 +45,7 @@ def sphere(coords, weights=1.0):
     >>> x = np.arange(-1, 1, 0.1)
     >>> y = np.sqrt(5**2 - x**2)
     >>> coords = np.array([x,y]).T + [2,4]
-    >>> center, r, residuals = ball(coords)
+    >>> center, r, residuals = sphere(coords)
     >>> print center
     [2. 4.]
     >>> print np.round(r, 2)
