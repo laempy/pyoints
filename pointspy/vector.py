@@ -18,7 +18,7 @@ def rad_to_deg(rad):
 
     Parameters
     ----------
-    rad : Numeric or array_like(Number, shape=(k, ))
+    rad : Numeric or array_like(Number, shape=(k))
         Angle or angles in radiant.
 
     Returns
@@ -51,12 +51,12 @@ def deg_to_rad(deg):
 
     Parameters
     ----------
-    deg : Number or array_like(Number, shape=(k, ))
+    deg : Number or array_like(Number, shape=(k))
         Angle or angles in degree.
 
     Returns
     -------
-    Number or np.ndarray(Number, shape=(k, ))
+    Number or np.ndarray(Number, shape=(k))
         Angle or angles in radiant.
 
     See Also
@@ -85,8 +85,10 @@ def angle(v, w, deg=False):
 
     Parameters
     ----------
-    v, w : array_like(Number, shape=(k, ))
+    v, w : array_like(Number, shape=(k))
         Vector of length k.
+    deg : optional, bool
+        Indicates whether or not the result is returned in degree.
 
     Returns
     -------
@@ -137,12 +139,64 @@ def angle(v, w, deg=False):
     return a
 
 
+def axes_angles(v, deg=False):
+    """Calculates the angles of a vetor to all coordinate axes.
+
+    Parameters
+    ----------
+    v : array_like(Number, shape=(k))
+        Vector of length `k`.
+    deg : optional, bool
+        Indicates whether or not the result is returned in degree.
+
+    Returns
+    -------
+    np.ndarray(Number, shape=(k))
+        Rotation angles.
+
+    """
+    v = assertion.ensure_numvector(v)
+    e = np.eye(len(v))
+    return np.array([angle(v, e[:, i], deg=deg) for i in range(len(v))])
+
+
+def direction(v, deg=False):
+    """Calculate the direction angles of a vector.
+
+    Parameters
+    ----------
+    v : array_like(Number, shape=(k))
+        Vector of length `k`.
+    deg : optional, bool
+        Indicates whether or not the result is returned in degree.
+
+    """
+    v = assertion.ensure_numvector(v)
+
+    if not isinstance(deg, bool):
+        raise TypeError("'deg' has to be boolean")
+
+    if len(v) == 2:
+        direction = np.arcsin(v[1])
+    elif len(v) == 3:
+        phi = np.arctan2(v[1], v[0])
+        theta = np.arccos(v[2])
+        direction = np.array([phi, theta])
+    else:
+        raise ValueError("%i dimensions are not supported yet" % len(v))
+
+    if deg:
+        direction = direction * 180.0 / np.pi
+
+    return direction
+
+
 def zenith(v, axis=-1, deg=False):
     """Angle between a vector and the coordinate axes.
 
     Parameters
     ----------
-    v : array_like(Number, shape=(k, ))
+    v : array_like(Number, shape=(k))
         Vector of length `k`.
     axis : optional, int
         Defines which axis to compare the vector with.
@@ -183,7 +237,7 @@ def scalarproduct(v, w):
     ----------
     Parameters
     ----------
-    v, w : array_like(Number, shape=(k, ))
+    v, w : array_like(Number, shape=(k))
         Vector of length k.
 
     Returns
@@ -218,7 +272,7 @@ def orthogonal(v, w):
 
     Parameters
     ----------
-    v, w : array_like(Number, shape=(k, ))
+    v, w : array_like(Number, shape=(k))
         Vector of length k.
 
     Returns
@@ -336,14 +390,14 @@ class Vector(object):
 
     Parameters
     ----------
-    origin, vec : array_like(Number, shape=(k, ))
+    origin, vec : array_like(Number, shape=(k))
         The arrays `origin` and `vec` define the location and orientation of
         the vector in a `k`-dimensional vector space. The vector `vec` starts
         at point `origin` and points at point `target`.
 
     Attributes
     ----------
-    origin, target, vec : np.ndarray(Number, shape=(k, ))
+    origin, target, vec : np.ndarray(Number, shape=(k))
         The vector `vec` starts at point `origin` and points at point `target`.
     length : positive float
         Length of the vector `vec`.
@@ -583,7 +637,7 @@ class Vector(object):
 
         Returns
         -------
-        np.ndarray(Number, shape=(k, ))
+        np.ndarray(Number, shape=(k))
             Relative relative position of points in vector direction. The
             `origin` of the vector defines zero and the `target` defines one.
 
