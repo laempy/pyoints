@@ -2,7 +2,9 @@
 """
 
 import numpy as np
+import cylinder_fitting
 from scipy import optimize
+
 
 from . import (
     nptools,
@@ -13,214 +15,136 @@ from . import (
 )
 
 
-def ball(coords, weights=1.0):
+def sphere(coords, weights=1.0):
     """Least square fitting of a sphere to a set of points.
 
     Parameters
     ----------
-    coords : (n,k), array_like
+    coords : array_like(Number, shape=(n, k))
         Represents n data points of `k` dimensions.
     weights : (k+1,k+1), array_like
         Transformation matrix.
 
     Returns
     -------
-    center : (k), np.ndarray
+    center : np.ndarray(Number, shape=(k))
         Center of the sphere.
-    R : float
+    r : Number
         Radius of the sphere.
+
+    References
+    ----------
+    # http://www.arndt-bruenner.de/mathe/scripts/kreis3p.htm
 
     Examples
     --------
 
-    Draw points on a half circle with radius 5 and cener (2,4) and try to
+    Draw points on a half circle with radius 5 and cener (2, 4) and try to
     dertermine the circle parameters.
 
-    >>> x = np.arange(-1,1,0.1)
+    >>> x = np.arange(-1, 1, 0.1)
     >>> y = np.sqrt(5**2 - x**2)
     >>> coords = np.array([x,y]).T + [2,4]
-    >>> center, R = ball(coords)
+    >>> center, r, residuals = ball(coords)
     >>> print center
     [2. 4.]
-    >>> print np.round(R, 2)
+    >>> print np.round(r, 2)
     5.0
 
     """
 
     coords = assertion.ensure_coords(coords)
-
-    assert (isinstance(weights, int) or isinstance(weights, float)) or \
-        (hasattr(weights, '__len__') and len(weights) == coords.shape[0])
-
-    # TODO radius und mittelpunkt vorgeben
-
-    # http://www.arndt-bruenner.de/mathe/scripts/kreis3p.htm
     dim = coords.shape[1]
+
+    if not assertion.isnumeric(weights):
+        weights = assertion.ensure_numvector(weights, length=dim)
 
     # mean-centering to avoid overflow errors
     c = coords.mean(0)
     cCoords = coords - c
 
+    # create matrices
     A = transformation.homogenious(cCoords, value=1)
     B = (cCoords**2).sum(1)
 
     A = (A.T * weights).T
     B = B * weights
 
-    p = np.linalg.lstsq(A, B, rcond=-1)[0]
+    # solve equation system
+    p, residuals, rank, s = np.linalg.lstsq(A, B, rcond=-1)
 
     bCenter = 0.5 * p[:dim]
-    R = np.sqrt((bCenter**2).sum() + p[dim])
-
+    r = np.sqrt((bCenter**2).sum() + p[dim])
     center = bCenter + c
-    return center, R
+
+    return center, r, residuals
 
 
-def cylinder(origin, coords, p, th):
+def cylinder(coords, vec=None):
     """Fit a cylinder to points.
 
     Parameters
     ----------
-    TODO
-    TODO referenz
+    coords : array_like(Number, shape=(n, k))
+        Represents n data points of `k` dimensions.
+    vec : optional, array_like(Number, shape(k))
+        Estimated orientation of the cylinder axis.
 
     Returns
     -------
-    TODO: Returns
-
-
-    References
-    ----------
-    TODO: References
-    https://stackoverflow.com/questions/43784618/fit-a-cylinder-to-scattered-3d-xyz-point-data-with-python
+    vec: vector.Vector
+        Orientaton vector.
+    r : Number
+        Radius of the cylinder.
+    resid : Number
+        Remaining residuals.
 
     Examples
     --------
 
+    Prepare roto-translated half cylinder.
+
     >>> r = 2.5
-    >>> x = np.arange(-1, 1, 0.01)
-    >>> y = np.sqrt(1**2 - x**2)
+    >>> x = np.arange(-1, 0, 0.01) * r
+    >>> y = np.sqrt(r**2 - x**2)
     >>> y[::2] = - y[::2]
-    >>> x = x * r
-    >>> y = y * r
-    >>> z = np.ones(len(x)) * 5
+    >>> z = np.repeat(5, len(x))
     >>> z[::2] = -5
-    >>> coords = np.array([x, y, z]).T
-    >>> T = transformation.matrix(t=[10, 20, 30], r=[0.55, 0.21, 0.0])
+    >>> T = transformation.matrix(t=[10, 20, 30], r=[0.3, 0.2, 0.0])
+    >>> coords = transformation.transform(np.array([x, y, z]).T, T)
 
-    >>> rCoords = transformation.transform(coords, T)
-    >>> M, r, success = cylinder(None, rCoords, [0, 0, 0, 0, 0], None)
-    >>> print success
-    True
-    >>> print np.round(r,2)
+    Get cylinder.
+
+    >>> vec, r, residuals = cylinder(coords, vec=[0, 0, 1])
+
+    >>> print(np.round(r, 2))
     2.5
-    >>> print np.round(M.origin, 2)
-    [1. 2. 3.]
+    >>> print(np.round(vec.origin, 2))
+    [10. 20. 30.]
 
-    >>> tCoords = M.to_local(rCoords)
+    Check distances to vector.
 
-    >>> print(np.round(tCoords, 3))
-
-    >>> print(np.round(distance.rmse(coords, tCoords[:, (2, 0, 1)]), 3))
-
-
-    >>> print np.round(M, 3)
-    [[ 1.  0. -0. -1.]
-     [ 0.  1.  0. -2.]
-     [ 0. -0.  1. -3.]
-     [ 0.  0.  0.  1.]]
-
-
-    # https://stackoverflow.com/questions/43784618/fit-a-cylinder-to-scattered-3d-xyz-point-data-with-python
-
-    # https://stackoverflow.com/questions/42157604/how-to-fit-a-cylindrical-model-to-scattered-3d-xyz-point-data/42163007
-    # https://de.mathworks.com/help/vision/ref/pcfitcylinder.html?requestedDomain=www.mathworks.com
-    # Chan_2012a !!!
-
-    This is a fitting for a vertical cylinder fitting
-    Reference
-    http://www.int-arch-photogramm-remote-sens-spatial-inf-sci.net/XXXIX-B5/169/2012/isprsarchives-XXXIX-B5-169-2012.pdf
-
-    xyz is a matrix contain at least 5 rows, and each row stores x y z of a cylindrical surface
-    p is initial values of the parameter;
-    p[0] = Xc, x coordinate of the cylinder centre
-    P[1] = Yc, y coordinate of the cylinder centre
-    P[2] = alpha, rotation angle (radian) about the x-axis
-    P[3] = beta, rotation angle (radian) about the y-axis
-    P[4] = r, radius of the cylinder
-
-    th, threshold for the convergence of the least squares
+    >>> dists = vec.distance(coords)
+    >>> print(np.round([np.min(dists), np.max(dists)], 2))
+    [2.5 2.5]
 
     """
+
     coords = assertion.ensure_coords(coords, dim=3)
-    # TODO revise
-    assert coords.shape[0] >= 3
 
-    import cylinder_fitting
-    vec, origin, r, residuals = cylinder_fitting.fit(coords)
+    # set estimated direction
+    if vec is not None:
+        vec = assertion.ensure_numvector(vec, length=3)
+        phi, theta = vector.direction(vec)
+        guess_angles = [(phi, theta)]
+    else:
+        guess_angles = None
 
+    # fit cylinder
+    vec, origin, r, residuals = cylinder_fitting.fit(
+        coords,
+        guess_angles=guess_angles
+    )
     v = vector.Vector(origin, vec)
 
     return v, r, residuals
-
-
-    #print w_fit, C_fit, r_fit, fit_err
-    #return w_fit, C_fit, r_fit, fit_err
-
-    c = coords.mean(0)
-    xyz = coords - c
-
-    def fitfunc(p, x, y, z):
-        # fit function
-        return (
-                    - np.cos(p[3]) * (p[0] - x)
-                    - z * np.cos(p[2]) * np.sin(p[3])
-                    - np.sin(p[2]) * np.sin(p[3]) * (p[1] - y)
-                )**2 + (
-                    z * np.sin(p[2])
-                    - np.cos(p[2]) * (p[1] - y)
-                )**2
-    def errfunc(p, x, y, z):
-        return fitfunc(p, x, y, z) - p[4]**2  # error function
-
-    x, y, z = nptools.colzip(xyz)
-
-    m = np.pi * 0.5
-
-    # test three perpendicular directions
-   # ps = [(0, 0, 0, 0, 0), (0, 0, 0, 0, m), (0, 0, 0, m, 0)]
-    ps = [(0, 0, 0, 0, 1), (0, 0, 0, m, 1), (0, 0, m, 0, 1)]
-
-    for p in ps:
-        est_p, success = optimize.leastsq(
-            errfunc, p, args=(x, y, z))
-        print success
-        success = success in (1, 2, 3, 4)
-        if success:
-            print 'succ'
-            break
-    #print errfunc(las.coords)
-
-    r = est_p[4]
-
-
-    T0 = transformation.t_matrix(c)
-    R = transformation.r_matrix([est_p[2], est_p[3], 0])
-    print np.round(R, 2)
-    T1 = transformation.t_matrix([est_p[0], est_p[1], 0])
-
-    #T0 = transformation.tMatrix(-origin)
-    #M = R*T1
-    #M = R * T0 * T1
-    #M = T0 * T1 * R
-    M = T0 * R * T1
-
-    #M = T1 * R * T0
-
-    M = transformation.LocalSystem(M)
-    center = M.to_local([[0, 0, 0]])[0]
-    print transformation.decomposition(M)
-    print est_p
-    print center
-
-    return M, r, success
