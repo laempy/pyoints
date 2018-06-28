@@ -8,7 +8,7 @@ from . import (
     assertion,
     transformation,
     distance,
-    nptools
+    nptools,
 )
 
 
@@ -58,11 +58,12 @@ def find_rototranslation(A, B):
     if not A.shape == B.shape:
         raise ValueError("coordinate dimensions do not match")
 
+
     cA = A.mean(0)
     cB = B.mean(0)
-
     mA = np.matrix(transformation.homogenious(A - cA, value=0))
     mB = np.matrix(transformation.homogenious(B - cB, value=0))
+
 
     # Find rotation matrix
     H = mA.T * mB
@@ -164,7 +165,8 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
 
     References
     ----------
-    Basic idea: http://geomatica.como.polimi.it/corsi/def_monitoring/roto-translationsb.pdf
+    Basic idea taken from
+    http://geomatica.como.polimi.it/corsi/def_monitoring/roto-translationsb.pdf
     # Zhang_2016a
 
 
@@ -174,7 +176,10 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     Prepare coordinates.
 
     >>> coordsA = [(-1, -2, 3), (-1, 2, 4), (1, 2, 5), (1, -2, 6)]
-    >>> T = transformation.matrix(t=[10000, 20000, 3000], r=[0.01, 0.01, -0.002], order='trs')
+    >>> T = transformation.matrix(
+    ...     t=[10000, 20000, 3000],
+    ...     r=[0.01, 0.01, -0.002],
+    ... )
     >>> coordsB = transformation.transform(coordsA, T)
 
     >>> coords_dict = {'A': coordsA, 'B': coordsB}
@@ -211,15 +216,18 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     for key in coords_dict:
         coords_dict[key] = assertion.ensure_coords(
             coords_dict[key],
-            min_dim=2,
+            min_dim=3,  # TODO add 2D support
             max_dim=3
         )
         if dim is None:
             dim = coords_dict[key].shape[1]
-        assert coords_dict[key].shape[1] == dim, 'Dimensions do not match!'
+        elif not coords_dict[key].shape[1] == dim:
+            raise ValueError("dimensions do not match")
 
-    if not dim == 3:
-        raise ValueError("Sorry, just 3 dimensions are currently supported")
+    # derive centers for mean centering
+    centers = {}
+    for key in coords_dict:
+        centers[key] = coords_dict[key].mean(0)
 
     # pairs
     wPairs = {}
@@ -256,8 +264,7 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
             for key in coords_dict.keys():
                 oWeights[key] = weights
 
-    # helper function
-    # TODO n-dimensional
+    # helper function to get equations
     def get_equations(coords):
         N, dim = coords.shape
 
@@ -278,13 +285,7 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
 
         return np.vstack((Mx, My, Mz))
 
-
-    centers = {}
-    for key in coords_dict:
-        centers[key] = coords_dict[key].mean(0)
-
     # build linear equation system mA = mB * M
-
     mA = []
     mB = []
     for iA, keyA in enumerate(coords_dict):
@@ -317,19 +318,11 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
         if key in oWeights:
 
             a = np.eye(dim * 2, k * dim * 2, k=i * dim * 2)
-            b = np.zeros(2 * dim)
-
-            a = np.eye(dim * 2, k * dim * 2, k=i * dim * 2)
-
             b = np.hstack([centers[key], np.zeros(dim)])
-            #b = np.hstack([np.ones(dim), np.zeros(dim)])
-            #b = np.hstack([np.zeros(dim), np.zeros(dim)])
 
             w = oWeights[key]
             a = (a.T * w).T
             b = b * w
-            print(a)
-            print(b)
 
             mA.append(a)
             mB.append(b)
@@ -344,16 +337,12 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     for iA, keyA in enumerate(coords_dict):
         t = M[iA * dim * 2:iA * dim * 2 + dim]
         r = M[iA * dim * 2 + dim:(iA + 1) * dim * 2]
-        #print(t)
-        #T = transformation.t_matrix(t + centers[keyA])
-        #R = transformation.r_matrix(r)
-        #res[keyA] = T * R   # do not edit!!!
-        #res[keyA] = TC * R
 
-        T1 = transformation.t_matrix(-centers[keyA])
-        T2 = transformation.t_matrix(t)
+        T0 = transformation.t_matrix(-centers[keyA])  # mean centering
+        T1 = transformation.t_matrix(t)
+
         R = transformation.r_matrix(r)
-        res[keyA] = T2 * R * T1
+        res[keyA] = T1 * R * T0
 
     return res
 
