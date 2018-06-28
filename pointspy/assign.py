@@ -9,11 +9,71 @@ from . import (
 )
 
 
-class Pairs:
+class Matcher:
+    """Base class to simplify point matching. Points of a reference point set
+    `A` are assigned to points of a point set `B.
 
+    Parameters
+    ----------
+    A : array_like(Number, shape=(n, k))
+        Represents `n` points of `k` dimensions. These points are used as a
+        reference point set.
+    radii : array_like(Number, shape=(k))
+        Defines the sphere within points can be assigned.
+
+    """
     def __init__(self, coords, radii):
+        coords = assertion.ensure_coords(coords)
+        radii = assertion.ensure_numvector(radii, length=coords.shape[1])
 
-        # validate input
+        S = transformation.s_matrix(1.0 / radii)
+        self.rIndexKD = IndexKD(coords, S)
+
+    def __call__(coords):
+        """Find matching points.
+
+        Parameters
+        ----------
+        B : array_like(Number, shape=(n, k))
+            Represents `n` points of `k` dimensions. These points are assiged
+            to the previously defined reference coordinates.
+
+        Returns
+        -------
+        pairs : np.ndarray(int, shape=(m, 2))
+            Indices of assiged points. For two point sets `A`, `B` and each
+            row `(a, b)` in `pairs` `A[a, :]` is assiged to `B[b, :]`
+
+        """
+        raise NotImplementedError()
+
+
+class PairMatcher(Matcher):
+    """Find unique pairs of points. A point `a` of point set `A` is assigned
+    to its closest point `b` of point set `B` if `a` is also the nearest
+    neighbour to `b`. So, duplicate assignments are not possible.
+
+    See Also
+    --------
+    Matcher
+
+    Examples
+    --------
+
+    >>> A = np.array([(0, 0), (0, 0.1), (1, 1), (1, 0), (0.5, 0.5), (-1, -2)])
+    >>> B = np.array([(0.4, 0.4), (0.2, 0), (0.1, 1.2), (2, 1), (-1.1, -1.2)])
+
+    >>> matcher = PairMatcher(A, [0.3, 0.2])
+    >>> pairs = matcher(B)
+    >>> print(pairs)
+    [[4 0]
+     [0 1]]
+    >>> print(A[pairs[:, 0], :] - B[pairs[:, 1], :])
+    [[ 0.1  0.1]
+     [-0.2  0. ]]
+
+    """
+    def __init__(self, coords, radii):
         coords = assertion.ensure_coords(coords)
         radii = assertion.ensure_numvector(radii, length=coords.shape[1])
 
@@ -21,7 +81,6 @@ class Pairs:
         self.rIndexKD = IndexKD(coords, S)
 
     def __call__(self, coords):
-
         mIndexKD = IndexKD(coords, self.rIndexKD.t)
         rIndexKD = self.rIndexKD
 
@@ -40,120 +99,110 @@ class Pairs:
         return np.array(pairs, dtype=int)
 
 
+class SphereMatcher(Matcher):
+    """Find pairs of points. Each point is assigned is all the points
+    within a previously defined shpere. Duplicate assignments are possible.
 
-class BallAssign:
+    See Also
+    --------
+    Matcher
 
+    Examples
+    --------
 
-    def __init__(self, coords, radii):
+    >>> A = np.array([(0, 0), (0, 0.1), (1, 1), (1, 0), (0.5, 0.5), (-1, -2)])
+    >>> B = np.array([(0.4, 0.4), (0.2, 0), (0.1, 1.2), (2, 1), (-1.1, -1.2)])
 
-        # validate input
-        coords = assertion.ensure_coords(coords)
-        radii = assertion.ensure_numvector(radii, length=coords.shape[1])
+    >>> matcher = SphereMatcher(A, [0.3, 0.2])
+    >>> pairs = matcher(B)
+    >>> print(pairs)
+    [[4 0]
+     [0 1]
+     [1 1]]
+    >>> print(A[pairs[:, 0], :] - B[pairs[:, 1], :])
+    [[ 0.1  0.1]
+     [-0.2  0. ]
+     [-0.2  0.1]]
 
-        S = transformation.s_matrix(1.0 / radii)
-        self.rIndexKD = IndexKD(coords, S)
-
-
+    """
     def __call__(self, coords):
+        """Find pairs of points. Each point is assigned is all the points
+        within the previously defined shpere. Duplicate assignments are
+        possible.
+
+        See Also
+        --------
+        Matcher
+
+        """
         mIndexKD = IndexKD(coords, self.rIndexKD.t)
         rIndexKD = self.rIndexKD
-        
+
         pairs = []
         ball_gen = rIndexKD.ball_iter(mIndexKD.coords, 1)
         for mId, rIds in enumerate(ball_gen):
             for rId in rIds:
                 pairs.append((rId, mId))
-                
+
         return np.array(pairs, dtype=int)
 
 
+class KnnMatcher(Matcher):
+    """Find pairs of points. Each point is assigned to `k` closest points
+    within a predefined sphere. Duplicate assignents are possible.
 
-# TODO class Pairs ==> indexKD reuse
-def pairs(aCoords, bCoords, max_distance=np.inf):
-    """Find pairs of points using nearest neighbour method.
-
-    Parameters
-    ----------
-    aCoords : array_like(Number, shape=(n, k))
-        Represents `n` data points of `k` dimensions.
-    bCoords : array_like(Number, shape=(m, k))
-        Represents `m` data points of `k` dimensions.
-    max_distance : optional, positive float
-        Maximum distance to assign a point pair.
-
-    Returns
-    -------
-    pairs : np.ndarray(int, shape=(p, 2))
-        Indices of identified pairs. For each row `(a, b)` in `pairs`
-        `aCoords[a, :]` is assigned to `bCoords[b, :]`.
+    See Also
+    --------
+    Matcher
 
     Examples
     --------
 
-    >>> aCoords = [(0.2, 0), (1.2, 1), (2, 1), (3.2, 4), (-2, -4)]
-    >>> bCoords = [(0.1, 0), (2, 1), (1, 1.1), (3.5, 4), (2.5, -4)]
-    >>> print pairs(aCoords, bCoords, max_distance=0.5)
-    ds
+    >>> A = np.array([(0, 0), (0, 0.1), (1, 1), (1, 0), (0.5, 0.5), (-1, -2)])
+    >>> B = np.array([(0.4, 0.4), (0.2, 0), (0.1, 1.2), (2, 1), (-1.1, -1.2)])
+    >>> matcher = KnnMatcher(A, [0.3, 0.2])
+
+    One Neighbour.
+
+    >>> pairs = matcher(B)
+    >>> print(pairs)
+    [[4 0]
+     [0 1]]
+
+    Two Neighbours.
+
+    >>> pairs = matcher(B, k=2)
+    >>> print(pairs)
+    [[4 0]
+     [0 1]
+     [1 1]]
 
     """
+    def __call__(self, coords, k=1):
+        """Assign `k` closest points.
 
-    aIndexKD = IndexKD(aCoords)
-    aDists, aIds = aIndexKD.knn(
-        bCoords, k=1, distance_upper_bound=max_distance)
+        Parameters
+        ----------
+        k : optional, int
+            Number of neighbours to assign.
 
-    bIndexKD = IndexKD(bCoords)
-    bDists, bIds = bIndexKD.knn(
-        aCoords, k=1, distance_upper_bound=max_distance)
+        See Also
+        --------
+        Matcher
 
-    pairs = []
-    for aId in range(len(aIds)):
-        if aDists[aId] < max_distance:
-            if aId == bIds[aIds[aId]]:
-                pairs.append((aIds[aId], aId))
+        """
+        mIndexKD = IndexKD(coords, self.rIndexKD.t)
+        rIndexKD = self.rIndexKD
 
-    return np.array(pairs, dtype=int)
+        pairs = []
+        mCoords = mIndexKD.coords
+        ball_gen = rIndexKD.knn_iter(mCoords, k, distance_upper_bound=1)
+        for mId, (dists, rIds) in enumerate(ball_gen):
+            if k == 1:
+                dists = [dists]
+                rIds = [rIds]
+            for dist, rId in zip(dists, rIds):
+                if dist <= 1:
+                    pairs.append((rId, mId))
 
-
-def kNN(aCoords, bCoords, dim=None, k=2, distance_upper_bound=np.inf):
-
-    if dim is None:
-        dim = aCoords.shape[0] - 1
-
-    indexKD = IndexKD(aCoords[:, 0:dim])
-    dists, nIds = indexKD.kNN(
-        bCoords[:, 0:dim], k=k, distance_upper_bound=distance_upper_bound)
-
-    mask = np.all(dists < distance_upper_bound, axis=1)
-    nIds = nIds[mask, :]
-    dists = dists[mask, :]
-
-    keys = zip(*nIds)
-    w = dists / np.repeat(dists.sum(1), k).reshape((len(dists), k))
-
-    # TODO
-    #print w
-    #print w.max()
-    #print w.min()
-    #print w.sum(1)
-    #print aCoords
-    #print aCoords[keys, :]
-    mCoords = (aCoords[keys, :].T * w).T.sum(0)
-    # mCoords=aCoords[keys,:].mean(0)
-    #print mCoords
-    #print mCoords.shape
-
-    return
-    exit(0)
-    #for i in range(k):
-
-    pairs = []
-    for aId in range(len(aIds)):
-        if aDists[aId] < distance_upper_bound:
-            if aId == bIds[aIds[aId]]:
-                pairs.append((aIds[aId], aId))
-    pairs = np.array(pairs, dtype=int)
-
-    #print aDists[pairs[:,1]]
-    #print bDists[pairs[:,0]]
-
-    return pairs
+        return np.array(pairs, dtype=int)
