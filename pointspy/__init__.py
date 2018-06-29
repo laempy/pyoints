@@ -18,4 +18,5 @@ from . import (
     clustering,
     storage,
     fit,
+    registration,
 )
