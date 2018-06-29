@@ -4,24 +4,46 @@ import doctest
 import pointspy
 #from pointpy import *
 import numpy as np
+import pkgutil
+
+
+def get_tests(root_package):
+    suites = []
+    if hasattr(root_package, '__path__'):
+        modules = pkgutil.walk_packages(root_package.__path__, root_package.__name__ + '.')
+        for _, module_name, _ in modules:
+            try:
+                suite = doctest.DocTestSuite(module_name)
+            except ValueError:
+                # Presumably a "no docstrings" error. That's OK.
+                pass
+            else:
+                suites.append(suite)
+    else:
+        suites.append(doctest.DocTestSuite(root_package))
+    return suites
 
 
 def load_tests(loader, tests, ignore):
-    #tests.addTests(doctest.DocTestSuite(pointspy.filters))
-    #tests.addTests(doctest.DocTestSuite(pointspy.grid))
-    #tests.addTests(doctest.DocTestSuite(pointspy.registration))
-    #tests.addTests(doctest.DocTestSuite(pointspy.georecords))
-    # tests.addTests(doctest.DocTestSuite(pointspy.fit))
-    #tests.addTests(doctest.DocTestSuite(pointspy.vector))
-    #tests.addTests(doctest.DocTestSuite(pointspy.assign))
-    #tests.addTests(doctest.DocTestSuite(pointspy.surface))
-    #tests.addTests(doctest.DocTestSuite(pointspy.interpolate))
-    #tests.addTests(doctest.DocTestSuite(pointspy.transformation))
-    #tests.addTests(doctest.DocTestSuite(pointspy.assertion))
-    #tests.addTests(doctest.DocTestSuite(pointspy.polar))
-    tests.addTests(doctest.DocTestSuite(pointspy.projection))
-    #tests.addTests(doctest.DocTestSuite(pointspy.nptools))
-    #tests.addTests(doctest.DocTestSuite(pointspy.extent))
+
+    tests.addTests(get_tests(pointspy.registration))
+    #tests.addTests(get_tests(pointspy.clustering))
+    #tests.addTests(get_tests(pointspy.clustering))
+    #tests.addTests(get_tests(pointspy.classification))
+    #tests.addTests(get_tests(pointspy.filters))
+    #tests.addTests(get_tests(pointspy.grid))
+    #tests.addTests(get_tests(pointspy.georecords))
+    #tests.addTests(get_tests(pointspy.fit))
+    tests.addTests(get_tests(pointspy.vector))
+    #tests.addTests(get_tests(pointspy.assign))
+    #tests.addTests(get_tests(pointspy.surface))
+    #tests.addTests(get_tests(pointspy.interpolate))
+    tests.addTests(get_tests(pointspy.transformation))
+    #tests.addTests(get_tests(pointspy.assertion))
+    #tests.addTests(get_tests(pointspy.polar))
+    #tests.addTests(get_tests(pointspy.projection))
+    #tests.addTests(get_tests(pointspy.nptools))
+    #tests.addTests(get_tests(pointspy.extent))
 
     #filename = '/daten/Seafile/promotion/Projekte/PANtHEOn/Seafile/TestData/Faro_Focus_S70/Outdoor/LAS_preliminary/Scan_006.las'
     #from pointspy.projection import Proj
@@ -108,7 +130,7 @@ class test_IndexKD(unittest.TestCase):
             indexKD = pointspy.IndexKD(coords, transform=T)
 
             self.assertEqual(indexKD.dim, dim)
-            self.assertTrue(np.array_equal(indexKD.transform, T))
+            self.assertTrue(np.array_equal(indexKD.t, T))
 
     def test_knn(self):
 
