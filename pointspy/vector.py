@@ -622,9 +622,13 @@ class Vector(object):
         origin: [1 1 1]; vec: [1.  1.5 2. ]
 
         """
+        return self.__truediv__(s)
+
+    def __truediv__(self, s):
         if not assertion.isnumeric(s):
             raise ValueError("'s' needs to be a scalar")
-        return Vector(self.origin, self.vec/s)
+        return Vector(self.origin, self.vec / s)
+
 
     def k(self, gcoords):
         """Calculates the relative position of points in vector direction.

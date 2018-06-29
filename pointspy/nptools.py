@@ -26,7 +26,7 @@ def isarray(o):
     False
 
     """
-    return hasattr(o, '__getitem__') and hasattr(o, '__iter__')
+    return not isinstance(o, str) and hasattr(o, '__getitem__') and hasattr(o, '__iter__')
 
 
 def isnumeric(arr, dtypes=[np.int32, np.int64, np.float32, np.float64]):
@@ -155,9 +155,9 @@ def dtype_subset(dtype, names):
     Examples
     --------
 
-    >>> dtypes = [('coords', float, 3), ('values', int), ('text', str)]
+    >>> dtypes = [('coords', float, 3), ('values', int), ('text', '<U0')]
     >>> print(dtype_subset(dtypes, ['text', 'coords']))
-    [('text', '|S0'), ('coords', '<f8', (3,))]
+    [('text', '<U0'), ('coords', '<f8', (3,))]
 
     """
     if not hasattr(names, '__iter__'):
@@ -199,15 +199,13 @@ def recarray(dataDict, dtype=[], dim=1):
     ...    'n':  [1, 3, 1, 2],
     ...    'missing':  [None, None, 'str', None],
     ... })
-    >>> rec.dtype.descr
-    [('text', '|S5'), ('missing', '|O'), ('coords', '<i8', (2,)), ('n', '<i8')]
+    >>> rec.dtype.names
+    ('coords', 'text', 'n', 'missing')
     >>> print(rec.coords)
     [[3 4]
      [3 2]
      [0 2]
      [5 2]]
-    >>> print(rec[0])
-    ('text1', None, [3, 4], 1)
 
     Create a two dimensional array.
 
@@ -226,8 +224,8 @@ def recarray(dataDict, dtype=[], dim=1):
     [[ 1  3]
      [ 4  0]
      [-4  2]]
-    >>> print(rec.dtype)
-    (numpy.record, [('values', '<i8'), ('coords', '<f8', (2,))])
+    >>> print(rec.dtype.names)
+    ('coords', 'values')
 
     """
 
@@ -379,10 +377,10 @@ def fuse(*recarrays):
     >>> print(D.shape)
     (2, 2)
     >>> print(D)
-    [[(0, 4, 0.1, 'c1') (1, 5, 0.2, 'c2')]
-     [(2, 6, 0.3, 'c3') (3, 7, 0.3, 'c4')]]
+    [[(0, 4, 'c1', 0.1) (1, 5, 'c2', 0.2)]
+     [(2, 6, 'c3', 0.3) (3, 7, 'c4', 0.3)]]
     >>> print(D.dtype.descr)
-    [('a', '<i8'), ('b', '<i8'), ('c2', '<f8'), ('c1', '|S2')]
+    [('a', '<i8'), ('b', '<i8'), ('c1', '<U2'), ('c2', '<f8')]
     >>> print(D.c1)
     [['c1' 'c2']
      ['c3' 'c4']]
@@ -437,8 +435,8 @@ def merge(arrays, f=np.concatenate):
     >>> C = recarray({'a': [(2, 3), (4, 5), (6, 7)], 'b': ['k', 'l', 'm']})
 
     >>> D = merge((A, B, C))
-    >>> print(D.dtype.descr)
-    [('a', '<i8', (2,)), ('b', '|S1')]
+    >>> print(D.dtype.names)
+    ('a', 'b')
     >>> print(D.b)
     ['e' 'f' 'g' 'h' 'i' 'j' 'k' 'l' 'm']
     >>> print(D.shape)
@@ -469,8 +467,8 @@ def merge(arrays, f=np.concatenate):
     ... }, dim=2)
     >>> D = merge((A, B, C))
 
-    >>> print(D.dtype.descr)
-    [('a', '<i8'), ('b', '|S1')]
+    >>> print(D.dtype.names)
+    ('a', 'b')
     >>> print(D.b)
     [['e' 'f']
      ['g' 'h']
@@ -597,7 +595,7 @@ def unnest(rec):
     >>> dtype = [
     ...    ('regular', np.int, 1),
     ...    ('nested', [
-    ...         ('child1', '|S0'),
+    ...         ('child1', np.str),
     ...         ('child2', np.float, 2)
     ...    ])
     ... ]
