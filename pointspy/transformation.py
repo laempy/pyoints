@@ -317,39 +317,42 @@ def r_matrix(a):
 
     """
     if assertion.isnumeric(a):
-        R = np.matrix([
-            [np.cos(a), -np.sin(a), 0],
-            [np.sin(a), np.cos(a), 0],
-            [0, 0, 1]
-        ])
+        a = [a]
     else:
         a = assertion.ensure_numvector(a)
-        if len(a) == 2:
-            raise ValueError('rotation in 2D requires one angle only')
-        elif len(a) == 3:
-            Rx = np.matrix([
-                [1, 0, 0, 0],
-                [0, np.cos(a[0]), -np.sin(a[0]), 0],
-                [0, np.sin(a[0]), np.cos(a[0]), 0],
-                [0, 0, 0, 1],
-            ])
-            Ry = np.matrix([
-                [np.cos(a[1]), 0, np.sin(a[1]), 0],
-                [0, 1, 0, 0],
-                [-np.sin(a[1]), 0, np.cos(a[1]), 0],
-                [0, 0, 0, 1],
-            ])
-            Rz = np.matrix([
-                [np.cos(a[2]), -np.sin(a[2]), 0, 0],
-                [np.sin(a[2]), np.cos(a[2]), 0, 0],
-                [0, 0, 1, 0],
-                [0, 0, 0, 1],
-            ])
-            R = Rz * Ry * Rx
-        else:
-            raise ValueError(
-                '%i-dimensional rotations are not supported yet' %
-                len(a))
+
+    if len(a) == 1:
+        R = np.matrix([
+            [np.cos(a[0]), -np.sin(a[0]), 0],
+            [np.sin(a[0]), np.cos(a[0]), 0],
+            [0, 0, 1]
+        ])
+    elif len(a) == 2:
+        raise ValueError('rotation in 2D requires one angle only')
+    elif len(a) == 3:
+        Rx = np.matrix([
+            [1, 0, 0, 0],
+            [0, np.cos(a[0]), -np.sin(a[0]), 0],
+            [0, np.sin(a[0]), np.cos(a[0]), 0],
+            [0, 0, 0, 1],
+        ])
+        Ry = np.matrix([
+            [np.cos(a[1]), 0, np.sin(a[1]), 0],
+            [0, 1, 0, 0],
+            [-np.sin(a[1]), 0, np.cos(a[1]), 0],
+            [0, 0, 0, 1],
+        ])
+        Rz = np.matrix([
+            [np.cos(a[2]), -np.sin(a[2]), 0, 0],
+            [np.sin(a[2]), np.cos(a[2]), 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, 0, 1],
+        ])
+        R = Rz * Ry * Rx
+    else:
+        raise ValueError(
+            '%i-dimensional rotations are not supported yet' %
+            len(a))
 
     return LocalSystem(R)
 

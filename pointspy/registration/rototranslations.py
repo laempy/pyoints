@@ -3,11 +3,9 @@
 
 import numpy as np
 
-from .. indexkd import IndexKD
 from .. import (
     assertion,
     transformation,
-    distance,
     nptools,
 )
 
@@ -36,17 +34,34 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
 
     2D coordinates.
 
-    >>> coordsA = [(-1, -2), (-1, 2), (1, 2), (1, -2)]
+    >>> coordsA = [(-1, -2), (-1, 2), (1, 2), (1, -2), (5, 10)]
     >>> T = transformation.matrix(
-    ...     t=[10000, 20000],
-    ...     r=0.5,
+    ...     t=[100000, 4000],
+    ...     r=0.04,
     ... )
     >>> coordsB = transformation.transform(coordsA, T)
 
     >>> coords_dict = {'A': coordsA, 'B': coordsB}
     >>> pairs_dict = { 'A': { 'B': [(0, 0), (1, 1), (2, 2)] } }
-    >>> weights = {'A': [1, 1, 1, 1], 'B': [0, 0, 0, 0]}
+    >>> weights = {'A': [1, 1, 1], 'B': [0, 0, 0]}
 
+    >>> res = find_rototranslations(coords_dict, pairs_dict, weights=weights)
+    >>> print(list(res.keys()))
+    ['A', 'B']
+    >>> tA = res['A'].to_local(coords_dict['A'])
+    >>> print(np.round(tA, 2))
+    [[-1. -2.]
+     [-1.  2.]
+     [ 1.  2.]
+     [ 1. -2.]
+     [ 5. 10.]]
+    >>> tB = res['B'].to_local(coords_dict['B'])
+    >>> print(np.round(tB, 2))
+    [[-1. -2.]
+     [-1.  2.]
+     [ 1.  2.]
+     [ 1. -2.]
+     [ 5. 10.]]
 
     3D coordinates.
 
@@ -78,7 +93,6 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
      [ 1. -2.  6.]]
 
     """
-
     # prepare input
     ccoords, centers, pairs, w = _prepare_input(
         coords_dict,
@@ -101,27 +115,43 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     return res
 
 
+def _unknowns(dim):
+    if dim == 2:
+        return 3
+    elif dim == 3:
+        return 6
+    else:
+        raise ValueError("%i dimensions not supported" % dim)
+
+
 def _equations(coords):
     N, dim = coords.shape
+    cols = _unknowns(dim)
     if dim == 2:
-        raise ValueError("%i dimensions are not supported yet" % dim)
-        # TOOD: 2D equations
-        #Mx = np.zeros(())
 
+        Mx = np.zeros((N, cols))
+        Mx[:, 0] = 1  # t_x
+        Mx[:, 2] = -coords[:, 1]  # -r
+
+        My = np.zeros((N, cols))
+        My[:, 1] = 1  # t_y
+        My[:, 2] = coords[:, 0]  # r
+
+        return np.vstack((Mx, My))
 
     elif dim == 3:
 
-        Mx = np.zeros((N, 2 * dim))
+        Mx = np.zeros((N, cols))
         Mx[:, 0] = 1  # t_x
         Mx[:, 4] = coords[:, 2]  # z
         Mx[:, 5] = -coords[:, 1]  # -y
 
-        My = np.zeros((N, 2 * dim))
+        My = np.zeros((N, cols))
         My[:, 1] = 1  # t_y
         My[:, 3] = -coords[:, 2]  # -z
         My[:, 5] = coords[:, 0]  # x
 
-        Mz = np.zeros((N, 2 * dim))
+        Mz = np.zeros((N, cols))
         Mz[:, 2] = 1  # t_z
         Mz[:, 3] = coords[:, 1]  # y
         Mz[:, 4] = -coords[:, 0]  # -x
@@ -131,24 +161,10 @@ def _equations(coords):
         raise ValueError("%i dimensions are not supported yet" % dim)
 
 
-def _extract_transformations(M, centers):
-    dim = len(centers[list(centers.keys())[0]])
-    res = {}
-    for iA, keyA in enumerate(centers):
-        t = M[iA * dim * 2:iA * dim * 2 + dim]
-        r = M[iA * dim * 2 + dim:(iA + 1) * dim * 2]
-
-        T0 = transformation.t_matrix(-centers[keyA])  # mean centering
-        T1 = transformation.t_matrix(t)
-
-        R = transformation.r_matrix(r)
-        res[keyA] = T1 * R * T0
-    return res
-
-
 def _build_rototranslation_equations(ccoords, wpairs, weights):
     # build linear equation system mA = mB * M
     dim = ccoords[list(ccoords.keys())[0]].shape[1]
+    unknowns = _unknowns(dim)
     k = len(ccoords)
     mA = []
     mB = []
@@ -163,12 +179,12 @@ def _build_rototranslation_equations(ccoords, wpairs, weights):
                     B = ccoords[keyB][p.B, :]
 
                     # set equations
-                    a = np.zeros((A.shape[0] * dim, k * dim * 2))
                     equations_A = _equations(A)
-                    equations_B = -_equations(B)
-                    a[:, iA * dim * 2:(iA + 1) * dim * 2] = equations_A
-                    a[:, iB * dim * 2:(iB + 1) * dim * 2] = equations_B
+                    equations_B = _equations(B)
+                    a = np.zeros((A.shape[0] * dim, k * unknowns))
 
+                    a[:, iA * unknowns:(iA + 1) * unknowns] = equations_A
+                    a[:, iB * unknowns:(iB + 1) * unknowns] = -equations_B
                     b = B.T.flatten() - A.T.flatten()
 
                     # weighting
@@ -186,13 +202,15 @@ def _build_location_orientation_equations(centers, weights):
     # try to keep the original locations and orientations
     k = len(centers)
     dim = len(centers[list(centers.keys())[0]])
+    cols = _unknowns(dim)
     mA = []
     mB = []
     for i, key in enumerate(centers):
         if key in weights:
 
-            a = np.eye(dim * 2, k * dim * 2, k=i * dim * 2)
-            b = np.hstack([centers[key], np.zeros(dim)])
+            a = np.eye(cols, k * cols, k=i * cols)
+            b = np.zeros(cols)
+            b[:dim] = centers[key]
 
             w = weights[key]
             a = (a.T * w).T
@@ -202,6 +220,23 @@ def _build_location_orientation_equations(centers, weights):
             mB.append(b)
 
     return mA, mB
+
+
+def _extract_transformations(M, centers):
+    dim = len(centers[list(centers.keys())[0]])
+    unknowns = _unknowns(dim)
+    res = {}
+    for iA, keyA in enumerate(centers):
+        t = M[iA * unknowns:iA * unknowns + dim]
+        r = M[iA * unknowns + dim:(iA + 1) * unknowns]
+
+        T0 = transformation.t_matrix(-centers[keyA])  # mean centering
+        T1 = transformation.t_matrix(t)
+
+        R = transformation.r_matrix(r)
+        res[keyA] = T1 * R * T0
+
+    return res
 
 
 def _prepare_input(coords_dict, pairs_dict, weights):
@@ -233,6 +268,7 @@ def _prepare_input(coords_dict, pairs_dict, weights):
             coords = assertion.ensure_coords(coords_dict[key], dim=dim)
         centers_dict[key] = coords.mean(0)
         ccoords_dict[key] = coords - centers_dict[key]
+    unknowns = _unknowns(dim)
 
     # pairs
     wpairs_dict = {}
@@ -259,14 +295,14 @@ def _prepare_input(coords_dict, pairs_dict, weights):
             for key in weights:
                 weights_dict[key] = assertion.ensure_numvector(
                     weights[key],
-                    length=2 * dim
-                ).astype(float)
+                    length=unknowns
+                ).astype(float) * len(ccoords_dict[key])
         else:
             if nptools.isarray(weights):
                 weights = assertion.ensure_numvector(
                     weights,
-                    length=2 * dim
-                )
+                    length=unknowns
+                ) * len(ccoords_dict[key])
             else:
                 m = "type '%' of 'weights' not supported" % type(weights)
                 raise ValueError(m)
