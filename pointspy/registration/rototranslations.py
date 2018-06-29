@@ -1,4 +1,4 @@
-"""Find roto translations of point sets.
+"""Find roto-translation matrices of multiple point sets.
 """
 
 import numpy as np
@@ -75,7 +75,6 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     >>> coords_dict = {'A': coordsA, 'B': coordsB}
     >>> pairs_dict = { 'A': { 'B': [(0, 0), (1, 1), (2, 2)] } }
     >>> weights = {'A': [1, 1, 1, 1, 1, 1], 'B': [0, 0, 0, 0, 0, 0]}
-
     >>> res = find_rototranslations(coords_dict, pairs_dict, weights=weights)
     >>> print(list(res.keys()))
     ['A', 'B']
@@ -276,15 +275,16 @@ def _prepare_input(coords_dict, pairs_dict, weights):
     for keyA in pairs_dict:
         wpairs_dict[keyA] = {}
         for keyB in pairs_dict[keyA]:
-            p = np.array(pairs_dict[keyA][keyB])
-            # TODO
-            if p.shape[1] < 3:
-                w = np.ones(len(p))
-            n = p.shape[0]
+            pairs = np.array(pairs_dict[keyA][keyB])
+            if pairs.shape[1] < 3:
+                w = np.ones(len(pairs))
+            else:
+                w = pairs[:, 2]
+            n = pairs.shape[0]
             assigned = np.recarray(n, dtype=dtype_pairs)
 
-            assigned.A = p[:, 0]
-            assigned.B = p[:, 1]
+            assigned.A = pairs[:, 0]
+            assigned.B = pairs[:, 1]
             assigned.weights = w
             wpairs_dict[keyA][keyB] = assigned
 
@@ -303,10 +303,10 @@ def _prepare_input(coords_dict, pairs_dict, weights):
                     weights,
                     length=unknowns
                 ) * len(ccoords_dict[key])
+                for key in ccoords_dict.keys():
+                    weights_dict[key] = weights
             else:
                 m = "type '%' of 'weights' not supported" % type(weights)
                 raise ValueError(m)
-            for key in ccoords_dict.keys():
-                weights_dict[key] = weights
 
     return ccoords_dict, centers_dict, wpairs_dict, weights_dict

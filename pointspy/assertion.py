@@ -173,7 +173,7 @@ def ensure_numvector(v, length=None, min_length=1, max_length=np.inf):
     """
     v = ensure_numarray(v)
     if not len(v.shape) == 1:
-        raise ValueError("one dimensional vector required")
+        raise TypeError("one dimensional vector required")
     ensure_length(len(v), length, min_length, max_length)
     return v
 
