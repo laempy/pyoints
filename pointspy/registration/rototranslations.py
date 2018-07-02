@@ -93,15 +93,17 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
 
     """
     # prepare input
-    ccoords, centers, pairs, w = _prepare_input(
+    dim, ccoords, centers, pairs, w = _prepare_input(
         coords_dict,
         pairs_dict,
         weights
     )
 
     # get equations
-    rA, rB = _build_rototranslation_equations(ccoords, pairs, w)
+    rA, rB = _build_rototranslation_equations(centers, ccoords, pairs, w)
     oA, oB = _build_location_orientation_equations(centers, w)
+    if not len(rB) + len(oB) > 0:
+        raise ValueError("At least one equation is needed")
 
     # solve linear equation system
     mA = np.vstack(rA + oA)
@@ -109,9 +111,9 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     M = np.linalg.lstsq(mA, mB, rcond=None)[0]
 
     # Extract roto-transformation matrices
-    res = _extract_transformations(M, centers)
+    T = _extract_transformations(M, centers)
 
-    return res
+    return T
 
 
 def _unknowns(dim):
@@ -160,7 +162,7 @@ def _equations(coords):
         raise ValueError("%i dimensions are not supported yet" % dim)
 
 
-def _build_rototranslation_equations(ccoords, wpairs, weights):
+def _build_rototranslation_equations(centers, ccoords, wpairs, weights):
     # build linear equation system mA = mB * M
     dim = ccoords[list(ccoords.keys())[0]].shape[1]
     unknowns = _unknowns(dim)
@@ -225,15 +227,15 @@ def _extract_transformations(M, centers):
     dim = len(centers[list(centers.keys())[0]])
     unknowns = _unknowns(dim)
     res = {}
-    for iA, keyA in enumerate(centers):
-        t = M[iA * unknowns:iA * unknowns + dim]
-        r = M[iA * unknowns + dim:(iA + 1) * unknowns]
+    for i, key in enumerate(centers):
+        t = M[i * unknowns:i * unknowns + dim]
+        r = M[i * unknowns + dim:(i + 1) * unknowns]
 
-        T0 = transformation.t_matrix(-centers[keyA])  # mean centering
+        T0 = transformation.t_matrix(-centers[key])  # mean centering
         T1 = transformation.t_matrix(t)
 
         R = transformation.r_matrix(r)
-        res[keyA] = T1 * R * T0
+        res[key] = T1 * (R * T0)
 
     return res
 
@@ -271,42 +273,42 @@ def _prepare_input(coords_dict, pairs_dict, weights):
 
     # pairs
     wpairs_dict = {}
-    dtype_pairs = [('A', int), ('B', int), ('weights', float)]
     for keyA in pairs_dict:
         wpairs_dict[keyA] = {}
         for keyB in pairs_dict[keyA]:
-            pairs = np.array(pairs_dict[keyA][keyB])
-            if pairs.shape[1] < 3:
-                w = np.ones(len(pairs))
+            pairs = pairs_dict[keyA][keyB]
+            if isinstance(pairs, (tuple, list)) and len(pairs) == 2:
+                pairs, w = pairs
             else:
-                w = pairs[:, 2]
-            n = pairs.shape[0]
-            assigned = np.recarray(n, dtype=dtype_pairs)
+                pairs = assertion.ensure_coords(pairs, dim=2)
+                w = np.ones(len(pairs))
 
-            assigned.A = pairs[:, 0]
-            assigned.B = pairs[:, 1]
-            assigned.weights = w
-            wpairs_dict[keyA][keyB] = assigned
+            w = assertion.ensure_numvector(w, length=pairs.shape[0])
+
+            wpairs_dict[keyA][keyB] = nptools.recarray({
+                    'A': pairs[:, 0].astype(int),
+                    'B': pairs[:, 1].astype(int),
+                    'weights': w.astype(float)
+                })
 
     # try to keep the original location and orientation
     weights_dict = {}
+    if weights is None:
+        weights = np.ones(unknowns)
     if weights is not None:
         if isinstance(weights, dict):
             for key in weights:
                 weights_dict[key] = assertion.ensure_numvector(
                     weights[key],
                     length=unknowns
-                ).astype(float) * len(ccoords_dict[key])
+                ).astype(float)
         else:
             if nptools.isarray(weights):
-                weights = assertion.ensure_numvector(
-                    weights,
-                    length=unknowns
-                ) * len(ccoords_dict[key])
+                weights = assertion.ensure_numvector(weights, length=unknowns)
                 for key in ccoords_dict.keys():
                     weights_dict[key] = weights
             else:
                 m = "type '%' of 'weights' not supported" % type(weights)
                 raise ValueError(m)
 
-    return ccoords_dict, centers_dict, wpairs_dict, weights_dict
+    return dim, ccoords_dict, centers_dict, wpairs_dict, weights_dict
