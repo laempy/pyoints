@@ -103,7 +103,8 @@ def sdist(p, coords):
             raise ValueError('Dimensions do not match!')
     else:
         if not p.shape == coords.shape:
-            raise ValueError('Dimensions do not match!')
+            m = "Dimensions %s and %s do not match"
+            raise ValueError(m % (str(p.shape), str(coords.shape)))
 
     return snorm(coords - p)
 

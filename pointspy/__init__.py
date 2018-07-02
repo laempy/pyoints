@@ -19,4 +19,5 @@ from . import (
     storage,
     fit,
     registration,
+    nptools,
 )
