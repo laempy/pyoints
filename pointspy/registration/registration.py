@@ -113,8 +113,11 @@ def find_rototranslation(A, B):
     return transformation.LocalSystem(M)
 
 
-
-def icp(coords_dict, radii, T_dict={}, assign_class=assign.KnnMatcher, max_iter=10):
+def icp(coords_dict,
+        radii,
+        T_dict={},
+        assign_class=assign.KnnMatcher,
+        max_iter=10):
     """Implementation of the Iterative Closest Point algorithm with multiple
     point set support.
 
@@ -135,13 +138,46 @@ def icp(coords_dict, radii, T_dict={}, assign_class=assign.KnnMatcher, max_iter=
     Examples
     --------
 
-    >>> A = np.array([(0, 0), (0, 0.1), (1, 1), (1, 0), (0.5, 0.5), (-1, -2)])
-    >>> B = np.array([(0.4, 0.4), (0.2, 0), (0.1, 1.2), (2, 1), (-1.1, -1.2)])
+    >>> A = np.array([
+    ...     (0.5, 0.5), (0, 0), (0, -0.1), (1.3, 1), (1, 0), (-1, -2)
+    ... ])
+    >>> B = np.array([(0.4, 0.5), (0.3, 0), (1, 1), (2, 1), (-1, -2)])
 
     >>> coords_dict = {'A': A, 'B': B}
-    >>> res = icp(coords_dict, (0.6, 0.6), max_iter=10)
-    >>> print(res)
+    >>> radii = (0.25, 0.25)
+    >>> T = icp(coords_dict, radii, max_iter=10)
 
+    Transform coordinates.
+
+    >>> tA = T['A'].to_local(A)
+    >>> tB = T['B'].to_local(B)
+
+    >>> print(np.round(tA, 2))
+    [[ 0.43  0.51]
+     [-0.06  0.  ]
+     [-0.06 -0.1 ]
+     [ 1.22  1.03]
+     [ 0.94  0.02]
+     [-1.02 -2.02]]
+    >>> print(np.round(tB, 2))
+    [[ 0.47  0.5 ]
+     [ 0.35 -0.  ]
+     [ 1.08  0.98]
+     [ 2.08  0.95]
+     [-1.   -1.97]]
+
+    Find matches and compare RMSE
+
+    >>> matcher = assign.KnnMatcher(tA, radii)
+    >>> pairs = matcher(tB)
+
+    >>> rmse = distance.rmse(A[pairs[:, 0], :], B[pairs[:, 1], :])
+    >>> print(np.round(rmse, 3))
+    0.183
+
+    >>> rmse = distance.rmse(tA[pairs[:, 0], :], tB[pairs[:, 1], :])
+    >>> print(np.round(rmse, 3))
+    0.094
 
     """
 
@@ -154,13 +190,10 @@ def icp(coords_dict, radii, T_dict={}, assign_class=assign.KnnMatcher, max_iter=
     if not isinstance(T_dict, dict):
         raise TypeError("'T_dict' needs to be a dictionary")
 
-    if not isinstance(assign_class, type):
-        # TODO better check
-        #raise TypeError("'assign_class' must be a callable object")
-        pass
+    if not hasattr(assign_class, '__call__'):
+        raise TypeError("'assign_class' must be a callable object")
 
     radii = assertion.ensure_numvector(radii)
-    #S = transformation.s_matrix(1.0 / radii)
     dim = len(radii)
 
     for key in coords_dict:
@@ -178,115 +211,44 @@ def icp(coords_dict, radii, T_dict={}, assign_class=assign.KnnMatcher, max_iter=
         for keyA in coords_dict:
             pairs_dict[keyA] = {}
             coordsA = transformation.transform(
-                coords_dict[keyA],
-                T_dict[keyA]
-            )
+                coords_dict[keyA], T_dict[keyA])
             matcher = assign_class(coordsA, radii)
 
             for keyB in coords_dict:
                 if keyB != keyA:
 
                     coordsB = transformation.transform(
-                        coords_dict[keyB],
-                        T_dict[keyB]
-                    )
+                        coords_dict[keyB], T_dict[keyB])
 
                     pairs = matcher(coordsB)
                     if len(pairs) > 0:
                         dist = distance.dist(
-                            coordsA[pairs[:, 0], :],
-                            coordsB[pairs[:, 1], :]
-                        )
-                        print dist
-                        w = distance.idw(dist)
-                        print w
-                        pairs_dict[keyA][keyB] = [pairs[:, 0], pairs[:, 1], w]
+                            coordsA[pairs[:, 0], :], coordsB[pairs[:, 1], :])
+                        w = distance.idw(dist, p=2)
+                    else:
+                        w = []
+                    pairs_dict[keyA][keyB] = (pairs, w)
 
-                    # TODO: calc distances
-                    # TODO: outlier removal
-                        print len(pairs_dict[keyA][keyB])
-        #print num_iter
-        T_dict = rototranslations.find_rototranslations(coords_dict, pairs_dict)
-        print T_dict[keyA]
+        # find roto-translation matrices
+        T_dict = rototranslations.find_rototranslations(
+            coords_dict,
+            pairs_dict
+        )
 
-        #print find_rototranslations(coords_dict, pairs_dict)
-        #T = find_rototranslations(coords_dict, pairs_dict)
-        #print T
+        # termination
+        if num_iter == 0:
+            pairs_old = pairs_dict
+        else:
+            change = False
+            for keyA in pairs_dict:
+                for keyB in pairs_dict:
+                    if not keyB == keyA:
+                        p_old = pairs_old[keyA][keyB][0]
+                        p_new = pairs_dict[keyA][keyB][0]
+                        if not np.array_equal(p_new, p_old):
+                            change = True
+            if not change:
+                break
+            pairs_old = pairs_dict
 
-
-def icp_old(coords_dict, max_dist, k=1, p=2, max_iter=10):
-    """
-
-
-    """
-    # TODO reimplement
-
-
-
-    # iterative closest point
-
-    assert k > 0
-    assert isinstance(coords_dict, dict)
-
-    dim = None
-    M = {}  # Translation matrices
-    for key, coords in coords_dict.items():
-        if dim is None:
-            dim = coords.shape[1]
-        assert coords.shape[1] == dim, 'Dimensions do not match!'
-        M[key] = transformation.i_matrix(dim)
-
-    for numIter in range(max_iter):
-        pairs = {}
-        for keyA in coords_dict:
-            pairs[keyA] = {}
-            coordsA = transformation.transform(coords_dict[keyA], M[keyA])
-            indexKD = IndexKD(coordsA)
-
-            for keyB in coords_dict:
-                if keyB != keyA:
-
-                    coordsB = transformation.transform(
-                        coords_dict[keyB], M[keyB])
-                    dists, kNN = indexKD.knn(
-                        coordsB,
-                        k=k,
-                        distance_upper_bound=max_dist
-                    )
-
-                    if k == 1:
-                        kNN = np.array([kNN]).T
-                        dists = np.array([dists]).T
-
-                    # assign pairs
-                    aIdsList = []
-                    bIdsList = []
-                    wList = []
-                    for i in range(k):
-                        bIds = np.where(dists[:, i] < np.inf)[0]
-                        aIds = kNN[:, i][bIds]
-                        w = distance.idw(dists[bIds, i], p=p)
-                        aIdsList.extend(aIds)
-                        bIdsList.extend(bIds)
-                        wList.extend(w)
-
-                    pairs[keyA][keyB] = (aIdsList, bIdsList, wList)
-
-        # def printDists(M):
-        #    print
-        #    print 'Dists'
-        #    for keyA in coords_dict:
-        #        coordsA = transformation.transform(coords_dict[keyA],M[keyA])
-        #        for keyB in coords_dict:
-        #            if keyB != keyA:
-        #                coordsB = transformation.transform(coords_dict[keyB],M[keyB])
-        #                print keyA,keyB
-        #                assigned=pairs[keyA][keyB]
-        #                print distance.rmse(coordsA[assigned[0],:],coordsB[assigned[1],:])
-
-        #print '-----'
-        # printDists(M)
-        M = find_rototranslations(coords_dict, pairs)
-        # printDists(M)
-
-    return M
+    return T_dict
