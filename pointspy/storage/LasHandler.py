@@ -72,14 +72,14 @@ LASPY_TO_NUMPY_TYPE = {}
 for dim in range(1, 4):
     for key, t in LASPY_TYPE_MAP:
         if len(t) > 0:
-            type_id = key + len(LASPY_TYPE_MAP) * (dim-1)
+            type_id = key + len(LASPY_TYPE_MAP) * (dim - 1)
             LASPY_TO_NUMPY_TYPE[type_id] = (t[0], dim)
 
 NUMPY_TO_LASPY_TYPE = {}
 for dim in range(1, 4):
     NUMPY_TO_LASPY_TYPE[dim] = {}
     for t, p in LASPY_TYPE_MAP:
-        type_id = t + len(LASPY_TYPE_MAP) * (dim-1)
+        type_id = t + len(LASPY_TYPE_MAP) * (dim - 1)
         for key in p:
             NUMPY_TO_LASPY_TYPE[dim][key] = type_id
 
@@ -148,6 +148,7 @@ class LasReader(GeoFile):
     GeoFile
 
     """
+
     def __init__(self, infile, proj=None):
         GeoFile.__init__(self, infile)
 
@@ -187,8 +188,8 @@ class LasReader(GeoFile):
         scale = np.array(lasFile.header.scale, dtype=np.float64)
         offset = np.array(lasFile.header.offset, dtype=np.float64)
         las_fields = [
-                str(dim.name.encode().decode()) for dim in lasFile.point_format
-            ]  # ugly workaround to get actual strings
+            str(dim.name.encode().decode()) for dim in lasFile.point_format
+        ]  # ugly workaround to get actual strings
 
         points = lasFile.points.view(np.recarray).point
 
@@ -196,9 +197,9 @@ class LasReader(GeoFile):
         if extent is not None:
             ext = Extent(extent)
             iext = Extent(np.array([
-                        (ext.min_corner - offset) / scale,
-                        (ext.max_corner - offset) / scale
-                     ], dtype='i4'))
+                (ext.min_corner - offset) / scale,
+                (ext.max_corner - offset) / scale
+            ], dtype='i4'))
             sIds = iext.intersects([points.X, points.Y, points.Z])
             points = points[sIds]
 

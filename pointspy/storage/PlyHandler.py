@@ -12,7 +12,6 @@ from .. georecords import GeoRecords
 from .. import nptools
 
 
-
 def loadPly(infile, proj):
     plydata = plyfile.PlyData.read(infile)
     records = plydata['vertex'].data.view(np.recarray)

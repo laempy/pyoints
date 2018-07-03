@@ -18,6 +18,7 @@ from . import (
     clustering,
     storage,
     fit,
+    distance,
     registration,
     nptools,
 )

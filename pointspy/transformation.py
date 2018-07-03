@@ -60,9 +60,9 @@ def transform(coords, T, inverse=False, extra_precise=False):
         else:
             # fast, but not very precise
             return cv2.transform(
-                        np.expand_dims(coords.astype(np.float64), axis=0),
-                        T
-                    )[0][:, 0:-1]
+                np.expand_dims(coords.astype(np.float64), axis=0),
+                T
+            )[0][:, 0:-1]
     else:
         raise ValueError("dimensions do not match")
 
@@ -389,7 +389,7 @@ def add_dim(T):
 
     """
     T = assertion.ensure_tmatrix(T)
-    M = np.eye(len(T)+1)
+    M = np.eye(len(T) + 1)
     M[:-2, :-2] = T[:-1, :-1]
     M[:-2, -1] = T[:-1, -1].T
     return LocalSystem(M)
@@ -846,5 +846,5 @@ class PCA(LocalSystem):
         if not (k >= 1 and k <= self.dim):
             raise ValueError("%'th principal component not available")
 
-        pc = self[k-1, :self.dim]
+        pc = self[k - 1, :self.dim]
         return np.asarray(pc)[0]

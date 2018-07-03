@@ -186,6 +186,8 @@ def has_neighbour(indexKD, r):
             yield pId
 
 # TODO: difference to has_neighbour? (only reverse?)
+
+
 def is_isolated(indexKD, r):
     """Decide whether or not points have neighbouring points.
 
@@ -266,7 +268,7 @@ def ball(indexKD, r, order=None, inverse=False, axis=-1, min_pts=1):
 
     if order is None:
         order = np.argsort(coords[:, axis])[::-1]
-    order = assertion.ensure_indices(order, max_value=len(indexKD)-1)
+    order = assertion.ensure_indices(order, max_value=len(indexKD) - 1)
     if inverse:
         order = order[::-1]
 
@@ -315,9 +317,9 @@ def in_convex_hull(hull_coords, coords):
     coords = assertion.ensure_coords(coords)
 
     interpolator = interpolate.LinearInterpolator(
-            hull_coords,
-            np.zeros(hull_coords.shape[0])
-        )
+        hull_coords,
+        np.zeros(hull_coords.shape[0])
+    )
     return ~np.isnan(interpolator(coords))
 
 
