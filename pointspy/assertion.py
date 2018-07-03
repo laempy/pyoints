@@ -79,7 +79,6 @@ def ensure_length(check_length, length=None, min_length=0, max_length=np.inf):
     return check_length
 
 
-
 def isnumeric(value, min_th=-np.inf, max_th=np.inf):
     """Checks if a value is numeric.
 

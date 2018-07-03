@@ -285,10 +285,10 @@ def _prepare_input(coords_dict, pairs_dict, weights):
             if len(pairs) > 0:
                 w = assertion.ensure_numvector(w, length=pairs.shape[0])
                 wpairs_dict[keyA][keyB] = nptools.recarray({
-                        'A': pairs[:, 0].astype(int),
-                        'B': pairs[:, 1].astype(int),
-                        'weights': w.astype(float)
-                    })
+                    'A': pairs[:, 0].astype(int),
+                    'B': pairs[:, 1].astype(int),
+                    'weights': w.astype(float)
+                })
 
     # try to keep the original location and orientation
     weights_dict = {}

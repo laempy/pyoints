@@ -22,6 +22,7 @@ class Matcher:
         Defines the sphere within points can be assigned.
 
     """
+
     def __init__(self, coords, radii):
         coords = assertion.ensure_coords(coords)
         radii = assertion.ensure_numvector(radii, length=coords.shape[1])
@@ -73,6 +74,7 @@ class PairMatcher(Matcher):
      [-0.2  0. ]]
 
     """
+
     def __init__(self, coords, radii):
         coords = assertion.ensure_coords(coords)
         radii = assertion.ensure_numvector(radii, length=coords.shape[1])
@@ -125,6 +127,7 @@ class SphereMatcher(Matcher):
      [-0.2  0.1]]
 
     """
+
     def __call__(self, coords):
         """Find pairs of points. Each point is assigned is all the points
         within the previously defined shpere. Duplicate assignments are
@@ -178,6 +181,7 @@ class KnnMatcher(Matcher):
      [1 1]]
 
     """
+
     def __call__(self, coords, k=1):
         """Assign `k` closest points.
 

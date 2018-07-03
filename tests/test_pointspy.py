@@ -10,7 +10,9 @@ import pkgutil
 def get_tests(root_package):
     suites = []
     if hasattr(root_package, '__path__'):
-        modules = pkgutil.walk_packages(root_package.__path__, root_package.__name__ + '.')
+        modules = pkgutil.walk_packages(
+            root_package.__path__,
+            root_package.__name__ + '.')
         for _, module_name, _ in modules:
             try:
                 suite = doctest.DocTestSuite(module_name)
@@ -27,23 +29,23 @@ def get_tests(root_package):
 def load_tests(loader, tests, ignore):
 
     tests.addTests(get_tests(pointspy.registration))
-    #tests.addTests(get_tests(pointspy.clustering))
-    #tests.addTests(get_tests(pointspy.clustering))
-    #tests.addTests(get_tests(pointspy.classification))
-    #tests.addTests(get_tests(pointspy.filters))
-    #tests.addTests(get_tests(pointspy.grid))
-    #tests.addTests(get_tests(pointspy.georecords))
-    #tests.addTests(get_tests(pointspy.fit))
+    # tests.addTests(get_tests(pointspy.clustering))
+    # tests.addTests(get_tests(pointspy.clustering))
+    # tests.addTests(get_tests(pointspy.classification))
+    # tests.addTests(get_tests(pointspy.filters))
+    # tests.addTests(get_tests(pointspy.grid))
+    # tests.addTests(get_tests(pointspy.georecords))
+    # tests.addTests(get_tests(pointspy.fit))
     tests.addTests(get_tests(pointspy.vector))
-    #tests.addTests(get_tests(pointspy.assign))
-    #tests.addTests(get_tests(pointspy.surface))
-    #tests.addTests(get_tests(pointspy.interpolate))
+    # tests.addTests(get_tests(pointspy.assign))
+    # tests.addTests(get_tests(pointspy.surface))
+    # tests.addTests(get_tests(pointspy.interpolate))
     tests.addTests(get_tests(pointspy.transformation))
-    #tests.addTests(get_tests(pointspy.assertion))
-    #tests.addTests(get_tests(pointspy.polar))
-    #tests.addTests(get_tests(pointspy.projection))
-    #tests.addTests(get_tests(pointspy.nptools))
-    #tests.addTests(get_tests(pointspy.extent))
+    # tests.addTests(get_tests(pointspy.assertion))
+    # tests.addTests(get_tests(pointspy.polar))
+    # tests.addTests(get_tests(pointspy.projection))
+    # tests.addTests(get_tests(pointspy.nptools))
+    # tests.addTests(get_tests(pointspy.extent))
 
     #filename = '/daten/Seafile/promotion/Projekte/PANtHEOn/Seafile/TestData/Faro_Focus_S70/Outdoor/LAS_preliminary/Scan_006.las'
     #from pointspy.projection import Proj
@@ -204,11 +206,11 @@ if __name__ == '__main__':
 
     print('unittest main')
 
-    #doctest.testmod()
+    # doctest.testmod()
 
     unittest.main()
 
-#doctest.testmod()
+# doctest.testmod()
 #suite = unittest.TestSuite()
-#suite.addTest(doctest.DocTestSuite(pointspy.extent))
-#unittest.TextTestRunner(verbosity=1).run(suite)
+# suite.addTest(doctest.DocTestSuite(pointspy.extent))
+# unittest.TextTestRunner(verbosity=1).run(suite)

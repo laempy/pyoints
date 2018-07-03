@@ -774,6 +774,7 @@ class PCA(LocalSystem):
      [ 0.707  0.   ]]
 
     """
+
     def __init__(self, coords):
         pass
 
