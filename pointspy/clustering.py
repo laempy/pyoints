@@ -66,9 +66,9 @@ def clustering(indexKD,
         out_clusters = -np.ones(len(indexKD), dtype=int)
     else:
         out_clusters = assertion.ensure_numvector(
-                clusters,
-                min_length=len(indexKD),
-                max_length=len(indexKD)
+            clusters,
+            min_length=len(indexKD),
+            max_length=len(indexKD)
         )
     if not isinstance(auto_set, bool):
         raise TypeError("'auto_set' needs to be of type boolean")
@@ -169,10 +169,10 @@ def weight_clusters(indexKD, r, weights=None, **kwargs):
         weights = np.ones(len(indexKD), dtype=float)
     else:
         weights = assertion.ensure_numvector(
-                weights,
-                min_length=len(indexKD),
-                max_length=len(indexKD)
-            )
+            weights,
+            min_length=len(indexKD),
+            max_length=len(indexKD)
+        )
 
     def get_class(cIds):
         cWeight = defaultdict(lambda: 0)

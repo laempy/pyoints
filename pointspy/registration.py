@@ -165,6 +165,7 @@ class RigidRegistration:
 
 
     """
+
     def __init__(self, dim):
         self.dim = dim
 
@@ -355,9 +356,6 @@ class RigidRegistration:
                     weights_dict[key] = weights
 
         return ccoords_dict, centers_dict, wpairs_dict, weights_dict
-
-
-
 
 
 def find_rototranslations(coords_dict, pairs_dict, weights=None):

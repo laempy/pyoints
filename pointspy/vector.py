@@ -446,6 +446,7 @@ class Vector(object):
     origin: [-1 -2]; vec: [6 6]
 
     """
+
     def __init__(self, origin, vec):
         self.origin = origin
         self.vec = vec
@@ -545,27 +546,27 @@ class Vector(object):
             # double check target
             t = self._t.to_local(self.target)
             assert np.all(np.isclose(t, e)), (
-                    "target '%s' and '%s' differ" % (
-                            np.round(t, 2), np.round(e, 2)
-                    )
+                "target '%s' and '%s' differ" % (
+                    np.round(t, 2), np.round(e, 2)
                 )
+            )
 
             # double check origin
             e = np.zeros(self.dim)
             t = self._t.to_local(self.origin)
             assert np.all(np.isclose(t, e)), (
-                    "origin '%s' and '%s' differ" % (
-                            np.round(t, 2), np.round(e, 2)
-                    )
+                "origin '%s' and '%s' differ" % (
+                    np.round(t, 2), np.round(e, 2)
                 )
+            )
 
             # double check PC1
             t = self._t.pc(1) * self.length
             assert np.all(np.isclose(t, self.vec)), (
-                    "PC1 '%s' and vector '%s' differ unexpectedly" % (
-                            np.round(t, 2), np.round(self.vec, 2)
-                    )
+                "PC1 '%s' and vector '%s' differ unexpectedly" % (
+                    np.round(t, 2), np.round(self.vec, 2)
                 )
+            )
 
         return self._t
 
@@ -599,7 +600,7 @@ class Vector(object):
         """
         if not assertion.isnumeric(s):
             raise ValueError("'s' needs to be a scalar")
-        return Vector(self.origin, self.vec*s)
+        return Vector(self.origin, self.vec * s)
 
     def __div__(self, s):
         """Scale a vector by division.
@@ -624,7 +625,7 @@ class Vector(object):
         """
         if not assertion.isnumeric(s):
             raise ValueError("'s' needs to be a scalar")
-        return Vector(self.origin, self.vec/s)
+        return Vector(self.origin, self.vec / s)
 
     def k(self, gcoords):
         """Calculates the relative position of points in vector direction.

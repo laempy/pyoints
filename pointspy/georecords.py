@@ -125,7 +125,7 @@ class GeoRecords(np.recarray, object):
         self._t = getattr(obj, '_t', None)
         self._proj = getattr(obj, '_proj', None)
 
-    #def __array_wrap__(self, out_arr, context=None):
+    # def __array_wrap__(self, out_arr, context=None):
     #     return np.ndarray.__array_wrap__(self, out_arr, context)
 
     def _clear_cache(self):
@@ -397,7 +397,6 @@ class GeoRecords(np.recarray, object):
             self._indices[dim] = indexKD
         return indexKD
 
-
     def ids(self):
         """Keys or indices of the data structure.
 
@@ -558,4 +557,3 @@ class GeoRecords(np.recarray, object):
         """
         data = nptools.apply_function(self, func, dtypes=dtypes)
         return self.__class__(self.proj, data, T=self.t)
-

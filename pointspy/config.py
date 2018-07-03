@@ -39,7 +39,7 @@ class Config(ConfigObj):
         #        'Option1': list, # Array of Integers
         #        'Option2': converter # Array of Floats
         #    }
-        #}
+        # }
         def recursiveParse(dictA, dictB):
             for key, value in dictB.iteritems():
                 if isinstance(value, dict):

@@ -30,6 +30,7 @@ class Surface:
     [2.]
 
     """
+
     def __init__(self, coords, method=interpolate.KnnInterpolator, **kwargs):
         coords = assertion.ensure_coords(coords)
         self._interpolator = method(coords[:, :-1], coords[:, -1], **kwargs)
