@@ -280,16 +280,15 @@ def _prepare_input(coords_dict, pairs_dict, weights):
             if isinstance(pairs, (tuple, list)) and len(pairs) == 2:
                 pairs, w = pairs
             else:
-                pairs = assertion.ensure_coords(pairs, dim=2)
                 w = np.ones(len(pairs))
-
-            w = assertion.ensure_numvector(w, length=pairs.shape[0])
-
-            wpairs_dict[keyA][keyB] = nptools.recarray({
-                    'A': pairs[:, 0].astype(int),
-                    'B': pairs[:, 1].astype(int),
-                    'weights': w.astype(float)
-                })
+            pairs = np.array(pairs, dtype=int)
+            if len(pairs) > 0:
+                w = assertion.ensure_numvector(w, length=pairs.shape[0])
+                wpairs_dict[keyA][keyB] = nptools.recarray({
+                        'A': pairs[:, 0].astype(int),
+                        'B': pairs[:, 1].astype(int),
+                        'weights': w.astype(float)
+                    })
 
     # try to keep the original location and orientation
     weights_dict = {}

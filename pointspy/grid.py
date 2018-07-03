@@ -141,8 +141,8 @@ class Grid(GeoRecords):
         grid = GeoRecords(proj, data, T=T).reshape(npRecarray.shape).view(cls)
         return grid
 
-    # overwrite
     def transform(self, T):
+        # overwrites super
         T = assertion.ensure_tmatrix(T, min_dim=self.dim, max_dim=self.dim)
         self.t = T * self.t
         keys = self.keys(self.shape)
@@ -170,7 +170,11 @@ class Grid(GeoRecords):
         T = assertion.ensure_tmatrix(T)
         dim = T.dim
         # TODO vereinfachen (wie mit strukturierten koordinaten umgehen?
-        s = np.product(coords[:, :dim].shape) / dim
+        s = np.product(coords[:, :dim].shape) // dim
+
+        print(s)
+        print(T.dim)
+
         flat_coords = coords[:, :dim].view().reshape((s, dim))
         values = T.to_global(flat_coords)
 
@@ -201,14 +205,11 @@ class Grid(GeoRecords):
 
         """
         keys = assertion.ensure_numarray(keys)
-        T = transformation.LocalSystem(T)
-        if not keys.shape[-1] == T.shape[1] - 1:
-            raise ValueError('dimensions do not match')
+        T = assertion.ensure_tmatrix(T, dim=keys.shape[-1])
 
-        s = np.product(keys.shape) / T.dim
+        s = np.product(keys.shape) // T.dim
         flatKeys = keys.view().reshape((s, T.dim))[:, ::-1] + 0.5
-        values = T.to_local(flatKeys)
-        coords = np.array(values, dtype=float)
+        coords = T.to_local(flatKeys).astype(float)
         return coords.reshape(keys.shape)
 
     @staticmethod

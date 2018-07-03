@@ -3,16 +3,13 @@
 
 import numpy as np
 
-from .. indexkd import IndexKD
 from .. import (
     assertion,
     transformation,
     distance,
-    nptools,
     assign,
 )
 from . import rototranslations
-#from .rototranslations import find_rototranslations
 
 
 def find_transformation(A, B):
@@ -115,14 +112,17 @@ def find_rototranslation(A, B):
 
 def icp(coords_dict,
         radii,
+        pairs_dict={},
         T_dict={},
         assign_class=assign.KnnMatcher,
-        max_iter=10):
+        max_iter=10,
+        **assign_parameters):
     """Implementation of the Iterative Closest Point algorithm with multiple
     point set support.
 
     Paramerters
     -----------
+    TODO: parameters
     coords_dict : dict
         Dictionary of point sets with `k` dimensions.
     radii :
@@ -145,7 +145,7 @@ def icp(coords_dict,
 
     >>> coords_dict = {'A': A, 'B': B}
     >>> radii = (0.25, 0.25)
-    >>> T = icp(coords_dict, radii, max_iter=10)
+    >>> T = icp(coords_dict, radii, max_iter=10, k=1)
 
     Transform coordinates.
 
@@ -180,30 +180,35 @@ def icp(coords_dict,
     0.094
 
     """
-
     # prepare input
-
     if not isinstance(coords_dict, dict):
         raise TypeError("'coords_dict' needs to be a dictionary")
     if len(coords_dict) < 2:
         raise ValueError("at least two point sets are required")
     if not isinstance(T_dict, dict):
         raise TypeError("'T_dict' needs to be a dictionary")
-
+    if not isinstance(pairs_dict, dict):
+        raise TypeError("'pairs_dict' needs to be a dictionary")
     if not hasattr(assign_class, '__call__'):
         raise TypeError("'assign_class' must be a callable object")
 
     radii = assertion.ensure_numvector(radii)
     dim = len(radii)
 
+    # double check coordinate format
     for key in coords_dict:
         coords_dict[key] = assertion.ensure_coords(coords_dict[key], dim=dim)
 
-    for key in coords_dict:
-        if key not in T_dict.keys():
-            T_dict[key] = transformation.i_matrix(dim)
-        else:
-            T_dict[key] = assertion.ensure_tmatrix(T_dict[key])
+    # Define initial transformation matrices
+    if len(pairs_dict) > 0:
+        T_dict = rototranslations.find_rototranslations(
+            coords_dict, pairs_dict)
+    else:
+        for key in coords_dict:
+            if key not in T_dict.keys():
+                T_dict[key] = transformation.i_matrix(dim)
+            else:
+                T_dict[key] = assertion.ensure_tmatrix(T_dict[key])
 
     # ICP algorithm
     for num_iter in range(max_iter):
@@ -220,7 +225,7 @@ def icp(coords_dict,
                     coordsB = transformation.transform(
                         coords_dict[keyB], T_dict[keyB])
 
-                    pairs = matcher(coordsB)
+                    pairs = matcher(coordsB, **assign_parameters)
                     if len(pairs) > 0:
                         dist = distance.dist(
                             coordsA[pairs[:, 0], :], coordsB[pairs[:, 1], :])
@@ -231,9 +236,7 @@ def icp(coords_dict,
 
         # find roto-translation matrices
         T_dict = rototranslations.find_rototranslations(
-            coords_dict,
-            pairs_dict
-        )
+            coords_dict, pairs_dict)
 
         # termination
         if num_iter == 0:

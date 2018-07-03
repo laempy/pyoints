@@ -1,4 +1,4 @@
-"""Handle spatial extends.
+"""Handle spatial extents.
 """
 
 import numpy as np

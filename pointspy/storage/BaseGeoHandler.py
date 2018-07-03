@@ -1,3 +1,6 @@
+"""Basic handling of spatial files.
+"""
+
 import os
 from .. import (
     assertion,

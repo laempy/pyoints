@@ -397,7 +397,6 @@ class GeoRecords(np.recarray, object):
             self._indices[dim] = indexKD
         return indexKD
 
-
     def ids(self):
         """Keys or indices of the data structure.
 

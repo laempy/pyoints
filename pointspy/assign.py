@@ -191,6 +191,8 @@ class KnnMatcher(Matcher):
         Matcher
 
         """
+        if not (isinstance(k, int) and k > 0):
+            raise ValueError("'k' needs to be an integer greater zero")
         mIndexKD = IndexKD(coords, self.rIndexKD.t)
         rIndexKD = self.rIndexKD
 

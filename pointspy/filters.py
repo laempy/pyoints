@@ -277,7 +277,7 @@ def ball(indexKD, r, order=None, inverse=False, axis=-1, min_pts=1):
         raise ValueError("radius greater zero required")
 
     # filtering
-    not_classified = np.ones(len(order), dtype=np.bool)
+    not_classified = np.ones(len(indexKD), dtype=np.bool)
     for pId in order:
         if not_classified[pId]:
             nIds = indexKD.ball(coords[pId], r[pId])
