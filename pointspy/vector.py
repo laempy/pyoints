@@ -2,7 +2,6 @@
 """
 
 import math
-import warnings
 import numpy as np
 
 from . import (
@@ -623,6 +622,9 @@ class Vector(object):
         origin: [1 1 1]; vec: [1.  1.5 2. ]
 
         """
+        return self.__truediv__(s)
+
+    def __truediv__(self, s):
         if not assertion.isnumeric(s):
             raise ValueError("'s' needs to be a scalar")
         return Vector(self.origin, self.vec / s)

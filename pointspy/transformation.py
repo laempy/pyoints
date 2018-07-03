@@ -189,7 +189,7 @@ def i_matrix(dim):
     Examples
     --------
 
-    >>> print i_matrix(3)
+    >>> print(i_matrix(3))
     [[1. 0. 0. 0.]
      [0. 1. 0. 0.]
      [0. 0. 1. 0.]
@@ -223,7 +223,7 @@ def t_matrix(t):
     Examples
     --------
 
-    >>> print t_matrix([1, 2, 3])
+    >>> print(t_matrix([1, 2, 3]))
     [[1. 0. 0. 1.]
      [0. 1. 0. 2.]
      [0. 0. 1. 3.]
@@ -257,7 +257,7 @@ def s_matrix(s):
     Examples
     --------
 
-    >>> print s_matrix([0.5, 1, -3])
+    >>> print(s_matrix([0.5, 1, -3]))
     [[ 0.5  0.   0.   0. ]
      [ 0.   1.   0.   0. ]
      [ 0.   0.  -3.   0. ]
@@ -301,7 +301,7 @@ def r_matrix(a):
     Two dimensional case.
 
     >>> R = r_matrix(np.pi/4)
-    >>> print np.round(R, 3)
+    >>> print(np.round(R, 3))
     [[ 0.707 -0.707  0.   ]
      [ 0.707  0.707  0.   ]
      [ 0.     0.     1.   ]]
@@ -309,7 +309,7 @@ def r_matrix(a):
     Three dimensional case.
 
     >>> R = r_matrix([np.pi/2, 0, np.pi/4])
-    >>> print np.round(R, 3)
+    >>> print(np.round(R, 3))
     [[ 0.707 -0.     0.707  0.   ]
      [ 0.707  0.    -0.707  0.   ]
      [ 0.     1.     0.     0.   ]
@@ -317,39 +317,42 @@ def r_matrix(a):
 
     """
     if assertion.isnumeric(a):
-        R = np.matrix([
-            [np.cos(a), -np.sin(a), 0],
-            [np.sin(a), np.cos(a), 0],
-            [0, 0, 1]
-        ])
+        a = [a]
     else:
         a = assertion.ensure_numvector(a)
-        if len(a) == 2:
-            raise ValueError('rotation in 2D requires one angle only')
-        elif len(a) == 3:
-            Rx = np.matrix([
-                [1, 0, 0, 0],
-                [0, np.cos(a[0]), -np.sin(a[0]), 0],
-                [0, np.sin(a[0]), np.cos(a[0]), 0],
-                [0, 0, 0, 1],
-            ])
-            Ry = np.matrix([
-                [np.cos(a[1]), 0, np.sin(a[1]), 0],
-                [0, 1, 0, 0],
-                [-np.sin(a[1]), 0, np.cos(a[1]), 0],
-                [0, 0, 0, 1],
-            ])
-            Rz = np.matrix([
-                [np.cos(a[2]), -np.sin(a[2]), 0, 0],
-                [np.sin(a[2]), np.cos(a[2]), 0, 0],
-                [0, 0, 1, 0],
-                [0, 0, 0, 1],
-            ])
-            R = Rz * Ry * Rx
-        else:
-            raise ValueError(
-                '%i-dimensional rotations are not supported yet' %
-                len(a))
+
+    if len(a) == 1:
+        R = np.matrix([
+            [np.cos(a[0]), -np.sin(a[0]), 0],
+            [np.sin(a[0]), np.cos(a[0]), 0],
+            [0, 0, 1]
+        ])
+    elif len(a) == 2:
+        raise ValueError('rotation in 2D requires one angle only')
+    elif len(a) == 3:
+        Rx = np.matrix([
+            [1, 0, 0, 0],
+            [0, np.cos(a[0]), -np.sin(a[0]), 0],
+            [0, np.sin(a[0]), np.cos(a[0]), 0],
+            [0, 0, 0, 1],
+        ])
+        Ry = np.matrix([
+            [np.cos(a[1]), 0, np.sin(a[1]), 0],
+            [0, 1, 0, 0],
+            [-np.sin(a[1]), 0, np.cos(a[1]), 0],
+            [0, 0, 0, 1],
+        ])
+        Rz = np.matrix([
+            [np.cos(a[2]), -np.sin(a[2]), 0, 0],
+            [np.sin(a[2]), np.cos(a[2]), 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, 0, 1],
+        ])
+        R = Rz * Ry * Rx
+    else:
+        raise ValueError(
+            '%i-dimensional rotations are not supported yet' %
+            len(a))
 
     return LocalSystem(R)
 
@@ -373,12 +376,12 @@ def add_dim(T):
     Two dimensional case.
 
     >>> T = matrix(t=[2, 3 ], s=[0.5, 2])
-    >>> print np.round(T, 3)
+    >>> print(np.round(T, 3))
     [[0.5 0.  2. ]
      [0.  2.  3. ]
      [0.  0.  1. ]]
     >>> T = add_dim(T)
-    >>> print np.round(T, 3)
+    >>> print(np.round(T, 3))
     [[0.5 0.  0.  2. ]
      [0.  2.  0.  3. ]
      [0.  0.  1.  0. ]
@@ -413,13 +416,13 @@ def decomposition(T, ignore_warnings=False):
 
     >>> T = matrix(t=[2, 3], r=0.2, s=[0.5, 2])
     >>> t, r, s, det = decomposition(T)
-    >>> print t
+    >>> print(t)
     [2. 3.]
-    >>> print r
+    >>> print(r)
     0.2
-    >>> print s
+    >>> print(s)
     [0.5 2. ]
-    >>> print det
+    >>> print(det)
     1.0
 
     See Also
@@ -632,7 +635,7 @@ class LocalSystem(np.matrix, object):
 
         >>> T = matrix(t=[2, 3], s=[0.5, 10])
         >>> lcoords = T.to_local([(0, 0), (0, 1), (1, 0), (-1, -1)])
-        >>> print lcoords
+        >>> print(lcoords)
         [[ 2.   3. ]
          [ 2.  13. ]
          [ 2.5  3. ]
@@ -660,7 +663,7 @@ class LocalSystem(np.matrix, object):
 
         >>> T = matrix(t=[2, 3], s=[0.5, 10])
         >>> lcoords = T.to_global([(2, 3), (2, 13), (2.5, 3), (1.5, -7)])
-        >>> print lcoords
+        >>> print(lcoords)
         [[ 0.  0.]
          [ 0.  1.]
          [ 1.  0.]
@@ -687,12 +690,12 @@ class LocalSystem(np.matrix, object):
         --------
 
         >>> T = s_matrix([1, 2])
-        >>> print T
+        >>> print(T)
         [[1. 0. 0.]
          [0. 2. 0.]
          [0. 0. 1.]]
         >>> e = T.explained_variance([(2, 1), (0, 0), (1, 1), (2, 3)])
-        >>> print np.round(e, 3)
+        >>> print(np.round(e, 3))
         [0.688 4.75 ]
 
         See Also
@@ -722,12 +725,12 @@ class LocalSystem(np.matrix, object):
         --------
 
         >>> T = s_matrix([1, 2])
-        >>> print T
+        >>> print(T)
         [[1. 0. 0.]
          [0. 2. 0.]
          [0. 0. 1.]]
         >>> e = T.explained_variance_ratio([(2, 1), (0, 0), (1, 1), (2, 3)])
-        >>> print np.round(e, 3)
+        >>> print(np.round(e, 3))
         [0.126 0.874]
 
         See Also
@@ -758,21 +761,19 @@ class PCA(LocalSystem):
 
     >>> coords = [(0, 0), (1, 1)]
     >>> T = PCA(coords)
-    >>> print np.round(T, 3)
+    >>> print(np.round(T, 3))
     [[ 0.707  0.707 -0.707]
      [-0.707  0.707  0.   ]
      [ 0.     0.     1.   ]]
-    >>> print np.round(np.linalg.inv(T), 3)
+    >>> print(np.round(np.linalg.inv(T), 3))
     [[ 0.707 -0.707  0.5  ]
      [ 0.707  0.707  0.5  ]
      [ 0.     0.     1.   ]]
-    >>> print np.round(transform(coords, T), 3)
+    >>> print(np.round(transform(coords, T), 3))
     [[-0.707  0.   ]
      [ 0.707  0.   ]]
 
-
     """
-
     def __init__(self, coords):
         pass
 
@@ -831,14 +832,14 @@ class PCA(LocalSystem):
 
         >>> coords = [(-1, -2), (0, 0), (1, 2)]
         >>> T = PCA(coords)
-        >>> print np.round(T, 3)
+        >>> print(np.round(T, 3))
         [[ 0.447  0.894  0.   ]
          [-0.894  0.447  0.   ]
          [ 0.     0.     1.   ]]
 
-        >>> print np.round(T.pc(1), 3)
+        >>> print(np.round(T.pc(1), 3))
         [0.447 0.894]
-        >>> print np.round(T.pc(2), 3)
+        >>> print(np.round(T.pc(2), 3))
         [-0.894  0.447]
 
         """

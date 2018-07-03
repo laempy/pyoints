@@ -7,6 +7,79 @@ from numbers import Number
 from . import nptools
 
 
+def ensure_dim(check_dim, dim=None, min_dim=2, max_dim=np.inf):
+    """Ensure a dimension value to be in a specific range.
+
+    Parameters
+    ----------
+    dim, min_dim, max_dim : optional, positive int
+        Minimum and maximum allowed dimensions. If `dim` is provided the
+        `check_dim` has to be exactly `dim`. If not, the `check_dim` must be in
+        range `[min_dim, max_dim]`.
+
+    Returns
+    -------
+    int
+        Dimension value with ensured properties.
+
+    Raises
+    ------
+    ValueError
+
+    """
+    check_dim = int(check_dim)
+    if dim is not None:
+        if not check_dim == dim:
+            m = "%i dimensions required" % dim
+            raise ValueError(m)
+    else:
+        if check_dim < min_dim:
+            m = "at least %i dimensions required" % min_dim
+            raise ValueError(m)
+        if check_dim > max_dim:
+            m = "at most %i dimensions required" % max_dim
+            raise ValueError(m)
+    return check_dim
+
+
+def ensure_length(check_length, length=None, min_length=0, max_length=np.inf):
+    """Ensure a length value to be in a specific range.
+
+    Parameters
+    ----------
+    check_length : int
+        Length value to check.
+    length, min_length, max_length : optional, positive int
+        Minimum and maximum allowed length. If `length` is provided
+        `check_length` has to be exactly `length`. If not, the `check_length`
+        must be in range `[min_length, max_length]`.
+
+    Returns
+    -------
+    int
+        Length value with ensured properties.
+
+    Raises
+    ------
+    ValueError
+
+    """
+    check_length = int(check_length)
+    if length is not None:
+        if not check_length == length:
+            m = "length %i required" % length
+            raise ValueError(m)
+    else:
+        if check_length < min_length:
+            m = "length of at least %i required" % min_length
+            raise ValueError(m)
+        if check_length > max_length:
+            m = "length of at most %i required" % max_length
+            raise ValueError(m)
+    return check_length
+
+
+
 def isnumeric(value, min_th=-np.inf, max_th=np.inf):
     """Checks if a value is numeric.
 
@@ -21,10 +94,6 @@ def isnumeric(value, min_th=-np.inf, max_th=np.inf):
     -------
     bool
         Indicates whether or not the value is numeric.
-
-    Raises
-    ------
-    ValueError
 
     """
     return isinstance(value, Number) and value >= min_th and value <= max_th
@@ -45,7 +114,7 @@ def ensure_numarray(arr):
 
     Raises
     ------
-    ValueError
+    TypeError, ValueError
 
     Examples
     --------
@@ -57,7 +126,7 @@ def ensure_numarray(arr):
 
     """
     if not nptools.isarray(arr):
-        raise ValueError("'arr' needs to an array like object")
+        raise TypeError("'arr' needs to an array like object")
     arr = np.array(arr)
     if not nptools.isnumeric(arr):
         raise ValueError("array 'arr' needs to be numeric")
@@ -72,8 +141,7 @@ def ensure_numvector(v, length=None, min_length=1, max_length=np.inf):
     v : array_like(Number, shape=(k))
         Vector of length `n`.
     length, min_length, max_length : optional, positive int
-        Minimum and maximum allowed length of the vector. If `length` is
-        provided `n` has to be exactly `length`.
+        See `ensure_length`
 
     Returns
     -------
@@ -100,20 +168,13 @@ def ensure_numvector(v, length=None, min_length=1, max_length=np.inf):
 
     Raises
     ------
-    ValueError
+    TypeError, ValueError
 
     """
     v = ensure_numarray(v)
     if not len(v.shape) == 1:
         raise ValueError("one dimensional vector required")
-    if length is not None:
-        if not len(v) == length:
-            raise ValueError("vector of length %i required" % length)
-    else:
-        if len(v) < min_length:
-            raise ValueError("vector of length >= %i required" % min_length)
-        if len(v) > max_length:
-            raise ValueError("vector of length <= %i required" % max_length)
+    ensure_length(len(v), length, min_length, max_length)
     return v
 
 
@@ -133,6 +194,10 @@ def ensure_indices(v, min_value=0, max_value=np.inf):
     -------
     np.ndarray(int, shape=(n))
         Array of indices.
+
+    Raises
+    ------
+    TypeError, ValueError
 
     """
     v = ensure_numvector(v)
@@ -159,9 +224,7 @@ def ensure_coords(coords, by_col=False, dim=None, min_dim=2, max_dim=np.inf):
         Defines weather or not the coordinates are provided column by column
         instead of row by row.
     dim, min_dim, max_dim : optional, positive int
-        Allowed coordinate dimensions. If `dim` is provided the dimension must
-        match exactly. If not, the coordinate dimension must be in range
-        `[min_dim, max_dim]`.
+        See `ensure_dim`
 
     Returns
     -------
@@ -170,7 +233,7 @@ def ensure_coords(coords, by_col=False, dim=None, min_dim=2, max_dim=np.inf):
 
     Raises
     ------
-    ValueError
+    TypeError, ValueError
 
     Examples
     --------
@@ -206,21 +269,11 @@ def ensure_coords(coords, by_col=False, dim=None, min_dim=2, max_dim=np.inf):
     if not len(coords.shape) == 2:
         m = "malformed shape of 'coords', got '%s'" % str(coords.shape)
         raise ValueError(m)
-    if dim is not None:
-        if not coords.shape[1] == dim:
-            m = "%i coordinate dimensions required" % dim
-            raise ValueError(m)
-    else:
-        if coords.shape[1] < min_dim:
-            m = "at least %i coordinate dimensions required" % min_dim
-            raise ValueError(m)
-        if coords.shape[1] > max_dim:
-            m = "at most %i coordinate dimensions required" % max_dim
-            raise ValueError(m)
+    ensure_dim(coords.shape[1], dim, min_dim, max_dim)
     return coords
 
 
-def ensure_polar(pcoords, by_col=False):
+def ensure_polar(pcoords, by_col=False, dim=None, min_dim=2, max_dim=np.inf):
     """Ensures the properties of polar coordinates.
 
     Parameters
@@ -231,10 +284,12 @@ def ensure_polar(pcoords, by_col=False):
     by_col : optional, bool
         Defines weather or not the coordinates are provided column by column
         instead of row by row.
+    dim, min_dim, max_dim : optional, positive int
+        See `ensure_dim`
 
     Raises
     ------
-    ValueError
+    TypeError, ValueError
 
     Returns
     -------
@@ -246,19 +301,27 @@ def ensure_polar(pcoords, by_col=False):
     ensure_coords
 
     """
-    pcoords = ensure_coords(pcoords, by_col=by_col)
+    pcoords = ensure_coords(
+        pcoords,
+        by_col=by_col,
+        dim=dim,
+        min_dim=min_dim,
+        max_dim=max_dim
+    )
     if not np.all(pcoords[:, 0] >= 0):
         raise ValueError("malformed polar radii")
     return pcoords
 
 
-def ensure_tmatrix(T, min_dim=2, max_dim=np.inf):
+def ensure_tmatrix(T, dim=None, min_dim=2, max_dim=np.inf):
     """Ensures the properties of transformation matrix.
 
     Parameters
     ----------
     T : array_like(Number, shape=(k+1,k+1))
         Transformation matrix.
+    dim, min_dim, max_dim : optional, positive int
+        See `ensure_dim`
 
     Returns
     -------
@@ -267,7 +330,7 @@ def ensure_tmatrix(T, min_dim=2, max_dim=np.inf):
 
     Raises
     ------
-    ValueError
+    TypeError, ValueError
 
     See Also
     --------
@@ -285,9 +348,6 @@ def ensure_tmatrix(T, min_dim=2, max_dim=np.inf):
         raise ValueError("malformed shape of transformation matrix")
     if not T.shape[0] == T.shape[1]:
         raise ValueError("transformation matrix is not a square matrix")
-    if not T.shape[0] > min_dim:
-        raise ValueError("at least %s coordinate dimensions needed" % min_dim)
-    if not T.shape[0] <= max_dim + 1:
-        raise ValueError("at most %s coordinate dimensions needed" % max_dim)
+    ensure_dim(T.shape[0] - 1, dim, min_dim, max_dim)
 
     return T
