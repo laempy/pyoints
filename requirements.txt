@@ -23,3 +23,5 @@ Sphinx
 sphinxcontrib-napoleon
 autopep8
 pycodestyle
+
+#pygdal
