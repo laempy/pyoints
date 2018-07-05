@@ -163,7 +163,7 @@ class LasReader(GeoFile):
                     break
         self.proj = proj
 
-        self.t = transformation.t_matrix(lasFile.header.min)
+        self.t = transformation.t_matrix(lasFile.header.offset)
         self._extent = Extent((lasFile.header.min, lasFile.header.max))
         self._count = int(lasFile.header.point_records_count)
 

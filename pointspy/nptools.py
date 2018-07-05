@@ -254,16 +254,6 @@ def recarray(dataDict, dtype=[], dim=1):
             else:
                 dataDict[key] = np.array(dataDict[key], copy=False)
 
-    # get shape
-    shape = next(iter(dataDict.values())).shape
-    for key in dataDict.keys():
-        s = dataDict[key].shape
-        if len(s) < dim:
-            m = "shape '%s' needs to be least of length '%i'" % (str(s), dim)
-            raise ValueError(m)
-        if not s[:dim] == shape[:dim]:
-            raise ValueError("incompatible shape of field '%s'" % key)
-
     # get data types
     out_dtypes = []
     for key in dataDict.keys():
@@ -275,6 +265,7 @@ def recarray(dataDict, dtype=[], dim=1):
         out_dtypes.append(dt)
 
     # define array
+    shape = next(iter(dataDict.values())).shape
     rec = np.recarray(shape[:dim], dtype=out_dtypes)
     if len(rec) > 0:
         for key in dataDict.keys():
