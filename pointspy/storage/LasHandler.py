@@ -17,7 +17,7 @@ from .. import (
 from .BaseGeoHandler import GeoFile
 
 """
-# seee https://pythonhosted.org/laspy/tut_part_3.html
+# see https://pythonhosted.org/laspy/tut_part_3.html
 0 	Raw Extra Bytes 	Value of "options"
 1 	unsigned char 	1 byte
 2 	Char 	1 byte
@@ -49,12 +49,9 @@ from .BaseGeoHandler import GeoFile
 28 	long long[3] 	24 bytes
 29 	float[3] 	12 bytes
 30 	double[3] 	24 bytes
-
-]
 """
 
 # Type conversion
-
 LASPY_TYPE_MAP = [
     (1, ['|u1']),
     (2, ['|S1']),
@@ -63,7 +60,7 @@ LASPY_TYPE_MAP = [
     (5, ['<u4']),
     (6, ['<i4', '<i8']),
     (7, ['<u8']),
-    (8, []),
+    (8, []),  # error occurs
     (9, ['<f4']),
     (10, ['<f8']),
 ]
@@ -100,36 +97,6 @@ def _dtype_to_laspy_type_id(dtype):
         return None
     return NUMPY_TO_LASPY_TYPE[type_dim][type_name]
 
-
-def createTypeTestLas(outfile):
-
-    # Create file header
-    header = laspy.header.Header()
-    header.file_sig = 'LASF'
-    header.format = 1.2
-    header.data_format_id = 3
-
-    # Open file in write mode
-    lasFile = laspy.file.File(outfile, mode='w', header=header)
-
-    lasFile.header.scale = [1, 1, 1]
-    lasFile.header.offset = [0, 0, 0]
-
-    names = []
-    for type_id in range(1, 31):
-        name = 'field_%i' % type_id
-        if type_id not in [8, 18, 28]:
-            lasFile.define_new_dimension(name, type_id, '')
-            names.append(name)
-
-    k = 10
-    lasFile.x = np.random.rand(k)
-    lasFile.y = np.random.rand(k)
-    lasFile.z = np.random.rand(k)
-
-    lasFile.header.update_min_max()
-    lasFile.close()
-    del lasFile
 
 
 class LasReader(GeoFile):
@@ -456,6 +423,37 @@ def updateLasHeader(las_file, offset=None, translate=None, precision=None):
         if not len(translate) == 3:
             raise ValueError('"translate" has to have a length of 3')
         lasFile.header.offset = lasFile.header.offset + translate
+
+    lasFile.header.update_min_max()
+    lasFile.close()
+    del lasFile
+
+
+def createTypeTestLas(outfile):
+
+    # Create file header
+    header = laspy.header.Header()
+    header.file_sig = 'LASF'
+    header.format = 1.2
+    header.data_format_id = 3
+
+    # Open file in write mode
+    lasFile = laspy.file.File(outfile, mode='w', header=header)
+
+    lasFile.header.scale = [1, 1, 1]
+    lasFile.header.offset = [0, 0, 0]
+
+    names = []
+    for type_id in range(1, 31):
+        name = 'field_%i' % type_id
+        if type_id not in [8, 18, 28]:
+            lasFile.define_new_dimension(name, type_id, '')
+            names.append(name)
+
+    k = 10
+    lasFile.x = np.random.rand(k)
+    lasFile.y = np.random.rand(k)
+    lasFile.z = np.random.rand(k)
 
     lasFile.header.update_min_max()
     lasFile.close()
