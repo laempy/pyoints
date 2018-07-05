@@ -1,3 +1,0 @@
-"""Some settings"""
-
-DEBUG = True

@@ -254,4 +254,4 @@ def icp(coords_dict,
                 break
             pairs_old = pairs_dict
 
-    return T_dict
+    return T_dict, pairs_dict

@@ -421,4 +421,5 @@ def radial_dem_filter(coords, angle_res, center=None):
     dist = distance.dist(center[:-1], coords[:, :-1])
     radii = dist * np.sin(angle_res / 180.0 * np.pi)
     fIds = dem_filter(coords, radii)
+    fIds = fIds[coords[fIds, -1] < center[-1]]
     return fIds
