@@ -4,8 +4,6 @@
 import warnings
 import numpy as np
 
-from .indexkd import IndexKD
-from .extent import Extent
 from .coords import Coords
 
 from . import (
@@ -16,7 +14,7 @@ from . import (
 )
 
 
-class GeoRecords(np.recarray, IndexKD, object):
+class GeoRecords(np.recarray, object):
     """Abstraction class to ease handling of point sets as well as structured
     matrices of point like objects. This gives the oportunity to handle
     unstructured point sets the same way like rasters or voxels. The class also
@@ -102,11 +100,11 @@ class GeoRecords(np.recarray, IndexKD, object):
     """
 
     def __init__(self, proj, rec, T=None):
+        self.coords = self['coords']
         self.proj = proj    # validated by setter
         if T is None:
             T = transformation.t_matrix(self.extent().min_corner)
         self.t = T    # validated by setter
-        #self.setflags(write=False)
 
     def __new__(cls, proj, rec, T=None):
         if isinstance(rec, dict):
@@ -119,48 +117,37 @@ class GeoRecords(np.recarray, IndexKD, object):
             raise ValueError("malformed coordinate shape")
         if not rec.dtype['coords'].shape[0] >= 2:
             raise ValueError("at least two coordinate dimensions needed")
-
-        #s = (np.product(rec.shape), rec.dtype['coords'].shape[0])
-        #Coords.__init__(rec, rec.coords.reshape(s))
-
         return rec.view(cls)
 
+    @property
+    def dim(self):
+        return self.dtype['coords'].shape[0]
+
+    @property
+    def coords(self):
+        if not hasattr(self, '_coords'):
+            self._coords = self['coords'].view(Coords)
+        return self._coords
+
+    def _clear_cache(self):
+        if hasattr(self, '_coords'):
+            del self._coords
+
     def __setattr__(self, attr, value):
+        np.recarray.__setattr__(self, attr, value)
         if attr is 'coords':
             self._clear_cache()
-            self.setflags(write=True)
-            np.recarray.__setattr__(self, attr, value)
-            #self.setflags(write=False)
-        else:
-            np.recarray.__setattr__(self, attr, value)
 
     def __setitem__(self, key, value):
+        np.recarray.__setitem__(self, key, value)
         if key is 'coords':
             self._clear_cache()
-            self.setflags(write=True)
-            print('teste')
 
+    def extent(self, **kwargs):
+        return self.coords.extent(**kwargs)
 
-            np.recarray.__setitem__(self, key, value)
-            #self.setflags(write=False)
-        else:
-            np.recarray.__setitem__(self, key, value)
-
-    """
-    def __getitem__(self, key):
-        print('__getitem__')
-        item = np.recarray.__getitem__(self, key, value)
-        if key is 'coords':
-            return item.view(Coords)
-        return item
-
-    def __getattribute__(self, attr):
-        print('__getattr__')
-        item = np.recarray.__getattr__(self, attr)
-        if attr is 'coords':
-            return item.view(Coords)
-        return item
-    """
+    def indexKD(self, **kwargs):
+        return self.coords.indexKD(**kwargs)
 
     def __array_finalize__(self, obj):
         if obj is None:
@@ -170,12 +157,6 @@ class GeoRecords(np.recarray, IndexKD, object):
 
     # def __array_wrap__(self, out_arr, context=None):
     #     return np.ndarray.__array_wrap__(self, out_arr, context)
-
-    def _clear_cache(self):
-        # Deletes cached data.
-        # print('clear georecords cache')
-        if hasattr(self, '_flat_coords'):
-            del self._flat_coords
 
     @property
     def t(self):
@@ -190,13 +171,6 @@ class GeoRecords(np.recarray, IndexKD, object):
         self._clear_cache()
 
     @property
-    def flat_coords(self):
-        if not hasattr(self, '_flat_coords'):
-            s = (self.count, self.dim)
-            self._flat_coords = self.coords.view(Coords).reshape(s)
-        return self._flat_coords
-
-    @property
     def proj(self):
         return self._proj
 
@@ -208,10 +182,6 @@ class GeoRecords(np.recarray, IndexKD, object):
         elif not isinstance(proj, projection.Proj):
             raise ValueError("'proj' needs to be of type 'projection.Proj'")
         self._proj = proj
-
-    @property
-    def dim(self):
-        return self.dtype['coords'].shape[0]
 
     @property
     def count(self):
@@ -331,27 +301,6 @@ class GeoRecords(np.recarray, IndexKD, object):
 
         """
         return self.reshape(self.count)
-
-    def extent(self, dim=None):
-        """Provides the spatial extent of the data structure.
-
-        See Also
-        --------
-        Coords
-
-        """
-        return self.flat_coords.extent(dim=dim)
-
-    def indexKD(self, dim=None):
-        """Spatial index of the coordinates.
-
-        See Also
-        --------
-        Coords
-
-        """
-        return self.flat_coords.indexKD(dim=dim)
-
 
     def ids(self):
         """Keys or indices of the data structure.
@@ -491,9 +440,7 @@ class GeoRecords(np.recarray, IndexKD, object):
         nptools.merge
 
         """
-        # TODO
         data = nptools.merge((self, rec))
-        # TODO sich selbst uberschreiben
         return self.__class__(self.proj, data, T=self.t)
 
     def apply_function(self, func, dtypes=[object]):
