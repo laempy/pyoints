@@ -198,8 +198,8 @@ def i_matrix(dim):
     """
     if not (isinstance(dim, int) and dim >= 2):
         raise ValueError("'dim' needs to be an integer greater one")
-    I = np.matrix(np.identity(dim + 1))
-    return LocalSystem(I)
+    I_m = np.matrix(np.identity(dim + 1))
+    return LocalSystem(I_m)
 
 
 def t_matrix(t):
@@ -231,9 +231,9 @@ def t_matrix(t):
 
     """
     t = assertion.ensure_numvector(t, min_length=2)
-    T = np.identity(len(t) + 1)
-    T[:-1, -1] = t
-    return LocalSystem(T)
+    T_m = np.identity(len(t) + 1)
+    T_m[:-1, -1] = t
+    return LocalSystem(T_m)
 
 
 def s_matrix(s):
@@ -267,10 +267,10 @@ def s_matrix(s):
     if not (hasattr(s, '__len__') and len(s) >= 2):
         raise ValueError("'s' needs have a length greater one")
     dim = len(s)
-    S = np.identity(dim + 1)
+    S_m = np.identity(dim + 1)
     diag = np.append(s, 1)
-    np.fill_diagonal(S, diag)
-    return LocalSystem(S)
+    np.fill_diagonal(S_m, diag)
+    return LocalSystem(S_m)
 
 
 def r_matrix(a):
@@ -322,7 +322,7 @@ def r_matrix(a):
         a = assertion.ensure_numvector(a)
 
     if len(a) == 1:
-        R = np.matrix([
+        R_m = np.matrix([
             [np.cos(a[0]), -np.sin(a[0]), 0],
             [np.sin(a[0]), np.cos(a[0]), 0],
             [0, 0, 1]
@@ -348,13 +348,13 @@ def r_matrix(a):
             [0, 0, 1, 0],
             [0, 0, 0, 1],
         ])
-        R = Rz * Ry * Rx
+        R_m = Rz * Ry * Rx
     else:
         raise ValueError(
             '%i-dimensional rotations are not supported yet' %
             len(a))
 
-    return LocalSystem(R)
+    return LocalSystem(R_m)
 
 
 def add_dim(T):

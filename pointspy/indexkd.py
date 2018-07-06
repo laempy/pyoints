@@ -30,6 +30,8 @@ class IndexKD(object):
     quickbuild : optional, bool
         Indicates whether or not the spatial index shall be optimized for quick
         building (True) or quick spatial queries (False).
+    copy : optional, bool
+        Indicates whether or not to copy the coordinate array.
 
     Attributes
     ----------
@@ -61,9 +63,12 @@ class IndexKD(object):
 
     """
 
-    def __init__(self, coords, transform=None, leafsize=16, quickbuild=True):
+    def __init__(self, coords, transform=None, leafsize=16, quickbuild=True, copy=True):
 
-        coords = assertion.ensure_coords(coords).copy()
+        if copy:
+            coords = assertion.ensure_coords(coords).copy()
+        else:
+            coords = assertion.ensure_coords(coords)
 
         if not isinstance(leafsize, int) and leafsize > 0:
             raise ValueError('"leafsize" needs to be an iteger greater zero')

@@ -227,7 +227,7 @@ def ensure_coords(coords, by_col=False, dim=None, min_dim=2, max_dim=np.inf):
 
     Returns
     -------
-    coords : np.ndarray(Number, shape=(n,k))
+    coords : np.ndarray(Number, shape=(n, k))
         Coordinates with guaranteed properties.
 
     Raises
@@ -239,7 +239,7 @@ def ensure_coords(coords, by_col=False, dim=None, min_dim=2, max_dim=np.inf):
 
     Coordinates provided row by row.
 
-    >>> coords = ensure_coords([(3,2),(2,4),(-1,2),(9,3)])
+    >>> coords = ensure_coords([(3, 2), (2, 4), (-1, 2), (9, 3)])
     >>> print type(coords)
     <type 'numpy.ndarray'>
     >>> print coords
@@ -250,7 +250,7 @@ def ensure_coords(coords, by_col=False, dim=None, min_dim=2, max_dim=np.inf):
 
     Coordinates provided column by column.
 
-    >>> coords = ensure_coords([(3,2,-1,9),(2,4,2,3)],by_col=True)
+    >>> coords = ensure_coords([(3, 2, -1, 9), (2, 4, 2, 3)], by_col=True)
     >>> print coords
     [[ 3  2]
      [ 2  4]
