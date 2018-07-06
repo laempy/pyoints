@@ -6,6 +6,7 @@ import numpy as np
 
 from .indexkd import IndexKD
 from .extent import Extent
+from .coords import Coords
 
 from . import (
     transformation,
@@ -15,7 +16,7 @@ from . import (
 )
 
 
-class GeoRecords(np.recarray, object):
+class GeoRecords(np.recarray, IndexKD, object):
     """Abstraction class to ease handling of point sets as well as structured
     matrices of point like objects. This gives the oportunity to handle
     unstructured point sets the same way like rasters or voxels. The class also
@@ -55,9 +56,9 @@ class GeoRecords(np.recarray, object):
     ...    'values': [1, 3, 4, 0, 6]
     ... }
     >>> geo = GeoRecords(projection.Proj(), data)
-    >>> print geo.values
+    >>> print(geo.values)
     [1 3 4 0 6]
-    >>> print geo.coords
+    >>> print(geo.coords)
     [[ 2.   3. ]
      [ 3.   2. ]
      [ 0.   1. ]
@@ -67,7 +68,7 @@ class GeoRecords(np.recarray, object):
     Set new coordinates.
 
     >>> geo['coords'] = [(1, 2), (9, 2), (8, 2), (-7, 3), (7, 8)]
-    >>> print geo.coords
+    >>> print(geo.coords)
     [[ 1.  2.]
      [ 9.  2.]
      [ 8.  2.]
@@ -86,9 +87,9 @@ class GeoRecords(np.recarray, object):
     ... }
     >>> data = nptools.recarray(data,dim=2)
     >>> geo = GeoRecords(None, data)
-    >>> print geo.shape
+    >>> print(geo.shape)
     (3, 2)
-    >>> print geo.coords
+    >>> print(geo.coords)
     [[[ 2.   3.2]
       [-3.   2.2]]
     <BLANKLINE>
@@ -105,6 +106,7 @@ class GeoRecords(np.recarray, object):
         if T is None:
             T = transformation.t_matrix(self.extent().min_corner)
         self.t = T    # validated by setter
+        #self.setflags(write=False)
 
     def __new__(cls, proj, rec, T=None):
         if isinstance(rec, dict):
@@ -117,7 +119,48 @@ class GeoRecords(np.recarray, object):
             raise ValueError("malformed coordinate shape")
         if not rec.dtype['coords'].shape[0] >= 2:
             raise ValueError("at least two coordinate dimensions needed")
+
+        #s = (np.product(rec.shape), rec.dtype['coords'].shape[0])
+        #Coords.__init__(rec, rec.coords.reshape(s))
+
         return rec.view(cls)
+
+    def __setattr__(self, attr, value):
+        if attr is 'coords':
+            self._clear_cache()
+            self.setflags(write=True)
+            np.recarray.__setattr__(self, attr, value)
+            #self.setflags(write=False)
+        else:
+            np.recarray.__setattr__(self, attr, value)
+
+    def __setitem__(self, key, value):
+        if key is 'coords':
+            self._clear_cache()
+            self.setflags(write=True)
+            print('teste')
+
+
+            np.recarray.__setitem__(self, key, value)
+            #self.setflags(write=False)
+        else:
+            np.recarray.__setitem__(self, key, value)
+
+    """
+    def __getitem__(self, key):
+        print('__getitem__')
+        item = np.recarray.__getitem__(self, key, value)
+        if key is 'coords':
+            return item.view(Coords)
+        return item
+
+    def __getattribute__(self, attr):
+        print('__getattr__')
+        item = np.recarray.__getattr__(self, attr)
+        if attr is 'coords':
+            return item.view(Coords)
+        return item
+    """
 
     def __array_finalize__(self, obj):
         if obj is None:
@@ -130,19 +173,9 @@ class GeoRecords(np.recarray, object):
 
     def _clear_cache(self):
         # Deletes cached data.
-        if hasattr(self, '_indices'):
-            del self._indices
-        if hasattr(self, '_extents'):
-            del self._extents
-
-    def __setitem__(self, key, value):
-        # TODO single edit?
-        # TODO write protection
-        # TODO np.array order=?
-        if key is 'coords':
-            # clear cache, when setting new coords
-            np.recarray.__setitem__(self, key, value)
-            self._clear_cache()
+        # print('clear georecords cache')
+        if hasattr(self, '_flat_coords'):
+            del self._flat_coords
 
     @property
     def t(self):
@@ -156,10 +189,12 @@ class GeoRecords(np.recarray, object):
         self._t = transformation.LocalSystem(t)
         self._clear_cache()
 
-    def transform(self, T):
-        T = assertion.ensure_tmatrix(T, min_dim=self.dim, max_dim=self.dim)
-        self.coords = transformation.transform(self.coords, T)
-        self.t = T * self.t
+    @property
+    def flat_coords(self):
+        if not hasattr(self, '_flat_coords'):
+            s = (self.count, self.dim)
+            self._flat_coords = self.coords.view(Coords).reshape(s)
+        return self._flat_coords
 
     @property
     def proj(self):
@@ -282,15 +317,17 @@ class GeoRecords(np.recarray, object):
         ... }
         >>> data = nptools.recarray(data, dim=2)
         >>> geo = GeoRecords(None, data)
-        >>> print geo.shape
+        >>> print(geo.shape)
         (3, 2)
-        >>> print geo.records().coords
+        >>> print(geo.records().coords)
         [[ 2.   3.2]
          [-3.   2.2]
          [ 0.   1.1]
          [-1.   2.2]
          [-7.  -1. ]
          [ 9.2 -5. ]]
+        >>> geo.coords[0, 0] = (1, 1)
+
 
         """
         return self.reshape(self.count)
@@ -298,104 +335,23 @@ class GeoRecords(np.recarray, object):
     def extent(self, dim=None):
         """Provides the spatial extent of the data structure.
 
-        Parameters
-        ----------
-        dim : optional, positive int
-            Define which coordinates to use. If not given all dimensions are
-            used.
-
-        Returns
-        -------
-        extent : Extent
-            Spatial extent of the coordinates.
-
-        Notes
-        -----
-        The extents are calculated on demand and are cached automatically.
-        Setting new coordinates clears the cache.
-
         See Also
         --------
-        Extent
-
-        Examples
-        --------
-
-        >>> data = {
-        ...    'coords': [(2, 3), (3, 2), (0, 1), (-1, 2.2), (9, 5)],
-        ...    'values': [1, 3, 4, 0, 6]
-        ... }
-        >>> geo = GeoRecords(None, data)
-        >>> print geo.extent()
-        [-1.  1.  9.  5.]
-        >>> print geo.extent(dim=1)
-        [-1.  9.]
+        Coords
 
         """
-        if dim is None:
-            dim = self.dim
-        elif not (isinstance(dim, int) and dim > 0 and dim <= self.dim):
-            raise ValueError("'dim' needs to be an int in range(2,self.dim)")
-
-        # use cache for performance reasons
-        if not hasattr(self, '_extents'):
-            self._extents = {}
-        ext = self._extents.get(dim)
-        if ext is None:
-            ext = Extent(self.records().coords[:, :dim])
-            self._extents[dim] = ext
-        return ext
+        return self.flat_coords.extent(dim=dim)
 
     def indexKD(self, dim=None):
         """Spatial index of the coordinates.
 
-        Parameters
-        ----------
-        dim : optional, positive int
-            Desired dimension of the spatial index. If None the all coordinate
-            dimensions are used.
-
-        Returns
-        -------
-        IndexKD
-            Spatial index of the coordinates of desired dimension.
-
-        Notes
-        -----
-        The spatial indices are calculated on demand and are cached
-        automatically. Setting new coordinates clears the cache.
-
         See Also
         --------
-        IndexKD
-
-        Examples
-        --------
-
-        >>> data = {
-        ...    'coords': [(2, 3, 1), (3, 2, 3), (0, 1, 0), (9, 5, 4)],
-        ...    'values': [1, 3, 4, 0]
-        ... }
-        >>> geo = GeoRecords(None, data)
-        >>> print geo.indexKD().dim
-        3
-        >>> print geo.indexKD(dim=2).dim
-        2
+        Coords
 
         """
-        if dim is None:
-            dim = self.dim
-        elif not (isinstance(dim, int) and dim > 0 and dim <= self.dim):
-            raise ValueError("'dim' needs to be an int in range(1,self.dim)")
+        return self.flat_coords.indexKD(dim=dim)
 
-        # use cache for performance reasons
-        if not hasattr(self, '_indices'):
-            self._indices = {}
-        indexKD = self._indices.get(dim)
-        if indexKD is None:
-            indexKD = IndexKD(self.records().coords[:, 0:dim])
-            self._indices[dim] = indexKD
-        return indexKD
 
     def ids(self):
         """Keys or indices of the data structure.
@@ -420,7 +376,7 @@ class GeoRecords(np.recarray, object):
         ...    'values': [1, 3, 4, 0]
         ... }
         >>> geo = GeoRecords(None, data)
-        >>> print geo.ids()
+        >>> print(geo.ids())
         [[0]
          [1]
          [2]
@@ -430,7 +386,7 @@ class GeoRecords(np.recarray, object):
 
         >>> data = np.ones((4,3), dtype=[('coords',float,2)]).view(np.recarray)
         >>> geo = GeoRecords(None, data)
-        >>> print geo.ids()
+        >>> print(geo.ids())
         [[[0 0]
           [0 1]
           [0 2]]
@@ -449,6 +405,11 @@ class GeoRecords(np.recarray, object):
 
         """
         return self.__class__.keys(self.shape)
+
+    def transform(self, T):
+        T = assertion.ensure_tmatrix(T, min_dim=self.dim, max_dim=self.dim)
+        self.coords = transformation.transform(self.coords, T)
+        self.t = T * self.t
 
     def project(self, proj):
         """Projects the coordinates to a different coordinate system.
@@ -502,9 +463,9 @@ class GeoRecords(np.recarray, object):
         ...     [('A', int), ('B', object)],
         ...     data=[[1, 2, 3, 4], ['a', 'b', 'c', 'd']]
         ... )
-        >>> print geo2.dtype.names
+        >>> print(geo2.dtype.names)
         ('coords', 'A', 'B')
-        >>> print geo2.B
+        >>> print(geo2.B)
         ['a' 'b' 'c' 'd']
 
         """
@@ -557,3 +518,5 @@ class GeoRecords(np.recarray, object):
         """
         data = nptools.apply_function(self, func, dtypes=dtypes)
         return self.__class__(self.proj, data, T=self.t)
+
+
