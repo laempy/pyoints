@@ -14,14 +14,9 @@ opencv-python
 plyfile
 networkx
 cylinder_fitting
-#cython
-#pdal
-
-#ipykernel
-#cloudpickle
 Sphinx
 sphinxcontrib-napoleon
 autopep8
 pycodestyle
-
+matplotlib
 #pygdal
