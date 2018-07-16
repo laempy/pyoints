@@ -3,14 +3,14 @@
 
 import numpy as np
 
+from .transformation import PCA
 from . import (
     assertion,
     Coords,
-    transformation,
     distance,
 )
 
-def find_normals(coords, radii, prefered_normal=None):
+def find_normals(coords, radii, indices=None, prefered_normal=None):
     """Calculate normals from coordinates based on neighbouring points. 
     
     Parameters
@@ -45,6 +45,12 @@ def find_normals(coords, radii, prefered_normal=None):
     coords = Coords(coords)
     dim = coords.dim
     
+    # subset
+    if indices is None:
+        indices = np.arange(len(coords))
+    else:
+        indices = assertion.ensure_numvector(indices, max_length=len(coords))
+    
     # define prefered normal
     if prefered_normal is None:
         prefered_normal = np.zeros(dim)
@@ -52,23 +58,17 @@ def find_normals(coords, radii, prefered_normal=None):
     else:
         prefered_normal = assertion.ensure_numvector(length=dim)
     
-    normals = np.zeros(coords.shape, dtype=float)
-
     # generate normals
-    ball_gen = coords.indexKD().ball_iter(coords, radii)
+    normals = np.zeros((len(indices), dim), dtype=float)
+    ball_gen = coords.indexKD().ball_iter(coords[indices, :], radii)
     for i, nIds in enumerate(ball_gen):
 
         if len(nIds) >= dim:
-
-            # normal as last principal component of PCA
-            pca = transformation.PCA(coords[nIds, :])
-            normal = pca.pc(dim)
-            
-            # flip normal if required
-            dist = distance.snorm(prefered_normal - normal)
-            if dist > 2:
-                normal = -normal
-            normals[i, :] = normal
-        
+            normals[i, :] = PCA(coords[nIds, :]).pc(dim)
+                
+    # flip normals if required
+    dists = distance.snorm(normals - prefered_normal)
+    normals[dists > 2] *= -1
+    
     return normals
             
