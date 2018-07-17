@@ -152,16 +152,27 @@ def fit_cylinder(coords, vec=None):
     return v, r, residuals
 
 
-def _preferred_normals(normals, shape):
+def _orient_normals(normals, p_normals):
     # helper function
-    if normals is None:
-        normals = np.zeros(shape[1])
-        normals[-1] = 1
-    normals = assertion.ensure_numarray(normals)
-    if len(normals.shape) == 1:
-        normals = np.tile(normals, (shape[0], 1))
-    normals = assertion.ensure_coords(normals, dim=shape[1])
-    normals = (normals.T / distance.norm(normals)).T
+
+    shape = normals.shape
+
+    if p_normals is None:
+        p_normals = np.zeros(shape[1])
+        p_normals[-1] = 1
+    p_normals = assertion.ensure_numarray(p_normals)
+    if len(p_normals.shape) == 1:
+        p_normals = np.tile(p_normals, (shape[0], 1))
+    p_normals = assertion.ensure_coords(p_normals, dim=shape[1])
+    p_normals = (p_normals.T / distance.norm(p_normals)).T
+
+    # orient normals
+    dist = distance.sdist(normals, p_normals)
+    normals[dist > shape[1], :] *= -1
+
+    dist = distance.sdist(normals, p_normals)
+    print((dist > shape[1]).sum())
+
     return normals
 
 
@@ -206,9 +217,6 @@ def fit_normals(coords, radii, indices=None, preferred_normals=None):
     else:
         indices = assertion.ensure_numvector(indices, max_length=len(coords))
 
-    # define prefered normals
-    preferred_normals = _preferred_normals(preferred_normals, coords.shape)
-
     indexKD = coords.indexKD()
     if assertion.isnumeric(radii):
         ball_gen = indexKD.ball_iter(coords[indices, :], radii)
@@ -223,8 +231,7 @@ def fit_normals(coords, radii, indices=None, preferred_normals=None):
             normals[pId, :] = PCA(coords[nIds, :]).pc(dim)
 
     # flip normals if required
-    dists = distance.snorm(normals - preferred_normals)
-    normals[dists > 2] *= -1
+    normals = _orient_normals(normals, preferred_normals)
 
     return normals
 
@@ -271,19 +278,14 @@ def approximate_normals(coords, radii, preferred_normals=None):
     else:
         radii = assertion.ensure_numvector(radii, length=len(coords))
 
-    # define prefered normals
-    preferred_normals = _preferred_normals(preferred_normals, coords.shape)
-
     # generate normals
     normals = np.zeros(coords.shape, dtype=float)
     for pId in range(len(coords)):
-        if normals[pId].sum() == 0:
+        if np.all(normals[pId, :] == 0):
             nIds = indexKD.ball(coords[pId, :], radii[pId])
             if len(nIds) >= dim:
                 normals[nIds, :] = PCA(coords[nIds, :]).pc(dim)
 
-    # flip normals if required
-    dists = distance.snorm(normals - preferred_normals)
-    normals[dists > 2] *= -1
+    normals = _orient_normals(normals, preferred_normals)
 
     return normals

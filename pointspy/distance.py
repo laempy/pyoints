@@ -142,4 +142,5 @@ def idw(dists, p=2):
         Weights according to Inverse Distance Weighting.
 
     """
+    dists = assertion.ensure_numvector(dists)
     return 1.0 / (1 + dists)**p

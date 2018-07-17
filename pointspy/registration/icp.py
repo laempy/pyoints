@@ -9,6 +9,7 @@ from .. import (
     distance,
     assign,
     fit,
+    vector,
 )
 
 
@@ -129,10 +130,13 @@ def icp(coords_dict,
         raise TypeError("'assign_class' must be a callable object")
 
     radii = assertion.ensure_numvector(radii)
-    dim = len(radii)
+    dim = None
 
     # double check coordinate format
     for key in coords_dict:
+        if dim is None:
+            coords_dict[key] = assertion.ensure_coords(coords_dict[key])
+            dim = coords_dict[key].shape[1]
         coords_dict[key] = assertion.ensure_coords(coords_dict[key], dim=dim)
 
     # check normals
@@ -141,10 +145,10 @@ def icp(coords_dict,
     if len(normals_dict) > 0:
         for key in coords_dict:
             if key in normals_dict:
-                normals_dict[key] = assertion.ensure_coords(normals_dict[key], dim=dim)
+                normals_dict[key] = assertion.ensure_coords(
+                        normals_dict[key], dim=dim)
             else:
                 raise ValueError("missing normals for '%s'" % key)
-
 
     # Define initial transformation matrices
     if len(pairs_dict) > 0:
@@ -165,29 +169,37 @@ def icp(coords_dict,
             coordsA = transformation.transform(
                 coords_dict[keyA], T_dict[keyA])
 
-
-            matcher = assign_class(coordsA, radii)
+            #matcher = assign_class(coordsA, radii)
+            nCoordsA = np.hstack((coordsA, normals_dict[keyA]))
+            matcher = assign_class(nCoordsA, radii)
 
             for keyB in coords_dict:
                 if keyB != keyA:
 
                     coordsB = transformation.transform(
                         coords_dict[keyB], T_dict[keyB])
-
-                    pairs = matcher(coordsB, **assign_parameters)
+                    #pairs = matcher(coordsB, **assign_parameters)
+                    nCoordsB = np.hstack((coordsB, normals_dict[keyB]))
+                    pairs = matcher(nCoordsB, **assign_parameters)
                     if len(pairs) > 0:
-                        if len(normals_dict) > 0:
-                            dists = distance.dist(
-                                normals_dict[keyA][pairs[:, 0], :],
-                                normals_dict[keyB][pairs[:, 1], :]
-                            )
-                            w = distance.idw(dists, p=2)
-                        else:
-                            dists = distance.dist(
-                                coordsA[pairs[:, 0], :],
-                                coordsB[pairs[:, 1], :]
-                            )
-                            w = distance.idw(dists, p=2)
+                        """if len(normals_dict) > 0:
+                            nA = normals_dict[keyA][pairs[:, 0], :]
+                            nB = normals_dict[keyB][pairs[:, 1], :]
+
+                            # linear weighting by normal difference
+                            dists = distance.dist(nA, nB)
+                            w = -dists / np.sqrt(dim) + 1
+                            w[w < 0] = 0
+                        else:"""
+                        dists = distance.dist(
+                            coordsA[pairs[:, 0], :],
+                            coordsB[pairs[:, 1], :]
+                        )
+                        #dists = distance.dist(
+                        #    nCoordsA[pairs[:, 0], :],
+                        #    nCoordsB[pairs[:, 1], :]
+                        #)
+                        w = distance.idw(dists, p=2)
                     else:
                         w = []
                     pairs_dict[keyA][keyB] = (pairs, w)
