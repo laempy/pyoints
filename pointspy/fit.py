@@ -42,9 +42,9 @@ def sphere(coords, weights=1.0):
     >>> y = np.sqrt(5**2 - x**2)
     >>> coords = np.array([x,y]).T + [2,4]
     >>> center, r, residuals = sphere(coords)
-    >>> print center
+    >>> print(center)
     [2. 4.]
-    >>> print np.round(r, 2)
+    >>> print(np.round(r, 2))
     5.0
 
     """
@@ -144,3 +144,4 @@ def cylinder(coords, vec=None):
     v = vector.Vector(origin, vec)
 
     return v, r, residuals
+
