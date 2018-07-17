@@ -23,4 +23,5 @@ from . import (
     registration,
     nptools,
     coords,
+    normals,
 )

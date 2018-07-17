@@ -779,7 +779,6 @@ class PCA(LocalSystem):
         pass
 
     def __new__(cls, coords):
-
         # Do not edit anything!!!
 
         # mean centering
@@ -788,28 +787,24 @@ class PCA(LocalSystem):
         dim = coords.shape[1]
 
         # calculate eigenvectors
-        covM = np.cov(coords - center, rowvar=False)
-        eigen_values, eigen_vectors = np.linalg.eigh(covM)
-
+        cov_matrix = np.cov(coords - center, rowvar=False)
+        eigen_values, eigen_vectors = np.linalg.eigh(cov_matrix)
         # eigen_values in descending order ==> reverse
-        eigen_values = eigen_values[::-1]
-        eigen_vectors = eigen_vectors.T[::-1, :]
-
-        close = np.isclose(abs(np.linalg.det(eigen_vectors)), 1)
-        assert close, "determinant unexpectedly differs from -1 or 1"
 
         # Transformation matrix
-        T = np.matrix(np.identity(dim + 1))
-        T[:dim, :dim] = eigen_vectors[:dim, :dim]
+        T = LocalSystem(np.identity(dim + 1)).view(cls)
+        T[:dim, :dim] = eigen_vectors.T[::-1, :]
         T = T * t_matrix(-center)  # don not edit!
 
-        M = LocalSystem(T).view(cls)
-        M._eigen_values = eigen_values
+        T._eigen_values = eigen_values[::-1]
 
-        valid = np.all(np.isclose(M.to_local(center), np.zeros(len(center))))
-        assert valid, "transformation of origin failed"
+        #close = np.isclose(abs(np.linalg.det(T)), 1)
+        #assert close, "determinant unexpectedly differs from -1 or 1"
 
-        return M
+        #valid = np.all(np.isclose(T.to_local(center), np.zeros(len(center))))
+        #assert valid, "transformation of origin failed"
+
+        return T
 
     @property
     def eigen_values(self):

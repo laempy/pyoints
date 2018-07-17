@@ -53,15 +53,8 @@ class Coords(np.ndarray, object):
     [0, 1, 3]
 
     """
-    def __init__(self, coords, by_col=False):
-        pass
-
-    def __new__(cls, coords, by_col=False):
-        return assertion.ensure_coords(coords, by_col=by_col).view(cls)
-
-    @property
-    def dim(self):
-        return self.shape[1]
+    def __new__(cls, coords):
+        return assertion.ensure_numarray(coords).view(cls)
 
     def __setitem__(self, key, value):
         np.ndarray.__setitem__(self, key, value)
@@ -71,12 +64,22 @@ class Coords(np.ndarray, object):
         return iter(self.view(np.ndarray))
 
     def _clear_cache(self):
-        # Deletes cached data.
-        print('COORDS _clear_cache')
         if hasattr(self, '_indices'):
             del self._indices
         if hasattr(self, '_extents'):
             del self._extents
+
+    @property
+    def dim(self):
+        return self.shape[-1]
+
+    @property
+    def flat_coords(self):
+        if len(self.shape) == 2:
+            return self
+        else:
+            s = (np.product(self.shape[:self.dim]), self.dim)
+            return self.view().reshape(s)
 
     def indexKD(self, dim=None):
         """Spatial index of the coordinates.
@@ -122,7 +125,7 @@ class Coords(np.ndarray, object):
             self._indices = {}
         indexKD = self._indices.get(dim)
         if indexKD is None:
-            indexKD = IndexKD(self[:, :dim], copy=False)
+            indexKD = IndexKD(self.flat_coords[:, :dim], copy=False)
             self._indices[dim] = indexKD
         return indexKD
 
@@ -172,6 +175,6 @@ class Coords(np.ndarray, object):
             self._extents = {}
         ext = self._extents.get(dim)
         if ext is None:
-            ext = Extent(self[:, :dim])
+            ext = Extent(self.flat_coords[:, :dim])
             self._extents[dim] = ext
         return ext

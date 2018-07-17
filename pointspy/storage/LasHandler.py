@@ -300,6 +300,8 @@ def writeLas(geoRecords, outfile):
             lasFile.flag_byte = lasFile.flag_byte + records.return_num
         elif name == 'num_returns':
             lasFile.flag_byte = lasFile.flag_byte + records.num_returns * 8
+        elif name == 'intensity':
+            lasFile.set_intensity(records.intensity)
         elif name not in omit:
             lasFile._writer.set_dimension(name, records[name])
 
