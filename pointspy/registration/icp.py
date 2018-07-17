@@ -8,9 +8,9 @@ from .. import (
     transformation,
     distance,
     assign,
+    fit,
 )
 
-from ..normals import find_normals
 
 def icp(coords_dict,
         radii,
@@ -52,9 +52,9 @@ def icp(coords_dict,
 
     >>> coords_dict = {'A': A, 'B': B}
     >>> radii = (0.25, 0.25)
-    
+
     Standard ICP.
-    
+
     >>> T, pairs = icp(coords_dict, radii, max_iter=10, k=1)
 
     >>> tA = T['A'].to_local(A)
@@ -86,13 +86,13 @@ def icp(coords_dict,
     >>> rmse = distance.rmse(tA[pairs[:, 0], :], tB[pairs[:, 1], :])
     >>> print(np.round(rmse, 3))
     0.094
-    
+
     NICP which uses normals for weighting.
-    
+
     >>> normals_r = 1.5
     >>> normals_dict = {
-    ...     'A': find_normals(A, normals_r),
-    ...     'B': find_normals(B, normals_r)
+    ...     'A': fit.fit_normals(A, normals_r),
+    ...     'B': fit.fit_normals(B, normals_r)
     ... }
     >>> print(normals_dict)
 
@@ -100,7 +100,7 @@ def icp(coords_dict,
 
     >>> tA = T['A'].to_local(A)
     >>> tB = T['B'].to_local(B)
-    
+
     >>> print(np.round(tA, 2))
     [[ 0.43  0.51]
      [-0.06  0.  ]
@@ -164,8 +164,8 @@ def icp(coords_dict,
             pairs_dict[keyA] = {}
             coordsA = transformation.transform(
                 coords_dict[keyA], T_dict[keyA])
-            
-            
+
+
             matcher = assign_class(coordsA, radii)
 
             for keyB in coords_dict:
@@ -173,7 +173,7 @@ def icp(coords_dict,
 
                     coordsB = transformation.transform(
                         coords_dict[keyB], T_dict[keyB])
-                    
+
                     pairs = matcher(coordsB, **assign_parameters)
                     if len(pairs) > 0:
                         if len(normals_dict) > 0:

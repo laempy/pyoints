@@ -8,10 +8,17 @@ from . import (
     transformation,
     assertion,
     vector,
+    distance,
+    Coords,
+    filters,
+    IndexKD,
 )
+from .transformation import PCA
+
+from .misc import *
 
 
-def sphere(coords, weights=1.0):
+def fit_sphere(coords, weights=1.0):
     """Least square fitting of a sphere to a set of points.
 
     Parameters
@@ -41,7 +48,7 @@ def sphere(coords, weights=1.0):
     >>> x = np.arange(-1, 1, 0.1)
     >>> y = np.sqrt(5**2 - x**2)
     >>> coords = np.array([x,y]).T + [2,4]
-    >>> center, r, residuals = sphere(coords)
+    >>> center, r, residuals = fit_sphere(coords)
     >>> print(center)
     [2. 4.]
     >>> print(np.round(r, 2))
@@ -76,7 +83,7 @@ def sphere(coords, weights=1.0):
     return center, r, residuals
 
 
-def cylinder(coords, vec=None):
+def fit_cylinder(coords, vec=None):
     """Fit a cylinder to points.
 
     Parameters
@@ -111,7 +118,7 @@ def cylinder(coords, vec=None):
 
     Get cylinder.
 
-    >>> vec, r, residuals = cylinder(coords, vec=[0, 0, 1])
+    >>> vec, r, residuals = fit_cylinder(coords, vec=[0, 0, 1])
 
     >>> print(np.round(r, 2))
     2.5
@@ -125,7 +132,6 @@ def cylinder(coords, vec=None):
     [2.5 2.5]
 
     """
-
     coords = assertion.ensure_coords(coords, dim=3)
 
     # set estimated direction
@@ -145,3 +151,139 @@ def cylinder(coords, vec=None):
 
     return v, r, residuals
 
+
+def _preferred_normals(normals, shape):
+    # helper function
+    if normals is None:
+        normals = np.zeros(shape[1])
+        normals[-1] = 1
+    normals = assertion.ensure_numarray(normals)
+    if len(normals.shape) == 1:
+        normals = np.tile(normals, (shape[0], 1))
+    normals = assertion.ensure_coords(normals, dim=shape[1])
+    normals = (normals.T / distance.norm(normals)).T
+    return normals
+
+
+def fit_normals(coords, radii, indices=None, preferred_normals=None):
+    """Fit normals to points points.
+
+    Parameters
+    ----------
+    coords : array_like(Number, shape=(n, k))
+        Represents `n` points of `k` dimensions.
+    radii : positive Number or array_like(Number, shape=(n))
+        Radius or radii to select neighbouring points.
+
+    Returns
+    -------
+    array_like(Number, shape=(n, k))
+        Desired normals of coordinates `coords`.
+
+    Examples
+    --------
+
+    Two dimensional normals.
+
+    >>> coords = [(0, 0), (1, 1), (2, 3), (3, 3), (4, 2), (5, 1), (5, 0)]
+    >>> normals = fit_normals(coords, 1.5)
+    >>> print(np.round(normals, 2))
+    [[-0.71  0.71]
+     [-0.71  0.71]
+     [ 0.    1.  ]
+     [ 0.47  0.88]
+     [ 0.71  0.71]
+     [ 0.88  0.47]
+     [ 1.    0.  ]]
+
+    """
+    coords = Coords(coords)
+    dim = coords.dim
+
+    # subset
+    if indices is None:
+        indices = np.arange(len(coords))
+    else:
+        indices = assertion.ensure_numvector(indices, max_length=len(coords))
+
+    # define prefered normals
+    preferred_normals = _preferred_normals(preferred_normals, coords.shape)
+
+    indexKD = coords.indexKD()
+    if assertion.isnumeric(radii):
+        ball_gen = indexKD.ball_iter(coords[indices, :], radii)
+    else:
+        radii = assertion.ensure_numvector(radii, length=len(indices))
+        ball_gen = indexKD.balls_iter(coords[indices, :], radii)
+
+    # generate normals
+    normals = np.zeros((len(indices), dim), dtype=float)
+    for pId, nIds in enumerate(ball_gen):
+        if len(nIds) >= dim:
+            normals[pId, :] = PCA(coords[nIds, :]).pc(dim)
+
+    # flip normals if required
+    dists = distance.snorm(normals - preferred_normals)
+    normals[dists > 2] *= -1
+
+    return normals
+
+
+def approximate_normals(coords, radii, preferred_normals=None):
+    """Calculate approximate normals of points.
+
+    Parameters
+    ----------
+    coords : array_like(Number, shape=(n, k))
+        Represents `n` points of `k` dimensions.
+    radii : positive Number or array_like(Number, shape=(n))
+        Radius or radii to select neighbouring points.
+
+    Returns
+    -------
+    array_like(Number, shape=(n, k))
+        Desired normals of coordinates `coords`.
+
+    Examples
+    --------
+
+    Two dimensional normals.
+
+    >>> coords = [(0, 0), (1, 1), (2, 3), (3, 3), (4, 2), (5, 1), (5, 0)]
+    >>> normals = approximate_normals(coords, 1.5)
+    >>> print(np.round(normals, 2))
+    [[-0.71  0.71]
+     [-0.71  0.71]
+     [ 0.    1.  ]
+     [ 0.71  0.71]
+     [ 0.71  0.71]
+     [ 1.    0.  ]
+     [ 1.    0.  ]]
+
+    """
+    coords = Coords(coords)
+    indexKD = coords.indexKD()
+    dim = coords.dim
+
+    # check radii
+    if assertion.isnumeric(radii):
+        radii = np.repeat(radii, len(coords))
+    else:
+        radii = assertion.ensure_numvector(radii, length=len(coords))
+
+    # define prefered normals
+    preferred_normals = _preferred_normals(preferred_normals, coords.shape)
+
+    # generate normals
+    normals = np.zeros(coords.shape, dtype=float)
+    for pId in range(len(coords)):
+        if normals[pId].sum() == 0:
+            nIds = indexKD.ball(coords[pId, :], radii[pId])
+            if len(nIds) >= dim:
+                normals[nIds, :] = PCA(coords[nIds, :]).pc(dim)
+
+    # flip normals if required
+    dists = distance.snorm(normals - preferred_normals)
+    normals[dists > 2] *= -1
+
+    return normals

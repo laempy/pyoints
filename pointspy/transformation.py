@@ -8,7 +8,18 @@ import itertools as it
 
 from . import (
     distance,
-    assertion,
+)
+from numpy.linalg import eigh
+from numpy import (
+    identity,
+    dot,
+)
+from .assertion import (
+    ensure_coords,
+    ensure_numarray,
+    ensure_numvector,
+    ensure_tmatrix,
+    isnumeric,
 )
 
 
@@ -33,7 +44,7 @@ def transform(coords, T, inverse=False, extra_precise=False):
     TODO
 
     """
-    T = assertion.ensure_tmatrix(T)
+    T = ensure_tmatrix(T)
 
     if inverse:
         try:
@@ -44,7 +55,7 @@ def transform(coords, T, inverse=False, extra_precise=False):
 
     T = np.asarray(T)
 
-    coords = assertion.ensure_numarray(coords)
+    coords = ensure_numarray(coords)
 
     if len(coords) == 0 or coords.shape[0] == 0:
         raise ValueError("can not transform empty array")
@@ -83,8 +94,8 @@ def homogenious(coords, value=1):
         Homogenious coordinates.
 
     """
-    coords = assertion.ensure_coords(coords)
-    if not assertion.isnumeric(value):
+    coords = ensure_coords(coords)
+    if not isnumeric(value):
         raise ValueError("'value' needs to be numeric")
 
     if len(coords.shape) == 1:
@@ -230,7 +241,7 @@ def t_matrix(t):
      [0. 0. 0. 1.]]
 
     """
-    t = assertion.ensure_numvector(t, min_length=2)
+    t = ensure_numvector(t, min_length=2)
     T_m = np.identity(len(t) + 1)
     T_m[:-1, -1] = t
     return LocalSystem(T_m)
@@ -316,10 +327,10 @@ def r_matrix(a):
      [ 0.     0.     0.     1.   ]]
 
     """
-    if assertion.isnumeric(a):
+    if isnumeric(a):
         a = [a]
     else:
-        a = assertion.ensure_numvector(a)
+        a = ensure_numvector(a)
 
     if len(a) == 1:
         R_m = np.matrix([
@@ -388,7 +399,7 @@ def add_dim(T):
      [0.  0.  0.  1. ]]
 
     """
-    T = assertion.ensure_tmatrix(T)
+    T = ensure_tmatrix(T)
     M = np.eye(len(T) + 1)
     M[:-2, :-2] = T[:-1, :-1]
     M[:-2, -1] = T[:-1, -1].T
@@ -436,7 +447,7 @@ def decomposition(T, ignore_warnings=False):
     https://www.learnopencv.com/rotation-matrix-to-euler-angles/
     """
 
-    T = assertion.ensure_tmatrix(T)
+    T = ensure_tmatrix(T)
     dim = T.shape[0] - 1
 
     # translation
@@ -501,7 +512,7 @@ def matrix_from_gdal(t):
      [      0       0       1]]
 
     """
-    t = assertion.ensure_numvector(t, min_length=6, max_length=6)
+    t = ensure_numvector(t, min_length=6, max_length=6)
 
     T = np.matrix(np.zeros((3, 3), dtype=np.float))
     T[0, 2] = t[0]
@@ -541,7 +552,7 @@ def matrix_to_gdal(T):
     (-28493, 2, 0, 4255884, 0, -2)
 
     """
-    T = assertion.ensure_tmatrix(T)
+    T = ensure_tmatrix(T)
     if not T.shape[0] == 3:
         raise ValueError('transformation matrix of shape (3, 3) required')
     return (T[0, 2], T[0, 0], T[1, 0], T[1, 2], T[0, 1], T[1, 1])
@@ -586,7 +597,7 @@ class LocalSystem(np.matrix, object):
     """
 
     def __new__(cls, T):
-        return assertion.ensure_tmatrix(T).view(cls)
+        return ensure_tmatrix(T).view(cls)
 
     @property
     def dim(self):
@@ -606,7 +617,7 @@ class LocalSystem(np.matrix, object):
 
     @origin.setter
     def origin(self, origin):
-        origin = assertion.ensure_numarray([origin]).T
+        origin = ensure_numarray([origin]).T
         self[:self.dim, self.dim] = origin
 
     def reflect(self):
@@ -756,6 +767,10 @@ class PCA(LocalSystem):
     eigen_values : np.ndarray(Number, shape=(k))
         Characteristic Eigen Values of the PCA.
 
+    References
+    ----------
+    https://stackoverflow.com/questions/13224362/principal-component-analysis-pca-in-python
+
     Examples
     --------
 
@@ -774,36 +789,34 @@ class PCA(LocalSystem):
      [ 0.707  0.   ]]
 
     """
-
-    def __init__(self, coords):
-        pass
-
     def __new__(cls, coords):
         # Do not edit anything!!!
 
         # mean centering
-        coords = assertion.ensure_coords(coords)
+        coords = ensure_coords(coords)
         center = coords.mean(0)
+        cCoords = coords - center
         dim = coords.shape[1]
 
-        # calculate eigenvectors
-        cov_matrix = np.cov(coords - center, rowvar=False)
-        eigen_values, eigen_vectors = np.linalg.eigh(cov_matrix)
+        # calculate Eigenvectors and Eigenvalues
+        cov_matrix = dot(cCoords.T, cCoords)
+        # cov_matrix = cCoords.T @ cCoords  # fastest solution found
+        # cov_matrix = np.cov(cCoords, rowvar=False)  # a bit slower
+        # cov_matrix is a Hermitian matrix
+        eigen_values, eigen_vectors = eigh(cov_matrix)
         # eigen_values in descending order ==> reverse
 
         # Transformation matrix
-        T = LocalSystem(np.identity(dim + 1)).view(cls)
+        T = LocalSystem(identity(dim + 1)).view(cls)
         T[:dim, :dim] = eigen_vectors.T[::-1, :]
         T = T * t_matrix(-center)  # don not edit!
 
         T._eigen_values = eigen_values[::-1]
 
-        #close = np.isclose(abs(np.linalg.det(T)), 1)
-        #assert close, "determinant unexpectedly differs from -1 or 1"
-
-        #valid = np.all(np.isclose(T.to_local(center), np.zeros(len(center))))
-        #assert valid, "transformation of origin failed"
-
+        # close = np.isclose(abs(np.linalg.det(T)), 1)
+        # assert close, "determinant unexpectedly differs from -1 or 1"
+        # valid = np.all(np.isclose(T.to_local(center), np.zeros(len(center))))
+        # assert valid, "transformation of origin failed"
         return T
 
     @property

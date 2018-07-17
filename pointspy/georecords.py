@@ -146,8 +146,8 @@ class GeoRecords(np.recarray, object):
     def extent(self, **kwargs):
         return self.coords.extent(**kwargs)
 
-    def indexKD(self, **kwargs):
-        return self.coords.indexKD(**kwargs)
+    def indexKD(self, *args):
+        return self.coords.indexKD(*args)
 
     def __array_finalize__(self, obj):
         if obj is None:
