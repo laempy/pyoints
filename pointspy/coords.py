@@ -79,7 +79,7 @@ class Coords(np.ndarray, object):
             return self
         else:
             s = (np.product(self.shape[:self.dim]), self.dim)
-            return self.view().reshape(s)
+            return self.reshape(s)
 
     def indexKD(self, dim=None):
         """Spatial index of the coordinates.

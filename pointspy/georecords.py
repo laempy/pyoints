@@ -100,7 +100,6 @@ class GeoRecords(np.recarray, object):
     """
 
     def __init__(self, proj, rec, T=None):
-        self.coords = self['coords']
         self.proj = proj    # validated by setter
         if T is None:
             T = transformation.t_matrix(self.extent().min_corner)
@@ -126,7 +125,8 @@ class GeoRecords(np.recarray, object):
     @property
     def coords(self):
         if not hasattr(self, '_coords'):
-            self._coords = self['coords'].view(Coords)
+            # copy required for garbadge collection
+            self._coords = self['coords'].view(Coords).copy()
         return self._coords
 
     def _clear_cache(self):
@@ -143,8 +143,8 @@ class GeoRecords(np.recarray, object):
         if key is 'coords':
             self._clear_cache()
 
-    def extent(self, **kwargs):
-        return self.coords.extent(**kwargs)
+    def extent(self, *args):
+        return self.coords.extent(*args)
 
     def indexKD(self, *args):
         return self.coords.indexKD(*args)
