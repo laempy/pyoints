@@ -48,7 +48,7 @@ def find_rototranslation(A, B):
 
     Parameters
     ----------
-    A : array_like(Number, shape=(n, k))
+    A, B: array_like(Number, shape=(n, k))
         Arrays representing `n` reference points with `k` dimensions.
 
     Returns
