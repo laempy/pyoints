@@ -17,9 +17,9 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
 
     Parameters
     ----------
-    coords_dict: dict
+    coords_dict: dict of array_like(int, shape=(n, k))
         Dictionary of point sets with `k` dimensions.
-    pairs_dict : dict
+    pairs_dict : dict of array_like(int, shape=(m, 2))
         Dictionary of point pairs.
     weights : optional, dict or list or int.
         Try to keep the original location and orientation by weighting. Each
@@ -27,7 +27,7 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
         values represent the weighting factors for location. The last `k`
         values represent the weighting factors for orientation (angles).
         The weights can be provided for each point set individially in form
-        of a dictionary weights. If not provided, weights of zero are assumed.
+        of a dictionary weights. If not provided, weights are set to zero.
 
     Examples
     --------
@@ -213,6 +213,7 @@ def _build_location_orientation_equations(centers, weights):
             b = np.zeros(cols)
             b[:dim] = centers[key]
 
+            # TODO weights correct
             w = weights[key]
             a = (a.T * w).T
             b = b * w
@@ -302,6 +303,8 @@ def _prepare_input(coords_dict, pairs_dict, weights):
                     length=unknowns
                 ).astype(float)
         else:
+            if assertion.isnumeric(weights):
+                weights = np.repeat(weights, unknowns)
             if nptools.isarray(weights):
                 weights = assertion.ensure_numvector(weights, length=unknowns)
                 for key in ccoords_dict.keys():

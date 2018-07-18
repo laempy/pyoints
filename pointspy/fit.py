@@ -170,9 +170,6 @@ def _orient_normals(normals, p_normals):
     dist = distance.sdist(normals, p_normals)
     normals[dist > shape[1], :] *= -1
 
-    dist = distance.sdist(normals, p_normals)
-    print((dist > shape[1]).sum())
-
     return normals
 
 
