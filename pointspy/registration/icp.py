@@ -170,7 +170,10 @@ def icp(coords_dict,
                 coords_dict[keyA], T_dict[keyA])
 
             #matcher = assign_class(coordsA, radii)
-            nCoordsA = np.hstack((coordsA, normals_dict[keyA]))
+            if len(normals_dict) > 0:
+                nCoordsA = np.hstack((coordsA, normals_dict[keyA]))
+            else:
+                nCoordsA = coordsA
             matcher = assign_class(nCoordsA, radii)
 
             for keyB in coords_dict:
@@ -179,7 +182,11 @@ def icp(coords_dict,
                     coordsB = transformation.transform(
                         coords_dict[keyB], T_dict[keyB])
                     #pairs = matcher(coordsB, **assign_parameters)
-                    nCoordsB = np.hstack((coordsB, normals_dict[keyB]))
+                    if len(normals_dict) > 0:
+                        nCoordsB = np.hstack((coordsB, normals_dict[keyB]))
+                    else:
+                        nCoordsB = coordsB
+
                     pairs = matcher(nCoordsB, **assign_parameters)
                     if len(pairs) > 0:
                         """if len(normals_dict) > 0:
