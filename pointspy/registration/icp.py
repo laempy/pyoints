@@ -113,7 +113,7 @@ class ICP:
         
         if not hasattr(assign_class, '__call__'):
             raise TypeError("'assign_class' must be a callable object")
-        if not (isinstance(max_iter, int) and max_iter > 0):
+        if not (isinstance(max_iter, int) and max_iter >= 0):
             raise ValueError("'max_iter' needs to be an integer greater zero")
         
         self._assign_class = assign_class
@@ -121,7 +121,7 @@ class ICP:
         self._max_iter = max_iter
         self._assign_parameters = assign_parameters
         
-    def __call__(self, coords_dict, normals_dict={}, pairs_dict={}, T_dict={}):
+    def __call__(self, coords_dict, sampleids_dict={}, normals_dict={}, pairs_dict={}, T_dict={}):
         """Calls the ICP algorithm to align point sets.
         
         Parameters
@@ -146,9 +146,11 @@ class ICP:
         """
         # validate input
         coords_dict, dim = self._ensure_coords_dict(coords_dict)
+        sampleids_dict = self._ensure_sampleids_dict(
+                sampleids_dict, coords_dict)
         normals_dict = self._ensure_normals_dict(normals_dict, coords_dict)
-        pairs_dict = self._ensure_pairs_dict(pairs_dict, coords_dict)
         T_dict = self._ensure_T_dict(T_dict, coords_dict, pairs_dict)
+
         
         # check radii
         if len(normals_dict) > 0:
@@ -162,35 +164,38 @@ class ICP:
                 
         # ICP algorithm
         for num_iter in range(self._max_iter):
+            
+            
+            # assign pairs
             pairs_dict = {}
             for keyA in coords_dict:
                 pairs_dict[keyA] = {}
                 
-                nCoordsA = self._get_nCoords(
+                A = self._get_nCoords(
                         coords_dict, normals_dict, T_dict, keyA)
+                matcher = self._assign_class(A, self._radii)
                 
-                matcher = self._assign_class(nCoordsA, self._radii)
-    
                 for keyB in coords_dict:
                     if keyB != keyA:
                         
-                        nCoordsB = self._get_nCoords(
+                        B = self._get_nCoords(
                                 coords_dict, normals_dict, T_dict, keyB)
-                        pairs = matcher(nCoordsB, **self._assign_parameters)
+                        sids = sampleids_dict[keyB]
+                        pairs = matcher(B[sids, :], **self._assign_parameters)
+                        print(pairs.shape)
+
                         if len(pairs) > 0:
+                            pairs[:, 1] = sids[pairs[:, 1]]
                             dists = distance.dist(
-                                nCoordsA[pairs[:, 0], :dim],
-                                nCoordsB[pairs[:, 1], :dim]
-                            )
+                                A[pairs[:, 0], :dim], B[pairs[:, 1], :dim])
                             w = distance.idw(dists, p=2)
                         else:
                             w = []
                         pairs_dict[keyA][keyB] = (pairs, w)
     
             # find roto-translation matrices
-            weights = 0.001
             T_dict = rototranslations.find_rototranslations(
-                coords_dict, pairs_dict, weights=weights)
+                coords_dict, pairs_dict)
     
             # termination
             if num_iter == 0:
@@ -216,10 +221,11 @@ class ICP:
         nCoords = coords_dict[key]
         T = T_dict[key]
         nCoords = transformation.transform(coords_dict[key], T)
+
         if len(normals_dict) > 0:
-            R = transformation.r_matrix(transformation.decomposition(T)[1])
-            normals = transformation.transform(normals_dict[key], R)
-            #normals = normals_dict[key]
+            #R = transformation.r_matrix(transformation.decomposition(T)[1])
+            #normals = transformation.transform(normals_dict[key], R)
+            normals = normals_dict[key]
             nCoords = np.hstack((nCoords, normals))
         return nCoords
     
@@ -251,25 +257,24 @@ class ICP:
         return normals_dict
     
     @staticmethod
-    def _ensure_pairs_dict(pairs_dict, coords_dict):
-        if not isinstance(pairs_dict, dict):
-            raise TypeError("'pairs_dict' needs to be a dictionary")
-        for keyA in coords_dict:
-            if keyA in pairs_dict.keys():
-                for keyB in coords_dict:
-                    if keyB in pairs_dict[keyA].keys():
-                        pairs = assertion.ensure_numarray(
-                                pairs_dict[keyA][keyB])
-                        if not len(pairs.shape) == 2:
-                            m = "unexpected shape of 'pairs_dict', got %s" 
-                            raise ValueError(m % pairs.shape)
-                        pairs_dict[keyA][keyB] = pairs.astype(int)
-        return pairs_dict
-
+    def _ensure_sampleids_dict(sampleids_dict, coords_dict):
+        if not isinstance(sampleids_dict, dict):
+            raise TypeError("'sampleids_dict' needs to be a dictionary")
+        for key in coords_dict:
+            n = len(coords_dict[key])
+            if key in sampleids_dict:
+                sampleids_dict[key] = assertion.ensure_indices(
+                        sampleids_dict[key], max_value=n)
+            else:
+                sampleids_dict[key] = np.arange(n)
+        return sampleids_dict    
+        
     @staticmethod
     def _ensure_T_dict(T_dict, coords_dict, pairs_dict):
         if not isinstance(T_dict, dict):
             raise TypeError("'T_dict' needs to be a dictionary")
+        if not isinstance(pairs_dict, dict):
+            raise TypeError("'pairs_dict' needs to be a dictionary")
         if len(pairs_dict) > 0:
             T_dict = rototranslations.find_rototranslations(
                 coords_dict, pairs_dict)
