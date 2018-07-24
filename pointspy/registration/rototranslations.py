@@ -29,6 +29,15 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
         The weights can be provided for each point set individially in form
         of a dictionary weights. If not provided, weights are set to zero.
 
+    Returns
+    -------
+    T_dict : dict of np.ndarray(Number, shape=(k+1, k+1))
+        Dictionary of desired roto-translation matrices.
+
+    References
+    ----------
+    http://geomatica.como.polimi.it/corsi/def_monitoring/roto-translationsb.pdf
+
     Examples
     --------
 
@@ -66,15 +75,11 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     3D coordinates.
 
     >>> coordsA = [(-1, -2, 3), (-1, 2, 4), (1, 2, 5), (1, -2, 6)]
-    >>> T = transformation.matrix(
-    ...     t=[1000, 2000, 3000],
-    ...     r=[0.01, 0.01, -0.002],
-    ... )
+    >>> T = transformation.matrix(t=[100, 20, 30], r=[0.04, 0.05, -0.03])
     >>> coordsB = transformation.transform(coordsA, T)
-    >>> print(np.array(coordsA))
 
     >>> coords_dict = {'A': coordsA, 'B': coordsB}
-    >>> pairs_dict = { 'A': { 'B': [(0, 0), (1, 1), (2, 2)] } }
+    >>> pairs_dict = { 'A': { 'B': [(0, 0), (1, 1), (3, 3)] } }
     >>> weights = {'A': [1, 1, 1, 1, 1, 1], 'B': [0, 0, 0, 0, 0, 0]}
     >>> res = find_rototranslations(coords_dict, pairs_dict, weights=weights)
     >>> print(list(res.keys()))
@@ -91,6 +96,7 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
      [-1.  2.  4.]
      [ 1.  2.  5.]
      [ 1. -2.  6.]]
+
 
     """
     # prepare input
@@ -133,11 +139,11 @@ def _equations(coords):
 
         Mx = np.zeros((N, cols))
         Mx[:, 0] = 1  # t_x
-        Mx[:, 2] = -coords[:, 1]  # -r
+        Mx[:, 2] = coords[:, 1]  # r
 
         My = np.zeros((N, cols))
         My[:, 1] = 1  # t_y
-        My[:, 2] = coords[:, 0]  # r
+        My[:, 2] = -coords[:, 0]  # -r
 
         return np.vstack((Mx, My))
 
@@ -145,18 +151,18 @@ def _equations(coords):
 
         Mx = np.zeros((N, cols))
         Mx[:, 0] = 1  # t_x
-        Mx[:, 4] = coords[:, 2]  # z
-        Mx[:, 5] = -coords[:, 1]  # -y
+        Mx[:, 4] = -coords[:, 2]  # -z
+        Mx[:, 5] = coords[:, 1]  # y
 
         My = np.zeros((N, cols))
         My[:, 1] = 1  # t_y
-        My[:, 3] = -coords[:, 2]  # -z
-        My[:, 5] = coords[:, 0]  # x
+        My[:, 3] = coords[:, 2]  # z
+        My[:, 5] = -coords[:, 0]  # -x
 
         Mz = np.zeros((N, cols))
         Mz[:, 2] = 1  # t_z
-        Mz[:, 3] = coords[:, 1]  # y
-        Mz[:, 4] = -coords[:, 0]  # -x
+        Mz[:, 3] = -coords[:, 1]  # -y
+        Mz[:, 4] = coords[:, 0]  # x
 
         return np.vstack((Mx, My, Mz))
     else:
@@ -209,29 +215,33 @@ def _build_location_orientation_equations(center, centers, weights, n):
     mB = []
     for i, key in enumerate(centers):
         if key in weights:
-            print(key)
-            print('weights')
-            print(weights[key])
-            a = np.eye(cols, k * cols, k=i * cols)
-            b = np.zeros(cols)
-            #b[:dim] = center - centers[key]
-            b[:dim] = centers[key] - center
-            
-            w = weights[key]
-            a = (a.T * w).T
-            b = b * w
-            print(a)
-            print(b)
+            #
+            #print('weights')
+            #print(weights[key])
+            if weights[key].sum() > 0:
+                a = np.eye(cols, k * cols, k=i * cols)
+                b = np.zeros(cols)
+                b[:dim] = centers[key]
 
-            mA.append(a)
-            mB.append(b)
-            
+                w = weights[key]
+                a = (a.T * w).T
+                b = b * w
+
+
+                mA.append(a)
+                mB.append(b)
+
+
     # sum of parameter shall be zero to average the translations and rotations
     #if len(weights) == 0:
-    a = np.tile(np.eye(cols, cols), k)# * n
+    #a = np.tile(np.eye(cols, cols), k)# * n
+    #d = np.sum([centers[key] - center for key in centers], axis=0)
+    #print('!!!!!!!!!!!!!!!!!!')
+    #print(d)
     #print(a)
-    b = np.zeros(cols)
+    #b = np.zeros(cols)
     #b[:dim] = center
+    #b[:dim] = d
     #mA.append(a)
     #mB.append(b)
 
@@ -245,21 +255,25 @@ def _extract_transformations(M, centers, center):
     #tc = np.mean([*centers.values()], axis=0)
     #TC = transformation.t_matrix(tc)
     #tc = np.zeros(dim)
-    
+
     t_dict = {key: M[i * unknowns:i * unknowns + dim] for i, key in enumerate(centers)}
     r_dict = {key: M[i * unknowns + dim:(i + 1) * unknowns] for i, key in enumerate(centers)}
-    
+
     tg = np.mean([*t_dict.values()], axis=0)
-    TG = transformation.t_matrix(tg)
-    print('tg')
-    print(tg)
+    #TG = transformation.t_matrix(tg)
+    #print('tg')
+    #print(tg)
     #TG = transformation.t_matrix(center)
     TC = transformation.t_matrix(center)
-    print(tg)
+    #print(tg)
     for i, key in enumerate(centers):
         #print(key)
-        print(key)
-        print(t_dict[key])
+        #print(key)
+        #print(t_dict[key])
+        #print(r_dict[key])
+        #print(centers[key])
+        #print(center)
+        #print(centers[key] + t_dict[key])
         T1 = transformation.t_matrix(t_dict[key])
         R = transformation.r_matrix(r_dict[key])
         T0 = transformation.t_matrix(centers[key])
@@ -269,9 +283,16 @@ def _extract_transformations(M, centers, center):
         #res[key] = TC * T1 * R * T0
         #res[key] = T1 * R * T0
 
-        res[key] = (R * T1 * TC.inv)
-        
-        
+        #res[key] = TC * R.inv * T1 * TC.inv
+        #res[key] = TC * T1 * R * TC.inv #!!!
+        #res[key] = R.inv * T1 # !!!!!!!!!! (similar points)
+
+        res[key] = T1 * R.inv * T0.inv
+        #print(np.round(res[key], 3))
+        #print(res[key].to_local([centers[key]]))
+        #print(res[key].to_global([centers[key]]))
+
+
     return res
 
 
@@ -305,11 +326,16 @@ def _prepare_input(coords_dict, pairs_dict, weights):
         centers_dict[key] = coords.mean(0)
         coords_dict[key] = coords
     unknowns = _unknowns(dim)
-    
+
+
+
     # common mean centering
     center = np.mean([*centers_dict.values()], axis=0)
-    ccoords_dict = {key: coords_dict[key] - center for key in coords_dict}
-    
+    #center = center*0
+    #ccoords_dict = {key: coords_dict[key] - center for key in coords_dict}
+    ccoords_dict = {key: coords_dict[key] - centers_dict[key] for key in coords_dict}
+    #ccoords_dict = {key: coords_dict[key] for key in coords_dict}
+
     # pairs
     wpairs_dict = {}
     for keyA in pairs_dict:
@@ -322,7 +348,8 @@ def _prepare_input(coords_dict, pairs_dict, weights):
                 w = np.ones(len(pairs))
             pairs = np.array(pairs, dtype=int)
             if len(pairs) > 0:
-                w = assertion.ensure_numvector(w, length=pairs.shape[0]).astype(float)
+                w = assertion.ensure_numvector(
+                        w, length=pairs.shape[0]).astype(float)
                 wpairs_dict[keyA][keyB] = (pairs, w)
 
     # try to keep the original location and orientation
