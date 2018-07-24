@@ -11,7 +11,6 @@ from .. import (
 )
 
 
-
 class ICP:
     """Implementation of the Iterative Closest Point algorithm with multiple
     point set support.
@@ -20,14 +19,14 @@ class ICP:
     -----------
     radii : array_like(Number, shape=(s))
         Maximum distances in each coordinate dimension to assign corresponding
-        points of `k` dimensions. The length of `radii` is equal to `2 * k` 
+        points of `k` dimensions. The length of `radii` is equal to `2 * k`
         if point normals shall also be used to find point pairs, `k`
         otherwise.
     assign_class : optional, callable class
         Class which assigns pairs of points.
     max_iter : optional, positive int
         Maximum number of iterations.
-        
+
     References
     ----------
     TODO: Ref
@@ -86,7 +85,7 @@ class ICP:
     ...     'A': fit.fit_normals(A, normals_r),
     ...     'B': fit.fit_normals(B, normals_r)
     ... }
-    >>> radii = (0.25, 0.25, 0.5, 0.5)
+    >>> radii = (0.25, 0.25, 0.3, 0.3)
     >>> nicp = ICP(radii, max_iter=10, k=1)
     >>> T, pairs = nicp(coords_dict, normals_dict=normals_dict)
 
@@ -94,36 +93,45 @@ class ICP:
     >>> tB = T['B'].to_local(B)
 
     >>> print(np.round(tA, 2))
-    [[ 0.46  0.5 ]
-     [-0.03 -0.01]
-     [-0.03 -0.11]
-     [ 1.25  1.02]
-     [ 0.97  0.01]
-     [-1.   -2.03]]
+    [[ 0.5  0.5]
+     [-0.  -0. ]
+     [-0.  -0.1]
+     [ 1.3  1. ]
+     [ 1.   0. ]
+     [-1.  -2. ]]
     >>> print(np.round(tB, 2))
-    [[ 0.44  0.5 ]
-     [ 0.33  0.  ]
-     [ 1.04  0.99]
-     [ 2.04  0.98]
-     [-0.99 -1.98]]
+    [[ 0.4  0.5]
+     [ 0.3 -0. ]
+     [ 1.   1. ]
+     [ 2.   1. ]
+     [-1.  -2. ]]
 
     """
-    
-    def __init__(self, radii, max_iter=10, assign_class=assign.KnnMatcher, **assign_parameters):
-        
+
+    def __init__(self,
+                 radii,
+                 max_iter=10,
+                 assign_class=assign.KnnMatcher,
+                 **assign_parameters):
+
         if not hasattr(assign_class, '__call__'):
             raise TypeError("'assign_class' must be a callable object")
         if not (isinstance(max_iter, int) and max_iter >= 0):
             raise ValueError("'max_iter' needs to be an integer greater zero")
-        
+
         self._assign_class = assign_class
         self._radii = assertion.ensure_numvector(radii, min_length=2)
         self._max_iter = max_iter
         self._assign_parameters = assign_parameters
-        
-    def __call__(self, coords_dict, sampleids_dict={}, normals_dict={}, pairs_dict={}, T_dict={}):
+
+    def __call__(self,
+                 coords_dict,
+                 sampleids_dict={},
+                 normals_dict={},
+                 pairs_dict={},
+                 T_dict={}):
         """Calls the ICP algorithm to align point sets.
-        
+
         Parameters
         ----------
         coords_dict : dict of array_like(Number, shape=(n, k))
@@ -135,14 +143,14 @@ class ICP:
         T_dict : optional, dict of array_like(int, shape=(k+1, k+1))
             Dictionary of transformation matrices. If `pairs_dict` is provided
             `T_dict` will be defined automatically.
-        
+
         Returns
         -------
         T_dict : dict of array_like(int, shape=(k+1, k+1))
             Desired dictionary of transformation matrices.
         pairs_dict : dict of array_like(int, shape=(m, 2))
             Desired dictionary of point pairs.
-            
+
         """
         # validate input
         coords_dict, dim = self._ensure_coords_dict(coords_dict)
@@ -151,7 +159,6 @@ class ICP:
         normals_dict = self._ensure_normals_dict(normals_dict, coords_dict)
         T_dict = self._ensure_T_dict(T_dict, coords_dict, pairs_dict)
 
-        
         # check radii
         if len(normals_dict) > 0:
             if not len(self._radii) == 2 * dim:
@@ -161,23 +168,22 @@ class ICP:
             if not len(self._radii) == dim:
                 m = "ICP requires %i radii got %i" % (dim, len(self._radii))
                 raise ValueError(m % (2 * dim, len(self._radii)))
-                
+
         # ICP algorithm
         for num_iter in range(self._max_iter):
-            
-            
+
             # assign pairs
             pairs_dict = {}
             for keyA in coords_dict:
                 pairs_dict[keyA] = {}
-                
+
                 A = self._get_nCoords(
                         coords_dict, normals_dict, T_dict, keyA)
                 matcher = self._assign_class(A, self._radii)
-                
+
                 for keyB in coords_dict:
                     if keyB != keyA:
-                        
+
                         B = self._get_nCoords(
                                 coords_dict, normals_dict, T_dict, keyB)
                         sids = sampleids_dict[keyB]
@@ -192,11 +198,11 @@ class ICP:
                         else:
                             w = []
                         pairs_dict[keyA][keyB] = (pairs, w)
-    
+
             # find roto-translation matrices
             T_dict = rototranslations.find_rototranslations(
                 coords_dict, pairs_dict)
-    
+
             # termination
             if num_iter == 0:
                 pairs_old = pairs_dict
@@ -214,8 +220,7 @@ class ICP:
                 pairs_old = pairs_dict
 
         return T_dict, pairs_dict
-        
-    
+
     @staticmethod
     def _get_nCoords(coords_dict, normals_dict, T_dict, key):
         nCoords = coords_dict[key]
@@ -223,25 +228,26 @@ class ICP:
         nCoords = transformation.transform(coords_dict[key], T)
 
         if len(normals_dict) > 0:
-            #R = transformation.r_matrix(transformation.decomposition(T)[1])
-            #normals = transformation.transform(normals_dict[key], R)
+            # R = transformation.r_matrix(transformation.decomposition(T)[1])
+            # normals = transformation.transform(normals_dict[key], R)
             normals = normals_dict[key]
             nCoords = np.hstack((nCoords, normals))
         return nCoords
-    
+
     @staticmethod
     def _ensure_coords_dict(coords_dict):
         if not isinstance(coords_dict, dict):
             raise TypeError("'coords_dict' needs to be a dictionary")
-            
+
         dim = None
         for key in coords_dict:
             if dim is None:
                 coords_dict[key] = assertion.ensure_coords(coords_dict[key])
                 dim = coords_dict[key].shape[1]
-            coords_dict[key] = assertion.ensure_coords(coords_dict[key], dim=dim)
+            coords_dict[key] = assertion.ensure_coords(
+                    coords_dict[key], dim=dim)
         return coords_dict, dim
-    
+
     @staticmethod
     def _ensure_normals_dict(normals_dict, coords_dict):
         if not isinstance(normals_dict, dict):
@@ -255,7 +261,7 @@ class ICP:
                 else:
                     raise ValueError("missing normals for '%s'" % key)
         return normals_dict
-    
+
     @staticmethod
     def _ensure_sampleids_dict(sampleids_dict, coords_dict):
         if not isinstance(sampleids_dict, dict):
@@ -267,8 +273,8 @@ class ICP:
                         sampleids_dict[key], max_value=n)
             else:
                 sampleids_dict[key] = np.arange(n)
-        return sampleids_dict    
-        
+        return sampleids_dict
+
     @staticmethod
     def _ensure_T_dict(T_dict, coords_dict, pairs_dict):
         if not isinstance(T_dict, dict):
