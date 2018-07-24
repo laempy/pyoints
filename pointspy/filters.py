@@ -11,7 +11,6 @@ from . import (
 )
 
 
-# TODO density (min neighbours in radius)
 def extrema(indexKD, attributes, r, inverse=False):
     """Find local maxima or minima for a given point set.
 
@@ -40,36 +39,29 @@ def extrema(indexKD, attributes, r, inverse=False):
 
     >>> indexKD = IndexKD([(0, 0), (0, 1), (1, 1), (1, 0), (0.5, 0.5) ])
     >>> attributes = [2, 0.1, 1, 0, 0.5]
-    >>> fIds = list(extrema(indexKD, attributes, 1.1))
+    >>> fIds = [*extrema(indexKD, attributes, 1.1)]
     >>> print(fIds)
     [0, 2]
 
     Local minima.
 
-    >>> fIds = list(extrema(indexKD, attributes, 1.1, inverse=True))
+    >>> fIds = [*extrema(indexKD, attributes, 1.1, inverse=True)]
     >>> print(fIds)
     [3, 1]
 
     Just one local minimum.
 
-    >>> fIds = list(extrema(indexKD, attributes, 1.5, inverse=True))
+    >>> fIds = [*extrema(indexKD, attributes, 1.5, inverse=True)]
     >>> print(fIds)
     [3]
 
     """
-
     # type validation
-
     if not isinstance(indexKD, IndexKD):
         raise TypeError("'indexKD' needs to be an instance of 'IndexKD'")
     if not (assertion.isnumeric(r) and r > 0):
         raise ValueError("'r' needs be a number greater zero")
-
-    attributes = assertion.ensure_numvector(
-        attributes,
-        min_length=len(indexKD),
-        max_length=len(indexKD)
-    )
+    attributes = assertion.ensure_numvector(attributes, length=len(indexKD))
     if not inverse:
         attributes = -attributes
 
@@ -123,11 +115,7 @@ def min_filter(indexKD, attributes, r, inverse=False):
     if not (assertion.isnumeric(r) and r > 0):
         raise ValueError("'r' needs be a number greater zero")
 
-    attributes = assertion.ensure_numvector(
-        attributes,
-        min_length=len(indexKD),
-        max_length=len(indexKD)
-    )
+    attributes = assertion.ensure_numvector(attributes, length=len(indexKD))
     if inverse:
         attributes = -attributes
 
@@ -166,7 +154,7 @@ def has_neighbour(indexKD, r):
 
     >>> coords = [(0, 0), (0.5, 0.5), (0, 1), (0.7, 0.5), (-1, -1)]
     >>> indexKD = IndexKD(coords)
-    >>> print list(has_neighbour(indexKD, 0.7))
+    >>> print([*has_neighbour(indexKD, 0.7)])
     [1, 3]
 
     """
@@ -213,7 +201,7 @@ def is_isolated(indexKD, r):
 
     >>> coords = [(0, 0), (0.5, 0.5), (0, 1), (0.7, 0.5), (-1, -1)]
     >>> indexKD = IndexKD(coords)
-    >>> print list(is_isolated(indexKD, 0.7))
+    >>> print([*is_isolated(indexKD, 0.7)])
     [0, 2, 4]
 
     """
@@ -309,7 +297,7 @@ def in_convex_hull(hull_coords, coords):
 
     >>> hull = [(0, 0), (1, 0), (1, 2)]
     >>> coords = [(0, 0), (0.5, 0.5), (0, 1), (0.7, 0.5), (-1, -1)]
-    >>> print in_convex_hull(hull, coords)
+    >>> print(in_convex_hull(hull, coords))
     [ True  True False  True False]
 
     """
@@ -323,12 +311,39 @@ def in_convex_hull(hull_coords, coords):
     return ~np.isnan(interpolator(coords))
 
 
-def surface(indexKD, r=1, order=None, inverse=False, axis=-1):
+def surface(indexKD, r, order=None, inverse=False, axis=-1):
+    """Filter points associated with a surface.
+
+    Parameters
+    ----------
+    indexKD : IndexKD
+        IndexKD containing `n` points to filter.
+    r : positive float or array_like(float, shape=(n))
+        Ball radius or radii to apply.
+    order : array_like(int, shape=(m))
+        Order to proceed. If m < n, only a subset of points is investigated.
+    inverse : bool
+        Indicates whether or not to inverse the order.
+    axis : optional, int
+        Axis to use for generating the order.
+
+    Yields
+    ------
+    positive int
+        Indices of the filtered points.
+
+    """
+    if not isinstance(indexKD, IndexKD):
+        raise TypeError("'indexKD' needs to be of type 'IndexKD'")
+    if not (assertion.isnumeric(r) and r > 0):
+        raise ValueError("'r' needs be a number greater zero")
 
     coords = indexKD.coords
 
     if order is None:
         order = np.argsort(coords[:, axis])[::-1]
+    else:
+        order = assertion.ensure_indices(order, max_value=len(coords)-1)
 
     if inverse:
         order = order[::-1]
@@ -365,7 +380,7 @@ def dem_filter(coords, r):
     coords = assertion.ensure_coords(coords, min_dim=3)
     order = np.argsort(coords[:, -1])
 
-    if not hasattr(r, '__getitem__') and assertion.isnumeric(r):
+    if not hasattr(r, '__getitem__'):
         r = np.repeat(r, len(order))
     r = assertion.ensure_numvector(r)
 
@@ -412,9 +427,11 @@ def radial_dem_filter(coords, angle_res, center=None):
 
     """
     coords = assertion.ensure_coords(coords, min_dim=3)
+
     if center is None:
         center = np.zeros(coords.shape[1], dtype=float)
-    center = assertion.ensure_numvector(center, min_length=3)
+    center = assertion.ensure_numvector(center, length=3)
+
     if not (assertion.isnumeric(angle_res) and angle_res > 0):
         raise ValueError('angle greater zero required')
 

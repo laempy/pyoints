@@ -125,7 +125,7 @@ def angle(v, w, deg=False):
     v = assertion.ensure_numvector(v)
     w = assertion.ensure_numvector(w)
     if not len(v) == len(w):
-        raise ValueError("'v' has to have the same length as 'w'")
+        raise ValueError("vectors 'v' and 'w' have to have the same length")
 
     a = (v * w).sum()
     b = math.sqrt(distance.snorm(v) * distance.snorm(w))

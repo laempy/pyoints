@@ -6,8 +6,6 @@ import numpy as np
 from .. import (
     assertion,
     transformation,
-    distance,
-    assign,
 )
 
 

@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jul  5 10:26:23 2018
-
-@author: sebastian
+"""Data structures to handle multi-dimensional point data.
 """
 
 import numpy as np
