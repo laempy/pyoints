@@ -8,7 +8,10 @@ Created on Thu Jul  5 10:26:23 2018
 import numpy as np
 from .indexkd import IndexKD
 from .extent import Extent
-from . import assertion
+from . import (
+    assertion,
+    transformation,
+)
 
 
 class Coords(np.ndarray, object):
@@ -80,6 +83,10 @@ class Coords(np.ndarray, object):
         else:
             s = (np.product(self.shape[:self.dim]), self.dim)
             return self.reshape(s)
+
+    def transform(self, T):
+        T = assertion.ensure_tmatrix(T, dim=self.dim)
+        return transformation.transform(self, T).view(self.__class__)
 
     def indexKD(self, dim=None):
         """Spatial index of the coordinates.
