@@ -129,7 +129,8 @@ class ICP:
                  sampleids_dict={},
                  normals_dict={},
                  pairs_dict={},
-                 T_dict={}):
+                 T_dict={},
+                 weights=None):
         """Calls the ICP algorithm to align point sets.
 
         Parameters
@@ -157,7 +158,7 @@ class ICP:
         sampleids_dict = self._ensure_sampleids_dict(
                 sampleids_dict, coords_dict)
         normals_dict = self._ensure_normals_dict(normals_dict, coords_dict)
-        T_dict = self._ensure_T_dict(T_dict, coords_dict, pairs_dict)
+        T_dict = self._ensure_T_dict(T_dict, coords_dict, pairs_dict, weights)
 
         # check radii
         if len(normals_dict) > 0:
@@ -201,7 +202,7 @@ class ICP:
 
             # find roto-translation matrices
             T_dict = rototranslations.find_rototranslations(
-                coords_dict, pairs_dict)
+                coords_dict, pairs_dict, weights=weights)
 
             # termination
             if num_iter == 0:
@@ -228,8 +229,8 @@ class ICP:
         nCoords = transformation.transform(coords_dict[key], T)
 
         if len(normals_dict) > 0:
-            # R = transformation.r_matrix(transformation.decomposition(T)[1])
-            # normals = transformation.transform(normals_dict[key], R)
+            #R = transformation.r_matrix(transformation.decomposition(T)[1])
+            #normals = transformation.transform(normals_dict[key], R)
             normals = normals_dict[key]
             nCoords = np.hstack((nCoords, normals))
         return nCoords
@@ -276,19 +277,23 @@ class ICP:
         return sampleids_dict
 
     @staticmethod
-    def _ensure_T_dict(T_dict, coords_dict, pairs_dict):
+    def _ensure_T_dict(T_dict, coords_dict, pairs_dict, weights):
         if not isinstance(T_dict, dict):
             raise TypeError("'T_dict' needs to be a dictionary")
         if not isinstance(pairs_dict, dict):
             raise TypeError("'pairs_dict' needs to be a dictionary")
-        if len(pairs_dict) > 0:
+        if len(T_dict) > 0 and len(pairs_dict) > 0:
+            raise ValueError("please specifiy either 'T_dict' or 'pairs_dict'")
+        
+        if len(T_dict) == 0 and len(pairs_dict) > 0:
             T_dict = rototranslations.find_rototranslations(
-                coords_dict, pairs_dict)
+                coords_dict, pairs_dict, weights=weights)
         else:
             for key in coords_dict:
-                if key not in T_dict.keys():
+                if key in T_dict.keys():
+                    T_dict[key] = assertion.ensure_tmatrix(T_dict[key])
+                else:
                     dim = coords_dict[key].shape[1]
                     T_dict[key] = transformation.i_matrix(dim)
-                else:
-                    T_dict[key] = assertion.ensure_tmatrix(T_dict[key])
+                    
         return T_dict

@@ -174,6 +174,7 @@ def matrix(t=None, r=None, s=None, order='trs'):
     # create translation matrix according to order
     M = i_matrix(shape[0] - 1)
     for key in list(order):
+        print(key)
         M = M * matrices[key]
 
     return LocalSystem(M)
@@ -284,7 +285,7 @@ def s_matrix(s):
     return LocalSystem(S_m)
 
 
-def r_matrix(a):
+def r_matrix(a, order='zxy'):
     """Creates a rotation matrix.
 
     Parameters
@@ -292,6 +293,9 @@ def r_matrix(a):
     r : Number or array_like(Number, shape=(k))
         Rotation coefficients for each coordinate dimension. At least two
         coefficients are required.
+    order : optional, String
+        For at least three axes `order` specifies in which axis order the
+        rotations are applied.
 
     Returns
     -------
@@ -332,15 +336,25 @@ def r_matrix(a):
     else:
         a = ensure_numvector(a)
 
-    if len(a) == 1:
+    keys = ('x', 'y', 'z')
+    orders = [''.join(o) for o in it.permutations(keys)]
+
+    if not isinstance(order, str):
+        raise TypeError("'order' needs to be a string")
+    if order not in orders:
+        raise ValueError("order '%s' unknown" % order)
+        
+    R_dict = {}
+    dim = len(a)
+    if dim == 1:
         R_m = np.matrix([
             [np.cos(a[0]), -np.sin(a[0]), 0],
             [np.sin(a[0]), np.cos(a[0]), 0],
             [0, 0, 1]
         ])
-    elif len(a) == 2:
+    elif dim == 2:
         raise ValueError('rotation in 2D requires one angle only')
-    elif len(a) == 3:
+    elif dim == 3:
         Rx = np.matrix([
             [1, 0, 0, 0],
             [0, np.cos(a[0]), -np.sin(a[0]), 0],
@@ -359,11 +373,18 @@ def r_matrix(a):
             [0, 0, 1, 0],
             [0, 0, 0, 1],
         ])
-        R_m = Rz * Ry * Rx
+
+        R_dict['x'] = Rx
+        R_dict['y'] = Ry
+        R_dict['z'] = Rz
+        
+        R_m = i_matrix(dim)
+        for key in list(order):
+            R_m = R_dict[key] * R_m
+            
     else:
         raise ValueError(
-            '%i-dimensional rotations are not supported yet' %
-            len(a))
+            '%i-dimensional rotations are not supported yet' % dim)
 
     return LocalSystem(R_m)
 
@@ -574,7 +595,7 @@ class LocalSystem(np.matrix, object):
         Components of the local coordinate system. Each component represents
         a the direction vector of the coordinate axis in the global coordinate
         system.
-    origin :
+    origin :T 
         Global origin of the local coordinate system.
 
     Examples
@@ -619,6 +640,9 @@ class LocalSystem(np.matrix, object):
     def origin(self, origin):
         origin = ensure_numarray([origin]).T
         self[:self.dim, self.dim] = origin
+        
+    def decomposition(self):
+        return decomposition(self)
 
     def reflect(self):
         """Reflects the first principal component.
