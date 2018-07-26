@@ -82,7 +82,7 @@ class Coords(np.ndarray, object):
 
     def transform(self, T):
         T = assertion.ensure_tmatrix(T, dim=self.dim)
-        return transformation.transform(self, T).view(self.__class__)
+        return transformation.transform(self, T).view(Coords)
 
     def indexKD(self, dim=None):
         """Spatial index of the coordinates.

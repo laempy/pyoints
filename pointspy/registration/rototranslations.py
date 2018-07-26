@@ -309,8 +309,8 @@ def _prepare_input(coords_dict, pairs_dict, weights):
             if (isinstance(pairs, (tuple, list)) and
                     len(pairs) == 2 and
                     nptools.isarray(pairs[0]) and
-                    nptools.isarray(pairs[0][0]) and
-                    nptools.isarray(pairs[1])):
+                    nptools.isarray(pairs[1]) and
+                    nptools.isarray(pairs[0][0])):
                 pairs, w = pairs
             else:
                 w = np.ones(len(pairs))
