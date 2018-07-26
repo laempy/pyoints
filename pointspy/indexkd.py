@@ -193,7 +193,8 @@ class IndexKD(object):
         """
         if assertion.iscoord(coords):
             # single point
-            return self.kd_tree.query_ball_point(coords, r, **kwargs)
+            return self.kd_tree.query_ball_point(
+                        coords[:self.dim], r, **kwargs)
         elif hasattr(r, '__iter__'):
             # query multiple radii
             return list(self.balls_iter(coords, r, **kwargs))
