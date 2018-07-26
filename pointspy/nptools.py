@@ -26,11 +26,10 @@ def isarray(o):
     False
 
     """
-    return not (
-        isinstance(o, str) and
-        hasattr(o, '__getitem__') and
-        hasattr(o, '__iter__')
-    )
+    return (not isinstance(o, str) and
+                hasattr(o, '__getitem__') and
+                hasattr(o, '__iter__')
+            )
 
 
 def isnumeric(arr, dtypes=[np.int32, np.int64, np.float32, np.float64]):

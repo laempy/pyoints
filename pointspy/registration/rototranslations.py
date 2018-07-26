@@ -77,18 +77,27 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     >>> coordsA = [(-10, -20, 3), (-1, 2, 4), (1, 10, 5), (1, -2, 60)]
     >>> C = transformation.t_matrix([10000, 600000, 70000])
     >>> #coordsA = transformation.transform(coordsA, C)
-    >>> T = transformation.matrix(
+    >>> TB = transformation.matrix(
     ...     t=[2, 5, 10], r=[-0.01, 0.02, 0.03], order='trs')
-    >>> #T = C * T * C.inv
-    >>> coordsB = transformation.transform(coordsA, T)
+    >>> #TB = C * TB * C.inv
+    >>> coordsB = transformation.transform(coordsA, TB)
 
-    >>> coords_dict = {'A': coordsA, 'B': coordsB}
-    >>> pairs_dict = { 'A': { 'B': [(0, 0), (1, 1), (3, 3)] } }
+    >>> TC= transformation.matrix(
+    ...     t=[-2, 3, -6], r=[-0.03, 0.01, -0.02], order='trs')
+    >>> #TC = C * TC * C.inv
+    >>> coordsC = transformation.transform(coordsA, TC)
+
+    >>> coords_dict = {'A': coordsA, 'B': coordsB, 'C': coordsC}
+    >>> pairs_dict = {
+    ...     'A': { 'B': [(0, 0), (1, 1), (3, 3)], 'C': [(0, 0), (3, 3)]  },
+    ...     'B': { 'A': [(0, 0), (1, 1), (3, 3)], 'C': [(1, 1), (2, 2)] },
+    ...     'C': { 'A': [(0, 0), (1, 1), (3, 3)], 'B': [(1, 1), (2, 2)] },
+    ... }
     >>> weights = {'A': [1, 1, 1, 1, 1, 1], 'B': [0, 0, 0, 0, 0, 0]}
     >>> #weights = [0, 0, 0, 0, 0, 0]
     >>> res = find_rototranslations(coords_dict, pairs_dict, weights=weights)
     >>> print(list(res.keys()))
-    ['A', 'B']
+    ['C', 'A', 'B']
     >>> tA = res['A'].to_local(coords_dict['A'])
     >>> print(np.round(tA, 1))
     [[-10. -20.   3.]
@@ -97,6 +106,12 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
      [  1.  -2.  60.]]
     >>> tB = res['B'].to_local(coords_dict['B'])
     >>> print(np.round(tB, 1))
+    [[-10. -20.   3.]
+     [ -1.   2.   4.]
+     [  1.  10.   5.]
+     [  1.  -2.  60.]]
+    >>> tC = res['C'].to_local(coords_dict['C'])
+    >>> print(np.round(tC, 1))
     [[-10. -20.   3.]
      [ -1.   2.   4.]
      [  1.  10.   5.]
@@ -143,11 +158,11 @@ def _equations(coords):
 
         Mx = np.zeros((N, cols))
         Mx[:, 0] = 1  # t_x
-        Mx[:, 2] = -coords[:, 1]  # r
+        Mx[:, 2] = coords[:, 1]  # r
 
         My = np.zeros((N, cols))
         My[:, 1] = 1  # t_y
-        My[:, 2] = coords[:, 0]  # -r
+        My[:, 2] = -coords[:, 0]  # -r
 
         return np.vstack((Mx, My))
 
@@ -155,18 +170,18 @@ def _equations(coords):
 
         Mx = np.zeros((N, cols))
         Mx[:, 0] = 1  # t_x
-        Mx[:, 4] = coords[:, 2]  # -z
-        Mx[:, 5] = -coords[:, 1]  # y
+        Mx[:, 4] = -coords[:, 2]  # -z
+        Mx[:, 5] = coords[:, 1]  # y
 
         My = np.zeros((N, cols))
         My[:, 1] = 1  # t_y
-        My[:, 3] = -coords[:, 2]  # z
-        My[:, 5] = coords[:, 0]  # -x
+        My[:, 3] = coords[:, 2]  # z
+        My[:, 5] = -coords[:, 0]  # -x
 
         Mz = np.zeros((N, cols))
         Mz[:, 2] = 1  # t_z
-        Mz[:, 3] = coords[:, 1]  # -y
-        Mz[:, 4] = -coords[:, 0]  # x
+        Mz[:, 3] = -coords[:, 1]  # -y
+        Mz[:, 4] = coords[:, 0]  # x
 
         return np.vstack((Mx, My, Mz))
     else:
@@ -187,12 +202,13 @@ def _build_rototranslation_equations(ccoords, wpairs, weights):
 
                     # get pairs of points
                     p, pw = wpairs[keyA][keyB]
+
                     A = ccoords[keyA][p[:, 0], :]
                     B = ccoords[keyB][p[:, 1], :]
 
                     # set equations
-                    equations_A = _equations(A)
-                    equations_B = _equations(B)
+                    equations_A = _equations(-A)
+                    equations_B = _equations(-B)
                     a = np.zeros((A.shape[0] * dim, k * unknowns))
 
                     a[:, iA * unknowns:(iA + 1) * unknowns] = equations_A
@@ -222,7 +238,7 @@ def _build_location_orientation_equations(center, centers, weights, n):
             a = np.eye(cols, k * cols, k=i * cols)
             b = np.zeros(cols)
 
-            w = weights[key] * n**2# * 1000
+            w = weights[key] * n#**2# * 1000
             a = (a.T * w).T
             b = b * w
 
@@ -243,7 +259,7 @@ def _extract_transformations(M, centers, center):
     TC = transformation.t_matrix(center)
     for i, key in enumerate(centers):
         R = transformation.t_matrix(t_dict[key])
-        T = transformation.r_matrix(r_dict[key], order='zyx')
+        T = transformation.r_matrix(r_dict[key], order='xyz')
         M = R * T
         res[key] = TC * M * TC.inv
     return res
@@ -290,7 +306,11 @@ def _prepare_input(coords_dict, pairs_dict, weights):
         wpairs_dict[keyA] = {}
         for keyB in pairs_dict[keyA]:
             pairs = pairs_dict[keyA][keyB]
-            if isinstance(pairs, (tuple, list)) and len(pairs) == 2:
+            if (isinstance(pairs, (tuple, list)) and
+                    len(pairs) == 2 and
+                    nptools.isarray(pairs[0]) and
+                    nptools.isarray(pairs[0][0]) and
+                    nptools.isarray(pairs[1])):
                 pairs, w = pairs
             else:
                 w = np.ones(len(pairs))
