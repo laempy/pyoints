@@ -41,28 +41,29 @@ class ICP:
 
     >>> coords_dict = {'A': A, 'B': B}
     >>> radii = (0.25, 0.25)
+    >>> weights = {'A': [1, 1, 1]}
     >>> icp = ICP(radii, max_iter=10, k=1)
 
     Standard ICP.
 
-    >>> T, pairs = icp(coords_dict)
+    >>> T, pairs = icp(coords_dict, weights=weights)
 
     >>> tA = T['A'].to_local(A)
     >>> tB = T['B'].to_local(B)
 
     >>> print(np.round(tA, 2))
-    [[ 0.43  0.51]
-     [-0.06  0.  ]
-     [-0.06 -0.1 ]
-     [ 1.22  1.03]
-     [ 0.94  0.02]
-     [-1.02 -2.02]]
+    [[ 0.5  0.5]
+     [ 0.   0. ]
+     [-0.  -0.1]
+     [ 1.3  1. ]
+     [ 1.  -0. ]
+     [-1.  -2. ]]
     >>> print(np.round(tB, 2))
-    [[ 0.47  0.5 ]
-     [ 0.35 -0.  ]
-     [ 1.08  0.98]
-     [ 2.08  0.95]
-     [-1.   -1.97]]
+    [[ 0.56  0.48]
+     [ 0.43 -0.01]
+     [ 1.19  0.95]
+     [ 2.18  0.89]
+     [-0.97 -1.94]]
 
     Find matches and compare RMSE
 
@@ -75,7 +76,7 @@ class ICP:
 
     >>> rmse = distance.rmse(tA[pairs[:, 0], :], tB[pairs[:, 1], :])
     >>> print(np.round(rmse, 3))
-    0.094
+    0.09
 
     ICP with normals (NICP).
 
@@ -94,14 +95,14 @@ class ICP:
 
     >>> print(np.round(tA, 2))
     [[ 0.5  0.5]
-     [-0.  -0. ]
-     [-0.  -0.1]
+     [ 0.   0. ]
+     [ 0.  -0.1]
      [ 1.3  1. ]
      [ 1.   0. ]
      [-1.  -2. ]]
     >>> print(np.round(tB, 2))
     [[ 0.4  0.5]
-     [ 0.3 -0. ]
+     [ 0.3  0. ]
      [ 1.   1. ]
      [ 2.   1. ]
      [-1.  -2. ]]
@@ -284,7 +285,7 @@ class ICP:
             raise TypeError("'pairs_dict' needs to be a dictionary")
         if len(T_dict) > 0 and len(pairs_dict) > 0:
             raise ValueError("please specifiy either 'T_dict' or 'pairs_dict'")
-        
+
         if len(T_dict) == 0 and len(pairs_dict) > 0:
             T_dict = rototranslations.find_rototranslations(
                 coords_dict, pairs_dict, weights=weights)
@@ -295,5 +296,5 @@ class ICP:
                 else:
                     dim = coords_dict[key].shape[1]
                     T_dict[key] = transformation.i_matrix(dim)
-                    
+
         return T_dict
