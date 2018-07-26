@@ -108,7 +108,7 @@ def homogenious(coords, value=1):
     return H
 
 
-def matrix(t=None, r=None, s=None, order='trs'):
+def matrix(t=None, r=None, s=None, order='srt'):
     """Creates a transformation matrix based on translation, rotation and scale
     coefficients.
 
@@ -174,8 +174,7 @@ def matrix(t=None, r=None, s=None, order='trs'):
     # create translation matrix according to order
     M = i_matrix(shape[0] - 1)
     for key in list(order):
-        print(key)
-        M = M * matrices[key]
+        M = matrices[key] * M
 
     return LocalSystem(M)
 
@@ -285,7 +284,7 @@ def s_matrix(s):
     return LocalSystem(S_m)
 
 
-def r_matrix(a, order='zxy'):
+def r_matrix(a, order='xyz'):
     """Creates a rotation matrix.
 
     Parameters
@@ -343,7 +342,7 @@ def r_matrix(a, order='zxy'):
         raise TypeError("'order' needs to be a string")
     if order not in orders:
         raise ValueError("order '%s' unknown" % order)
-        
+
     R_dict = {}
     dim = len(a)
     if dim == 1:
@@ -377,11 +376,10 @@ def r_matrix(a, order='zxy'):
         R_dict['x'] = Rx
         R_dict['y'] = Ry
         R_dict['z'] = Rz
-        
+
         R_m = i_matrix(dim)
         for key in list(order):
             R_m = R_dict[key] * R_m
-            
     else:
         raise ValueError(
             '%i-dimensional rotations are not supported yet' % dim)
@@ -595,7 +593,7 @@ class LocalSystem(np.matrix, object):
         Components of the local coordinate system. Each component represents
         a the direction vector of the coordinate axis in the global coordinate
         system.
-    origin :T 
+    origin :T
         Global origin of the local coordinate system.
 
     Examples
@@ -640,7 +638,7 @@ class LocalSystem(np.matrix, object):
     def origin(self, origin):
         origin = ensure_numarray([origin]).T
         self[:self.dim, self.dim] = origin
-        
+
     def decomposition(self):
         return decomposition(self)
 
