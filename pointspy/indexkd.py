@@ -9,8 +9,10 @@ from scipy.spatial import cKDTree
 import rtree.index as r_treeIndex
 from rtree import Rtree
 
-from . import assertion
-from . import transformation
+from . import (
+    assertion,
+    transformation,
+)
 
 
 class IndexKD(object):
@@ -63,7 +65,13 @@ class IndexKD(object):
 
     """
 
-    def __init__(self, coords, transform=None, leafsize=16, quickbuild=True, copy=True):
+    def __init__(
+            self,
+            coords,
+            transform=None,
+            leafsize=16,
+            quickbuild=True,
+            copy=True):
 
         if copy:
             coords = assertion.ensure_coords(coords).copy()
@@ -183,16 +191,15 @@ class IndexKD(object):
         [[0, 1, 10], [1, 10, 11, 12, 21]]
 
         """
-        if hasattr(r, '__iter__'):
+        if assertion.iscoord(coords):
+            # single point
+            return self.kd_tree.query_ball_point(coords, r, **kwargs)
+        elif hasattr(r, '__iter__'):
             # query multiple radii
             return list(self.balls_iter(coords, r, **kwargs))
-        elif isinstance(coords, np.ndarray) and len(coords.shape) > 1:
+        else:
             # bulk queries
             return list(self.ball_iter(coords, r, bulk=bulk, **kwargs))
-        else:
-            # single point query
-            return self.kd_tree.query_ball_point(
-                coords[:self.dim], r, **kwargs)
 
     def ball_iter(self, coords, r, bulk=10000, **kwargs):
         """Similar to `ball`, but yields lists of neighbours.
@@ -210,19 +217,25 @@ class IndexKD(object):
         if not isinstance(bulk, int) and bulk > 0:
             raise ValueError("bulk size has to be a integer greater zero")
 
-        if coords.shape[0] > 0:
-            for i in range(coords.shape[0] // bulk + 1):
-                # bulk query
-                bulk_min = bulk * i
-                bulk_max = bulk * (i + 1)
-                nIds = self.kd_tree.query_ball_point(
-                    coords[bulk_min:bulk_max, :self.dim],
-                    r,
-                    n_jobs=-1,
-                    **kwargs
-                )
-                for nId in nIds:
-                    yield nId
+        coords = iter(coords)
+
+        def get_bulk():
+            try:
+                dim = self.dim
+                for i in range(bulk):
+                    yield next(coords)[:dim]
+            except StopIteration:
+                pass
+
+        while True:
+            # bulk query
+            bulk_coords = list(get_bulk())
+            if len(bulk_coords) == 0:
+                break
+            nIds = self.kd_tree.query_ball_point(
+                bulk_coords, r, n_jobs=-1, **kwargs)
+            for nId in nIds:
+                yield nId
 
     def balls_iter(self, coords, radii, **kwargs):
         """Similar to `ball_iter`, but with differing radii.
@@ -253,27 +266,69 @@ class IndexKD(object):
         ----------
         r : float or iterable of floats
             Iterable radii to query.
-        coords : (n, k), array_like, optional
+        coords : optional, array_like(Number, shape=(n, k)) or iterable
             Represents `n` points of `k` dimensions. If None it is set to
             `self.coords`.
 
         Returns
         -------
-        list if ints
+        numpy.ndarray(int, shape=(n))
             Number of neigbours for each point.
 
         See Also
         --------
-        ball, ball_iter, balls_iter
+        ball_count_iter, ball
+
+        Examples
+        --------
+
+        >>> coords = [(0, 0), (0, 1), (1, 1), (2, 1), (1, 0.5), (0.5, 1)]
+        >>> indexKD = IndexKD(coords)
+
+        >>> counts = indexKD.ball_count(1)
+        >>> print(counts)
+        [2 4 5 2 3 4]
+
+        >>> counts = indexKD.ball_count(1, coords=[0.5, 0.5])
+        >>> print(counts)
+        5
 
         """
         if coords is None:
             coords = self.coords
+
+        if assertion.iscoord(coords):
+            return len(self.ball(coords, r, **kwargs))
+        else:
+            gen = self.ball_count_iter(r, coords=coords, **kwargs)
+            return np.array(list(gen), dtype=int)
+
+    def ball_count_iter(self, r, coords=None, **kwargs):
+        """Counts numbers of neighbours within radius.
+
+        Parameters
+        ----------
+        r : float or iterable of floats
+            Iterable radii to query.
+        coords : optional, array_like(Number, shape=(n, k)) or iterable
+            Represents `n` points of `k` dimensions. If None it is set to
+            `self.coords`.
+
+        Yields
+        ------
+        int
+            Number of neigbours for each point.
+
+        See Also
+        --------
+        ball_iter, balls_iter
+
+        """
         if hasattr(r, '__iter__'):
             nIdsGen = self.balls_iter(coords, r, **kwargs)
         else:
             nIdsGen = self.ball_iter(coords, r, **kwargs)
-        return np.array([*map(len, nIdsGen)], dtype=int)
+        return map(len, nIdsGen)
 
     def sphere(self, coord, r_min, r_max, **kwargs):
         """Counts numbers of neighbours within radius.

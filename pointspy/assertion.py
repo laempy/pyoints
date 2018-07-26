@@ -98,6 +98,25 @@ def isnumeric(value, min_th=-np.inf, max_th=np.inf):
     return isinstance(value, Number) and value >= min_th and value <= max_th
 
 
+def iscoord(coord):
+    """Checks if a value is associated with a coordinate.
+
+    Parameters
+    ----------
+    coord : array_like
+        Value associated with a coordinate.
+
+    Returns
+    -------
+    bool
+        Indicates whether or not the value is a coordinate.
+
+    """
+    return (hasattr(coord, '__len__') and
+            len(coord) > 0 and
+            not hasattr(coord[0], '__len__'))
+
+
 def ensure_numarray(arr):
     """Ensures the properties of an numeric numpy ndarray.
 
