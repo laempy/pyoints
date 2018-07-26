@@ -189,7 +189,7 @@ class ICP:
                                 coords_dict, normals_dict, T_dict, keyB)
                         sids = sampleids_dict[keyB]
                         pairs = matcher(B[sids, :], **self._assign_parameters)
-                        print(pairs.shape)
+                        #print(pairs.shape)
 
                         if len(pairs) > 0:
                             pairs[:, 1] = sids[pairs[:, 1]]

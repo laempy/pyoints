@@ -358,6 +358,7 @@ class GeoRecords(np.recarray, object):
     def transform(self, T):
         T = assertion.ensure_tmatrix(T, dim=self.dim)
         self.coords = transformation.transform(self.coords, T)
+        #self.t.origin = transformation.transform(self.t.origin, T)
         self.t = T * self.t
 
     def project(self, proj):
