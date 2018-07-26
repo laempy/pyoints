@@ -53,7 +53,7 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     >>> coords_dict = {'A': coordsA, 'B': coordsB}
     >>> pairs_dict = { 'A': { 'B': [(0, 0), (1, 1), (2, 2)] } }
     >>> weights = {'A': [1, 1, 1], 'B': [0, 0, 0]}
-
+    >>> weights = None
     >>> res = find_rototranslations(coords_dict, pairs_dict, weights=weights)
     >>> print(list(res.keys()))
     ['A', 'B']
@@ -85,6 +85,7 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     >>> coords_dict = {'A': coordsA, 'B': coordsB}
     >>> pairs_dict = { 'A': { 'B': [(0, 0), (1, 1), (3, 3)] } }
     >>> weights = {'A': [1, 1, 1, 1, 1, 1], 'B': [0, 0, 0, 0, 0, 0]}
+    >>> weights = [0, 0, 0, 0, 0, 0]
     >>> res = find_rototranslations(coords_dict, pairs_dict, weights=weights)
     >>> print(list(res.keys()))
     ['A', 'B']
@@ -226,39 +227,25 @@ def _build_location_orientation_equations(center, centers, weights, n):
             #
             #print('weights')
             #print(weights[key])
-            if weights[key].sum() > 0:
-                a = np.eye(cols, k * cols, k=i * cols)
-                b = np.zeros(cols)
 
-                #equations_A = _equations(np.array([centers[key] - centers[key]]))
-                #a[:dim, i * cols:(i + 1) * cols] = equations_A
-                #b[:dim] = center - centers[key]
-                #b[:dim] = center
+            a = np.eye(cols, k * cols, k=i * cols)
+            b = np.zeros(cols)
 
-                #print(a)
-                #print(b)
+            #equations_A = _equations(np.array([centers[key] - centers[key]]))
+            #a[:dim, i * cols:(i + 1) * cols] = equations_A
+            #b[:dim] = center - centers[key]
+            #b[:dim] = center
 
-                w = weights[key] * n**2# * 10000
-                a = (a.T * w).T
-                b = b * w
+            #print(a)
+            #print(b)
 
-
-                mA.extend(a)
-                mB.extend(b)
+            w = weights[key] * n**2# * 10000
+            a = (a.T * w).T
+            b = b * w
 
 
-    # sum of parameter shall be zero to average the translations and rotations
-    #if len(weights) == 0:
-    #a = np.tile(np.eye(cols, cols), k)# * n
-    #d = np.sum([centers[key] - center for key in centers], axis=0)
-    #print('!!!!!!!!!!!!!!!!!!')
-    #print(d)
-    #print(a)
-    #b = np.zeros(cols)
-    #b[:dim] = center
-    #b[:dim] = d
-    #mA.append(a)
-    #mB.append(b)
+            mA.extend(a)
+            mB.extend(b)
 
     return mA, mB
 
@@ -273,14 +260,13 @@ def _extract_transformations(M, centers, center):
 
     TC = transformation.t_matrix(center)
     for i, key in enumerate(centers):
-        print(key)
-        print(t_dict[key])
-        print(r_dict[key])
+        #print(key)
+        #print(t_dict[key])
+        #print(r_dict[key])
 
         R = transformation.t_matrix(t_dict[key])
         T = transformation.r_matrix(r_dict[key], order='zyx')
         M = R * T
-        res[key] = T
         res[key] = TC * M * TC.inv
 
     return res
@@ -347,7 +333,7 @@ def _prepare_input(coords_dict, pairs_dict, weights):
     # try to keep the original location and orientation
     weights_dict = {}
     if weights is None:
-        weights = np.ones(unknowns)
+        weights = np.zeros(unknowns)
     if weights is not None:
         if isinstance(weights, dict):
             for key in weights:
