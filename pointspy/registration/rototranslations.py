@@ -77,7 +77,8 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     >>> coordsA = [(-10, -20, 3), (-1, 2, 4), (1, 10, 5), (1, -2, 60)]
     >>> C = transformation.t_matrix([10000, 600000, 70000])
     >>> coordsA = transformation.transform(coordsA, C)
-    >>> T = C * transformation.matrix(t=[2, 5, 10], r=[-0.02, 0.05, 0.03], order='trs') * C.inv
+    >>> T = transformation.matrix(t=[2, 5, 10], r=[-0.02, 0.05, 0.03], order='trs')
+    >>> T = C * T * C.inv
     >>> coordsB = transformation.transform(coordsA, T)
     >>> print(np.round(coordsA, 1))
     >>> print(np.round(coordsB, 1))
@@ -85,7 +86,7 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     >>> coords_dict = {'A': coordsA, 'B': coordsB}
     >>> pairs_dict = { 'A': { 'B': [(0, 0), (1, 1), (3, 3)] } }
     >>> weights = {'A': [1, 1, 1, 1, 1, 1], 'B': [0, 0, 0, 0, 0, 0]}
-    >>> weights = [0, 0, 0, 0, 0, 0]
+    >>> #weights = [0, 0, 0, 0, 0, 0]
     >>> res = find_rototranslations(coords_dict, pairs_dict, weights=weights)
     >>> print(list(res.keys()))
     ['A', 'B']
@@ -224,10 +225,6 @@ def _build_location_orientation_equations(center, centers, weights, n):
     mB = []
     for i, key in enumerate(centers):
         if key in weights:
-            #
-            #print('weights')
-            #print(weights[key])
-
             a = np.eye(cols, k * cols, k=i * cols)
             b = np.zeros(cols)
 
@@ -239,10 +236,10 @@ def _build_location_orientation_equations(center, centers, weights, n):
             #print(a)
             #print(b)
 
-            w = weights[key] * n**2# * 10000
+            w = weights[key] * n**2 * 1000
             a = (a.T * w).T
             b = b * w
-
+            print(weights)
 
             mA.extend(a)
             mB.extend(b)
@@ -260,15 +257,11 @@ def _extract_transformations(M, centers, center):
 
     TC = transformation.t_matrix(center)
     for i, key in enumerate(centers):
-        #print(key)
-        #print(t_dict[key])
-        #print(r_dict[key])
-
         R = transformation.t_matrix(t_dict[key])
-        T = transformation.r_matrix(r_dict[key], order='zyx')
+        T = transformation.r_matrix(r_dict[key], order='xyz')
         M = R * T
         res[key] = TC * M * TC.inv
-
+        #res[key] = M
     return res
 
 
