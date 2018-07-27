@@ -155,11 +155,11 @@ class ICP:
 
         """
         # validate input
-        coords_dict, dim = self._ensure_coords_dict(coords_dict)
-        sampleids_dict = self._ensure_sampleids_dict(
+        coords_dict, dim = _ensure_coords_dict(coords_dict)
+        sampleids_dict = _ensure_sampleids_dict(
                 sampleids_dict, coords_dict)
-        normals_dict = self._ensure_normals_dict(normals_dict, coords_dict)
-        T_dict = self._ensure_T_dict(T_dict, coords_dict, pairs_dict, weights)
+        normals_dict = _ensure_normals_dict(normals_dict, coords_dict)
+        T_dict = _ensure_T_dict(T_dict, coords_dict, pairs_dict, weights)
 
         # check radii
         if len(normals_dict) > 0:
@@ -179,14 +179,14 @@ class ICP:
             for keyA in coords_dict:
                 pairs_dict[keyA] = {}
 
-                A = self._get_nCoords(
+                A = _get_nCoords(
                         coords_dict, normals_dict, T_dict, keyA)
                 matcher = self._assign_class(A, self._radii)
 
                 for keyB in coords_dict:
                     if keyB != keyA:
 
-                        B = self._get_nCoords(
+                        B = _get_nCoords(
                                 coords_dict, normals_dict, T_dict, keyB)
                         sids = sampleids_dict[keyB]
                         pairs = matcher(B[sids, :], **self._assign_parameters)
@@ -222,79 +222,78 @@ class ICP:
 
         return T_dict, pairs_dict
 
-    @staticmethod
-    def _get_nCoords(coords_dict, normals_dict, T_dict, key):
-        nCoords = coords_dict[key]
-        T = T_dict[key]
-        nCoords = transformation.transform(coords_dict[key], T)
 
-        if len(normals_dict) > 0:
-            # update normal orientation
-            R = transformation.r_matrix(transformation.decomposition(T)[1])
-            normals = transformation.transform(normals_dict[key], R)
-            # normals = normals_dict[key]
-            nCoords = np.hstack((nCoords, normals))
-        return nCoords
+def _get_nCoords(coords_dict, normals_dict, T_dict, key):
+    nCoords = coords_dict[key]
+    T = T_dict[key]
+    nCoords = transformation.transform(coords_dict[key], T)
 
-    @staticmethod
-    def _ensure_coords_dict(coords_dict):
-        if not isinstance(coords_dict, dict):
-            raise TypeError("'coords_dict' needs to be a dictionary")
+    if len(normals_dict) > 0:
+        # update normal orientation
+        R = transformation.r_matrix(transformation.decomposition(T)[1])
+        normals = transformation.transform(normals_dict[key], R)
+        # normals = normals_dict[key]
+        nCoords = np.hstack((nCoords, normals))
+    return nCoords
+    
 
-        dim = None
+def _ensure_coords_dict(coords_dict):
+    if not isinstance(coords_dict, dict):
+        raise TypeError("'coords_dict' needs to be a dictionary")
+
+    dim = None
+    for key in coords_dict:
+        if dim is None:
+            coords_dict[key] = assertion.ensure_coords(coords_dict[key])
+            dim = coords_dict[key].shape[1]
+        coords_dict[key] = assertion.ensure_coords(
+                coords_dict[key], dim=dim)
+    return coords_dict, dim
+
+
+def _ensure_normals_dict(normals_dict, coords_dict):
+    if not isinstance(normals_dict, dict):
+        raise TypeError("'normals_dict' needs to be a dictionary")
+    if len(normals_dict) > 0:
         for key in coords_dict:
-            if dim is None:
-                coords_dict[key] = assertion.ensure_coords(coords_dict[key])
-                dim = coords_dict[key].shape[1]
-            coords_dict[key] = assertion.ensure_coords(
-                    coords_dict[key], dim=dim)
-        return coords_dict, dim
-
-    @staticmethod
-    def _ensure_normals_dict(normals_dict, coords_dict):
-        if not isinstance(normals_dict, dict):
-            raise TypeError("'normals_dict' needs to be a dictionary")
-        if len(normals_dict) > 0:
-            for key in coords_dict:
-                dim = coords_dict[key].shape[1]
-                if key in normals_dict:
-                    normals_dict[key] = assertion.ensure_coords(
-                            normals_dict[key], dim=dim)
-                else:
-                    raise ValueError("missing normals for '%s'" % key)
-        return normals_dict
-
-    @staticmethod
-    def _ensure_sampleids_dict(sampleids_dict, coords_dict):
-        if not isinstance(sampleids_dict, dict):
-            raise TypeError("'sampleids_dict' needs to be a dictionary")
-        for key in coords_dict:
-            n = len(coords_dict[key])
-            if key in sampleids_dict:
-                sampleids_dict[key] = assertion.ensure_indices(
-                        sampleids_dict[key], max_value=n)
+            dim = coords_dict[key].shape[1]
+            if key in normals_dict:
+                normals_dict[key] = assertion.ensure_coords(
+                        normals_dict[key], dim=dim)
             else:
-                sampleids_dict[key] = np.arange(n)
-        return sampleids_dict
+                raise ValueError("missing normals for '%s'" % key)
+    return normals_dict
 
-    @staticmethod
-    def _ensure_T_dict(T_dict, coords_dict, pairs_dict, weights):
-        if not isinstance(T_dict, dict):
-            raise TypeError("'T_dict' needs to be a dictionary")
-        if not isinstance(pairs_dict, dict):
-            raise TypeError("'pairs_dict' needs to be a dictionary")
-        if len(T_dict) > 0 and len(pairs_dict) > 0:
-            raise ValueError("please specifiy either 'T_dict' or 'pairs_dict'")
 
-        if len(T_dict) == 0 and len(pairs_dict) > 0:
-            T_dict = rototranslations.find_rototranslations(
-                coords_dict, pairs_dict, weights=weights)
+def _ensure_sampleids_dict(sampleids_dict, coords_dict):
+    if not isinstance(sampleids_dict, dict):
+        raise TypeError("'sampleids_dict' needs to be a dictionary")
+    for key in coords_dict:
+        n = len(coords_dict[key])
+        if key in sampleids_dict:
+            sampleids_dict[key] = assertion.ensure_indices(
+                sampleids_dict[key], max_value=n)
         else:
-            for key in coords_dict:
-                if key in T_dict.keys():
-                    T_dict[key] = assertion.ensure_tmatrix(T_dict[key])
-                else:
-                    dim = coords_dict[key].shape[1]
-                    T_dict[key] = transformation.i_matrix(dim)
+            sampleids_dict[key] = np.arange(n)
+    return sampleids_dict
 
-        return T_dict
+
+def _ensure_T_dict(T_dict, coords_dict, pairs_dict, weights):
+    if not isinstance(T_dict, dict):
+        raise TypeError("'T_dict' needs to be a dictionary")
+    if not isinstance(pairs_dict, dict):
+        raise TypeError("'pairs_dict' needs to be a dictionary")
+    if len(T_dict) > 0 and len(pairs_dict) > 0:
+        raise ValueError("please specifiy either 'T_dict' or 'pairs_dict'")
+
+    if len(T_dict) == 0 and len(pairs_dict) > 0:
+        T_dict = rototranslations.find_rototranslations(
+            coords_dict, pairs_dict, weights=weights)
+    else:
+        for key in coords_dict:
+            if key in T_dict.keys():
+                T_dict[key] = assertion.ensure_tmatrix(T_dict[key])
+            else:
+                dim = coords_dict[key].shape[1]
+                T_dict[key] = transformation.i_matrix(dim)
+    return T_dict
