@@ -190,7 +190,6 @@ class ICP:
                                 coords_dict, normals_dict, T_dict, keyB)
                         sids = sampleids_dict[keyB]
                         pairs = matcher(B[sids, :], **self._assign_parameters)
-                        #print(pairs.shape)
 
                         if len(pairs) > 0:
                             pairs[:, 1] = sids[pairs[:, 1]]
@@ -230,9 +229,10 @@ class ICP:
         nCoords = transformation.transform(coords_dict[key], T)
 
         if len(normals_dict) > 0:
-            #R = transformation.r_matrix(transformation.decomposition(T)[1])
-            #normals = transformation.transform(normals_dict[key], R)
-            normals = normals_dict[key]
+            # update normal orientation
+            R = transformation.r_matrix(transformation.decomposition(T)[1])
+            normals = transformation.transform(normals_dict[key], R)
+            # normals = normals_dict[key]
             nCoords = np.hstack((nCoords, normals))
         return nCoords
 

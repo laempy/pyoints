@@ -314,6 +314,7 @@ def _prepare_input(coords_dict, pairs_dict, weights):
                 pairs, w = pairs
             else:
                 w = np.ones(len(pairs))
+
             pairs = np.array(pairs, dtype=int)
             if len(pairs) > 0:
                 w = assertion.ensure_numvector(
