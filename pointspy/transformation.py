@@ -775,6 +775,41 @@ class LocalSystem(np.matrix, object):
         return var / var.sum()
 
 
+def eigen(coords):
+    """Fit eigenvectors to coordinates
+    
+    Parameters
+    ----------
+    coords : array_like(Number, shape=(n, k))
+        Represents `n` data points of `k` dimensions to fit the eigenvectors
+        to.
+    
+    Returns
+    -------
+    eigen_vectors : np.ndarray(Number, shape=(k, k))
+        Columnwise normalized eigenvectors in descending order of eigenvalue.
+    eigen_values : np.ndarray(Number, shape=(k))
+        Eigenvalues in descending order.
+
+    See Also
+    --------
+    PCA
+        
+    """
+    coords = ensure_coords(coords)
+    cCoords = coords - coords.mean(0)
+    
+    # calculate Eigenvectors and Eigenvalues
+    # cov_matrix = np.cov(cCoords, rowvar=False)  # a bit slow
+    cov_matrix = dot(cCoords.T, cCoords)
+    # cov_matrix = cCoords.T @ cCoords  # fastest solution found
+    # cov_matrix is a Hermitian matrix
+    eigen_values, eigen_vectors = eigh(cov_matrix)
+    # eigen_values in descending order ==> reverse
+    
+    return eigen_vectors[:, ::-1], eigen_values[::-1]
+    
+
 class PCA(LocalSystem):
     """Principal Component Analysis (PCA).
 
@@ -813,33 +848,18 @@ class PCA(LocalSystem):
     """
     def __new__(cls, coords):
         # Do not edit anything!!!
-
-        # mean centering
-        coords = ensure_coords(coords)
-        center = coords.mean(0)
-        cCoords = coords - center
-        dim = coords.shape[1]
-
-        # calculate Eigenvectors and Eigenvalues
-        cov_matrix = dot(cCoords.T, cCoords)
-        # cov_matrix = cCoords.T @ cCoords  # fastest solution found
-        # cov_matrix = np.cov(cCoords, rowvar=False)  # a bit slower
-        # cov_matrix is a Hermitian matrix
-        eigen_values, eigen_vectors = eigh(cov_matrix)
-        # eigen_values in descending order ==> reverse
-
-        # Transformation matrix
+        eigen_vectors, eigen_values = eigen(coords)
+        center = np.mean(coords, axis=0)
+        dim = len(center)
+        
         T = LocalSystem(identity(dim + 1)).view(cls)
-        T[:dim, :dim] = eigen_vectors.T[::-1, :]
+        T[:dim, :dim] = eigen_vectors.T
         T = T * t_matrix(-center)  # don not edit!
 
-        T._eigen_values = eigen_values[::-1]
-
-        # close = np.isclose(abs(np.linalg.det(T)), 1)
-        # assert close, "determinant unexpectedly differs from -1 or 1"
-        # valid = np.all(np.isclose(T.to_local(center), np.zeros(len(center))))
-        # assert valid, "transformation of origin failed"
+        T._eigen_values = eigen_values
+    
         return T
+
 
     @property
     def eigen_values(self):
