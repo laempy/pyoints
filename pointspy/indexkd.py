@@ -115,6 +115,29 @@ class IndexKD(object):
 
         """
         return enumerate(self.coords)
+    
+    
+    def _get_bulk(self, coords, bulk):
+        """Internal function to get a bulk of coordinates. 
+        
+        Parameters
+        ----------
+        coords : iterable of array_like(shape=(k))
+            Coordinates of at least `self.dim` dimensions.
+        bulk : positive int
+            Size of bulk.
+        
+        Yields
+        ------
+        array_like(shape=(self.dim))
+        
+        """
+        dim = self.dim
+        try:
+            for i in range(bulk):
+                yield next(coords)[:dim]
+        except StopIteration:
+            pass
 
     @property
     def dim(self):
@@ -221,21 +244,13 @@ class IndexKD(object):
         coords = iter(coords)
         while True:
             # bulk query
-            bulk_coords = list(self._get_bulk(coords, bulk))
+            bulk_coords = np.array(list(self._get_bulk(coords, bulk)))
             if len(bulk_coords) == 0:
                 break
             nIds = self.kd_tree.query_ball_point(
                 bulk_coords, r, n_jobs=-1, **kwargs)
             for nId in nIds:
                 yield nId
-
-    def _get_bulk(self, coords, bulk):
-        dim = self.dim
-        try:
-            for i in range(bulk):
-                yield next(coords)[:dim]
-        except StopIteration:
-            pass
 
 
     def balls_iter(self, coords, radii, **kwargs):
