@@ -137,9 +137,9 @@ def ensure_numarray(arr):
     Examples
     --------
 
-    >>> print ensure_numarray([0,1,2])
+    >>> print(ensure_numarray([0,1,2]))
     [0 1 2]
-    >>> print ensure_numarray((-4,-5))
+    >>> print(ensure_numarray((-4,-5)))
     [-4 -5]
 
     """
@@ -182,7 +182,7 @@ def ensure_numvector(v, length=None, min_length=1, max_length=np.inf):
     ...     ensure_numvector(v, length=5)
     ... except ValueError as e:
     ...     print(e)
-    vector of length 5 required
+    length 5 required
 
     Raises
     ------
@@ -259,9 +259,9 @@ def ensure_coords(coords, by_col=False, dim=None, min_dim=2, max_dim=np.inf):
     Coordinates provided row by row.
 
     >>> coords = ensure_coords([(3, 2), (2, 4), (-1, 2), (9, 3)])
-    >>> print type(coords)
-    <type 'numpy.ndarray'>
-    >>> print coords
+    >>> print(isinstance(coords, np.ndarray))
+    True
+    >>> print(coords)
     [[ 3  2]
      [ 2  4]
      [-1  2]
@@ -270,7 +270,7 @@ def ensure_coords(coords, by_col=False, dim=None, min_dim=2, max_dim=np.inf):
     Coordinates provided column by column.
 
     >>> coords = ensure_coords([(3, 2, -1, 9), (2, 4, 2, 3)], by_col=True)
-    >>> print coords
+    >>> print(coords)
     [[ 3  2]
      [ 2  4]
      [-1  2]

@@ -97,7 +97,7 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     >>> #weights = [0, 0, 0, 0, 0, 0]
     >>> res = find_rototranslations(coords_dict, pairs_dict, weights=weights)
     >>> print(list(res.keys()))
-    ['C', 'A', 'B']
+    ['A', 'B', 'C']
     >>> tA = res['A'].to_local(coords_dict['A'])
     >>> print(np.round(tA, 1))
     [[-10. -20.   3.]

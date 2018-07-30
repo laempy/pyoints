@@ -47,7 +47,7 @@ def classes_to_dict(
 
     >>> classes = ['cat', 'cat', 'dog', 'bird', 'dog', 'bird', 'cat', 'dog']
     >>> print(classes_to_dict(classes))
-    {'cat': [0, 1, 6], 'bird': [3, 5], 'dog': [2, 4, 7]}
+    {'cat': [0, 1, 6], 'dog': [2, 4, 7], 'bird': [3, 5]}
 
     >>> classes = [0, 0, 1, 2, 1, 0, 3, 3, 5, 3, 2, 1, 0]
     >>> print(classes_to_dict(classes))
@@ -127,14 +127,13 @@ def dict_to_classes(
     Omit small classes.
 
     >>> print(dict_to_classes(classes_dict, 10, min_size=2))
-    ['bird' 'bird' '-1' 'dog' 'bird' 'bird' 'dog' '-1' 'dog' '-1']
-
+    ['bird' 'bird' -1 'dog' 'bird' 'bird' 'dog' -1 'dog' -1]
 
     Numeric classes.
 
     >>> classes_dict = {0: [0, 1, 5], 1: [3, 6], 2: [7, 2]}
     >>> print(dict_to_classes(classes_dict, 9))
-    [ 0  0  2  1 -1  0  1  2 -1]
+    [0 0 2 1 -1 0 1 2 -1]
 
     """
     # type validation
@@ -148,7 +147,7 @@ def dict_to_classes(
     classification = np.full(n, missing_value, dtype=dt)
 
     # assign classes
-    for cId, ids in classes_dict.iteritems():
+    for cId, ids in classes_dict.items():
         if len(ids) >= min_size and len(ids) <= max_size:
             classification[ids] = cId
 
@@ -206,11 +205,11 @@ def rename_dict(d, ids=None):
     --------
 
     >>> d = {1: [0, 1], 2: None, 3: 'text'}
-    >>> print(rename_dict(d, ['first', 'second', 'last']))
-    {'second': None, 'last': 'text', 'first': [0, 1]}
-
+    >>> renamed_dict = rename_dict(d, ['first', 'second', 'last'])
+    >>> print(renamed_dict)
+    {'first': [0, 1], 'second': None, 'last': 'text'}
+    
     """
-
     if not isinstance(d, dict):
         raise TypeError("dictionary required")
     if ids is None:
