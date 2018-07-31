@@ -172,15 +172,12 @@ class Grid(GeoRecords):
         # TODO vereinfachen (wie mit strukturierten koordinaten umgehen?
         s = np.product(coords[:, :dim].shape) // dim
 
-        print(s)
-        print(T.dim)
-
         flat_coords = coords[:, :dim].view().reshape((s, dim))
         values = T.to_global(flat_coords)
 
         # TODO Reihenfolge der Spalten?
-        # keys=np.array(np.round(values),dtype=int)[:,::-1]
-        keys = np.array(np.floor(values), dtype=int)[:, ::-1]
+        # keys = np.round(values).astype(int)[:,::-1]
+        keys = np.floor(values).astype(int)[:, ::-1]
         return keys.reshape(coords[:, :dim].shape)
 
     @staticmethod
@@ -275,7 +272,7 @@ class Grid(GeoRecords):
         extent = Extent(extent)
         T = assertion.ensure_tmatrix(T)
 
-        dim = len(extent) / 2
+        dim = len(extent) // 2
 
         if not T.shape[0] - 1 == dim:
             raise ValueError('dimensions do not match')
@@ -316,6 +313,7 @@ def voxelize(geoRecords, T, dtypes=[('geoRecords', object)]):
             dtype=list))
 
     # Gruppieren der keys
+    # TODO remove pandas
     df = pd.DataFrame({'indices': keys_to_indices(keys, shape)})
     groupDict = df.groupby(by=df.indices).groups
     keys = indices_to_keys(groupDict.keys(), shape)

@@ -173,14 +173,14 @@ def _orient_normals(normals, p_normals):
     return normals
 
 
-def fit_normals(coords, radii, indices=None, preferred_normals=None):
+def fit_normals(coords, r, indices=None, preferred_normals=None):
     """Fit normals to points points.
 
     Parameters
     ----------
     coords : array_like(Number, shape=(n, k))
         Represents `n` points of `k` dimensions.
-    radii : positive Number or array_like(Number, shape=(n))
+    r : positive Number or array_like(Number, shape=(n))
         Radius or radii to select neighbouring points.
 
     Returns
@@ -215,17 +215,18 @@ def fit_normals(coords, radii, indices=None, preferred_normals=None):
         indices = assertion.ensure_numvector(indices, max_length=len(coords))
 
     indexKD = coords.indexKD()
-    if assertion.isnumeric(radii):
-        ball_gen = indexKD.ball_iter(coords[indices, :], radii)
+    if assertion.isnumeric(r):
+        ball_gen = indexKD.ball_iter(coords[indices, :], r)
     else:
-        radii = assertion.ensure_numvector(radii, length=len(indices))
-        ball_gen = indexKD.balls_iter(coords[indices, :], radii)
+        r = assertion.ensure_numvector(r, length=len(indices))
+        ball_gen = indexKD.balls_iter(coords[indices, :], r)
 
     # generate normals
     normals = np.zeros((len(indices), dim), dtype=float)
     for pId, nIds in enumerate(ball_gen):
         if len(nIds) >= dim:
-            normals[pId, :] = PCA(coords[nIds, :]).pc(dim)
+            eig_vec, eig_val = transformation.eigen(coords[nIds, :])
+            normals[pId, :] = eig_vec[:, -1]
 
     # flip normals if required
     normals = _orient_normals(normals, preferred_normals)
@@ -233,14 +234,14 @@ def fit_normals(coords, radii, indices=None, preferred_normals=None):
     return normals
 
 
-def approximate_normals(coords, radii, preferred_normals=None):
+def approximate_normals(coords, r, preferred_normals=None):
     """Calculate approximate normals of points.
 
     Parameters
     ----------
     coords : array_like(Number, shape=(n, k))
         Represents `n` points of `k` dimensions.
-    radii : positive Number or array_like(Number, shape=(n))
+    r : positive Number or array_like(Number, shape=(n))
         Radius or radii to select neighbouring points.
 
     Returns
@@ -270,18 +271,21 @@ def approximate_normals(coords, radii, preferred_normals=None):
     dim = coords.dim
 
     # check radii
-    if assertion.isnumeric(radii):
-        radii = np.repeat(radii, len(coords))
+    if assertion.isnumeric(r):
+        r = np.repeat(r, len(coords))
     else:
-        radii = assertion.ensure_numvector(radii, length=len(coords))
-
+        r = assertion.ensure_numvector(r, length=len(coords))
+    
     # generate normals
     normals = np.zeros(coords.shape, dtype=float)
+    not_visited = np.ones(len(coords), dtype=bool)
     for pId in range(len(coords)):
-        if np.all(normals[pId, :] == 0):
-            nIds = indexKD.ball(coords[pId, :], radii[pId])
+        if not_visited[pId]:
+            nIds = indexKD.ball(coords[pId, :], r[pId])
             if len(nIds) >= dim:
-                normals[nIds, :] = PCA(coords[nIds, :]).pc(dim)
+                eig_vec, eig_val = transformation.eigen(coords[nIds, :])
+                normals[nIds, :] = eig_vec[:, -1]
+                not_visited[nIds] = False      
 
     normals = _orient_normals(normals, preferred_normals)
 

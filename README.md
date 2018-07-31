@@ -65,7 +65,7 @@ Linux
 # TODO
 
 Packaging
-https://packaging.python.org/tutorials/distributing-packages/
+https://packaging.python.org/tutorials/packaging-projects/
 
 setup.py
 setup.cfg

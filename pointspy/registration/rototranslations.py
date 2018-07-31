@@ -97,7 +97,7 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     >>> #weights = [0, 0, 0, 0, 0, 0]
     >>> res = find_rototranslations(coords_dict, pairs_dict, weights=weights)
     >>> print(list(res.keys()))
-    ['C', 'A', 'B']
+    ['A', 'B', 'C']
     >>> tA = res['A'].to_local(coords_dict['A'])
     >>> print(np.round(tA, 1))
     [[-10. -20.   3.]
@@ -306,20 +306,20 @@ def _prepare_input(coords_dict, pairs_dict, weights):
         wpairs_dict[keyA] = {}
         for keyB in pairs_dict[keyA]:
             pairs = pairs_dict[keyA][keyB]
-            if (isinstance(pairs, (tuple, list)) and
-                    len(pairs) == 2 and
-                    nptools.isarray(pairs[0]) and
-                    nptools.isarray(pairs[1]) and
-                    nptools.isarray(pairs[0][0])):
+            if isinstance(pairs, tuple):
                 pairs, w = pairs
             else:
                 w = np.ones(len(pairs))
 
-            pairs = np.array(pairs, dtype=int)
+            pairs = assertion.ensure_numarray(pairs)
             if len(pairs) > 0:
-                w = assertion.ensure_numvector(
-                        w, length=pairs.shape[0]).astype(float)
-                wpairs_dict[keyA][keyB] = (pairs, w)
+                if not nptools.isnumeric(pairs, dtypes=[np.int32, np.int64]):
+                    raise ValueError("'pairs' needs to have integer values")
+                if not (len(pairs.shape) == 2 and pairs.shape[1] == 2):
+                    m = "malformed shape of 'pairs' (got '%s')"
+                    raise ValueError(m % str(pairs.shape))
+                w = assertion.ensure_numvector(w, length=pairs.shape[0])
+                wpairs_dict[keyA][keyB] = (pairs, w.astype(float))
 
     # try to keep the original location and orientation
     weights_dict = {}

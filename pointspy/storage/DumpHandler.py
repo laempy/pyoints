@@ -39,7 +39,7 @@ def loadDump(filename):
     object
 
     """
-    with open(file, 'r') as f:
+    with open(filename, 'r') as f:
         return pickle.load(f)
 
 

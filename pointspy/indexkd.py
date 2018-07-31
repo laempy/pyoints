@@ -115,6 +115,29 @@ class IndexKD(object):
 
         """
         return enumerate(self.coords)
+    
+    
+    def _get_bulk(self, coords, bulk):
+        """Internal function to get a bulk of coordinates. 
+        
+        Parameters
+        ----------
+        coords : iterable of array_like(shape=(k))
+            Coordinates of at least `self.dim` dimensions.
+        bulk : positive int
+            Size of bulk.
+        
+        Yields
+        ------
+        array_like(shape=(self.dim))
+        
+        """
+        dim = self.dim
+        try:
+            for i in range(bulk):
+                yield next(coords)[:dim]
+        except StopIteration:
+            pass
 
     @property
     def dim(self):
@@ -219,24 +242,16 @@ class IndexKD(object):
             raise ValueError("bulk size has to be a integer greater zero")
 
         coords = iter(coords)
-
-        def get_bulk():
-            try:
-                dim = self.dim
-                for i in range(bulk):
-                    yield next(coords)[:dim]
-            except StopIteration:
-                pass
-
         while True:
             # bulk query
-            bulk_coords = list(get_bulk())
+            bulk_coords = np.array(list(self._get_bulk(coords, bulk)))
             if len(bulk_coords) == 0:
                 break
             nIds = self.kd_tree.query_ball_point(
                 bulk_coords, r, n_jobs=-1, **kwargs)
             for nId in nIds:
                 yield nId
+
 
     def balls_iter(self, coords, radii, **kwargs):
         """Similar to `ball_iter`, but with differing radii.
@@ -392,22 +407,49 @@ class IndexKD(object):
         indices : (n, k), list
             Indices of nearest neihbours.
 
+        Examples
+        --------
+
+        >>> coords = [(0, 0), (0, 1), (1, 1), (2, 1), (1, 0.5), (0.5, 1)]
+        >>> indexKD = IndexKD(coords)
+
+        >>> dists, nids = indexKD.knn((0.5, 1), 2)
+        >>> print(dists)
+        [0.  0.5]
+        >>> print(nids)
+        [5 2]
+        
+        >>> dists, nids = indexKD.knn([(0.5, 1), (1.5, 1)], 2)
+        >>> print(dists)
+        [[0.  0.5]
+         [0.5 0.5]]
+        >>> print(nids)
+        [[5 2]
+         [3 2]]
+        
+        >>> dists, nids = indexKD.knn([(0.5, 1), (1.5, 1), (1, 1)], [3, 1, 2])
+        >>> print(dists)
+        (array([0. , 0.5, 0.5]), array([0.5]), array([0. , 0.5]))
+        >>> print(nids)
+        (array([5, 1, 2]), array([2]), array([2, 4]))
+        
         See Also
         --------
         knn, knns_iter, scipy.spatial.cKDTree.query
 
         """
-        if hasattr(k, '__iter__'):
+        if assertion.iscoord(coords):
+            # single point query
+            dists, nIds = self.kd_tree.query(coords[:self.dim], k, **kwargs)
+        elif hasattr(k, '__iter__'):
             # query multiple radii
-            dists, nIds = list(self.knns_iter(coords, k=k, **kwargs))
-        elif isinstance(coords, np.ndarray) and len(coords.shape) > 1:
+            dists, nIds = zip(*self.knns_iter(coords, ks=k, **kwargs))
+        else:
             # bulk queries
             dists, nIds = zip(*self.knn_iter(coords, k=k, bulk=bulk, **kwargs))
-        else:
-            # single point query
-            dists, nIds = self.kd_tree.query(
-                coords[:self.dim], k, **kwargs)
-        return np.array(dists), np.array(nIds)
+            dists = np.array(dists)
+            nIds = np.array(nIds)
+        return dists, nIds
 
     def knn_iter(self, coords, k=1, bulk=100000, **kwargs):
         """Similar to `knn`, but yields lists of neighbours.
@@ -425,12 +467,15 @@ class IndexKD(object):
         """
         if not isinstance(bulk, int) and bulk > 0:
             raise ValueError("bulk size has to be an integer greater zero")
-
-        for i in range(coords.shape[0] // bulk + 1):
-            dists, nIds = self.kd_tree.query(
-                coords[bulk * i:bulk * (i + 1), :self.dim], k=k, **kwargs)
-            for d, n in zip(dists, nIds):
-                yield d, n
+        coords = iter(coords)
+        while True:           
+            bulk_coords = list(self._get_bulk(coords, bulk))
+            if len(bulk_coords) == 0:
+                break
+            dists_list, nIds_list = self.kd_tree.query(
+                    bulk_coords, k=k, **kwargs)
+            for dists, nIds in zip(dists_list, nIds_list):
+                yield dists, nIds
 
     def knns_iter(self, coords, ks, **kwargs):
         """Similar to `knn`, but yields lists of neighbours.
@@ -453,8 +498,10 @@ class IndexKD(object):
 
         """
         for coord, k in zip(coords, ks):
-            dists, nIds = self.kd_tree.query(
-                coord[:, :self.dim], k=k, **kwargs)
+            dists, nIds = self.kd_tree.query(coord[:self.dim], k=k, **kwargs)
+            if k == 1:
+                dists=np.array([dists])
+                nIds=np.array([nIds])
             yield dists, nIds
 
     @property
