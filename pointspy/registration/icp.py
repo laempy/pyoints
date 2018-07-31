@@ -230,9 +230,9 @@ def _get_nCoords(coords_dict, normals_dict, T_dict, key):
 
     if len(normals_dict) > 0:
         # update normal orientation
-        R = transformation.r_matrix(transformation.decomposition(T)[1])
-        normals = transformation.transform(normals_dict[key], R)
-        # normals = normals_dict[key]
+        #R = transformation.r_matrix(transformation.decomposition(T)[1])
+        #normals = transformation.transform(normals_dict[key], R)
+        normals = normals_dict[key]
         nCoords = np.hstack((nCoords, normals))
     return nCoords
     

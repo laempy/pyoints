@@ -1,5 +1,5 @@
 import time
-
+import pkg_resources
 
 def tic():
     global startTime_for_tictoc
@@ -14,3 +14,29 @@ def toc():
     else:
         print("Toc: start time not set")
         return None
+
+
+
+
+def list_licences(requirements_file):
+    with open(requirements_file) as f:
+        package_list = f.readlines()
+    package_list = [pkgname.strip() for pkgname in package_list]
+    for pkgname in package_list:
+        try:
+            pkg = pkg_resources.require(pkgname)[0]
+        except:
+            print ("package '%s' not found" % pkgname)
+            continue
+        
+        try:
+            lines = pkg.get_metadata_lines('METADATA')
+        except:
+            lines = pkg.get_metadata_lines('PKG-INFO')
+    
+        for line in lines:
+            if line.startswith('License:'):
+                m = "%s : %s" % (pkgname, line[9:])
+                print(m)
+                #print(line[9:])
+

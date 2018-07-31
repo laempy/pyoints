@@ -313,6 +313,7 @@ def voxelize(geoRecords, T, dtypes=[('geoRecords', object)]):
             dtype=list))
 
     # Gruppieren der keys
+    # TODO remove pandas
     df = pd.DataFrame({'indices': keys_to_indices(keys, shape)})
     groupDict = df.groupby(by=df.indices).groups
     keys = indices_to_keys(groupDict.keys(), shape)

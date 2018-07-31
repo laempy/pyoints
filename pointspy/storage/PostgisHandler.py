@@ -4,6 +4,7 @@ import numpy as np
 import subprocess
 import psycopg2
 
+from .DumpHandler import dumpstring_from_object
 from .. import nptools
 from .. extent import Extent
 
@@ -161,7 +162,7 @@ class PostgisHandler(psycopg2._psycopg.connection):
 
     @staticmethod
     def sPYDUMP(data):
-        return "'" + py2dumpstring(data) + "'"
+        return "'" + dumpstring_from_object(data) + "'"
 
     @staticmethod
     def _queryGenerator(converter, stream, bulk):

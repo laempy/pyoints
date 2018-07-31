@@ -7,16 +7,10 @@ pyproj
 affine
 dill
 pandas
-configobj
-pyyaml
 psycopg2-binary
 opencv-python
 plyfile
 networkx
 cylinder_fitting
-Sphinx
-sphinxcontrib-napoleon
-autopep8
-pycodestyle
 matplotlib
 #pygdal
