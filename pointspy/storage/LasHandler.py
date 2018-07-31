@@ -98,7 +98,6 @@ def _dtype_to_laspy_type_id(dtype):
     return NUMPY_TO_LASPY_TYPE[type_dim][type_name]
 
 
-
 class LasReader(GeoFile):
     """Class to read .las-files.
 
@@ -158,7 +157,11 @@ class LasReader(GeoFile):
             str(dim.name.encode().decode()) for dim in lasFile.point_format
         ]  # ugly workaround to get actual strings
 
-        points = lasFile.points.view(np.recarray).point
+        points = lasFile.points.view(np.recarray).point.copy()
+
+        # Close File
+        lasFile.close()
+        del lasFile
 
         # filter by extent (before scaling)
         if extent is not None:
@@ -197,10 +200,6 @@ class LasReader(GeoFile):
 
         # create recarray
         data = nptools.recarray(dataDict, dtype=dtypes)
-
-        # Close File
-        lasFile.close()
-        del lasFile
 
         if len(points) == 0:
             return data.view(LasRecords)
