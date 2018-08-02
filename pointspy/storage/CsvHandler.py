@@ -40,11 +40,6 @@ def loadCsv(
     --------
     writeCsv, pandas.read_csv
 
-
-    Returns
-    -------
-    np.recarray
-
     """
     if not os.path.isfile(infile):
         raise IOError('file "%s" not found' % infile)
@@ -65,8 +60,8 @@ def loadCsv(
 
     if header and flat_names is None:
         with open(infile, 'r') as f:
-            line = f.readline()
-            flat_names = line.replace(ignore, '').split(sep)
+            line = f.readline().replace(os.linesep, '').replace(ignore, '')
+            flat_names = line.split(sep)
 
     # laod using pandas
     df = pandas.read_csv(

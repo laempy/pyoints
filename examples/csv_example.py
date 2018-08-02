@@ -6,28 +6,23 @@ Created on Tue Jul  3 15:03:44 2018
 """
 import os
 from pointspy import (
-    nptools,
     storage,
 )
 
 outpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'output')
 
 
-# create file
-data = nptools.recarray({
-    'coords': [(0, 1.1), (1, 2), (3, 4), (1, 1), (0, 0)],
-    'values': [3, 2, 4, 1, 5],
-    'text': ['A', 'B', 'C', 'D', 'E']
-})
-print(data)
+# Create GeoRecords from scratch
+center = [332592.88, 5513244.80, 120]
+geoRecords = storage.misc.create_random_GeoRecords(center=center, epsg=25832)
+
 outfile = os.path.join(outpath, 'test.csv')
 print('Save %s' % outfile)
-storage.writeCsv(data, outfile)
+storage.writeCsv(geoRecords, outfile)
 
 
 # load file
-# dtype = [('text', object), ('coords', float, 2), ('values', int)]
-dtype = None
-data = storage.loadCsv(outfile, header=True, dtype=dtype)
+print('load %s' % outfile)
+data = storage.loadCsv(outfile, header=True)
 print(data)
 print(data.dtype)
