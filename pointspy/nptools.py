@@ -27,9 +27,8 @@ def isarray(o):
 
     """
     return (not isinstance(o, str) and
-                hasattr(o, '__getitem__') and
-                hasattr(o, '__iter__')
-            )
+            hasattr(o, '__getitem__') and
+            hasattr(o, '__iter__'))
 
 
 def isnumeric(arr, dtypes=[np.int32, np.int64, np.float32, np.float64]):
@@ -380,7 +379,6 @@ def fuse(*recarrays):
      ['c3' 'c4']]
 
     """
-
     shape = None
     dtype = []
     for arr in recarrays:
@@ -570,13 +568,16 @@ def flatten_dtypes(np_dtypes):
     return names, dtypes, shapes
 
 
-def unnest(rec):
+def unnest(arr, deep=False):
     """Unnest a numpy record array. Recursively adds each named field to a list.
 
     Parameters
     ----------
-    rec: np.recarray
-        Numpy record array to unnest.
+    rec: np.recarray or np.ndarray
+        Numpy array to unnest.
+    deep : bool
+        Indicates wether numpy ndarrays shall be splitted into individual
+        colums or not.
 
     Returns
     -------
@@ -607,16 +608,20 @@ def unnest(rec):
      [1. 1.]]
 
     """
-
-    if not isinstance(rec, (np.recarray, np.ndarray)):
+    if not isinstance(arr, (np.recarray, np.ndarray)):
         raise TypeError("'rec' has to a 'np.recarray' or 'np.ndarray'")
 
-    if rec.dtype.names is None:
-        ret = [rec]
+    if not isinstance(arr, np.recarray):
+        if deep and len(arr.shape) > 1:
+            ret = []
+            for col in colzip(arr):
+                ret.extend(unnest(col, deep=deep))
+        else:
+            ret = [arr]
     else:
         ret = []
-        for name in rec.dtype.names:
-            ret.extend(unnest(rec[name]))
+        for name in arr.dtype.names:
+            ret.extend(unnest(arr[name], deep=deep))
     return ret
 
 
@@ -625,7 +630,7 @@ def colzip(arr):
 
     Parameters
     ----------
-    arr : (n, k), np.ndarray
+    arr : np.ndarray(shape=(n, k)) or np.recarray(shape=(n, ))
         Numpy array with `n` rows and `k` columns.
 
     Returns
@@ -644,10 +649,14 @@ def colzip(arr):
     [1 0 0]
 
     """
-    if not (isinstance(arr, np.ndarray) and len(arr.shape) == 2):
-        raise ValueError("'arr' has be a two dimensional np.ndarray")
-
-    return [arr[:, col] for col in range(arr.shape[1])]
+    if isinstance(arr, np.recarray):
+        return [arr[name] for name in arr.dtype.names]
+    elif isinstance(arr, np.ndarray):
+        if not len(arr.shape) == 2:
+            raise ValueError("'arr' has be two dimensional")
+        return [arr[:, col] for col in range(arr.shape[1])]
+    else:
+        raise TypeError("unexpected type of 'arr'")
 
 
 def fields_view(arr, fields, dtype=None):
