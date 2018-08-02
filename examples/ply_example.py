@@ -5,18 +5,27 @@ Created on Tue Jun 12 10:48:11 2018
 @author: sebastian
 """
 
+import os
+
 from pointspy import (
     storage,
-    projection,
 )
 
-infile = '/home/sebastian/Schreibtisch/temp/pantheon/Scan_070.ply'
-outfile = '/home/sebastian/Schreibtisch/temp/pantheon/Scan_070_out.ply'
-proj = projection.Proj.from_epsg(26592)
+outpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'output')
+
+# Create GeoRecords from scratch
+center = [332592.88, 5513244.80, 120]
+geoRecords = storage.misc.create_random_GeoRecords(center=center, epsg=25832)
 
 
-ply = storage.loadPly(infile, proj)
-print ply
-print ply.dtype
+# save PLY file
+outfile = os.path.join(outpath, 'test.ply')
+print("save %s" % outfile)
+storage.writePly(geoRecords, outfile)
 
-storage.writePly(ply, outfile)
+
+# load PLY file
+print("load %s" % outfile)
+ply = storage.loadPly(outfile)
+print(ply)
+
