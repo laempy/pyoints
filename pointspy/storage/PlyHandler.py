@@ -1,18 +1,28 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Jun 12 10:25:13 2018
-
-@author: sebastian
+"""Hanlding of .ply-files.
 """
 
 import plyfile
 import numpy as np
 
-from .. georecords import GeoRecords
-from .. import nptools
 
+def loadPly(infile):
+    """Loads a .ply file.
 
-def loadPly(infile, proj):
+    Parameters
+    ----------
+    infile : String
+        PLY-file to be read.
+
+    Returns
+    -------
+    np.recarray
+        Loaded data.
+
+    See Also
+    --------
+    writePly
+
+    """
     plydata = plyfile.PlyData.read(infile)
     records = plydata['vertex'].data.view(np.recarray)
 
@@ -30,10 +40,27 @@ def loadPly(infile, proj):
 
     records = records.view(dtypes)
 
-    return GeoRecords(proj, records)
+    return records
 
 
 def writePly(records, outfile):
+    """Saves data to a .ply file.
+
+    Parameters
+    ----------
+    records : np.recarray
+        Numpy record array to save.
+    outfile : String
+        Desired output .ply file .
+
+    See Also
+    --------
+    loadPly
+
+
+    """
+    if not isinstance(records, np.recarray):
+        raise TypeError("'records' needs to be a numpy record array")
 
     # create view
     dtypes = []
@@ -44,12 +71,12 @@ def writePly(records, outfile):
             dtypes.append(records.dtype.descr[i])
     records = records.view(dtypes)
 
-    # change datatype if required (bug in plyfile)
     dtypes = []
     for i, name in enumerate(records.dtype.names):
         desc = list(records.dtype.descr[i])
+
+        # change datatype if required (bug in plyfile?)
         if desc[1] == '<i8':
-            print('set')
             desc[1] = '<i4'
         dtypes.append(tuple(desc))
     records = records.astype(dtypes)
