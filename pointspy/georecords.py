@@ -198,7 +198,7 @@ class GeoRecords(np.recarray, object):
 
         Returns
         -------
-        np.ndarray(int, shape=(*shape, len(shape)))
+        np.ndarray(int, shape=(\*shape, len(shape)))
             Array of indices with desired shape. Each entry provides a index
             tuple to access the array entries.
 

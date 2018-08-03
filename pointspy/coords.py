@@ -12,21 +12,27 @@ from . import (
 
 class Coords(np.ndarray, object):
     """Class to represent point coordinates. It provides a spatial index to
-    convieniantly optimize performance.
+    conveniently optimize spatial neighborhood queries.
 
     Parameters
     ----------
-    coords : array_like(Number, shape=(n, k))
+    coords : array_like(Number)
         Represents `n` data points of `k` dimensions in a Cartesian coordinate
-        system.
+        system. Any desired shape of at least length two is allowed to allow to
+        represent point, voxel or raster data. The last shape element always 
+        represents the coordinate dimension.
 
     Attributes
     ----------
     dim : positive int
         Number of coordinate dimensions of the `coords` field.
+    flat_coords : array_like(Number, shape=(n, k))
+        Flattened `coords`.
 
     Examples
     --------
+
+    Create some 2D points.
 
     >>> coords = Coords([(0, 1), (2, 1), (2, 3), (0, -1)])
     >>> print(coords)
@@ -34,16 +40,15 @@ class Coords(np.ndarray, object):
      [ 2  1]
      [ 2  3]
      [ 0 -1]]
-    >>> print([coord for coord in coords])
-    [array([0, 1]), array([2, 1]), array([2, 3]), array([ 0, -1])]
 
     Get Extent.
+    
     >>> print(coords.extent())
     [ 0 -1  2  3]
     >>> print(coords.extent(dim=1))
     [0 2]
 
-    Use IndexKD, which updates automatically.
+    Use IndexKD, which updates automatically, if a coordinate was changed.
 
     >>> coords.indexKD().ball([0, 0], 2)
     [0, 3]
@@ -85,7 +90,7 @@ class Coords(np.ndarray, object):
         return transformation.transform(self, T).view(Coords)
 
     def indexKD(self, dim=None):
-        """Spatial index of the coordinates.
+        """Get spatial index of the coordinates.
 
         Parameters
         ----------
@@ -100,7 +105,7 @@ class Coords(np.ndarray, object):
 
         Notes
         -----
-        The spatial indices are calculated on demand and are cached
+        The spatial indices are generated on demand and are cached
         automatically. Setting new coordinates clears the cache.
 
         See Also
@@ -131,6 +136,7 @@ class Coords(np.ndarray, object):
             indexKD = IndexKD(self.flat_coords[:, :dim], copy=False)
             self._indices[dim] = indexKD
         return indexKD
+
 
     def extent(self, dim=None):
         """Provides the spatial extent of the coordinates.

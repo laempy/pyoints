@@ -130,7 +130,7 @@ def weight_clusters(indexKD, r, weights=None, **kwargs):
     weights : optional, array_like(Number, shape=(len(indexKD)))
         Weighting of each point. The class with highest weight wins. If None,
         all weights are set to 1, which results in similar results than
-        `mayority_clustering`.
+        `mayority_clusters`.
     **kwargs : optional
         Optional arguments of the `clustering` function.
 
@@ -162,7 +162,7 @@ def weight_clusters(indexKD, r, weights=None, **kwargs):
 
     See Also
     --------
-    clustering, mayority_clustering
+    clustering, mayority_clusters
 
     """
     if weights is None:

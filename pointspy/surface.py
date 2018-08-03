@@ -14,12 +14,12 @@ class Surface:
         Represents `n` data points of `k` dimensions representing a surface.
     method : optional, Interpolator
         Interpolation method to use.
-    **kwargs : optional
+    \*\*kwargs : optional
         Arguments passed to the interpolation `method`.
 
     See Also
     --------
-    interpolate.Interpolator
+    pointspy.interpolate.Interpolator
 
     Examples
     --------
@@ -30,7 +30,6 @@ class Surface:
     [2.]
 
     """
-
     def __init__(self, coords, method=interpolate.KnnInterpolator, **kwargs):
         coords = assertion.ensure_coords(coords)
         self._interpolator = method(coords[:, :-1], coords[:, -1], **kwargs)

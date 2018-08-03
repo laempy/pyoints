@@ -316,7 +316,7 @@ class LasRecords(GeoRecords):
     """Data structure extending GeoRecords to provide an optimized API for LAS
     data.
 
-    Properties
+    Attributes
     ----------
     last_return : np.ndarray(bool)
         Array indicating if a point is a last return point.

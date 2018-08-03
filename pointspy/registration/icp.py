@@ -15,8 +15,8 @@ class ICP:
     """Implementation of the Iterative Closest Point algorithm with multiple
     point set support.
 
-    Paramerters
-    -----------
+    Parameters
+    ----------
     radii : array_like(Number, shape=(s))
         Maximum distances in each coordinate dimension to assign corresponding
         points of `k` dimensions. The length of `radii` is equal to `2 * k`
@@ -29,7 +29,7 @@ class ICP:
 
     References
     ----------
-    TODO: Ref
+    TODO: Original Algorithm.
 
     Examples
     --------
@@ -91,8 +91,6 @@ class ICP:
     >>> T, pairs = nicp(coords_dict, normals_dict=normals_dict)
 
     >>> tA = T['A'].to_local(A)
-    >>> tB = T['B'].to_local(B)
-
     >>> print(np.round(tA, 2))
     [[ 0.5  0.5]
      [ 0.   0. ]
@@ -100,6 +98,8 @@ class ICP:
      [ 1.3  1. ]
      [ 1.   0. ]
      [-1.  -2. ]]
+    
+    >>> tB = T['B'].to_local(B)
     >>> print(np.round(tB, 2))
     [[ 0.4  0.5]
      [ 0.3  0. ]

@@ -14,11 +14,11 @@ WGS84 = '+proj=latlong +datum=WGS84 +to +proj=latlong +datum=WGS84 +units=m ' \
     '+no_defs'
 
 
-class Proj():
+class Proj:
     """Wrapper class for different coordinate reference system definitions.
 
-    Paramerters
-    -----------
+    Parameters
+    ----------
     proj4 : optional, str
         Coordinate reference system definition in Proj4 format. WGS84, if None
         or empty string.

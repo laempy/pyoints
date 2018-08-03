@@ -34,9 +34,14 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     T_dict : dict of np.ndarray(Number, shape=(k+1, k+1))
         Dictionary of desired roto-translation matrices.
 
+    Notes
+    -----
+    Basic algorithm idea taken from [1].
+
     References
     ----------
-    http://geomatica.como.polimi.it/corsi/def_monitoring/roto-translationsb.pdf
+    [1]  University of Genoa (2017): 
+    URL http://geomatica.como.polimi.it/corsi/def\_monitoring/roto-translationsb.pdf.
 
     Examples
     --------
@@ -53,8 +58,8 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     >>> coords_dict = {'A': coordsA, 'B': coordsB}
     >>> pairs_dict = { 'A': { 'B': [(0, 0), (1, 1), (2, 2)] } }
     >>> weights = {'A': [1, 1, 1], 'B': [0, 0, 0]}
-    >>> #weights = None
     >>> res = find_rototranslations(coords_dict, pairs_dict, weights=weights)
+    
     >>> print(list(res.keys()))
     ['A', 'B']
     >>> tA = res['A'].to_local(coords_dict['A'])

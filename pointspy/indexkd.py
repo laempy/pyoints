@@ -191,7 +191,7 @@ class IndexKD(object):
             Radius of ball.
         bulk : positive int
             Reduce required memory by performing bulk queries.
-        **kwargs : optional
+        \*\*kwargs : optional
             Additional parameters similar to
             `scipy.spatial.cKDTree.query_ball_point`
 
@@ -355,7 +355,7 @@ class IndexKD(object):
             Outer radius of the sphere.
         coord: (k), `array_like`
             Center of sphere.
-        **kwargs:
+        \*\*kwargs:
             Additional parameters similar to `self.ball`.
 
         Returns
@@ -395,7 +395,7 @@ class IndexKD(object):
             Represents n data points of k dimensions.
         k : positive int, optional
             Number of nearest numbers to return.
-        **kwargs : optional
+        \*\*kwargs : optional
             Additional parameters similar to `scipy.spatial.cKDTree.query`.
 
         Returns
@@ -573,9 +573,10 @@ class IndexKD(object):
 
         Parameters
         ----------
-        extent : array_like(Number, shape=(2*self.dim))
+        extent : array_like(Number, shape=(2 * self.dim))
             Specifies the points to return. A point p is returned, if
-            `np.all(p <= extent[0:dim])` and `np.all(p >= extent[dim+1:2*dim])
+            `np.all(p <= extent[0: dim])` and 
+            `np.all(p >= extent[dim+1: 2*dim])`
 
         Returns
         -------

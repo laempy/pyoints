@@ -337,7 +337,7 @@ def fuse(*recarrays):
 
     Parameters
     ----------
-    *recarrays : np.recarray
+    \*recarrays : np.recarray
         Numpy recarrays to fuse.
 
     Returns
