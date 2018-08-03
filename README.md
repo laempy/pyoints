@@ -48,7 +48,7 @@ feature, but waives the use of a projection and transformation matrix.
  
 ## When should I use PoYnts?
 
-Beased on the general concept presented abova, a bunch of algorithms, functions 
+Beased on the general concept presented above, a bunch of algorithms, functions 
 and filters have been implemented, to process geo-data with low programming 
 effords. Of course, you might think: "Why should I use python for point cloud 
 processing? Other languages are much more efficient." This is obviously true,
@@ -285,7 +285,7 @@ Howard Butler
 
 ## External Depencencies
 
-**PoYnts** binds following external libraries required for some of the python
+**PoYnts** binds following external libraries as required by some of the python
 dependencies.
 
 
@@ -311,10 +311,10 @@ Marios Hadjieleftheriou
 
 
 
-## Optional dependencies (for development)
+## Software recommendations
 
 Following python packages (distributed via pip) were used for software
-development and documentation.
+development, testing and documentation.
 
 
 ### autopep8
@@ -323,6 +323,13 @@ Hideo Hattori
 * [PyPI](https://pypi.org/project/autopep8/)
 * [homepage](https://github.com/hhatto/autopep8)
 * [MIT compatible licence](https://github.com/matplotlib/matplotlib/blob/master/LICENSE/LICENSE)
+
+
+### CloudCompare
+
+Daniel Girardeau-Montaut
+* [homepage](https://www.danielgm.net/cc/)
+* [GPL v2](https://github.com/CloudCompare/CloudCompare/blob/master/license.txt)
 
 
 ### matplotlib
