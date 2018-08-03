@@ -9,11 +9,12 @@ the development of advanced algorithms for geo-data processing.
 The key idea of the concept is to provide unified data structure to handle 
 points, voxels and rasters in the same manner. It is always assumed that the 
 data can be interpreted as two or three dimensional point cloud. Thus we have
-a collection of geo-objects (called `GeoRecords`), which are characterized by 
-coordinates *coords* a spatial reference (*proj*) and a transformation matrix 
-(*t*). The spatial reference and transformation matrix required to define the 
-location of the geo-objects on globe. Next to the origin the transformation 
-matrix also stores the scale and rotation of the local coordinate system.
+a collection of geo-objects (here called `GeoRecords`), which are characterized
+by two or three dimensional coordinates *coords* a spatial reference (*proj*) 
+and a transformation matrix (*t*). The spatial reference and transformation 
+matrix required to  define the location of the geo-objects on globe. Next to 
+the origin the transformation  matrix also stores the scale and rotation of the
+local coordinate system.
 
 The unified data structures simplifies the joint use of point clouds, voxels
 and rasters significantly, while keeping their natural characteristics. To 
@@ -158,94 +159,206 @@ or activate virtualenv and install manually with pip.
 pip install -r requirements.txt
 ```
 
+
 # Acknowledgements
 
-## Depencencies
+
+## Python Depencencies
 
 This software binds following python packages (distributed via pip) 
 dynamically. Many thanks for providing such great open source software.
 
 
-psycopg2-binary  # LGPL v3 licence, https://github.com/psycopg/psycopg2/blob/master/LICENSE
+### psycopg2-binary
 
-plyfile  # GNU General Public License v3.0, https://github.com/dranjan/python-plyfile/blob/master/COPYING
-
-rtree  # GNU Lesser General Public License v2.1 (or any later version), https://github.com/Toblerity/rtree/blob/master/LICENSE.txt
-
-
-
-
-libspatialindex-dev  # MIT licence, https://libspatialindex.github.io/
+Federico Di Gregorio
+[PyPI](https://pypi.org/project/psycopg2-binary/)
+[homepage](http://initd.org/psycopg/)
+[LGPL v3.0 (or later)](https://github.com/psycopg/psycopg2/blob/master/LICENSE)
 
 
-numpy  # 3-Clause BSD license, https://github.com/numpy/numpy/blob/master/LICENSE.txt
+### plyfile
+
+Darsh Ranjan
+[PyPI](https://pypi.org/project/plyfile/https://pypi.org/project/plyfile/)
+[homepage](https://github.com/dranjan/python-plyfile)
+[GPL v3.0 (or later)](https://github.com/dranjan/python-plyfile/blob/master/COPYING)
 
 
-laspy  # 2-Clause BSD license, https://github.com/laspy/laspy/blob/master/LICENSE.txt
+### rtree
+
+Howard Butler
+[PyPI](https://pypi.org/project/Rtree/)
+[homepage](http://toblerity.org/rtree/)
+[LGPL v2.1 (or later)](https://github.com/Toblerity/rtree/blob/master/LICENSE.txt)
 
 
-scipy  # 3-Clause BSD license, https://github.com/scipy/scipy/blob/master/LICENSE.txt
+### numpy
+
+Travis E. Oliphant et al.
+[PyPI](https://pypi.org/project/numpy/)
+[homepage](http://www.numpy.org/)
+[3-Clause BSD license](http://www.numpy.org/license.html#license)
 
 
-scikit-learn  # 3-Clause BSD license, https://github.com/scikit-learn/scikit-learn/blob/master/COPYING
+### laspy
+
+Grant Brown
+[PyPI](https://pypi.org/project/laspy/)
+[homepage](https://github.com/laspy/laspy)
+[2-Clause BSD license](https://github.com/laspy/laspy/blob/master/LICENSE.txt)
 
 
-pyproj  # https://github.com/jswhit/pyproj/blob/master/LICENSE
+### scipy
 
-Contact:  Jeffrey Whitaker <jeffrey.s.whitaker@noaa.gov
-
-copyright (c) 2013 by Jeffrey Whitaker.
-
-Permission to use, copy, modify, and distribute this software
-and its documentation for any purpose and without fee is hereby
-granted, provided that the above copyright notice appear in all
-copies and that both the copyright notice and this permission
-notice appear in supporting documentation. THE AUTHOR DISCLAIMS
-ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT
-SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, INDIRECT OR
-CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
-NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
-CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+SciPy Developers
+[PyPI](https://pypi.org/project/scipy/)
+[homepage](https://www.scipy.org/)
+[3-Clause BSD license](https://github.com/scipy/scipy/blob/master/LICENSE.txt)
 
 
-affine # 3-Clause BSD license, https://github.com/sgillies/affine/blob/master/LICENSE.txt
+### scikit-learn
+
+Andreas Mueller
+[PyPI](https://pypi.org/project/scikit-learn/)
+[homepage](http://scikit-learn.org/stable/)
+[3-Clause BSD license](https://github.com/scikit-learn/scikit-learn/blob/master/COPYING)
 
 
-dill  # 3-Clause BSD license, https://github.com/uqfoundation/dill/blob/master/LICENSE
+### pyproj
+
+Jeff Whitaker
+[PyPI](https://pypi.org/project/pyproj/)
+[homepage](https://github.com/jswhit/pyproj)
+[OSI approved license](https://github.com/jswhit/pyproj/blob/master/LICENSE)
 
 
-pandas  # 3-Clause BSD license, https://github.com/pandas-dev/pandas/blob/master/LICENSE
+### affine
+
+Sean Gillies
+[PyPI](https://pypi.org/project/affine/)
+[homepage](https://github.com/sgillies/affine)
+[3-Clause BSD license](https://github.com/sgillies/affine/blob/master/LICENSE.txt)
 
 
-opencv-python  # 3-Clause BSD license, https://github.com/opencv/opencv/blob/master/LICENSE
+### dill
+
+Mike McKerns
+[PyPI](https://pypi.org/project/dill/)
+[homepage](https://github.com/uqfoundation/dill)
+[3-Clause BSD license](https://github.com/uqfoundation/dill/blob/master/LICENSE)
 
 
-networkx  # 3-Clause BSD license, https://github.com/networkx/networkx/blob/master/LICENSE.txt
+### pandas
+
+The PyData Development Team
+[PyPI](https://pypi.org/project/pandas/)
+[homepage](http://pandas.pydata.org/)
+[3-Clause BSD license](https://github.com/pandas-dev/pandas/blob/master/LICENSE)
 
 
-cylinder_fitting  # 3-Clause BSD license, https://github.com/xingjiepan/cylinder_fitting/blob/master/license.txt
+### opencv-python
 
-matplotlib  # PSF licence, https://github.com/matplotlib/matplotlib/blob/master/LICENSE
+Olli-Pekka Heinisuo
+[PyPI](https://pypi.org/project/opencv-python/)
+[homepage](https://github.com/skvark/opencv-python)
+[MIT licence](https://github.com/opencv/opencv/blob/master/LICENSE)
 
 
-## For development
+### networkx
 
-Following python packages (distributed via pip) were used for software 
+NetworkX Developers
+[PyPI](https://pypi.org/project/networkx/)
+[homepage](http://networkx.github.io/)
+[3-Clause BSD license](https://github.com/networkx/networkx/blob/master/LICENSE.txt)
+
+
+### cylinder_fitting
+
+Xingjie Pan
+[PyPI](https://pypi.org/project/cylinder_fitting/)
+[homepage](https://github.com/xingjiepan/cylinder_fitting)
+[3-Clause BSD license](https://github.com/xingjiepan/cylinder_fitting/blob/master/license.txt)
+
+
+## Optional Dependencies (for development)
+
+Following python packages (distributed via pip) were used for software
 development and documentation.
 
-* autopep8
-* pycodestyle
-* matplotlib
-* Sphinx
-* sphinxcontrib-napoleon
+
+### matplotlib
+
+John D. Hunter, Michael Droettboom
+[PyPI](https://pypi.org/project/matplotlib/)
+[homepage](https://matplotlib.org/)
+[BSD compatible](https://github.com/matplotlib/matplotlib/blob/master/LICENSE/LICENSE)
+
+
+### autopep8
+
+Hideo Hattori
+[PyPI](https://pypi.org/project/autopep8/)
+[homepage](https://github.com/hhatto/autopep8)
+[MIT compatible licence](https://github.com/matplotlib/matplotlib/blob/master/LICENSE/LICENSE)
+
+
+### pycodestyle
+
+Ian Lee
+[PyPI](https://pypi.org/project/pycodestyle/)
+[homepage](https://pycodestyle.readthedocs.io/en/latest/)
+[Expat licence](https://pycodestyle.readthedocs.io/en/latest/index.html#license)
+
+
+### Sphinx
+
+Georg Brandl
+[PyPI](https://pypi.org/project/Sphinx/)
+[homepage](http://www.sphinx-doc.org/en/master/)
+[3-Clause BSD license](https://github.com/sphinx-doc/sphinx)
+
+
+### sphinxcontrib-napoleon
+
+Rob Ruana
+[PyPI](https://pypi.org/project/sphinxcontrib-napoleon/)
+[homepage](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/)
+[2-Clause BSD license](https://github.com/sphinx-contrib/napoleon/blob/master/LICENSE)
 
 
 
-## Licence
+## External Depencencies
 
-Please see LICENCE file
+**PoYnts* binds following external libraries required for some of the python
+dependencies.
+
+
+### libspatialindex
+
+Marios Hadjieleftheriou
+[homepage](https://libspatialindex.github.io/)
+[MIT licence](https://libspatialindex.github.io/)
+
+
+### Gdal
+
+Frank Warmerdam
+[homepage](https://www.gdal.org/)
+[X11/MIT licence](https://trac.osgeo.org/gdal/wiki/FAQGeneral#WhatlicensedoesGDALOGRuse)
+
+
+### Liblas
+
+Howard Butler, Mateusz Loskot and others
+[homepage](https://liblas.org/)
+[X11/MIT licence](https://liblas.org/copyright.html#license)
+
+
+
+# Licence
+
+Please see LICENCE file.
 
 
 # TODO
