@@ -4,7 +4,13 @@ from .BaseGeoHandler import GeoFile
 
 
 class DumpReader(GeoFile):
+    """Class to read GeoRecords form python dump files.
 
+    See Also
+    --------
+    GeoFile
+
+    """
     def __init__(self, filename):
         GeoFile.__init__(self, filename)
 
@@ -44,7 +50,7 @@ def loadDump(filename):
 
 
 def writeDump(obj, filename):
-    """Dump a object.
+    """Dump a object to a file.
 
     Parameters
     ----------
