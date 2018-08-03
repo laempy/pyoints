@@ -72,7 +72,7 @@ def loadCsv(
         header=pd_header,
         skiprows=0,
         skip_blank_lines=False,
-        **kwargs,
+        **kwargs
     )
 
     if dtype is None:
@@ -118,7 +118,7 @@ def loadCsv(
         for key in dtype.names:
             dt = dtype[key]
             if len(dt.shape) > 0:
-                data_dict[key] = np.array(df.iloc[:, i:i+dt.shape[0]])
+                data_dict[key] = np.array(df.iloc[:, i:i + dt.shape[0]])
             else:
                 data_dict[key] = np.array(df.iloc[:, i], dtype=dt)
             i = i + 1
@@ -169,7 +169,7 @@ def writeCsv(data, filename, sep=",", multicol_sep=".", **kwargs):
         fmt="%s",
         delimiter=sep,
         header=header,
-        *kwargs,
+        *kwargs
     )
 
 
@@ -182,7 +182,7 @@ def _flatten_dype(dtype, sep='.'):
         dt = dtype[name]
         if len(dt.shape) > 0:
             for i in range(dt.shape[0]):
-                flat_name = "%s%s%i" % (name, sep, i+1)
+                flat_name = "%s%s%i" % (name, sep, i + 1)
                 names.append(flat_name)
                 types.append((flat_name, dt.subdtype[0].str))
         else:

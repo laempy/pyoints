@@ -466,5 +466,3 @@ class GeoRecords(np.recarray, object):
         """
         data = nptools.apply_function(self, func, dtypes=dtypes)
         return self.__class__(self.proj, data, T=self.t)
-
-

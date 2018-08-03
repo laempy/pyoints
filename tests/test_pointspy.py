@@ -27,7 +27,7 @@ def get_tests(root_package):
 
 
 def load_tests(loader, tests, ignore):
-    
+
     tests.addTests(get_tests(pointspy.indexkd))
     tests.addTests(get_tests(pointspy.registration))
     tests.addTests(get_tests(pointspy.clustering))
@@ -46,7 +46,7 @@ def load_tests(loader, tests, ignore):
     tests.addTests(get_tests(pointspy.projection))
     tests.addTests(get_tests(pointspy.nptools))
     tests.addTests(get_tests(pointspy.extent))
-    
+
     return tests
 
 

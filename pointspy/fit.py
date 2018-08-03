@@ -275,7 +275,7 @@ def approximate_normals(coords, r, preferred_normals=None):
         r = np.repeat(r, len(coords))
     else:
         r = assertion.ensure_numvector(r, length=len(coords))
-    
+
     # generate normals
     normals = np.zeros(coords.shape, dtype=float)
     not_visited = np.ones(len(coords), dtype=bool)
@@ -285,7 +285,7 @@ def approximate_normals(coords, r, preferred_normals=None):
             if len(nIds) >= dim:
                 eig_vec, eig_val = transformation.eigen(coords[nIds, :])
                 normals[nIds, :] = eig_vec[:, -1]
-                not_visited[nIds] = False      
+                not_visited[nIds] = False
 
     normals = _orient_normals(normals, preferred_normals)
 

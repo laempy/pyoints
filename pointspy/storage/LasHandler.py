@@ -114,6 +114,7 @@ class LasReader(GeoFile):
     GeoFile
 
     """
+
     def __init__(self, infile, proj=None):
         GeoFile.__init__(self, infile)
 

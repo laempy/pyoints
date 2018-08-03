@@ -157,7 +157,7 @@ class ICP:
         # validate input
         coords_dict, dim = _ensure_coords_dict(coords_dict)
         sampleids_dict = _ensure_sampleids_dict(
-                sampleids_dict, coords_dict)
+            sampleids_dict, coords_dict)
         normals_dict = _ensure_normals_dict(normals_dict, coords_dict)
         T_dict = _ensure_T_dict(T_dict, coords_dict, pairs_dict, weights)
 
@@ -180,14 +180,14 @@ class ICP:
                 pairs_dict[keyA] = {}
 
                 A = _get_nCoords(
-                        coords_dict, normals_dict, T_dict, keyA)
+                    coords_dict, normals_dict, T_dict, keyA)
                 matcher = self._assign_class(A, self._radii)
 
                 for keyB in coords_dict:
                     if keyB != keyA:
 
                         B = _get_nCoords(
-                                coords_dict, normals_dict, T_dict, keyB)
+                            coords_dict, normals_dict, T_dict, keyB)
                         sids = sampleids_dict[keyB]
                         pairs = matcher(B[sids, :], **self._assign_parameters)
 
@@ -235,7 +235,7 @@ def _get_nCoords(coords_dict, normals_dict, T_dict, key):
         normals = normals_dict[key]
         nCoords = np.hstack((nCoords, normals))
     return nCoords
-    
+
 
 def _ensure_coords_dict(coords_dict):
     if not isinstance(coords_dict, dict):
@@ -247,7 +247,7 @@ def _ensure_coords_dict(coords_dict):
             coords_dict[key] = assertion.ensure_coords(coords_dict[key])
             dim = coords_dict[key].shape[1]
         coords_dict[key] = assertion.ensure_coords(
-                coords_dict[key], dim=dim)
+            coords_dict[key], dim=dim)
     return coords_dict, dim
 
 
@@ -259,7 +259,7 @@ def _ensure_normals_dict(normals_dict, coords_dict):
             dim = coords_dict[key].shape[1]
             if key in normals_dict:
                 normals_dict[key] = assertion.ensure_coords(
-                        normals_dict[key], dim=dim)
+                    normals_dict[key], dim=dim)
             else:
                 raise ValueError("missing normals for '%s'" % key)
     return normals_dict

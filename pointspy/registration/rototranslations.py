@@ -238,7 +238,7 @@ def _build_location_orientation_equations(center, centers, weights, n):
             a = np.eye(cols, k * cols, k=i * cols)
             b = np.zeros(cols)
 
-            w = weights[key] * n#**2# * 1000
+            w = weights[key] * n  # **2# * 1000
             a = (a.T * w).T
             b = b * w
 
@@ -253,8 +253,10 @@ def _extract_transformations(M, centers, center):
     cols = _unknowns(dim)
     res = {}
 
-    t_dict = {key: M[i*cols: i*cols+dim] for i, key in enumerate(centers)}
-    r_dict = {key: M[i*cols+dim: (i+1)*cols] for i, key in enumerate(centers)}
+    t_dict = {key: M[i * cols: i * cols + dim]
+              for i, key in enumerate(centers)}
+    r_dict = {key: M[i * cols + dim: (i + 1) * cols]
+              for i, key in enumerate(centers)}
 
     TC = transformation.t_matrix(center)
     for i, key in enumerate(centers):

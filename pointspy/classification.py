@@ -208,7 +208,7 @@ def rename_dict(d, ids=None):
     >>> renamed_dict = rename_dict(d, ['first', 'second', 'last'])
     >>> print(renamed_dict)
     {'first': [0, 1], 'second': None, 'last': 'text'}
-    
+
     """
     if not isinstance(d, dict):
         raise TypeError("dictionary required")

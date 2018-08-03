@@ -24,17 +24,16 @@ def list_licences(requirements_file):
     for pkgname in package_list:
         try:
             pkg = pkg_resources.require(pkgname)[0]
-        except:
-            print ("package '%s' not found" % pkgname)
+        except BaseException:
+            print("package '%s' not found" % pkgname)
             continue
 
         try:
             lines = pkg.get_metadata_lines('METADATA')
-        except:
+        except BaseException:
             lines = pkg.get_metadata_lines('PKG-INFO')
 
         for line in lines:
             if line.startswith('License:'):
                 m = "%s : %s" % (str(pkg), line[9:])
                 print(m)
-

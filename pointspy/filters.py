@@ -343,7 +343,7 @@ def surface(indexKD, r, order=None, inverse=False, axis=-1):
     if order is None:
         order = np.argsort(coords[:, axis])[::-1]
     else:
-        order = assertion.ensure_indices(order, max_value=len(coords)-1)
+        order = assertion.ensure_indices(order, max_value=len(coords) - 1)
 
     if inverse:
         order = order[::-1]

@@ -64,6 +64,7 @@ class IndexKD(object):
     2
 
     """
+
     def __init__(
             self,
             coords,
@@ -215,7 +216,7 @@ class IndexKD(object):
         if assertion.iscoord(coords):
             # single point
             return self.kd_tree.query_ball_point(
-                        coords[:self.dim], r, **kwargs)
+                coords[:self.dim], r, **kwargs)
         elif hasattr(r, '__iter__'):
             # query multiple radii
             return list(self.balls_iter(coords, r, **kwargs))
@@ -470,7 +471,7 @@ class IndexKD(object):
             if len(bulk_coords) == 0:
                 break
             dists_list, nIds_list = self.kd_tree.query(
-                    bulk_coords, k=k, **kwargs)
+                bulk_coords, k=k, **kwargs)
             for dists, nIds in zip(dists_list, nIds_list):
                 yield dists, nIds
 
