@@ -2,14 +2,19 @@
 # get licences
 pip-licenses --with-urls
 
+psycopg2-binary  # LGPL v3 licence, https://github.com/psycopg/psycopg2/blob/master/LICENSE
+
+plyfile  # GNU General Public License v3.0, https://github.com/dranjan/python-plyfile/blob/master/COPYING
+
+rtree  # GNU Lesser General Public License v2.1 (or any later version), https://github.com/Toblerity/rtree/blob/master/LICENSE.txt
+
+
+
 
 libspatialindex-dev  # MIT licence, https://libspatialindex.github.io/
 
 
 numpy  # 3-Clause BSD license, https://github.com/numpy/numpy/blob/master/LICENSE.txt
-
-
-rtree  # GNU Lesser General Public License v2.1 (or any later version), https://github.com/Toblerity/rtree/blob/master/LICENSE.txt
 
 
 laspy  # 2-Clause BSD license, https://github.com/laspy/laspy/blob/master/LICENSE.txt
@@ -50,9 +55,6 @@ dill  # 3-Clause BSD license, https://github.com/uqfoundation/dill/blob/master/L
 pandas  # 3-Clause BSD license, https://github.com/pandas-dev/pandas/blob/master/LICENSE
 
 
-psycopg2-binary  # LGPL v3 licence, https://github.com/psycopg/psycopg2/blob/master/LICENSE
-
-
 opencv-python  # 3-Clause BSD license, https://github.com/opencv/opencv/blob/master/LICENSE
 
 
@@ -62,15 +64,6 @@ networkx  # 3-Clause BSD license, https://github.com/networkx/networkx/blob/mast
 cylinder_fitting  # 3-Clause BSD license, https://github.com/xingjiepan/cylinder_fitting/blob/master/license.txt
 
 
-plyfile  # GNU General Public License v3.0, https://github.com/dranjan/python-plyfile/blob/master/COPYING
 
 
 matplotlib  # PSF licence, https://github.com/matplotlib/matplotlib/blob/master/LICENSE
-
-#pygdal
-
-#Sphinx  # 2-Clause BSD license, https://github.com/sphinx-doc/sphinx/blob/master/LICENSE
-#sphinxcontrib-napoleon  # 2-Clause BSD license, https://github.com/darkfeline/sphinxcontrib-napoleon/blob/master/LICENSE
-#autopep8  # MIT license, https://github.com/hhatto/autopep8/blob/master/LICENSE
-#pycodestyle  # Expat License, https://github.com/PyCQA/pycodestyle/blob/master/LICENSE
-
