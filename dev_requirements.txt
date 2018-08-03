@@ -3,4 +3,3 @@ pycodestyle
 matplotlib
 Sphinx
 sphinxcontrib-napoleon
-#pip-licenses
