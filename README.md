@@ -163,196 +163,198 @@ pip install -r requirements.txt
 # Acknowledgements
 
 
+
 ## Python Depencencies
 
 This software binds following python packages (distributed via pip) 
 dynamically. Many thanks for providing such great open source software.
 
 
-### psycopg2-binary
-
-Federico Di Gregorio
-[PyPI](https://pypi.org/project/psycopg2-binary/)
-[homepage](http://initd.org/psycopg/)
-[LGPL v3.0 (or later)](https://github.com/psycopg/psycopg2/blob/master/LICENSE)
-
-
-### plyfile
-
-Darsh Ranjan
-[PyPI](https://pypi.org/project/plyfile/https://pypi.org/project/plyfile/)
-[homepage](https://github.com/dranjan/python-plyfile)
-[GPL v3.0 (or later)](https://github.com/dranjan/python-plyfile/blob/master/COPYING)
-
-
-### rtree
-
-Howard Butler
-[PyPI](https://pypi.org/project/Rtree/)
-[homepage](http://toblerity.org/rtree/)
-[LGPL v2.1 (or later)](https://github.com/Toblerity/rtree/blob/master/LICENSE.txt)
-
-
-### numpy
-
-Travis E. Oliphant et al.
-[PyPI](https://pypi.org/project/numpy/)
-[homepage](http://www.numpy.org/)
-[3-Clause BSD license](http://www.numpy.org/license.html#license)
-
-
-### laspy
-
-Grant Brown
-[PyPI](https://pypi.org/project/laspy/)
-[homepage](https://github.com/laspy/laspy)
-[2-Clause BSD license](https://github.com/laspy/laspy/blob/master/LICENSE.txt)
-
-
-### scipy
-
-SciPy Developers
-[PyPI](https://pypi.org/project/scipy/)
-[homepage](https://www.scipy.org/)
-[3-Clause BSD license](https://github.com/scipy/scipy/blob/master/LICENSE.txt)
-
-
-### scikit-learn
-
-Andreas Mueller
-[PyPI](https://pypi.org/project/scikit-learn/)
-[homepage](http://scikit-learn.org/stable/)
-[3-Clause BSD license](https://github.com/scikit-learn/scikit-learn/blob/master/COPYING)
-
-
-### pyproj
-
-Jeff Whitaker
-[PyPI](https://pypi.org/project/pyproj/)
-[homepage](https://github.com/jswhit/pyproj)
-[OSI approved license](https://github.com/jswhit/pyproj/blob/master/LICENSE)
-
-
 ### affine
 
 Sean Gillies
-[PyPI](https://pypi.org/project/affine/)
-[homepage](https://github.com/sgillies/affine)
-[3-Clause BSD license](https://github.com/sgillies/affine/blob/master/LICENSE.txt)
-
-
-### dill
-
-Mike McKerns
-[PyPI](https://pypi.org/project/dill/)
-[homepage](https://github.com/uqfoundation/dill)
-[3-Clause BSD license](https://github.com/uqfoundation/dill/blob/master/LICENSE)
-
-
-### pandas
-
-The PyData Development Team
-[PyPI](https://pypi.org/project/pandas/)
-[homepage](http://pandas.pydata.org/)
-[3-Clause BSD license](https://github.com/pandas-dev/pandas/blob/master/LICENSE)
-
-
-### opencv-python
-
-Olli-Pekka Heinisuo
-[PyPI](https://pypi.org/project/opencv-python/)
-[homepage](https://github.com/skvark/opencv-python)
-[MIT licence](https://github.com/opencv/opencv/blob/master/LICENSE)
-
-
-### networkx
-
-NetworkX Developers
-[PyPI](https://pypi.org/project/networkx/)
-[homepage](http://networkx.github.io/)
-[3-Clause BSD license](https://github.com/networkx/networkx/blob/master/LICENSE.txt)
+* [PyPI](https://pypi.org/project/affine/)
+* [homepage](https://github.com/sgillies/affine)
+* [3-Clause BSD license](https://github.com/sgillies/affine/blob/master/LICENSE.txt)
 
 
 ### cylinder_fitting
 
 Xingjie Pan
-[PyPI](https://pypi.org/project/cylinder_fitting/)
-[homepage](https://github.com/xingjiepan/cylinder_fitting)
-[3-Clause BSD license](https://github.com/xingjiepan/cylinder_fitting/blob/master/license.txt)
+* [PyPI](https://pypi.org/project/cylinder_fitting/)
+* [homepage](https://github.com/xingjiepan/cylinder_fitting)
+* [3-Clause BSD license](https://github.com/xingjiepan/cylinder_fitting/blob/master/license.txt)
 
 
-## Optional Dependencies (for development)
+### dill
 
-Following python packages (distributed via pip) were used for software
-development and documentation.
-
-
-### matplotlib
-
-John D. Hunter, Michael Droettboom
-[PyPI](https://pypi.org/project/matplotlib/)
-[homepage](https://matplotlib.org/)
-[BSD compatible](https://github.com/matplotlib/matplotlib/blob/master/LICENSE/LICENSE)
+Mike McKerns
+* [PyPI](https://pypi.org/project/dill/)
+* [homepage](https://github.com/uqfoundation/dill)
+* [3-Clause BSD license](https://github.com/uqfoundation/dill/blob/master/LICENSE)
 
 
-### autopep8
+### laspy
 
-Hideo Hattori
-[PyPI](https://pypi.org/project/autopep8/)
-[homepage](https://github.com/hhatto/autopep8)
-[MIT compatible licence](https://github.com/matplotlib/matplotlib/blob/master/LICENSE/LICENSE)
-
-
-### pycodestyle
-
-Ian Lee
-[PyPI](https://pypi.org/project/pycodestyle/)
-[homepage](https://pycodestyle.readthedocs.io/en/latest/)
-[Expat licence](https://pycodestyle.readthedocs.io/en/latest/index.html#license)
+Grant Brown
+* [PyPI](https://pypi.org/project/laspy/)
+* [homepage](https://github.com/laspy/laspy)
+* [2-Clause BSD license](https://github.com/laspy/laspy/blob/master/LICENSE.txt)
 
 
-### Sphinx
+### networkx
 
-Georg Brandl
-[PyPI](https://pypi.org/project/Sphinx/)
-[homepage](http://www.sphinx-doc.org/en/master/)
-[3-Clause BSD license](https://github.com/sphinx-doc/sphinx)
+NetworkX Developers
+* [PyPI](https://pypi.org/project/networkx/)
+* [homepage](http://networkx.github.io/)
+* [3-Clause BSD license](https://github.com/networkx/networkx/blob/master/LICENSE.txt)
 
 
-### sphinxcontrib-napoleon
+### numpy
 
-Rob Ruana
-[PyPI](https://pypi.org/project/sphinxcontrib-napoleon/)
-[homepage](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/)
-[2-Clause BSD license](https://github.com/sphinx-contrib/napoleon/blob/master/LICENSE)
+Travis E. Oliphant et al.
+* [PyPI](https://pypi.org/project/numpy/)
+* [homepage](http://www.numpy.org/)
+* [3-Clause BSD license](http://www.numpy.org/license.html#license)
+
+
+### opencv-python
+
+Olli-Pekka Heinisuo
+* [PyPI](https://pypi.org/project/opencv-python/)
+* [homepage](https://github.com/skvark/opencv-python)
+* [MIT licence](https://github.com/opencv/opencv/blob/master/LICENSE)
+
+
+### pandas
+
+The PyData Development Team
+* [PyPI](https://pypi.org/project/pandas/)
+* [homepage](http://pandas.pydata.org/)
+* [3-Clause BSD license](https://github.com/pandas-dev/pandas/blob/master/LICENSE)
+
+
+### plyfile
+
+Darsh Ranjan
+* [PyPI](https://pypi.org/project/plyfile/https://pypi.org/project/plyfile/)
+* [homepage](https://github.com/dranjan/python-plyfile)
+* [GPL v3.0 (or later)](https://github.com/dranjan/python-plyfile/blob/master/COPYING)
+
+
+### psycopg2-binary
+
+Federico Di Gregorio
+* [PyPI](https://pypi.org/project/psycopg2-binary/)
+* [homepage](http://initd.org/psycopg/)
+* [LGPL v3.0 (or later)](https://github.com/psycopg/psycopg2/blob/master/LICENSE)
+
+
+### pyproj
+
+Jeff Whitaker
+* [PyPI](https://pypi.org/project/pyproj/)
+* [homepage](https://github.com/jswhit/pyproj)
+* [OSI approved license](https://github.com/jswhit/pyproj/blob/master/LICENSE)
+
+
+### scikit-learn
+
+Andreas Mueller
+* [PyPI](https://pypi.org/project/scikit-learn/)
+* [homepage](http://scikit-learn.org/stable/)
+* [3-Clause BSD license](https://github.com/scikit-learn/scikit-learn/blob/master/COPYING)
+
+
+### scipy
+
+SciPy Developers
+* [PyPI](https://pypi.org/project/scipy/)
+* [homepage](https://www.scipy.org/)
+* [3-Clause BSD license](https://github.com/scipy/scipy/blob/master/LICENSE.txt)
+
+
+### rtree
+
+Howard Butler
+* [PyPI](https://pypi.org/project/Rtree/)
+* [homepage](http://toblerity.org/rtree/)
+* [LGPL v2.1 (or later)](https://github.com/Toblerity/rtree/blob/master/LICENSE.txt)
 
 
 
 ## External Depencencies
 
-**PoYnts* binds following external libraries required for some of the python
+**PoYnts** binds following external libraries required for some of the python
 dependencies.
 
 
-### libspatialindex
-
-Marios Hadjieleftheriou
-[homepage](https://libspatialindex.github.io/)
-[MIT licence](https://libspatialindex.github.io/)
-
-
-### Gdal
+### GDAL
 
 Frank Warmerdam
-[homepage](https://www.gdal.org/)
-[X11/MIT licence](https://trac.osgeo.org/gdal/wiki/FAQGeneral#WhatlicensedoesGDALOGRuse)
+* [homepage](https://www.gdal.org/)
+* [X11/MIT licence](https://trac.osgeo.org/gdal/wiki/FAQGeneral#WhatlicensedoesGDALOGRuse)
 
 
 ### Liblas
 
 Howard Butler, Mateusz Loskot and others
-[homepage](https://liblas.org/)
-[X11/MIT licence](https://liblas.org/copyright.html#license)
+* [homepage](https://liblas.org/)
+* [X11/MIT licence](https://liblas.org/copyright.html#license)
+
+
+### libspatialindex
+
+Marios Hadjieleftheriou
+* [homepage](https://libspatialindex.github.io/)
+* [MIT licence](https://libspatialindex.github.io/)
+
+
+
+## Optional dependencies (for development)
+
+Following python packages (distributed via pip) were used for software
+development and documentation.
+
+
+### autopep8
+
+Hideo Hattori
+* [PyPI](https://pypi.org/project/autopep8/)
+* [homepage](https://github.com/hhatto/autopep8)
+* [MIT compatible licence](https://github.com/matplotlib/matplotlib/blob/master/LICENSE/LICENSE)
+
+
+### matplotlib
+
+John D. Hunter, Michael Droettboom
+* [PyPI](https://pypi.org/project/matplotlib/)
+* [homepage](https://matplotlib.org/)
+* [BSD compatible](https://github.com/matplotlib/matplotlib/blob/master/LICENSE/LICENSE)
+
+
+### pycodestyle
+
+Ian Lee
+* [PyPI](https://pypi.org/project/pycodestyle/)
+* [homepage](https://pycodestyle.readthedocs.io/en/latest/)
+* [Expat licence](https://pycodestyle.readthedocs.io/en/latest/index.html#license)
+
+
+### Sphinx
+
+Georg Brandl
+* [PyPI](https://pypi.org/project/Sphinx/)
+* [homepage](http://www.sphinx-doc.org/en/master/)
+* [3-Clause BSD license](https://github.com/sphinx-doc/sphinx)
+
+
+### sphinxcontrib-napoleon
+
+Rob Ruana
+* [PyPI](https://pypi.org/project/sphinxcontrib-napoleon/)
+* [homepage](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/)
+* [2-Clause BSD license](https://github.com/sphinx-contrib/napoleon/blob/master/LICENSE)
 
 
 
