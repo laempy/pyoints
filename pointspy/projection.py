@@ -38,24 +38,24 @@ class Proj:
     Create from EPSG code.
 
     >>> proj = Proj.from_epsg(4326)
-    >>> print(proj.wkt)
-    GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]
-    >>> print(proj.proj4)
-    +proj=longlat +datum=WGS84 +no_defs
+    >>> print('AUTHORITY["EPSG","4326"]' in proj.wkt)
+    True
+    >>> print('WGS84' in proj.proj4)
+    True
 
     Create from Proj4 string.
 
     >>> proj = Proj.from_proj4('+proj=longlat +datum=WGS84 +no_defs')
     >>> print(proj.proj4)
     +proj=longlat +datum=WGS84 +no_defs
-    >>> print(proj.wkt)
-    GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]
+    >>> print('AUTHORITY["EPSG","4326"]' in proj.wkt)
+    True
 
     Create from Well Known Text.
 
     >>> proj = Proj.from_wkt(proj.wkt)
-    >>> print(proj.proj4)
-    +proj=longlat +datum=WGS84 +no_defs
+    >>> print('WGS84' in proj.proj4)
+    True
 
     """
 

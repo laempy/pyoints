@@ -201,8 +201,8 @@ def recarray(dataDict, dtype=[], dim=1):
     ...    'n':  [1, 3, 1, 2],
     ...    'missing':  [None, None, 'str', None],
     ... })
-    >>> rec.dtype.names
-    ('coords', 'text', 'n', 'missing')
+    >>> print(sorted(rec.dtype.names))
+    ['coords', 'missing', 'n', 'text']
     >>> print(rec.coords)
     [[3 4]
      [3 2]
@@ -226,8 +226,8 @@ def recarray(dataDict, dtype=[], dim=1):
     [[ 1  3]
      [ 4  0]
      [-4  2]]
-    >>> print(rec.dtype.names)
-    ('coords', 'values')
+    >>> print(sorted(rec.dtype.names))
+    ['coords', 'values']
 
     """
 
@@ -427,8 +427,8 @@ def merge(arrays, f=np.concatenate):
     >>> C = recarray({'a': [(2, 3), (4, 5), (6, 7)], 'b': ['k', 'l', 'm']})
 
     >>> D = merge((A, B, C))
-    >>> print(D.dtype.names)
-    ('a', 'b')
+    >>> print(sorted(D.dtype.names))
+    ['a', 'b']
     >>> print(D.b)
     ['e' 'f' 'g' 'h' 'i' 'j' 'k' 'l' 'm']
     >>> print(D.shape)
@@ -459,8 +459,8 @@ def merge(arrays, f=np.concatenate):
     ... }, dim=2)
     >>> D = merge((A, B, C))
 
-    >>> print(D.dtype.names)
-    ('a', 'b')
+    >>> print(sorted(D.dtype.names))
+    ['a', 'b']
     >>> print(D.b)
     [['e' 'f']
      ['g' 'h']
@@ -762,7 +762,7 @@ def indices(shape, flatten=False):
     Returns
     -------
     np.ndarray(int, shape=(\*shape, len(shape)))
-        Array of indices with desired shape. Each entry provides a index tuple 
+        Array of indices with desired shape. Each entry provides a index tuple
         to access the array entries.
 
     Examples
@@ -814,7 +814,7 @@ def indices(shape, flatten=False):
      [2 2]
      [2 3]]
 
-    """       
+    """
     if isinstance(shape, int):
         keys = np.arange(shape)
     else:
