@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Jun 12 10:48:11 2018
-
-@author: sebastian
-"""
+"""Test to read and write .ply files."""
 
 import os
 
@@ -28,4 +23,3 @@ storage.writePly(geoRecords, outfile)
 print("load %s" % outfile)
 ply = storage.loadPly(outfile)
 print(ply)
-

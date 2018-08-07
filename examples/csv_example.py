@@ -1,9 +1,5 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Jul  3 15:03:44 2018
+"""Test to read and write .csv files."""
 
-@author: sebastian
-"""
 import os
 from pointspy import (
     storage,
