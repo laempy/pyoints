@@ -1,3 +1,4 @@
+pip
 numpy
 rtree
 laspy
