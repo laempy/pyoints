@@ -206,8 +206,8 @@ def rename_dict(d, ids=None):
 
     >>> d = {1: [0, 1], 2: None, 3: 'text'}
     >>> renamed_dict = rename_dict(d, ['first', 'second', 'last'])
-    >>> print(renamed_dict)
-    {'first': [0, 1], 'second': None, 'last': 'text'}
+    >>> print(sorted(renamed_dict))
+    ['first', 'last', 'second']
 
     """
     if not isinstance(d, dict):
