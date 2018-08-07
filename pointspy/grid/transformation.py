@@ -91,11 +91,12 @@ def coords_to_keys(T, coords):
 
     """
     coords = assertion.ensure_numarray(coords)
-    T = assertion.ensure_tmatrix(T, dim=coords.shape[-1])
+    dim = coords.shape[-1]
+    T = transformation.LocalSystem(assertion.ensure_tmatrix(T, dim=dim))
 
-    s = np.product(coords.shape) // T.dim
+    s = np.product(coords.shape) // dim
 
-    flat_coords = coords.reshape((s, T.dim))
+    flat_coords = coords.reshape((s, dim))
     values = T.to_global(flat_coords)
 
     keys = np.floor(values).astype(int)[:, ::-1]
@@ -123,9 +124,10 @@ def keys_to_coords(T, keys):
 
     """
     keys = assertion.ensure_numarray(keys)
-    T = assertion.ensure_tmatrix(T, dim=keys.shape[-1])
-    s = np.product(keys.shape) // T.dim
-    flat_keys = keys.reshape((s, T.dim))[:, ::-1] + 0.5
+    dim = keys.shape[-1]
+    T = transformation.LocalSystem(assertion.ensure_tmatrix(T, dim=dim))
+    s = np.product(keys.shape) // dim
+    flat_keys = keys.reshape((s, dim))[:, ::-1] + 0.5
     coords = T.to_local(flat_keys).astype(float)
 
     return coords.reshape(keys.shape)
