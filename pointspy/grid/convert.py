@@ -1,4 +1,4 @@
-"""Convertion grid data structures.
+"""Convertion of grid data structures.
 """
 
 import pandas
@@ -24,7 +24,7 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
     Parameters
     ----------
     rec : np.recarray(shape=(n, ))
-        Numpy record array of `n` points to voxelize. It reqires the two
+        Numpy record array of `n` points to voxelize. It required a two
         dimensional field 'coords' associated with `k` dimensional coordinates.
     T : array_like(Number, shape=(m+1, m+1))
         Transformation matrix defining the `m <= k` dimensional voxel system.
@@ -32,7 +32,7 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
         Shape of the output voxel space. If None, `shape` is fit to
         `rec.coords`.
     agg_func : optional, callable
-        Function to aggregate the record array. If None `agg_func` is set to
+        Function to aggregate the record array. If None, `agg_func` set to
         `lambda ids: rec[ids]`.
     dtype : optional, np.dtype
         Output data type. If None, set to `[type(rec)]`.
@@ -55,7 +55,7 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
     >>> rec = np.recarray(len(coords), dtype=[('coords', float, 2)])
     >>> rec['coords'] = coords
 
-    Voxelize.
+    Voxelize records.
 
     >>> T = transformation.matrix(s=(2.5, 3), t=[0, 0])
     >>> grid = voxelize(rec, T)
@@ -157,7 +157,7 @@ def corners_to_transform(corners, scale=None):
 
     Parameters
     ----------
-    corners : array_like(Number, shape=(2**k, k))
+    corners : array_like(Number, shape=(2\*\*k, k))
         Corners of a `k` dimensional grid in a `k` dimensional space.
     scale : optional, array_like(Number, shape=(k))
         Optional scale to define the pixel resolution of a raster.
@@ -188,7 +188,6 @@ def corners_to_transform(corners, scale=None):
      [ 0.   0.   1. ]]
 
     """
-
     corners = assertion.ensure_coords(corners)
     dim = corners.shape[1]
     pts = Extent([np.zeros(dim), np.ones(dim)]).corners
