@@ -18,45 +18,48 @@ from .transformation import (
 )
 
 
-def voxelize(rec, T, agg_func=None, dtype=None):
+def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
     """Aggregate a point cloud to a voxel or raster.
-    
+
     Parameters
     ----------
     rec : np.recarray(shape=(n, ))
         Numpy record array of `n` points to voxelize. It reqires the two
-        dimensional field 'coords' associated with `k` dimensional coordinates.    
+        dimensional field 'coords' associated with `k` dimensional coordinates.
     T : array_like(Number, shape=(m+1, m+1))
         Transformation matrix defining the `m <= k` dimensional voxel system.
-    agg_func : callable
-        Function to aggregate the record array. If None `agg_func` is set to 
+    shape : optional, array_like(int, shape=(m))
+        Shape of the output voxel space. If None, `shape` is fit to
+        `rec.coords`.
+    agg_func : optional, callable
+        Function to aggregate the record array. If None `agg_func` is set to
         `lambda ids: rec[ids]`.
-    dtype : np.dtype
+    dtype : optional, np.dtype
         Output data type. If None, set to `[type(rec)]`.
-        
+
     Returns
     -------
     np.recarray(dtype=dtype)
-        Output `m` dimensional matrix.        
-        
+        Output `m` dimensional matrix.
+
     See Also
     --------
     Grid
-        
+
     Examples
     --------
-    
+
     Create record array with coordinates.
-    
+
     >>> coords = [(0, 0), (1, 0.5), (2, 2), (4, 6), (3, 2), (1, 5), (3, 0)]
     >>> rec = np.recarray(len(coords), dtype=[('coords', float, 2)])
     >>> rec['coords'] = coords
-    
+
     Voxelize.
-    
+
     >>> T = transformation.matrix(s=(2.5, 3), t=[0, 0])
     >>> grid = voxelize(rec, T)
-    
+
     >>> print(grid.dtype)
     object
     >>> print(grid.shape)
@@ -65,9 +68,9 @@ def voxelize(rec, T, agg_func=None, dtype=None):
     [[0.  0. ]
      [1.  0.5]
      [2.  2. ]]
-    
+
     Voxelize with aggregation function.
-    
+
     >>> dtype = [('points', type(rec)), ('count', int)]
     >>> agg_func = lambda ids: (rec[ids], len(ids))
     >>> grid = voxelize(rec, T, agg_func=agg_func, dtype=dtype)
@@ -84,51 +87,56 @@ def voxelize(rec, T, agg_func=None, dtype=None):
     [[0.  0. ]
      [1.  0.5]
      [2.  2. ]]
-    
+
     Voxelize three dimensional coordinates to a two dimensional raster.
-    
-    >>> coords = [(0, 0, 0), (2, 0.3, 5), (2, 2, 3), (4, 6, 2), (3, 2, 1)]
-    >>> rec = np.recarray(len(coords), dtype=[('coords', float, 2)])
+
+    >>> coords = [(0, 0, 1), (-2, 0.3, 5), (2, 2, 3), (4, 6, 2), (3, 2, 1)]
+    >>> rec = np.recarray(len(coords), dtype=[('coords', float, 3)])
     >>> rec['coords'] = coords
-    
+
     >>> T = transformation.matrix(s=(2.5, 3), t=[0, 0])
     >>> grid = voxelize(rec, T)
     >>> print(grid.shape)
     (3, 2)
-    >>> print(grid[0, 0])
-    
+    >>> print(grid[0, 0].coords)
+    [[0. 0. 1.]
+     [2. 2. 3.]]
+
     """
     if not isinstance(rec, np.recarray):
         raise TypeError("'rec' need an instance of np.recarray")
     if 'coords' not in rec.dtype.names:
         raise ValueError("'rec' requires field 'coords'")
-            
+
     if agg_func is None:
-        agg_func = lambda ids: rec[ids]
+        def agg_func(ids): return rec[ids]
     elif not callable(agg_func):
         raise ValueError("'agg_func' needs to be callable")
 
-    coords = assertion.ensure_coords(rec.coords, max_dim=T.dim)
-
+    coords = assertion.ensure_coords(rec.coords, min_dim=T.dim)
     keys = coords_to_keys(T, coords[:, :T.dim])
-    shape = tuple(keys.max(0)[:T.dim] + 1)
-    
+
+    if shape is None:
+        shape = tuple(keys.max(0)[:T.dim] + 1)
+    else:
+        shape = assertion.ensure_shape(shape, dim=T.dim)
+
     # group keys
     df = pandas.DataFrame({'indices': keys_to_indices(keys, shape)})
     groupDict = df.groupby(by=df.indices).groups
     keys = indices_to_keys(list(groupDict.keys()), shape)
-    mask = np.all(keys>=0, axis=1)
-    keys = keys[mask, :]
-    print(mask)
-    print(keys)
-    
+
+    # cut by extent
+    min_mask = np.all(keys >= 0, axis=1)
+    max_mask = np.all(keys < shape, axis=1)
+    mask = np.all((min_mask, max_mask), axis=1)
+
     # create lookup array
     lookup = np.empty(shape, dtype=list)
     lookup.fill([])
-    print(keys)
-    lookup[keys.T.tolist()] = list(groupDict.values())
-    
-    # Aggregate per cell    
+    lookup[keys.T[mask].tolist()] = list(groupDict.values())
+
+    # Aggregate per cell
     if dtype is None:
         otypes = [type(rec)]
         v = np.vectorize(agg_func, otypes=otypes)
@@ -141,7 +149,6 @@ def voxelize(rec, T, agg_func=None, dtype=None):
         for i, arr in enumerate(v(lookup)):
             res[dtype.names[i]][:] = arr
     return res
-
 
 
 def corners_to_transform(corners, scale=None):
