@@ -40,7 +40,7 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
 
     References
     ----------
-    [1]  University of Genoa (2017): 
+    [1]  University of Genoa (2017):
     URL http://geomatica.como.polimi.it/corsi/def\_monitoring/roto-translationsb.pdf.
 
     Examples
@@ -59,7 +59,7 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     >>> pairs_dict = { 'A': { 'B': [(0, 0), (1, 1), (2, 2)] } }
     >>> weights = {'A': [1, 1, 1], 'B': [0, 0, 0]}
     >>> res = find_rototranslations(coords_dict, pairs_dict, weights=weights)
-    
+
     >>> print(list(res.keys()))
     ['A', 'B']
     >>> tA = res['A'].to_local(coords_dict['A'])
@@ -80,16 +80,13 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     3D coordinates.
 
     >>> coordsA = [(-10, -20, 3), (-1, 2, 4), (1, 10, 5), (1, -2, 60)]
-    >>> C = transformation.t_matrix([10000, 600000, 70000])
-    >>> #coordsA = transformation.transform(coordsA, C)
+
     >>> TB = transformation.matrix(
     ...     t=[2, 5, 10], r=[-0.01, 0.02, 0.03], order='trs')
-    >>> #TB = C * TB * C.inv
     >>> coordsB = transformation.transform(coordsA, TB)
 
     >>> TC= transformation.matrix(
     ...     t=[-2, 3, -6], r=[-0.03, 0.01, -0.02], order='trs')
-    >>> #TC = C * TC * C.inv
     >>> coordsC = transformation.transform(coordsA, TC)
 
     >>> coords_dict = {'A': coordsA, 'B': coordsB, 'C': coordsC}
@@ -99,8 +96,8 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     ...     'C': { 'A': [(0, 0), (1, 1), (3, 3)], 'B': [(1, 1), (2, 2)] },
     ... }
     >>> weights = {'A': [1, 1, 1, 1, 1, 1], 'B': [0, 0, 0, 0, 0, 0]}
-    >>> #weights = [0, 0, 0, 0, 0, 0]
     >>> res = find_rototranslations(coords_dict, pairs_dict, weights=weights)
+
     >>> print(list(res.keys()))
     ['A', 'B', 'C']
     >>> tA = res['A'].to_local(coords_dict['A'])
