@@ -42,6 +42,41 @@ def ensure_dim(check_dim, dim=None, min_dim=2, max_dim=np.inf):
     return check_dim
 
 
+def ensure_shape(shape, dim=None, min_dim=1, max_dim=np.inf):
+    """Ensures the properties of an array shape.
+
+    Parameters
+    ----------
+    shape : array_like(int, shape=(k))
+        Shape of `k` dimensions to validate.
+
+    Returns
+    -------
+    np.ndarray(int, shape=(k))
+        Shape with ensured properties
+
+    Raises
+    ------
+    ValueError, TypeError
+
+    """
+    if not nptools.isarray(shape):
+        raise TypeError("'shape' needs to an array like object")
+    shape = np.array(shape)
+    if not isnumeric(shape, dtypes=[np.int32, np.int64]):
+        raise ValueError("'shape' needs to have integer values")
+    if not len(shape.shape) == 1:
+        raise ValueError("'shape' needs to be a vector")
+    if dim is not None:
+        if not shape.shape[0] == dim:
+            raise ValueError("'shape' requires a length of %i" % dim)
+    else:
+        if not (shape.shape[0] >= min_dim and shape.shape[0] <= max_dim):
+            m = "length of 'shape' needs to be in range [%i, %i]"
+            raise ValueError(m % (min_dim, max_dim))
+    return shape
+
+
 def ensure_length(check_length, length=None, min_length=0, max_length=np.inf):
     """Ensure a length value to be in a specific range.
 
@@ -64,7 +99,8 @@ def ensure_length(check_length, length=None, min_length=0, max_length=np.inf):
     ValueError
 
     """
-    check_length = int(check_length)
+    if not isinstance(check_length, int):
+        raise TypeError("'check_length' needs to be an integer")
     if length is not None:
         if not check_length == length:
             m = "length %i required" % length
