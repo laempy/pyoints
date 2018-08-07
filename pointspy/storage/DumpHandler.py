@@ -21,12 +21,19 @@ class DumpReader(GeoFile):
 
     @property
     def corners(self):
-        ext = self.load().extent()
-        return ext.corners()
+        return self.extent.corners
+
+    @property
+    def extent(self):
+        return self.load().extent()
+
+    @property
+    def t(self):
+        return self.load().t
 
     def load(self):
         if not hasattr(self, '_records'):
-            self._data = loadDump(self.filename)
+            self._data = loadDump(self.file)
         return self._data
 
     def clean_cache(self):
@@ -46,8 +53,8 @@ def loadDump(filename):
     object
 
     """
-    with open(filename, 'r') as f:
-        return pickle.load(f)
+    with open(filename, 'rb') as f:
+        return pickle.load(f, pickle.HIGHEST_PROTOCOL)
 
 
 def writeDump(obj, filename):
@@ -57,11 +64,11 @@ def writeDump(obj, filename):
     ----------
     obj : object
         Object to dump
-    filename : String
+    outfile : String
         File to dump object to.
 
     """
-    with open(filename, 'w') as f:
+    with open(filename, 'wb') as f:
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
 

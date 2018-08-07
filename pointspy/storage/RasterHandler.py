@@ -44,14 +44,14 @@ class RasterReader(GeoFile):
         if proj is None:
             wkt = gdalRaster.GetProjection()
             if wkt is not '':
-                self._proj = projection.Proj.from_proj4(
+                self.proj = projection.Proj.from_proj4(
                     osr.SpatialReference(wkt=wkt).ExportToProj4())
             else:
                 raise ValueError("no projection found")
         else:
-            self._proj = proj
+            self.proj = proj
 
-        self._t = np.matrix(
+        self.t = np.matrix(
             Affine.from_gdal(*gdalRaster.GetGeoTransform())
         ).reshape(3, 3)
 

@@ -83,5 +83,5 @@ def writePly(records, outfile):
 
     # save data
     el = plyfile.PlyElement.describe(records.view(dtypes), 'vertex')
-    ply = plyfile.PlyData([el], comments=['header comment'])
+    ply = plyfile.PlyData([el], comments=['created by "PoYnts"'])
     ply.write(outfile)
