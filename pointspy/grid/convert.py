@@ -146,8 +146,9 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
         otypes = [dtype[name].str for name in dtype.names]
         v = np.vectorize(agg_func, otypes=otypes)
         res = np.recarray(lookup.shape, dtype=dtype)
-        for i, arr in enumerate(v(lookup)):
-            res[dtype.names[i]][:] = arr
+        v_arrays = v(lookup)
+        for i, name in enumerate(dtype.names):
+            res[name][:] = v_arrays[i]
     return res
 
 

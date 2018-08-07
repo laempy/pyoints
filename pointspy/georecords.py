@@ -276,9 +276,16 @@ class GeoRecords(np.recarray, object):
         return nptools.indices(self.shape, flatten=False)
 
     def transform(self, T):
+        """Transform coordinates.
+
+        Parameters
+        ----------
+        T : array_like(Number, shape=(self.dim+1, self.dim+1))
+            Transformation matrix to apply.
+
+        """
         T = assertion.ensure_tmatrix(T, dim=self.dim)
         self.coords = transformation.transform(self.coords, T)
-        #self.t.origin = transformation.transform(self.t.origin, T)
         self.t = T * self.t
 
     def project(self, proj):

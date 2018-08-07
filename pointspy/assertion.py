@@ -63,7 +63,7 @@ def ensure_shape(shape, dim=None, min_dim=1, max_dim=np.inf):
     if not nptools.isarray(shape):
         raise TypeError("'shape' needs to an array like object")
     shape = np.array(shape)
-    if not isnumeric(shape, dtypes=[np.int32, np.int64]):
+    if not nptools.isnumeric(shape, dtypes=[np.int32, np.int64]):
         raise ValueError("'shape' needs to have integer values")
     if not len(shape.shape) == 1:
         raise ValueError("'shape' needs to be a vector")
