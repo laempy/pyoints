@@ -1,4 +1,5 @@
-"""Handling of grid transformations t
+"""Conversion of coordinates to grid indices and reverse by applying
+transformations.
 """
 
 import numpy as np
@@ -10,21 +11,22 @@ from .. import (
     Extent,
 )
 
+
 def keys_to_indices(keys, shape):
     """Convert matrix keys to indices.
-    
+
     Parameters
     ----------
     keys : array_like(int)
         Keys of matrix.
     shape : array_like(int, shape=(k))
         Shape of the input matrix.
-    
+
     Returns
     -------
     np.ndarray(int)
-        Desired indices vector associated with the requested keys.  
-    
+        Desired indices vector associated with the requested keys.
+
     """
     w = np.concatenate((
         np.array([np.product(shape[i:]) for i in range(len(shape))])[1:],
@@ -35,24 +37,24 @@ def keys_to_indices(keys, shape):
 
 def indices_to_keys(indices, shape):
     """Convert indices vector to keys of a matrix.
-    
+
     Parameters
     ----------
     indices : array_like(int, shape=(n))
-        Index vector to convert to matrix keys. Each element `i` specifies the 
+        Index vector to convert to matrix keys. Each element `i` specifies the
         `i`-th`element in the matrix.
     shape : array_like(int, shape=(k))
         Shape of output matrix.
-    
+
     Returns
     -------
     np.ndarray(int, shape=shape)
-        Desired matrix keys associated with requested indices.  
-    
+        Desired matrix keys associated with requested indices.
+
     """
     indices = assertion.ensure_numvector(indices)
     shape = assertion.ensure_numvector(shape)
-    
+
     keys = []
     w = np.concatenate((
         np.array([np.product(shape[i:]) for i in range(len(shape))])[1:],
@@ -82,7 +84,7 @@ def coords_to_keys(T, coords):
     -------
     keys : np.ndarray(int, shape=(n, k))
         Indices of the coordinates within the grid.
-        
+
     See Also
     --------
     keys_to_coords, coords_to_coords
@@ -90,7 +92,7 @@ def coords_to_keys(T, coords):
     """
     coords = assertion.ensure_numarray(coords)
     T = assertion.ensure_tmatrix(T, dim=coords.shape[-1])
-    
+
     s = np.product(coords.shape) // T.dim
 
     flat_coords = coords.reshape((s, T.dim))
@@ -125,7 +127,7 @@ def keys_to_coords(T, keys):
     s = np.product(keys.shape) // T.dim
     flat_keys = keys.reshape((s, T.dim))[:, ::-1] + 0.5
     coords = T.to_local(flat_keys).astype(float)
-    
+
     return coords.reshape(keys.shape)
 
 
