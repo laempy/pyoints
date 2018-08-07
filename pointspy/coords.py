@@ -19,7 +19,7 @@ class Coords(np.ndarray, object):
     coords : array_like(Number)
         Represents `n` data points of `k` dimensions in a Cartesian coordinate
         system. Any desired shape of at least length two is allowed to allow to
-        represent point, voxel or raster data. The last shape element always 
+        represent point, voxel or raster data. The last shape element always
         represents the coordinate dimension.
 
     Attributes
@@ -42,7 +42,7 @@ class Coords(np.ndarray, object):
      [ 0 -1]]
 
     Get Extent.
-    
+
     >>> print(coords.extent())
     [ 0 -1  2  3]
     >>> print(coords.extent(dim=1))
@@ -136,7 +136,6 @@ class Coords(np.ndarray, object):
             indexKD = IndexKD(self.flattened[:, :dim], copy=False)
             self._indices[dim] = indexKD
         return indexKD
-
 
     def extent(self, dim=None):
         """Provides the spatial extent of the coordinates.

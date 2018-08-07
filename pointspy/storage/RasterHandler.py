@@ -35,6 +35,7 @@ class RasterReader(GeoFile):
     GeoFile
 
     """
+
     def __init__(self, infile, proj=None, date=None):
         GeoFile.__init__(self, infile)
 

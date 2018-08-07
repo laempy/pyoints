@@ -98,7 +98,7 @@ class ICP:
      [ 1.3  1. ]
      [ 1.   0. ]
      [-1.  -2. ]]
-    
+
     >>> tB = T['B'].to_local(B)
     >>> print(np.round(tB, 2))
     [[ 0.4  0.5]

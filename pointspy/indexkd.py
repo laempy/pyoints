@@ -575,7 +575,7 @@ class IndexKD(object):
         ----------
         extent : array_like(Number, shape=(2 * self.dim))
             Specifies the points to return. A point p is returned, if
-            `np.all(p <= extent[0: dim])` and 
+            `np.all(p <= extent[0: dim])` and
             `np.all(p >= extent[dim+1: 2*dim])`
 
         Returns

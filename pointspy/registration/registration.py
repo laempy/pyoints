@@ -61,36 +61,36 @@ def find_rototranslation(A, B):
     Notes
     -----
     Implements the algorithm of Besl and McKay (1992) [1]. Idea has been taken
-    from  Nghia Ho (2013) [2]. Code [2] has been adapted generalized to `k` 
+    from  Nghia Ho (2013) [2]. Code [2] has been adapted generalized to `k`
     dimensional case.
 
     References
     ----------
-    
-    [1] P. J. Besl and N. D. McKay (1992): "A Method for Registration of 3-D 
-    Shapes", IEEE Transactions on Pattern Analysis and Machine Intelligence, 
-    Institute of Electrical and Electronics Engineers (IEEE), vol. 14, 
+
+    [1] P. J. Besl and N. D. McKay (1992): "A Method for Registration of 3-D
+    Shapes", IEEE Transactions on Pattern Analysis and Machine Intelligence,
+    Institute of Electrical and Electronics Engineers (IEEE), vol. 14,
     pp. 239-256.
-    
-    [2] Nghia Ho (2013): "Finding optimal rotation and translation between 
+
+    [2] Nghia Ho (2013): "Finding optimal rotation and translation between
     corresponding 3D points", URL http://nghiaho.com/?page\_id=671.
-    
-    [3] Nghia Ho (2013): "Finding optimal rotation and translation between 
-    corresponding 3D points", URL 
+
+    [3] Nghia Ho (2013): "Finding optimal rotation and translation between
+    corresponding 3D points", URL
     http://nghiaho.com/uploads/code/rigid_transform\_3D.py\_.
 
     Examples
     --------
 
     Create similar, but shifted and rotated point sets.
-    
+
     >>> A = np.array([[0, 0], [0, 1], [1, 1], [1, 0]])
     >>> B = transformation.transform(A, transformation.matrix(t=[3, 5], r=0.3))
 
     Find roto-translation.
 
     >>> M = find_rototranslation(A, B)
-    
+
     >>> C = transformation.transform(B, M, inverse=False)
     >>> print(np.round(C, 2))
     [[0. 0.]
