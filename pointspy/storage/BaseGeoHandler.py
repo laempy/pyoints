@@ -108,7 +108,6 @@ class GeoFile:
         GeoRecords
             Desired data of the file.
         """
-
         raise NotImplementedError()
 
     def clean_cache(self):
