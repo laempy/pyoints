@@ -19,7 +19,7 @@ class Surface:
 
     See Also
     --------
-    pointspy.interpolate.Interpolator
+    poynts.interpolate.Interpolator
 
     Examples
     --------
