@@ -26,7 +26,7 @@ class Coords(np.ndarray, object):
     ----------
     dim : positive int
         Number of coordinate dimensions of the `coords` field.
-    flat_coords : array_like(Number, shape=(n, k))
+    flattened : array_like(Number, shape=(n, k))
         Flattened `coords`.
 
     Examples
@@ -78,7 +78,7 @@ class Coords(np.ndarray, object):
         return self.shape[-1]
 
     @property
-    def flat_coords(self):
+    def flattened(self):
         if len(self.shape) == 2:
             return self
         else:
@@ -110,7 +110,7 @@ class Coords(np.ndarray, object):
 
         See Also
         --------
-        IndexKD
+        poynts.IndexKD
 
         Examples
         --------
@@ -133,7 +133,7 @@ class Coords(np.ndarray, object):
             self._indices = {}
         indexKD = self._indices.get(dim)
         if indexKD is None:
-            indexKD = IndexKD(self.flat_coords[:, :dim], copy=False)
+            indexKD = IndexKD(self.flattened[:, :dim], copy=False)
             self._indices[dim] = indexKD
         return indexKD
 
@@ -184,6 +184,6 @@ class Coords(np.ndarray, object):
             self._extents = {}
         ext = self._extents.get(dim)
         if ext is None:
-            ext = Extent(self.flat_coords[:, :dim])
+            ext = Extent(self.flattened[:, :dim])
             self._extents[dim] = ext
         return ext

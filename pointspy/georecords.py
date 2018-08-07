@@ -24,7 +24,7 @@ class GeoRecords(np.recarray, object):
     ----------
     proj : projection.Proj
         Projection object to provide the coordinate reference system.
-    npRecarray : np.recarray(shape=(n,))
+    rec : np.recarray
         A numpy record array provides coordinates and attributes of `n` points.
         The field `coords` is required and represents coordinates of `k`
         dimensions.
@@ -44,6 +44,8 @@ class GeoRecords(np.recarray, object):
     count : positive int
         Number of objects within the data structure. E.g. number of points
         of a point cloud or number of cells of a raster.
+    keys : np.ndarray(int, shape=self.shape)
+        Keys or indices of the data structure.
 
     Examples
     --------
@@ -111,7 +113,7 @@ class GeoRecords(np.recarray, object):
         elif not isinstance(rec, np.recarray):
             raise TypeError("'rec' needs to be of type 'np.recarray'")
         if 'coords' not in rec.dtype.names:
-            raise ValueError("field 'coords' needed")
+            raise ValueError("field 'coords' required")
         if not len(rec.dtype['coords'].shape) == 1:
             raise ValueError("malformed coordinate shape")
         if not rec.dtype['coords'].shape[0] >= 2:
@@ -187,85 +189,6 @@ class GeoRecords(np.recarray, object):
     def count(self):
         return np.product(self.shape)
 
-    @staticmethod
-    def keys(shape, flatten=False):
-        """Keys or indices of a numpy ndarray.
-
-        Parameters
-        ----------
-        shape : array_like(int)
-            Shape of desired output array.
-
-        Returns
-        -------
-        np.ndarray(int, shape=(\*shape, len(shape)))
-            Array of indices with desired shape. Each entry provides a index
-            tuple to access the array entries.
-
-        Examples
-        --------
-
-        One dimensional case.
-
-        >>> keys = GeoRecords.keys(9)
-        >>> print(keys.shape)
-        (9,)
-        >>> print(keys)
-        [0 1 2 3 4 5 6 7 8]
-
-        Two dimensional case.
-
-        >>> keys = GeoRecords.keys((3, 4))
-        >>> keys.shape
-        (3, 4, 2)
-        >>> print(keys)
-        [[[0 0]
-          [0 1]
-          [0 2]
-          [0 3]]
-        <BLANKLINE>
-         [[1 0]
-          [1 1]
-          [1 2]
-          [1 3]]
-        <BLANKLINE>
-         [[2 0]
-          [2 1]
-          [2 2]
-          [2 3]]]
-
-        Get iterable of indices.
-
-        >>> keys = GeoRecords.keys((3, 4), flatten=True)
-        >>> print(keys)
-        [[0 0]
-         [0 1]
-         [0 2]
-         [0 3]
-         [1 0]
-         [1 1]
-         [1 2]
-         [1 3]
-         [2 0]
-         [2 1]
-         [2 2]
-         [2 3]]
-
-        """
-        if isinstance(shape, int):
-            return np.arange(shape)
-        else:
-            shape = assertion.ensure_numvector(shape)
-            if not nptools.isnumeric(shape, dtypes=[int]):
-                raise ValueError("'shape' values have to be integers")
-            keys = np.indices(shape)
-            if flatten:
-                keys = keys.reshape(-1, np.product(shape)).T
-            else:
-                keys = np.moveaxis(keys, 0, -1)
-
-            return keys
-
     def records(self):
         """Provides the flattened data records. Usefull if structured data
         (like matrices) are used.
@@ -302,7 +225,8 @@ class GeoRecords(np.recarray, object):
         """
         return self.reshape(self.count)
 
-    def ids(self):
+    @property
+    def keys(self):
         """Keys or indices of the data structure.
 
         Returns
@@ -310,10 +234,6 @@ class GeoRecords(np.recarray, object):
         np.ndarray(int, shape=(self.count))
             Array of indices. Each entry provides a index tuple e. g. to
             recieve data elements wth `__getitem__`.
-
-        See Also
-        --------
-        GeoRecords.keys()
 
         Examples
         --------
@@ -325,7 +245,7 @@ class GeoRecords(np.recarray, object):
         ...    'values': [1, 3, 4, 0]
         ... }
         >>> geo = GeoRecords(None, data)
-        >>> print(geo.ids())
+        >>> print(geo.keys)
         [[0]
          [1]
          [2]
@@ -335,7 +255,7 @@ class GeoRecords(np.recarray, object):
 
         >>> data = np.ones((4,3), dtype=[('coords',float,2)]).view(np.recarray)
         >>> geo = GeoRecords(None, data)
-        >>> print(geo.ids())
+        >>> print(geo.keys)
         [[[0 0]
           [0 1]
           [0 2]]
@@ -353,7 +273,7 @@ class GeoRecords(np.recarray, object):
           [3 2]]]
 
         """
-        return self.__class__.keys(self.shape)
+        return nptools.indices(self.shape, flatten=False)
 
     def transform(self, T):
         T = assertion.ensure_tmatrix(T, dim=self.dim)

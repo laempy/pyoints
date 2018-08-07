@@ -683,7 +683,7 @@ def fields_view(arr, fields, dtype=None):
     return np.ndarray(arr.shape, dtype, arr, 0, arr.strides)
 
 
-def apply_function(ndarray, func, dtypes=None):
+def apply_function(ndarray, func, dtype=None):
     """Applies a function to each record of a numpy array.
 
     Parameters
@@ -732,7 +732,7 @@ def apply_function(ndarray, func, dtypes=None):
     Multiple output data types.
 
     >>> func = lambda record: (record.a + record.b, record.a ** record.b)
-    >>> print(apply_function(arr, func, dtypes=[('c', float), ('d', int)]))
+    >>> print(apply_function(arr, func, dtype=[('c', float), ('d', int)]))
     [[(1.,  0) (3.,  1)]
      [(5.,  8) (7., 81)]]
 
@@ -741,11 +741,87 @@ def apply_function(ndarray, func, dtypes=None):
         raise ValueError("'func' needs to be callable")
     if not isinstance(ndarray, np.ndarray):
         raise TypeError("'ndarray' needs to an instance of np.ndarray")
-    if dtypes is not None:
-        dtypes = np.dtype(dtypes)
+    if dtype is not None:
+        dtype = np.dtype(dtype).descr
 
     args = np.broadcast(None, ndarray)
     values = [func(*arg[1:]) for arg in args]
-    res = np.array(values, dtype=dtypes)
+    res = np.array(values, dtype=dtype)
     res = res.reshape(ndarray.shape)
     return res.view(np.recarray)
+
+
+def indices(shape, flatten=False):
+    """Keys or indices of a numpy ndarray.
+
+    Parameters
+    ----------
+    shape : array_like(int)
+        Shape of desired output array.
+
+    Returns
+    -------
+    np.ndarray(int, shape=(\*shape, len(shape)))
+        Array of indices with desired shape. Each entry provides a index tuple 
+        to access the array entries.
+
+    Examples
+    --------
+
+    One dimensional case.
+
+    >>> keys = indices(9)
+    >>> print(keys.shape)
+    (9,)
+    >>> print(keys)
+    [0 1 2 3 4 5 6 7 8]
+
+    Two dimensional case.
+
+    >>> keys = indices((3, 4))
+    >>> keys.shape
+    (3, 4, 2)
+    >>> print(keys)
+    [[[0 0]
+      [0 1]
+      [0 2]
+      [0 3]]
+    <BLANKLINE>
+     [[1 0]
+      [1 1]
+      [1 2]
+      [1 3]]
+    <BLANKLINE>
+     [[2 0]
+      [2 1]
+      [2 2]
+      [2 3]]]
+
+    Get iterable of indices.
+
+    >>> keys = indices((3, 4), flatten=True)
+    >>> print(keys)
+    [[0 0]
+     [0 1]
+     [0 2]
+     [0 3]
+     [1 0]
+     [1 1]
+     [1 2]
+     [1 3]
+     [2 0]
+     [2 1]
+     [2 2]
+     [2 3]]
+
+    """       
+    if isinstance(shape, int):
+        keys = np.arange(shape)
+    else:
+        shape = np.array(shape, dtype=int)
+        keys = np.indices(shape)
+        if flatten:
+            keys = keys.reshape(-1, np.product(shape)).T
+        else:
+            keys = np.moveaxis(keys, 0, -1)
+    return keys

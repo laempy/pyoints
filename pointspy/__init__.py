@@ -22,4 +22,10 @@ from . import (
     registration,
     nptools,
     coords,
+    indexkd,
+    classification,
+    grid,
+    georecords,
+    transformation,
+    extent,
 )
