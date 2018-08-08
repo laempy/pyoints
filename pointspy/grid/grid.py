@@ -40,19 +40,20 @@ class Grid(GeoRecords):
     proj : pointspy.projection.Proj
         Projection object provides the geograpic projection of the grid.
     rec : np.recarray
-        Multidimensional array of objects. Element of the matrix represents a
-        object with k coordinate dimension.
+        Multidimensional array of objects. Each cell of the matrix represents a
+        geo-object with `k` dimensional coordinates.
     T : array_like(Number, shape=(k+1, k+1))
-        The  linear transformation matrix to transform the coordinates.
-        The translation represents the origin, the rotation the
-        orientation and the scale the pixel size of the matrix.
+        A linear transformation matrix to transform the coordinates. The 
+        translation represents the origin, the rotation the orientation, and 
+        the scale the pixel size of the matrix.
 
     Examples
     --------
 
-    Create a raster with projection and a transformation matrix.
+    >>> from pointspy import transformation, projection
 
-    >>> from pointspy import transformation
+    Create a raster with a projection and a transformation matrix.
+    
     >>> proj = projection.Proj()
     >>> data = np.recarray((4, 3), dtype=[('values', int)])
     >>> data['values'] = np.arange(np.product(data.shape)).reshape(data.shape)
@@ -61,12 +62,14 @@ class Grid(GeoRecords):
     >>> raster = Grid(proj, data, T)
     >>> print(raster.dtype.descr)
     [('values', '<i8'), ('coords', '<f8', (2,))]
-    >>> print(raster.t.origin)
-    [10. 20.]
     >>> print(raster.shape)
     (4, 3)
     >>> print(raster.dim)
     2
+    >>> print(raster.t.origin)
+    [10. 20.]
+
+    Get cell data of the raster.
 
     >>> print(raster.coords)
     [[[10.25 20.2 ]
@@ -130,7 +133,7 @@ class Grid(GeoRecords):
       [10.75 21.4 ]
       [11.25 21.4 ]]]
 
-    Use spatial index.
+    Useage of the spatial index.
 
     >>> dists, indices = raster.indexKD().knn(raster.t.origin, k=5)
     >>> print(dists)
@@ -200,7 +203,7 @@ class Grid(GeoRecords):
         return keys_to_indices(keys, self.shape)
 
     def indices_to_keys(self, indices):
-        """Convert grid indices to keys.
+        """Convert cell indices to keys.
 
         See Also
         --------
@@ -210,7 +213,7 @@ class Grid(GeoRecords):
         return indices_to_keys(indices, self.shape)
 
     def keys_to_coords(self, keys):
-        """Convert raster indices to coordinates.
+        """Convert cell indices to coordinates.
 
         See Also
         --------
@@ -220,7 +223,7 @@ class Grid(GeoRecords):
         return keys_to_coords(self.t, keys)
 
     def coords_to_keys(self, coords):
-        """Convert coordinates to raster indices.
+        """Convert coordinates to cell indices.
 
         See Also
         --------
@@ -240,7 +243,7 @@ class Grid(GeoRecords):
         return coords_to_coords(self.t, coords)
 
     def window_by_extent(self, extent):
-        """Get grid subset within extent.
+        """Get a subset of the grid within a given extent.
 
         Parameters
         ----------
@@ -306,7 +309,7 @@ class Grid(GeoRecords):
         Examples
         --------
 
-        >>> from pointspy import transformation
+        >>> from pointspy import transformation, projection
 
         Create Grid.
 
@@ -321,7 +324,7 @@ class Grid(GeoRecords):
         >>> rec = np.recarray(len(coords), dtype=[('coords', float, 2)])
         >>> rec['coords'] = coords
 
-        Voxelize and update grid.
+        Voxelize the records and update the raster.
 
         >>> voxels = grid.voxelize(rec)
         >>> grid['points'] = voxels

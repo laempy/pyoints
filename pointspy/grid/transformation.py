@@ -5,7 +5,7 @@
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
-"""Conversion of coordinates to grid indices and reverse by applying
+"""Conversion of coordinates to cell indices and reverse by applying
 transformations.
 """
 
@@ -164,7 +164,7 @@ def coords_to_coords(T, coords):
 
 
 def corners_to_transform(corners, scale=None):
-    """Create a transformation matrix based on the corners of a raster.
+    """Create a transformation matrix using the corners of a raster.
 
     Parameters
     ----------
@@ -199,7 +199,6 @@ def corners_to_transform(corners, scale=None):
      [ 0.   0.   1. ]]
 
     """
-
     corners = assertion.ensure_coords(corners)
     dim = corners.shape[1]
     pts = Extent([np.zeros(dim), np.ones(dim)]).corners
@@ -251,7 +250,7 @@ def extentinfo(T, extent):
     Parameters
     ----------
     T : array_like(Number, shape=(k+1,k+1))
-        The transformation matrix of a `k` dimensional raster.
+        The transformation matrix of a `k` dimensional grid.
     extent : array_like(Number, shape=(2 * k))
         Desired extent.
 
@@ -262,7 +261,7 @@ def extentinfo(T, extent):
     origin_key : array_like(int, shape=(k))
         Key or index of the origin of the new transformation matrix.
     shape : np.array(int, shape=(k))
-        Shape of the raster subset.
+        Shape of the grid subset.
 
     Examples
     --------

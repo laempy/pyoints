@@ -31,7 +31,7 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
     Parameters
     ----------
     rec : np.recarray(shape=(n, ))
-        Numpy record array of `n` points to voxelize. It required a two
+        Numpy record array of `n` points to voxelize. It requires a two
         dimensional field 'coords' associated with `k` dimensional coordinates.
     T : array_like(Number, shape=(m+1, m+1))
         Transformation matrix defining the `m <= k` dimensional voxel system.
@@ -95,7 +95,7 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
      [1.  0.5]
      [2.  2. ]]
 
-    Voxelize three dimensional coordinates to a two dimensional raster.
+    Voxelize three dimensional coordinates to recieve a two dimensional raster.
 
     >>> coords = [(0, 0, 1), (-2, 0.3, 5), (2, 2, 3), (4, 6, 2), (3, 2, 1)]
     >>> rec = np.recarray(len(coords), dtype=[('coords', float, 3)])
@@ -160,7 +160,7 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
 
 
 def corners_to_transform(corners, scale=None):
-    """Create a transformation matrix based on the corners of a raster.
+    """Create a transformation matrix using the corners of a raster.
 
     Parameters
     ----------
@@ -186,7 +186,7 @@ def corners_to_transform(corners, scale=None):
      [ 1.  0.  5.]
      [ 0.  0.  1.]]
 
-    Create transformation matrix with a scale.
+    Create a transformation matrix with a scale.
 
     >>> M = corners_to_transform(corners, [0.5, 2])
     >>> print(np.round(M, 3))
@@ -209,15 +209,19 @@ def corners_to_transform(corners, scale=None):
 
 
 def transform_to_corners(T, shape):
-    """Generates the corners of a grid based on a transformation matrix.
+    """Generates the corners of a grid using a transformation matrix.
 
     Parameters
     ----------
     T : array_like(Number, shape=(k+1, k+1))
         Transformation matrix in a `k` dimensional space.
     shape : array_like(int, shape=(k))
-        Desired shape of the grid
-
+        Desired shape of the grid.
+        
+    Returns
+    -------
+    np.ndarray(Number, shape=(2\*\*k, k))
+        Desired corners of the grid.
 
     Examples
     --------
