@@ -19,20 +19,20 @@ from . import (
 
 
 def extrema(indexKD, attributes, r, inverse=False):
-    """Find local maxima or minima for a given point set.
+    """Find local maxima or minima of given point set.
 
     Parameters
     ----------
     indexKD : IndexKD
         Spatial index of `n` points to filter.
     attributes : array_like(Number, shape=(n))
-        Attributes to search for extrema. If None the last coordinate dimension
-        is used.
+        Attributes to search for extrema. If None, the last coordinate 
+        dimension is used as the attributes.
     r : positive Number
         Maximum distance between two points to be considered as neighbours.
     inverse : optional, bool
         Indicates if local maxima (False) or local minima (True) shall be
-        identfied.
+        yielded.
 
     Yields
     ------
@@ -42,23 +42,21 @@ def extrema(indexKD, attributes, r, inverse=False):
     Examples
     --------
 
-    Local maxima.
+    Find local maxima.
 
     >>> indexKD = IndexKD([(0, 0), (0, 1), (1, 1), (1, 0), (0.5, 0.5) ])
     >>> attributes = [2, 0.1, 1, 0, 0.5]
-    >>> fIds = [*extrema(indexKD, attributes, 1.1)]
+    >>> fIds = list(extrema(indexKD, attributes, 1.1))
     >>> print(fIds)
     [0, 2]
 
-    Local minima.
+    Find local minima.
 
-    >>> fIds = [*extrema(indexKD, attributes, 1.1, inverse=True)]
+    >>> fIds = list(extrema(indexKD, attributes, 1.1, inverse=True))
     >>> print(fIds)
     [3, 1]
 
-    Just one local minimum.
-
-    >>> fIds = [*extrema(indexKD, attributes, 1.5, inverse=True)]
+    >>> fIds = list(extrema(indexKD, attributes, 1.5, inverse=True))
     >>> print(fIds)
     [3]
 
@@ -94,20 +92,20 @@ def extrema(indexKD, attributes, r, inverse=False):
 
 
 def min_filter(indexKD, attributes, r, inverse=False):
-    """Find minima or maxima within a specified radius.
+    """Find minima or maxima within a specified radius for all points. For each
+    point the neighbouring point with extreme attribute is marked.
 
     Parameters
     ----------
     indexKD : IndexKD
         Spatial index of `n` points to filter.
     attributes : array_like(Number, shape=(n))
-        Attributes to search for extrema. If None the last coordinate dimension
-        is used.
+        Attributes to search for extrema. If None, the last coordinate 
+        dimension is used as attributes.
     r : positive Number
         Local radius to search for a minimum.
     inverse : optional, bool
-        Indicates if local minima (False) or local maxima (True) shall be
-        identfied.
+        Indicates if minima (False) or maxima (True) shall be identfied.
 
     Returns
     -------
@@ -115,7 +113,6 @@ def min_filter(indexKD, attributes, r, inverse=False):
         Filtered point indices.
 
     """
-
     # type validation
     if not isinstance(indexKD, IndexKD):
         raise TypeError("'indexKD' needs to be of type 'IndexKD'")
@@ -136,7 +133,7 @@ def min_filter(indexKD, attributes, r, inverse=False):
 
 
 def has_neighbour(indexKD, r):
-    """Decide whether or not points have neighbouring points.
+    """Filter points which have neighbours within a specific radius.
 
     Parameters
     ----------
@@ -149,8 +146,7 @@ def has_neighbour(indexKD, r):
     Yields
     ------
     positive int
-        Yields the index of each point with at least a neighbouring point with
-        radius less or equal `r`.
+        Index of a point with at least a neighbouring point with radius `r`.
 
     See also
     --------
@@ -161,7 +157,7 @@ def has_neighbour(indexKD, r):
 
     >>> coords = [(0, 0), (0.5, 0.5), (0, 1), (0.7, 0.5), (-1, -1)]
     >>> indexKD = IndexKD(coords)
-    >>> print([*has_neighbour(indexKD, 0.7)])
+    >>> print(list(has_neighbour(indexKD, 0.7)))
     [1, 3]
 
     """
@@ -173,23 +169,21 @@ def has_neighbour(indexKD, r):
     not_classified = np.ones(len(indexKD), dtype=np.bool)
     for pId, coord in enumerate(indexKD.coords):
         if not_classified[pId]:
-            nIds = np.array(indexKD.ball(coord, r))
+            nIds = indexKD.ball(coord, r)
             if len(nIds) > 1:
                 not_classified[nIds] = False
                 yield pId
         else:
             yield pId
 
-# TODO: difference to has_neighbour? (only reverse?)
-
 
 def is_isolated(indexKD, r):
-    """Decide whether or not points have neighbouring points.
+    """Filter points which have no neighbours within a specific radius.
 
     Parameters
     ----------
     indexKD : IndexKD
-        Spatial index with points to analyze.
+        Spatial index of `n` points to filter.
     r : positive Number
         Maximum distance of a point to a neighbouring point to be still
         considered as isolated.
@@ -197,7 +191,8 @@ def is_isolated(indexKD, r):
     Yields
     ------
     positive int
-        Yields the index of each isolated point.
+        Index of an isolated point with no neighbouring point within radius 
+        `r`.
 
     See Also
     --------
@@ -208,7 +203,7 @@ def is_isolated(indexKD, r):
 
     >>> coords = [(0, 0), (0.5, 0.5), (0, 1), (0.7, 0.5), (-1, -1)]
     >>> indexKD = IndexKD(coords)
-    >>> print([*is_isolated(indexKD, 0.7)])
+    >>> print(list(is_isolated(indexKD, 0.7)))
     [0, 2, 4]
 
     """
@@ -220,7 +215,7 @@ def is_isolated(indexKD, r):
     not_classified = np.ones(len(indexKD), dtype=np.bool)
     for pId, coord in enumerate(indexKD.coords):
         if not_classified[pId]:
-            nIds = np.array(indexKD.ball(coord, r))
+            nIds = indexKD.ball(coord, r)
             if len(nIds) > 1:
                 not_classified[nIds] = False
             else:
@@ -228,7 +223,8 @@ def is_isolated(indexKD, r):
 
 
 def ball(indexKD, r, order=None, inverse=False, axis=-1, min_pts=1):
-    """Filter coordinates by radius.
+    """Filter coordinates by radius. This algorithm is suitable to remove
+    duplicate points or get an almost uniform point density.
 
     Parameters
     ----------
@@ -236,13 +232,17 @@ def ball(indexKD, r, order=None, inverse=False, axis=-1, min_pts=1):
         IndexKD containing `n` points to filter.
     r : positive float or array_like(float, shape=(n))
         Ball radius or radii to apply.
-    order : array_like(int, shape=(m))
-        Order to proceed. If m < n, only a subset of points is investigated.
+    order : optional, array_like(int, shape=(m))
+        Order to proceed. If m < n, only a subset of points is investigated. If
+        None, ordered by `axis`.
     axis : optional, int
-        Axis to use for generating the order.
-    min_pts : optional int
-        Specifies how many neighbouring points within radius `r` are needed to
-        yield a filtered point.
+        Coordinate axis to use to generate the order.
+    inverse : bool
+        Indicates whether or not the `order` is inversed.
+    min_pts : optional, int
+        Specifies how many neighbouring points within radius `r` shall be 
+        required to yield a filtered point. This parameter can be used to
+        filter noisy point sets.
 
     Yields
     ------
@@ -251,11 +251,10 @@ def ball(indexKD, r, order=None, inverse=False, axis=-1, min_pts=1):
 
     Notes
     -----
-    The filter guarantees the distance of neighboured points in a range of
-    ]r, 2*r[.
+    Within a dense point cloud the filter guarantees the distance of 
+    neighboured points in a range of `]r, 2*r[`.
 
     """
-
     # validation
     if not isinstance(indexKD, IndexKD):
         raise TypeError("'indexKD' needs to be an instance of 'IndexKD'")
@@ -296,7 +295,7 @@ def in_convex_hull(hull_coords, coords):
 
     Returns
     -------
-    array_like(Bool, shape=(n))
+    array_like(bool, shape=(n))
         Indicates whether or not the points are located within the convex hull.
 
     Examples
@@ -327,9 +326,9 @@ def surface(indexKD, r, order=None, inverse=False, axis=-1):
         IndexKD containing `n` points to filter.
     r : positive float or array_like(float, shape=(n))
         Ball radius or radii to apply.
-    order : array_like(int, shape=(m))
+    order : optional, array_like(int, shape=(m))
         Order to proceed. If m < n, only a subset of points is investigated.
-    inverse : bool
+    inverse : optional, bool
         Indicates whether or not to inverse the order.
     axis : optional, int
         Axis to use for generating the order.
@@ -372,7 +371,7 @@ def dem_filter(coords, r):
     coords : array_like(Number, shape=(n, k))
         Represents `n` points of `k` dimensions to filter.
     r : Number or array_like(Number, shape=(n))
-        Radius or radii to apply..
+        Radius or radii to apply.
 
     Returns
     -------
@@ -411,8 +410,11 @@ def dem_filter(coords, r):
 
 
 def radial_dem_filter(coords, angle_res, center=None):
-    """Filter surface points with decreasing resolution with increasing
-    distance to coordinate center.
+    """Filter surface points based on distance to the center. The algorithm
+    is designed to create digital elevation models of terrestial laser scans. 
+    Terrestrial laser scans are characterized by decreasing point densities
+    with increasing distance to the scanner position. Thus, the radius to 
+    identify neighbouring points is adjusted to the distance to the scanner.
 
     Parameters
     ----------

@@ -36,7 +36,6 @@ class Interpolator:
         Number of coordinate dimensions.
 
     """
-
     def __init__(self, coords, values):
         self._coords = assertion.ensure_coords(coords)
         assertion.ensure_numvector(values)
@@ -101,7 +100,6 @@ class KnnInterpolator(Interpolator):
     Interpolator
 
     """
-
     def __init__(self, coords, values, k=None, max_dist=None):
         # TODO assetion
         Interpolator.__init__(self, coords, values)
@@ -153,7 +151,6 @@ class PolynomInterpolator(Interpolator):
     TODO
 
     """
-
     def __init__(
             self,
             coords,
