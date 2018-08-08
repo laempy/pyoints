@@ -64,7 +64,6 @@ class IndexKD(object):
     2
 
     """
-
     def __init__(
             self,
             coords,

@@ -10,12 +10,7 @@ from . import (
     vector,
     distance,
     Coords,
-    filters,
-    IndexKD,
 )
-from .transformation import PCA
-
-from .misc import *
 
 
 def fit_sphere(coords, weights=1.0):
@@ -35,9 +30,15 @@ def fit_sphere(coords, weights=1.0):
     r : Number
         Radius of the sphere.
 
+    Notes
+    -----
+    Idea taken from [1].
+
     References
     ----------
-    # http://www.arndt-bruenner.de/mathe/scripts/kreis3p.htm
+
+    [1] Arndt Brünner (2001): URL
+    http://www.arndt-bruenner.de/mathe/scripts/kreis3p.htm
 
     Examples
     --------
@@ -55,7 +56,6 @@ def fit_sphere(coords, weights=1.0):
     5.0
 
     """
-
     coords = assertion.ensure_coords(coords)
     dim = coords.shape[1]
 
