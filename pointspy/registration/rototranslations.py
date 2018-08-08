@@ -30,11 +30,11 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
         Dictionary of point pairs.
     weights : optional, dict or list or int.
         Try to keep the original location and orientation by weighting. Each
-        point set can be weighted by a list of `2 * k` values. The first `k`
-        values represent the weighting factors for location. The last `k`
-        values represent the weighting factors for orientation (angles).
+        point set can be weighted by a list of values. The first `k` values r
+        epresent the weighting factors for location. The last values 
+        represent the weighting factors for orientation (angles).
         The weights can be provided for each point set individially in form
-        of a dictionary weights. If not provided, weights are set to zero.
+        of a dictionary. If not provided, weights are set to zero.
 
     Returns
     -------
@@ -43,7 +43,7 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
 
     Notes
     -----
-    Basic algorithm idea taken from [1].
+    Algorithm idea taken from [1].
 
     References
     ----------

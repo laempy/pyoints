@@ -19,8 +19,8 @@ from .. import (
 
 
 class ICP:
-    """Implementation of the Iterative Closest Point algorithm with multiple
-    point set support.
+    """Implementation of a variant of the Iterative Closest Point algorithm [1]
+    with support of multiple point sets and point normals.
 
     Parameters
     ----------
@@ -34,25 +34,34 @@ class ICP:
     max_iter : optional, positive int
         Maximum number of iterations.
 
+    Notes
+    -----
+    An own variant of the originally ICP algorithm presented by Besl and McKay 
+    (1992) [1].
+
     References
     ----------
-    TODO: Original Algorithm.
+    
+    [1] P.J. Besl and N.D. McKay (1992): "A Method for Registration of 3-D 
+    Shapes", IEEE Transactions on Pattern Analysis and Machine Intelligence, 
+    vol. 14 (2): 239–256.
 
     Examples
     --------
 
+    Create corresponding point sets.
+    
     >>> A = np.array([
     ...     (0.5, 0.5), (0, 0), (0, -0.1), (1.3, 1), (1, 0), (-1, -2)
     ... ])
     >>> B = np.array([(0.4, 0.5), (0.3, 0), (1, 1), (2, 1), (-1, -2)])
 
+    Standard ICP.
+
     >>> coords_dict = {'A': A, 'B': B}
     >>> radii = (0.25, 0.25)
     >>> weights = {'A': [1, 1, 1]}
     >>> icp = ICP(radii, max_iter=10, k=1)
-
-    Standard ICP.
-
     >>> T, pairs = icp(coords_dict, weights=weights)
 
     >>> tA = T['A'].to_local(A)
@@ -72,7 +81,7 @@ class ICP:
      [ 2.18  0.89]
      [-0.97 -1.94]]
 
-    Find matches and compare RMSE
+    Find matches and compare RMSE.
 
     >>> matcher = assign.KnnMatcher(tA, radii)
     >>> pairs = matcher(tB)
@@ -85,7 +94,7 @@ class ICP:
     >>> print(np.round(rmse, 3))
     0.09
 
-    ICP with normals (NICP).
+    ICP also take advantage of normals (NICP).
 
     >>> from pointspy import fit
     >>> normals_r = 1.5
@@ -94,6 +103,7 @@ class ICP:
     ...     'B': fit.fit_normals(B, normals_r)
     ... }
     >>> radii = (0.25, 0.25, 0.3, 0.3)
+    
     >>> nicp = ICP(radii, max_iter=10, k=1)
     >>> T, pairs = nicp(coords_dict, normals_dict=normals_dict)
 
@@ -115,7 +125,6 @@ class ICP:
      [-1.  -2. ]]
 
     """
-
     def __init__(self,
                  radii,
                  max_iter=10,
@@ -139,7 +148,7 @@ class ICP:
                  pairs_dict={},
                  T_dict={},
                  weights=None):
-        """Calls the ICP algorithm to align point sets.
+        """Calls the ICP algorithm to align multiple point sets.
 
         Parameters
         ----------
@@ -150,8 +159,8 @@ class ICP:
         pairs_dict : optional, dict of array_like(int, shape=(m, 2))
             Dictionary of point pairs.
         T_dict : optional, dict of array_like(int, shape=(k+1, k+1))
-            Dictionary of transformation matrices. If `pairs_dict` is provided
-            `T_dict` will be defined automatically.
+            Dictionary of transformation matrices. If `pairs_dict` is provided,
+            `T_dict` will be calculated automatically.
 
         Returns
         -------

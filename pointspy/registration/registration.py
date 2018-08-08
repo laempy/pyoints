@@ -58,18 +58,18 @@ def find_rototranslation(A, B):
     Parameters
     ----------
     A,B : array_like(Number, shape=(n, k))
-        Arrays representing `n` reference points with `k` dimensions.
+        Arrays representing `n` corresponding points with `k` dimensions.
 
     Returns
     -------
     M : numpy.matrix(float, shape=(k+1, k+1))
-        Roto-translation matrix which maps `B` to `A` with `A = B * M.T`.
+        Roto-translation matrix to map `B` to `A` with `A = B * M.T`.
 
     Notes
     -----
-    Implements the algorithm of Besl and McKay (1992) [1]. Idea has been taken
-    from  Nghia Ho (2013) [2]. Code [2] has been adapted generalized to `k`
-    dimensional case.
+    Implements the registration algorithm of Besl and McKay (1992) [1]. The 
+    idea has been taken from Nghia Ho (2013) [2]. Code of [2] has been adapted 
+    generalized to `k` dimensional space.
 
     References
     ----------
@@ -84,7 +84,7 @@ def find_rototranslation(A, B):
 
     [3] Nghia Ho (2013): "Finding optimal rotation and translation between
     corresponding 3D points", URL
-    http://nghiaho.com/uploads/code/rigid_transform\_3D.py\_.
+    http://nghiaho.com/uploads/code/rigid\_transform\_3D.py\_.
 
     Examples
     --------
