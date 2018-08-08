@@ -1,29 +1,31 @@
 #!/bin/bash
 
-venv="venv"
-requirements="requirements.txt"
-usage="Usage: pipInstall.sh -v venv -r requirements.txt"
+VENV="venv"
+REQUIREMENTS='requirements.txt'
+DEV_REQUIREMENTS='dev_requirements.txt'
+USAGE='Usage: pipInstall.sh -v venv (-d)'
 
-while getopts r:v:h option
+requirements="-r $REQUIREMENTS"
+while getopts v:dh option
 do
     case "${option}" in
-    r) requirements=${OPTARG};;
-    v) venv=${OPTARG};;
+    d) requirements="-r $REQUIREMENTS -r $DEV_REQUIREMENTS";;
+    v) VENV=${OPTARG};;
     h)
-        echo $usage
+        echo $USAGE
         exit 0
     ;;
-    \?)
-        echo $usage
+    *)
+        echo $USAGE
         exit 0
     ;;
     esac
 done
 
-if [ -n "$venv" ]
+if [ -n "$VENV" ]
 then
-    source ./${venv}/bin/activate
-    pip install pygdal==$(gdal-config --version).* -r $requirements --upgrade
+    source ./${VENV}/bin/activate
+    pip install pygdal==$(gdal-config --version).* $requirements --upgrade
 else
    echo 'Please specify virtualenv'
 fi

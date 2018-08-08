@@ -1,3 +1,5 @@
+setuptools
+wheel
 autopep8
 pycodestyle
 matplotlib
