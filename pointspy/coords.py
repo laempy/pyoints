@@ -93,8 +93,49 @@ class Coords(np.ndarray, object):
             return self.reshape(s)
 
     def transform(self, T):
+        """Transform coordinates.
+
+        Parameters
+        ----------
+        T : array_like(Number, shape=(self.dim+1, self.dim+1))
+            Transformation matrix to apply.
+            
+        Returns
+        -------
+        Coords(shape=self.shape)
+            transformed coords.
+
+        Examples
+        --------
+        
+        Transform structured coordinates.
+        
+        >>> coords = Coords([[(2, 3), (2, 4), (3, 2)], [(0, 0), (3, 5), (9, 4)]])
+        >>> print(coords)
+        [[[2 3]
+          [2 4]
+          [3 2]]
+        <BLANKLINE>
+         [[0 0]
+          [3 5]
+          [9 4]]]
+        
+        >>> T = transformation.matrix(t=[10, 20], s=[0.5, 1])
+        >>> tcoords = coords.transform(T)
+        >>> print(tcoords)
+        [[[11.  23. ]
+          [11.  24. ]
+          [11.5 22. ]]
+        <BLANKLINE>
+         [[10.  20. ]
+          [11.5 25. ]
+          [14.5 24. ]]]
+
+        """
         T = assertion.ensure_tmatrix(T, dim=self.dim)
-        return transformation.transform(self, T).view(Coords)
+        tcoords = transformation.transform(self.flattened, T)
+        return tcoords.reshape(self.shape).view(Coords)
+
 
     def indexKD(self, dim=None):
         """Get spatial index of the coordinates.

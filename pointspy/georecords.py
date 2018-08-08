@@ -260,7 +260,8 @@ class GeoRecords(np.recarray, object):
 
         Structured data (two dimensional matrix).
 
-        >>> data = np.ones((4,3), dtype=[('coords',float,2)]).view(np.recarray)
+        >>> data = np.ones(
+        ...         (4,3), dtype=[('coords', float, 2)]).view(np.recarray)
         >>> geo = GeoRecords(None, data)
         >>> print(geo.keys)
         [[[0 0]
@@ -289,10 +290,30 @@ class GeoRecords(np.recarray, object):
         ----------
         T : array_like(Number, shape=(self.dim+1, self.dim+1))
             Transformation matrix to apply.
+            
+        See Also
+        --------
+        Coords.transform
+
+        Examples
+        --------
+        
+        >>> data = {
+        ...    'coords': [(2, 3), (3, 2), (0, 1), (9, 5)],
+        ...    'values': [1, 3, 4, 0]
+        ... }
+        >>> geo = GeoRecords(None, data)
+        
+        >>> T = transformation.matrix(t=[10, 20], s=[0.5, 1])
+        >>> geo.transform(T)
+        >>> print(geo.coords)
+        [[11 23]
+         [11 22]
+         [10 21]
+         [14 25]]
 
         """
-        T = assertion.ensure_tmatrix(T, dim=self.dim)
-        self.coords = transformation.transform(self.coords, T)
+        self.coords = self.coords.transform(T)
         self.t = T * self.t
 
     def project(self, proj):

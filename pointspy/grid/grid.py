@@ -185,7 +185,7 @@ class Grid(GeoRecords):
         GeoRecords.transform
 
         """
-        T = assertion.ensure_tmatrix(T, min_dim=self.dim, max_dim=self.dim)
+        T = assertion.ensure_tmatrix(T, dim=self.dim)
         self.t = T * self.t
         self.coords[:] = self.keys_to_coords(self.keys)
 
