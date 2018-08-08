@@ -5,7 +5,8 @@
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
-"""Test to read and write .csv files."""
+"""Test to read and write .csv files.
+"""
 
 import os
 from pointspy import (

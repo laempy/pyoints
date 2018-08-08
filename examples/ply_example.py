@@ -5,13 +5,12 @@
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
-"""Test to read and write .ply files."""
+"""Test to read and write .ply files.
+"""
 
 import os
 
-from pointspy import (
-    storage,
-)
+from pointspy import storage
 
 outpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'output')
 
@@ -29,4 +28,5 @@ storage.writePly(geoRecords, outfile)
 # load PLY file
 print("load %s" % outfile)
 ply = storage.loadPly(outfile)
-print(ply)
+print(ply.dtype.descr)
+print(ply.shape)

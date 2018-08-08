@@ -5,7 +5,8 @@
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
-"""Test to read and write raster files."""
+"""Test to read and write raster files.
+"""
 
 import os
 
