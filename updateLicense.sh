@@ -5,13 +5,13 @@ LICENSE_FILE='./templates/GPL_LICENSE.txt'
 OPENING_PATTERN='# BEGIN OF LICENSE NOTE'
 CLOSING_PATTERN='# END OF LICENSE NOTE'
 
-FILE_PATH='pointspy'
+FILE_PATHS='pointspy examples tests'
 LICENSE='LICENSE'
 
 USAGE="Usage to update|insert|remove license: updateLicense.sh -u|-i|-r"
 
 
-FILES=$(find $FILE_PATH -type f -name "*.py")
+FILES=$(find $FILE_PATHS -type f -name "*.py")
 
 
 function get_opening_pattern_line(){
