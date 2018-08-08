@@ -113,15 +113,14 @@ class LasReader(GeoFile):
     infile : String
         Las file to be read.
     proj : optional, Proj
-        Spatial reference system. Usually just provided, if the spatial
-        reference has not be set yet.
+        Spatial reference system. Usually provided only, if the spatial
+        reference of the file has not be set yet.
 
     See Also
     --------
     GeoFile
 
     """
-
     def __init__(self, infile, proj=None):
         GeoFile.__init__(self, infile)
 
@@ -222,7 +221,7 @@ def writeLas(geoRecords, outfile):
     ----------
     geoRecords : GeoRecords
         Points to store to disk.
-    lasfile : String
+    outfile : String
         Desired output file.
 
     """
@@ -409,8 +408,9 @@ class LasRecords(GeoRecords):
         return np.where(np.in1d(self.classification, classes))[0]
 
 
-# experimental
-def updateLasHeader(las_file, offset=None, translate=None, precision=None):
+
+def _updateLasHeader(las_file, offset=None, translate=None, precision=None):
+    # experimental
     lasFile = laspy.file.File(las_file, mode='rw')
 
     if precision is not None:
@@ -437,8 +437,9 @@ def updateLasHeader(las_file, offset=None, translate=None, precision=None):
     del lasFile
 
 
-def createTypeTestLas(outfile):
-
+def _createTypeTestLas(outfile):
+    # experimental
+    
     # Create file header
     header = laspy.header.Header()
     header.file_sig = 'LASF'

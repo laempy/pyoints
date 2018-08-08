@@ -7,10 +7,7 @@
 # END OF LICENSE NOTE
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Aug  2 16:00:33 2018
-
-@author: sebastian
+"""Some random funtions, which ease development.
 """
 
 import numpy as np

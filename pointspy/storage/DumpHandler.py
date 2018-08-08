@@ -18,7 +18,6 @@ class DumpReader(GeoFile):
     GeoFile
 
     """
-
     def __init__(self, filename):
         GeoFile.__init__(self, filename)
 

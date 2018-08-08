@@ -35,8 +35,8 @@ def loadCsv(
         Desired data type of the output numpy record array.
     header : bool
         Indicates
-    **kwargs : optional
-        Parameters passed to `pandas.read_csv`.
+    *\\*kwargs : optional
+        Arguments passed to `pandas.read_csv`.
 
     Returns
     -------
@@ -134,14 +134,14 @@ def loadCsv(
     return records
 
 
-def writeCsv(data, filename, sep=",", multicol_sep=".", **kwargs):
+def writeCsv(data, outfile, sep=",", multicol_sep=".", **kwargs):
     """Write a array to a csv-file.
 
     Parameters
     ----------
     data : array_like
         Data to store.
-    filename : string
+    outfile : string
         File to write the data to.
     sep : optional, Character
         Desired field seperator.
@@ -149,7 +149,7 @@ def writeCsv(data, filename, sep=",", multicol_sep=".", **kwargs):
         Indicates how the column index of multi-column shall be seperated form
         the column name. For example, the column names 'normal.1', 'normal.2'
         indicate a two dimensional attribute 'normal'.
-    **kwargs : optional
+    \*\*kwargs : optional
         Arguments passed to np.save_txt`
 
     See Also
@@ -161,6 +161,11 @@ def writeCsv(data, filename, sep=",", multicol_sep=".", **kwargs):
     Limited type validation.
 
     """
+    if not isinstance(data, (np.recarray, np.ndarray)):
+        raise ValueError("'data' needs to be an numpy (record) array")
+    if not os.access(os.path.dirname(outfile), os.W_OK):
+        raise IOError('File %s is not writable' % outfile)
+        
     # set column names
     names = _flatten_dype(data.dtype, sep=multicol_sep)[0]
 
@@ -171,7 +176,7 @@ def writeCsv(data, filename, sep=",", multicol_sep=".", **kwargs):
     header = sep.join(names)
 
     np.savetxt(
-        filename,
+        outfile,
         data,
         fmt="%s",
         delimiter=sep,

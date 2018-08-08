@@ -34,12 +34,12 @@ class GeoFile:
         this matrix defines the origin of a local coordinate system.
     proj : Proj
         Coordinate projection system.
-    extent : Extent(Number, shape=(2*k))
+    extent : Extent(Number, shape=(2 * k))
         Defines the spatial extent of the points.
-    corners : np.ndarray(Number, shape=(2**k, k))
+    corners : np.ndarray(Number, shape=(2\*\*k, k))
         Corners of the extent.
     date : Date
-        File creation date.
+        Capturing date.
 
     See Also
     --------
@@ -76,7 +76,7 @@ class GeoFile:
     @proj.setter
     def proj(self, proj):
         if not isinstance(proj, projection.Proj):
-            raise TypeError("'proj' needs to be of type 'projection.Proj'")
+            raise TypeError("'proj' needs to be of type 'Proj'")
         self._proj = proj
 
     @property
@@ -113,7 +113,8 @@ class GeoFile:
         Returns
         -------
         GeoRecords
-            Desired data of the file.
+            Desired geo-data of the file.
+            
         """
         raise NotImplementedError()
 

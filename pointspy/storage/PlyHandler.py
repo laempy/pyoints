@@ -50,12 +50,12 @@ def loadPly(infile):
     return records
 
 
-def writePly(records, outfile):
+def writePly(rec, outfile):
     """Saves data to a .ply file.
 
     Parameters
     ----------
-    records : np.recarray
+    rec : np.recarray
         Numpy record array to save.
     outfile : String
         Desired output .ply file .
@@ -66,29 +66,29 @@ def writePly(records, outfile):
 
 
     """
-    if not isinstance(records, np.recarray):
+    if not isinstance(rec, np.recarray):
         raise TypeError("'records' needs to be a numpy record array")
 
     # create view
     dtypes = []
-    for i, name in enumerate(records.dtype.names):
+    for i, name in enumerate(rec.dtype.names):
         if name == 'coords':
             dtypes.extend([('x', float), ('y', float), ('z', float)])
         else:
-            dtypes.append(records.dtype.descr[i])
-    records = records.view(dtypes)
+            dtypes.append(rec.dtype.descr[i])
+    rec = rec.view(dtypes)
 
     dtypes = []
-    for i, name in enumerate(records.dtype.names):
-        desc = list(records.dtype.descr[i])
+    for i, name in enumerate(rec.dtype.names):
+        desc = list(rec.dtype.descr[i])
 
         # change datatype if required (bug in plyfile?)
         if desc[1] == '<i8':
             desc[1] = '<i4'
         dtypes.append(tuple(desc))
-    records = records.astype(dtypes)
+    rec = rec.astype(dtypes)
 
     # save data
-    el = plyfile.PlyElement.describe(records.view(dtypes), 'vertex')
+    el = plyfile.PlyElement.describe(rec.astype(dtypes), 'vertex')
     ply = plyfile.PlyData([el], comments=['created by "PoYnts"'])
     ply.write(outfile)
