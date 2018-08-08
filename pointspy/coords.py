@@ -18,23 +18,24 @@ from . import (
 
 
 class Coords(np.ndarray, object):
-    """Class to represent point coordinates. It provides a spatial index to
-    conveniently optimize spatial neighborhood queries.
+    """Class to represent coordinates. It provides a spatial index to
+    conveniently optimize spatial neighborhood queries. The spatial index is
+    calculated on demand only and deleted, if coordinates have been changed.
 
     Parameters
     ----------
     coords : array_like(Number)
         Represents `n` data points of `k` dimensions in a Cartesian coordinate
-        system. Any desired shape of at least length two is allowed to allow to
-        represent point, voxel or raster data. The last shape element always
-        represents the coordinate dimension.
+        system. Any desired shape of at least length two is allowed to enable
+        the representation point, voxel or raster data. The last shape element 
+        always represents the coordinate dimension.
 
     Attributes
     ----------
     dim : positive int
-        Number of coordinate dimensions of the `coords` field.
+        Number of coordinate dimensions.
     flattened : array_like(Number, shape=(n, k))
-        Flattened `coords`.
+        List representation of the coordinates.
 
     Examples
     --------
@@ -55,7 +56,7 @@ class Coords(np.ndarray, object):
     >>> print(coords.extent(dim=1))
     [0 2]
 
-    Use IndexKD, which updates automatically, if a coordinate was changed.
+    Use IndexKD, which updates automatically, if a coordinate has changed.
 
     >>> coords.indexKD().ball([0, 0], 2)
     [0, 3]
@@ -110,7 +111,8 @@ class Coords(np.ndarray, object):
         
         Transform structured coordinates.
         
-        >>> coords = Coords([[(2, 3), (2, 4), (3, 2)], [(0, 0), (3, 5), (9, 4)]])
+        >>> coords = Coords(
+        ...             [[(2, 3), (2, 4), (3, 2)], [(0, 0), (3, 5), (9, 4)]])
         >>> print(coords)
         [[[2 3]
           [2 4]
@@ -138,7 +140,7 @@ class Coords(np.ndarray, object):
 
 
     def indexKD(self, dim=None):
-        """Get spatial index of the coordinates.
+        """Get a spatial index of the coordinates.
 
         Parameters
         ----------
@@ -191,8 +193,8 @@ class Coords(np.ndarray, object):
         Parameters
         ----------
         dim : optional, positive int
-            Define which coordinates to use. If not given all dimensions are
-            used.
+            Define how many coordinate dimensions to use. If None, all 
+            dimensions are used.
 
         Returns
         -------

@@ -5,7 +5,7 @@
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
-"""Distance metrics.
+"""Various distance metrics.
 """
 
 import numpy as np
@@ -30,6 +30,13 @@ def norm(coords):
     --------
     snorm
 
+    Examples
+    --------
+    
+    >>> coords = [(3, 4), (0, 1), (4, 3), (0, 0), (8, 6)]
+    >>> print(norm(coords))
+    [ 5.  1.  5.  0. 10.]
+    
     """
     return np.sqrt(snorm(coords))
 
@@ -50,6 +57,13 @@ def snorm(coords):
     See Also
     --------
     norm
+
+    Examples
+    --------
+
+    >>> coords = [(3, 4), (0, 1), (4, 3), (0, 0), (8, 6)]
+    >>> print(snorm(coords))
+    [ 25   1  25   0 100]
 
     """
     coords = assertion.ensure_numarray(coords)
@@ -78,7 +92,24 @@ def dist(p, coords):
     See Also
     --------
     sdist
+    
+    Examples
+    --------
+    
+    Point to points distance.
+    
+    >>> p = (1, 2)
+    >>> coords = [(2, 2), (1, 1), (1, 2), (9, 8)]
+    >>> print(dist(p, coords))
+    [ 1.  1.  0. 10.]
 
+    Points to points distance.
+    
+    >>> A = [(2, 2), (1, 1), (1, 2)]
+    >>> B = [(4, 2), (2, 1), (9, 8)]
+    >>> print(dist(A, B))
+    [ 2.  1. 10.]
+    
     """
     return np.sqrt(sdist(p, coords))
 
@@ -101,6 +132,23 @@ def sdist(p, coords):
     See Also
     --------
     dist
+    
+    Examples
+    --------
+    
+    Squared point to points distance.
+    
+    >>> p = (1, 2)
+    >>> coords = [(2, 4), (1, 1), (1, 2), (9, 8)]
+    >>> print(sdist(p, coords))
+    [  5   1   0 100]
+
+    Squared points to points distance.
+    
+    >>> A = [(2, 2), (1, 1), (1, 2)]
+    >>> B = [(4, 2), (2, 1), (9, 8)]
+    >>> print(sdist(A, B))
+    [  4   1 100]
 
     """
     p = assertion.ensure_numarray(p)
@@ -129,6 +177,15 @@ def rmse(A, B):
     Number
         Root Mean Squared Error.
 
+
+    Examples
+    --------
+    
+    >>> A = [(2, 2), (1, 1), (1, 2)]
+    >>> B = [(2.2, 2), (0.9, 1.1), (1, 2.1)]
+    >>> print(np.round(rmse(A, B), 2))
+    0.15
+
     """
     return np.sqrt(np.mean(sdist(A, B)))
 
@@ -148,6 +205,17 @@ def idw(dists, p=2):
     Number or array_like(Number, shape=(n))
         Weights according to Inverse Distance Weighting.
 
+    Examples
+    --------
+    
+    >>> dists = [0, 1, 4]
+    
+    >>> print(idw(dists))
+    [1.   0.25 0.04]
+    
+    >>> print(idw(dists, p=1))
+    [1.  0.5 0.2]
+    
     """
     dists = assertion.ensure_numvector(dists)
     return 1.0 / (1 + dists)**p

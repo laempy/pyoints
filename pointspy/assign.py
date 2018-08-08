@@ -26,10 +26,9 @@ class Matcher:
         Represents `n` points of `k` dimensions. These points are used as a
         reference point set.
     radii : array_like(Number, shape=(k))
-        Defines the sphere within points can be assigned.
+        Defines the sphere within the points can get assigned.
 
     """
-
     def __init__(self, coords, radii):
         coords = assertion.ensure_coords(coords)
         radii = assertion.ensure_numvector(radii, length=coords.shape[1])
@@ -59,7 +58,7 @@ class Matcher:
 class PairMatcher(Matcher):
     """Find unique pairs of points. A point `a` of point set `A` is assigned
     to its closest point `b` of point set `B` if `a` is also the nearest
-    neighbour to `b`. So, duplicate assignments are not possible.
+    neighbour to `b`. So, duplicate assignment is not possible.
 
     See Also
     --------
@@ -68,8 +67,12 @@ class PairMatcher(Matcher):
     Examples
     --------
 
+    Create point sets.
+
     >>> A = np.array([(0, 0), (0, 0.1), (1, 1), (1, 0), (0.5, 0.5), (-1, -2)])
     >>> B = np.array([(0.4, 0.4), (0.2, 0), (0.1, 1.2), (2, 1), (-1.1, -1.2)])
+
+    Match points.
 
     >>> matcher = PairMatcher(A, [0.3, 0.2])
     >>> pairs = matcher(B)
@@ -81,7 +84,6 @@ class PairMatcher(Matcher):
      [-0.2  0. ]]
 
     """
-
     def __init__(self, coords, radii):
         coords = assertion.ensure_coords(coords)
         radii = assertion.ensure_numvector(radii, length=coords.shape[1])
@@ -109,7 +111,7 @@ class PairMatcher(Matcher):
 
 
 class SphereMatcher(Matcher):
-    """Find pairs of points. Each point is assigned is all the points
+    """Find pairs of points. Each point is assigned to all the points
     within a previously defined shpere. Duplicate assignments are possible.
 
     See Also
@@ -118,9 +120,13 @@ class SphereMatcher(Matcher):
 
     Examples
     --------
+    
+    Create point sets.
 
     >>> A = np.array([(0, 0), (0, 0.1), (1, 1), (1, 0), (0.5, 0.5), (-1, -2)])
     >>> B = np.array([(0.4, 0.4), (0.2, 0), (0.1, 1.2), (2, 1), (-1.1, -1.2)])
+
+    Match points.
 
     >>> matcher = SphereMatcher(A, [0.3, 0.2])
     >>> pairs = matcher(B)
@@ -136,15 +142,6 @@ class SphereMatcher(Matcher):
     """
 
     def __call__(self, coords):
-        """Find pairs of points. Each point is assigned is all the points
-        within the previously defined shpere. Duplicate assignments are
-        possible.
-
-        See Also
-        --------
-        Matcher
-
-        """
         mIndexKD = IndexKD(coords, self.rIndexKD.t)
         rIndexKD = self.rIndexKD
 
@@ -168,18 +165,20 @@ class KnnMatcher(Matcher):
     Examples
     --------
 
+    Create coordinates and matcher.
+
     >>> A = np.array([(0, 0), (0, 0.1), (1, 1), (1, 0), (0.5, 0.5), (-1, -2)])
     >>> B = np.array([(0.4, 0.4), (0.2, 0), (0.1, 1.2), (2, 1), (-1.1, -1.2)])
     >>> matcher = KnnMatcher(A, [0.5, 0.5])
 
-    One Neighbour.
+    Try to assign one neighbour.
 
     >>> pairs = matcher(B)
     >>> print(pairs)
     [[4 0]
      [0 1]]
 
-    Two Neighbours.
+    Try to assign two neighbours.
 
     >>> pairs = matcher(B, k=2)
     >>> print(pairs)

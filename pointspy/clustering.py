@@ -5,12 +5,14 @@
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
-"""Clustering algorithms to assign classes to groups of points.
+"""Clustering algorithms to assign group points.
 """
 
+import numpy as np
+from numbers import Number
 from collections import defaultdict
 from sklearn.cluster import DBSCAN
-import numpy as np
+
 
 from . import (
     assertion,
@@ -33,7 +35,7 @@ def clustering(indexKD,
         Spatial index with `n` points.
     r : positive float
         Radius to identify the cluster affiliation of neighboured points.
-    get_class : function
+    get_class : callable
         Function to define the cluster id (affiliation) of a point. It recieves
         a list of cluster ids of neigboured points to define the cluster id of
         selected point. It returns -1 if the point is not associated with any
@@ -61,6 +63,8 @@ def clustering(indexKD,
         raise TypeError("'indexKD' needs to be of type 'IndexKD'")
     if not (assertion.isnumeric(r) and r > 0):
         raise ValueError("'r' needs to be a number greater zero")
+    if not callable(get_class):
+        raise TypeError("'get_class' needs to be callable")
 
     if order is None:
         # order by density
@@ -106,7 +110,7 @@ def mayority_clusters(indexKD, r, **kwargs):
         Spatial index with `n` points.
     r : positive float
         Radius to identify the cluster affiliation of neighboured points.
-    **kwargs : optional
+    \*\*kwargs : optional
         Optional arguments of the `clustering` function.
 
     See Also
@@ -138,9 +142,8 @@ def weight_clusters(indexKD, r, weights=None, **kwargs):
         Weighting of each point. The class with highest weight wins. If None,
         all weights are set to 1, which results in similar results than
         `mayority_clusters`.
-    **kwargs : optional
-        Optional arguments of the `clustering` function.
-
+    \*\*kwargs : optional
+        Optional arguments passed to `clustering`.
 
     Examples
     --------
@@ -200,8 +203,9 @@ def dbscan(
         epsilon=None,
         quantile=0.8,
         factor=3):
-    """DBSCAN algorithm with automatic estimation of the epsilon parameter
-    based on point density. Usefull for automatic outlier identification.
+    """Variant of the DBSCAN algorithm [1] with automatic estimation of the 
+    `epsilon` parameter using point density. Usefull for automatic outlier 
+    identification.
 
     Parameters
     ----------
@@ -211,7 +215,7 @@ def dbscan(
         Corresponds to the `min_pts` parameter of the DBSCAN algorithm.
     epsilon : optional, positive float
         Corresponds to the `epsilon` parameter of DBSCAN algorithm. If None,
-        it a suitable value is estimated by investigating the nearest neighbour
+        a suitable value is estimated by investigating the nearest neighbour
         distances `dists` of all points in `indexKD` with ```epsilon =
         np.percentile(dists, quantile * 100) * factor```.
     quantile : optional, positive float
@@ -219,6 +223,13 @@ def dbscan(
     factor: optional, positive float
         Used to calculate `epsilon`.
 
+    References
+    ----------
+    
+    [1] M. Ester, et al. (1996): "A Density-Based Algorithm for Discovering 
+    Clusters in Large Spatial Databases with Noise", KDD-96 Proceedings, 
+    pp. 226-231.
+    
     Examples
     --------
 
@@ -246,16 +257,27 @@ def dbscan(
     """
     if not isinstance(indexKD, IndexKD):
         raise TypeError("'indexKD' needs to be of type 'IndexKD'")
-
+    if not (isinstance(min_pts, int) and min_pts >= 0):
+        m = "'min_pts' needs to be an integer greater or equal zero"
+        raise ValueError(m)
+        
     coords = indexKD.coords
 
     # Estimate epsilon based on density
     if epsilon is None:
+        if not (isinstance(quantile, Number) and quantile > 0):
+            raise ValueError("'quantile' needs to be a number greater zero")
+        if not (isinstance(factor, Number) and factor > 0):
+            raise ValueError("'factor' needs to be a number greater zero")
+            
         if min_pts > 0:
             dists = indexKD.knn(coords, k=min_pts + 1)[0][:, 1:]
         else:
             dists = indexKD.nn[0]
         epsilon = np.percentile(dists, quantile * 100) * factor
+    else:
+        if not (isinstance(epsilon, Number) and epsilon > 0):
+            raise ValueError("'epsilon' needs to be a number greater zero")
 
     # perform dbscan
     return DBSCAN(eps=epsilon, min_samples=min_pts).fit_predict(coords)

@@ -5,7 +5,7 @@
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
-"""Collection of fucntions which help to classify, reclassify or clustering.
+"""Collection of functions to classify or reclassify values or cluster values.
 """
 
 import numpy as np
@@ -28,16 +28,14 @@ def classes_to_dict(
     Parameters
     ----------
     classification : array_like(shape=(n))
-        Array of classes
+        Array of class indices.
     ids : optional, array_like(int, shape=(n))
-        Desired indices or IDs of classes in the output. If None, the indices
+        Indices to specify a subset of `classification`. If None, the indices
         are numbered consecutively.
-    min_size : optional, positive int
-        Minimum desired size of a class to be kept in the result.
-    max_size : optional, positive int
-        Maximum desired size of a class to be kept in the result.
+    min_size,max_size : optional, positive int
+        Minimum and maximum desired size of a class to be kept in the result.
     missing_value : optional, object
-        Default value for missing class.
+        Default value for unclassified values.
 
     Returns
     -------
@@ -48,6 +46,7 @@ def classes_to_dict(
     See Also
     --------
     dict_to_classes
+        Dictionary representation of `classification`.
 
     Examples
     --------
@@ -101,18 +100,15 @@ def dict_to_classes(
     n : positive int
         Desired size of the output array. It must be at least the size of the
         maximum class index.
-    min_pts : optional, int
-        Minimum size of a class to be kept in the result.
-    min_size : optional, positive int
-        Minimum desired size of a class to be kept in the result.
-    max_size : optional, positive int
-        Maximum desired size of a class to be kept in the result.
+    min_size,max_size : optional, positive int
+        Minimum and maximum desired size of a class to be kept in the result.
     missing_value : optional, object
-        Default value for missing class.
+        Default value for unclassified values.
 
     Returns
     -------
     np.ndarray(int, shape=(n))
+        Array representation of `classes_dict`.
 
     See Also
     --------
@@ -120,7 +116,7 @@ def dict_to_classes(
 
     Notes
     -----
-    Only a limited input validation is provided.
+    Only a minimal input validation is provided.
 
     Examples
     --------
@@ -162,7 +158,7 @@ def dict_to_classes(
 
 
 def split_by_breaks(values, breaks):
-    """Assign classes to values using specific value ranges.
+    """Classifiy values by ranges.
 
     Parameters
     ----------
@@ -173,9 +169,10 @@ def split_by_breaks(values, breaks):
 
     Returns
     -------
-    dict
-        Dictionary of length `m` + 1. Each key corresponds to a class id. The
-        dictionary values correspond to the value indices.
+    classification : np.ndarray(int, shape=(n))
+        Desired class affiliation of `values`. A value of `classification[i]`
+        equal to `k` means that 'values[i]' is in range 
+        `[breaks[k], breaks[k][`
 
     Examples
     --------
@@ -189,7 +186,6 @@ def split_by_breaks(values, breaks):
     """
     values = assertion.ensure_numvector(values)
     breaks = assertion.ensure_numvector(breaks)
-
     return np.digitize(values, breaks)
 
 
@@ -199,9 +195,9 @@ def rename_dict(d, ids=None):
     Parameters
     ----------
     d : dict
-        Dictionary to rename
+        Dictionary to rename.
     ids : optional, array_like(shape=(len(d)))
-        Desired key names. If None the keys are numbered consecutively.
+        Desired key names. If None, the keys are numbered consecutively.
 
     Returns
     -------
@@ -234,7 +230,7 @@ def mayority(classes, empty_value=-1):
     ----------
     classes : array_like(object, shape=(n))
         Classes or values to check.
-    empty_value : object
+    empty_value : optional, object
         Class value in case that no decision can be made.
 
     Returns
@@ -284,142 +280,3 @@ def mayority(classes, empty_value=-1):
         if count[key] == count[cId] and key != cId:
             return empty_value
     return cId
-
-
-# TODO nur zur Klassifikation benoetigt ==> delete?
-class Sample:
-    """Class to randomly split a data set into a trainin and validation part.
-
-    Parameters
-    ----------
-    train_fraction : optional, float in ]0, 1[
-        Fraction of training data.
-    classes : array_like(shape=(n))
-        TODO
-    groups : array_like(shape=(n))
-        TODO
-
-    """
-
-    def __init__(self, train_fraction=0.7, classes=None, groups=None):
-
-        # validate
-        if not assertion.isnumeric(train_fraction):
-            raise TypeError("'train_fraction' needs to be numeric")
-
-        if train_fraction <= 0 or train_fraction >= 1:
-            raise ValueError("'train_fraction' needs to be in range ]0, 1[")
-
-        if groups is not None:
-            groups = assertion.ensure_numvector(groups)
-
-        if classes is None:
-            classes = assertion.ensure_numvector(classes)
-        else:
-            if groups is None:
-                raise ValueError("parameter 'groups' required")
-            classes = np.random.permutation(range(len(groups))) <= len(groups)
-
-        # set validation and training ids
-
-        classKeys = list(set(classes))
-        groupKeys = list(set(groups))
-
-        ids = np.arange(len(classes))
-        t_ids = defaultdict(list)
-        v_ids = defaultdict(list)
-
-        for classKey in classKeys:
-            cIds = ids[classes == classKey]
-            n = len(cIds)
-            cIds = np.random.permutation(cIds)
-
-            if groups is None:
-                t_mask = np.arange(n) < train_fraction * n
-                v_mask = ~t_mask
-            else:
-                # avoid same group within class
-                # mask=np.zeros(len(cIds),dtype=bool)
-                # for groupKey in np.random.permutation(groupKeys):
-                #    mask[groups[cIds]==groupKey]=True
-                #    if mask.sum()>=train_fraction*n:
-                #        break
-
-                # Optimal split
-                counts = {}
-                for groupKey in groupKeys:
-                    counts[groupKey] = (groups[cIds] == groupKey).sum()
-
-                order = np.argsort(counts.values())[::-1]
-                v_mask = np.zeros(len(cIds), dtype=bool)
-                t_mask = np.zeros(len(cIds), dtype=bool)
-                for groupKey in np.array(counts.keys())[order]:
-                    mask = groups[cIds] == groupKey
-                    if counts[groupKey] > 0:
-
-                        if t_mask.sum() == 0 and v_mask.sum() == 0:
-                            f = 0
-                        else:
-                            t_sum = t_mask.sum()
-                            v_sum = v_mask.sum()
-                            f = 1.0 * t_sum / (t_sum + v_sum)
-                        if f < train_fraction:
-                            t_mask[mask] = True
-                        else:
-                            v_mask[mask] = True
-
-            t_ids[classKey] = cIds[t_mask]
-            v_ids[classKey] = cIds[v_mask]
-
-        self._t_ids = t_ids
-        self._v_ids = v_ids
-        self._classes = classes
-
-    @property
-    def classes(self):
-        return self._classes
-
-    @property
-    def t_ids(self):
-        return self._t_ids
-
-    @property
-    def v_ids(self):
-        return self._v_ids
-
-    @property
-    def t_mask(self):
-        mask = np.zeros(len(self.classes), dtype=bool)
-        for t_ids in self.t_ids.values():
-            mask[t_ids] = True
-        return mask
-
-    @property
-    def v_mask(self):
-        mask = np.zeros(len(self.classes), dtype=bool)
-        for v_ids in self.v_ids.values():
-            mask[v_ids] = True
-        return mask
-
-    @property
-    def t_counts(self):
-        return self.counts(self.t_mask)
-
-    @property
-    def v_counts(self):
-        return self.counts(self.v_mask)
-
-    @property
-    def masks(self):
-        return self.t_mask, self.v_mask
-
-    def keys(self):
-        return np.unique(self.classes)
-
-    def counts(self, mask=None):
-        if mask is None:
-            mask = np.ones(len(self.classes), dtype=bool)
-        counts = {}
-        for key in self.keys():
-            counts[key] = (self.classes[mask] == key).sum()
-        return counts

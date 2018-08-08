@@ -14,11 +14,13 @@ from numbers import Number
 from . import nptools
 
 
-def ensure_dim(check_dim, dim=None, min_dim=2, max_dim=np.inf):
+def ensure_dim(value, dim=None, min_dim=2, max_dim=np.inf):
     """Ensure a dimension value to be in a specific range.
 
     Parameters
     ----------
+    value : int
+        Value representing a dimension.
     dim, min_dim, max_dim : optional, positive int
         Minimum and maximum allowed dimensions. If `dim` is provided the
         `check_dim` has to be exactly `dim`. If not, the `check_dim` must be in
@@ -34,19 +36,19 @@ def ensure_dim(check_dim, dim=None, min_dim=2, max_dim=np.inf):
     ValueError
 
     """
-    check_dim = int(check_dim)
+    value = int(value)
     if dim is not None:
-        if not check_dim == dim:
+        if not value == dim:
             m = "%i dimensions required" % dim
             raise ValueError(m)
     else:
-        if check_dim < min_dim:
+        if value < min_dim:
             m = "at least %i dimensions required" % min_dim
             raise ValueError(m)
-        if check_dim > max_dim:
+        if value > max_dim:
             m = "at most %i dimensions required" % max_dim
             raise ValueError(m)
-    return check_dim
+    return value
 
 
 def ensure_shape(shape, dim=None, min_dim=1, max_dim=np.inf):
@@ -60,7 +62,7 @@ def ensure_shape(shape, dim=None, min_dim=1, max_dim=np.inf):
     Returns
     -------
     np.ndarray(int, shape=(k))
-        Shape with ensured properties
+        Shape with ensured properties.
 
     Raises
     ------
@@ -84,14 +86,14 @@ def ensure_shape(shape, dim=None, min_dim=1, max_dim=np.inf):
     return shape
 
 
-def ensure_length(check_length, length=None, min_length=0, max_length=np.inf):
+def ensure_length(value, length=None, min_length=0, max_length=np.inf):
     """Ensure a length value to be in a specific range.
 
     Parameters
     ----------
-    check_length : int
+    value : int
         Length value to check.
-    length, min_length, max_length : optional, positive int
+    length,min_length,max_length : optional, positive int
         Minimum and maximum allowed length. If `length` is provided
         `check_length` has to be exactly `length`. If not, the `check_length`
         must be in range `[min_length, max_length]`.
@@ -106,20 +108,20 @@ def ensure_length(check_length, length=None, min_length=0, max_length=np.inf):
     ValueError
 
     """
-    if not isinstance(check_length, int):
+    if not isinstance(value, int):
         raise TypeError("'check_length' needs to be an integer")
     if length is not None:
-        if not check_length == length:
+        if not value == length:
             m = "length %i required" % length
             raise ValueError(m)
     else:
-        if check_length < min_length:
+        if value < min_length:
             m = "length of at least %i required" % min_length
             raise ValueError(m)
-        if check_length > max_length:
+        if value > max_length:
             m = "length of at most %i required" % max_length
             raise ValueError(m)
-    return check_length
+    return value
 
 
 def isnumeric(value, min_th=-np.inf, max_th=np.inf):
@@ -129,7 +131,7 @@ def isnumeric(value, min_th=-np.inf, max_th=np.inf):
     ----------
     value : Number
         Value to validate.
-    min_th, max_th : optional, Number
+    min_th,max_th : optional, Number
         Minimum and maximum value allowed range.
 
     Returns
@@ -142,7 +144,7 @@ def isnumeric(value, min_th=-np.inf, max_th=np.inf):
 
 
 def iscoord(coord):
-    """Checks if a value is associated with a coordinate.
+    """Checks if a value can be associated with a coordinate.
 
     Parameters
     ----------
@@ -201,7 +203,7 @@ def ensure_numvector(v, length=None, min_length=1, max_length=np.inf):
     ----------
     v : array_like(Number, shape=(k))
         Vector of length `n`.
-    length, min_length, max_length : optional, positive int
+    length,min_length,max_length : optional, positive int
         See `ensure_length`
 
     Returns
@@ -246,10 +248,8 @@ def ensure_indices(v, min_value=0, max_value=np.inf):
     ----------
     v : array_like(int, shape=(n))
         Arrray of indices to check.
-    min_value : optional, int
-        Minumum allowed value of `v`.
-    min_value : optional, int
-        Maximum allowed value of `v`.
+    min_value, max_value : optional, int
+        Minimum and maximum allowed value of `v`.
 
     Returns
     -------
@@ -274,7 +274,7 @@ def ensure_indices(v, min_value=0, max_value=np.inf):
 
 
 def ensure_coords(coords, by_col=False, dim=None, min_dim=2, max_dim=np.inf):
-    """Ensures all required properties of a coordinate like array.
+    """Ensures required properties of an array associated with coordinates.
 
     Parameters
     ----------
@@ -282,10 +282,10 @@ def ensure_coords(coords, by_col=False, dim=None, min_dim=2, max_dim=np.inf):
         Represents `n` data points of `k` dimensions in a Cartesian coordinate
         system.
     by_col : optional, bool
-        Defines weather or not the coordinates are provided column by column
+        Indicates whether or not the coordinates are provided column by column
         instead of row by row.
-    dim, min_dim, max_dim : optional, positive int
-        See `ensure_dim`
+    dim,min_dim,max_dim : optional, positive int
+        See `ensure_dim`.
 
     Returns
     -------
@@ -345,8 +345,8 @@ def ensure_polar(pcoords, by_col=False, dim=None, min_dim=2, max_dim=np.inf):
     by_col : optional, bool
         Defines weather or not the coordinates are provided column by column
         instead of row by row.
-    dim, min_dim, max_dim : optional, positive int
-        See `ensure_dim`
+    dim,min_dim,max_dim : optional, positive int
+        See `ensure_dim`.
 
     Raises
     ------
@@ -381,8 +381,8 @@ def ensure_tmatrix(T, dim=None, min_dim=2, max_dim=np.inf):
     ----------
     T : array_like(Number, shape=(k+1,k+1))
         Transformation matrix.
-    dim, min_dim, max_dim : optional, positive int
-        See `ensure_dim`
+    dim,min_dim,max_dim : optional, positive int
+        See `ensure_dim`.
 
     Returns
     -------
