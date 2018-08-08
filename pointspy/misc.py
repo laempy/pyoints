@@ -37,6 +37,3 @@ def list_licences(requirements_file):
             if line.startswith('License:'):
                 m = "%s : %s" % (str(pkg), line[9:])
                 print(m)
-
-
-def update_licence_info(licence_file):
