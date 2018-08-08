@@ -1,18 +1,17 @@
 #!/bin/bash
-
-
 LICENSE_NOTES_FILE='./templates/LICENSE_NOTES.txt'
 LICENSE_FILE='./templates/GPL_LICENSE.txt'
 
 OPENING_PATTERN='# BEGIN OF LICENSE NOTE'
 CLOSING_PATTERN='# END OF LICENSE NOTE'
 
-USAGE="Usage to update|insert|remove license: updateLicense.sh -u|-i|-r"
-
 FILE_PATH='pointspy'
 LICENSE='LICENSE'
 
-files=$(find $FILE_PATH -type f -name "*.py")
+USAGE="Usage to update|insert|remove license: updateLicense.sh -u|-i|-r"
+
+
+FILES=$(find $FILE_PATH -type f -name "*.py")
 
 
 function get_opening_pattern_line(){
@@ -29,7 +28,11 @@ function get_closing_pattern_line(){
 function update_license_notes(){
     file=$1
     outfile=$2
-    
+    if [ ! -f $file ]; then
+        echo "file $file does not exist"
+        exit 1
+    fi
+        
     echo "update license notes $outfile"
     
     begin_line=$(get_opening_pattern_line $file)
@@ -44,7 +47,7 @@ function update_license_notes(){
       exit 1
     fi
 
-    local IFSr
+    local IFS=
     heading_lines=$(head -n ${begin_line} < $file)
     tailing_lines=$(sed -n ${end_line},'$p' < $file)
 
@@ -58,7 +61,11 @@ function update_license_notes(){
 function insert_license_notes(){
     file=$1
     outfile=$2
-    
+    if [ ! -f "$file" ]; then
+        echo "file $file does not exist"
+        exit 1
+    fi
+        
     echo "insert license notes $outfile"
     
     local IFS=
@@ -73,29 +80,29 @@ function insert_license_notes(){
 function remove_license_notes(){
     file=$1
     outfile=$2
-    
+    if [ ! -f $file ]; then
+        echo "file $file does not exist"
+        exit 1
+    fi
+
     echo "remove license notes $outfile"
     
     begin_line=$(get_opening_pattern_line $file)
     end_line=$(get_closing_pattern_line $file)
     
     if [ "$begin_line" = "" ] || [ "$end_line" = "" ]; then
-      echo "pattern not found"
+        echo "nothing to remove"
     else
         let "begin_line=$begin_line-1"
-        let "end_line=$end_line+2"
+        let "end_line=$end_line+1"
         
-        echo $begin_line
-        echo $end_line
-    
         local IFS=
         
         heading_lines=$(head -n ${begin_line} < $file)
         tailing_lines=$(sed -n ${end_line},'$p' < $file)
 
         > $outfile
-        if [ ! $begin_line = "-1" ]; then
-            echo "intert header"
+        if [ ! $begin_line = "0" ]; then
             echo $heading_lines >> $outfile
         fi
         if [ ! $tailing_lines = "" ]; then
@@ -106,6 +113,13 @@ function remove_license_notes(){
     
 }
 
+function create_license_file(){
+    file=$1    
+    cp $LICENSE_NOTES_FILE $file
+    echo >> $file
+    echo >> $file
+    echo "$(cat $LICENSE_FILE)" >> $file
+}
 
 
 if [[ $1 == "" ]]; then
@@ -118,30 +132,31 @@ while getopts uir option; do
         # update license notes
         echo 'update license'
         
-        cp $LICENSE_NOTES_FILE $LICENSE
-        echo >> $LICENSE
-        echo >> $LICENSE
-        echo "$(cat $LICENSE_FILE)" >> $LICENSE
+        create_license_file $LICENSE
                
-        for file in $files; do
+        for file in $FILES; do
             update_license_notes $file $file
-            exit 0
         done
         exit 0
         ;;
     i)
+        create_license_file $LICENSE
+    
         echo 'insert license note'
-        for file in $files; do
+        for file in $FILES; do
             insert_license_notes $file $file
-            exit 0
         done
         exit 0
         ;;
     r)
         echo 'remove license note'
-        for file in $files; do
+        
+        if [ -f $LICENSE ]; then
+            rm $LICENSE
+        fi
+        
+        for file in $FILES; do
             remove_license_notes $file $file
-            exit 0
         done
         exit 0
         ;;
