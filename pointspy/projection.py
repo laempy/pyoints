@@ -22,7 +22,8 @@ WGS84 = '+proj=latlong +datum=WGS84 +to +proj=latlong +datum=WGS84 +units=m ' \
 
 
 class Proj:
-    """Wrapper class for different coordinate reference system definitions.
+    """Wrapper class for different commonly coordinate reference system 
+    formats.
 
     Parameters
     ----------
@@ -65,7 +66,6 @@ class Proj:
     True
 
     """
-
     def __init__(self, proj4=WGS84):
         if proj4 is None or not isinstance(proj4, str) or proj4 is '':
             raise ValueError("proj4 not defined")
@@ -90,7 +90,7 @@ class Proj:
 
     @classmethod
     def from_proj4(cls, proj4):
-        """`Proj` object from Proj4 format.
+        """Create `Proj` object from Proj4 format.
 
         Parameters
         ----------
@@ -102,7 +102,7 @@ class Proj:
 
     @classmethod
     def from_wkt(cls, wkt):
-        """`Proj` object from Well Known Text.
+        """Create `Proj` object from Well Known Text.
 
         Parameters
         ----------
@@ -119,7 +119,7 @@ class Proj:
 
     @classmethod
     def from_epsg(cls, epsg):
-        """`Proj` object from EPSG code.
+        """Create `Proj` object from EPSG code.
 
         Parameters
         ----------
@@ -138,20 +138,20 @@ class Proj:
 
 
 class GeoTransform:
-    """Provides a coordinate transformation.
+    """Provides a coordinate transformation between different spatial reference
+    systems.
 
     Parameters
     ----------
-    fromProj, toProj : `Proj`
+    from_proj, to_proj : `Proj`
         Define the coordinate transformation form the origin projection system
-        `fromProj` to the target projection system `toProj`.
+        `from_proj` to the target projection system `to_proj`.
 
     Examples
     --------
 
     Transform coordinates.
 
-    >>> import numpy as np
     >>> wgs84 = Proj.from_epsg(4326)
     >>> gk2 = Proj.from_epsg(31466)
     >>> coords = [
@@ -161,6 +161,7 @@ class GeoTransform:
     ...     (6.922, 50.101)
     ... ]
     >>> geoTransfrom = GeoTransform(wgs84, gk2)
+    
     >>> tCoords = geoTransfrom(coords)
     >>> print(np.round(tCoords, 3))
     [[2560446.801 5537522.386]
@@ -177,24 +178,38 @@ class GeoTransform:
      [ 6.922 50.101]]
 
     """
-
-    def __init__(self, fromProj, toProj):
-        if not isinstance(fromProj, Proj) or not isinstance(toProj, Proj):
+    def __init__(self, from_proj, to_proj):
+        if not isinstance(from_proj, Proj) or not isinstance(to_proj, Proj):
             raise TypeError("objects of type 'Proj' required")
-        self._fromProj = fromProj
-        self._toProj = toProj
+        self._from_proj = from_proj
+        self._to_proj = to_proj
 
     def __call__(self, coords, reverse=False):
+        """Applies the coordinate transformation.
+        
+        Parameters
+        ----------
+        coords : array_like(Number, shape=(n, k))
+            Represents `n` points of `k` dimensions to transform.
+        reverse : optional, bool
+            Indicate whether or not to apply the inverse transformation.
+        
+        Returns
+        -------
+        np.ndarray(Number, shape=(n, k))
+            Transformed coordinates.    
+        
+        """
         coords = assertion.ensure_numarray(coords)
         if not isinstance(reverse, bool):
             raise TypeError("'reverse' needs to be boolean")
 
         if reverse:
-            fromProj = self._toProj
-            toProj = self._fromProj
+            from_proj = self._to_proj
+            to_proj = self._from_proj
         else:
-            fromProj = self._fromProj
-            toProj = self._toProj
+            from_proj = self._from_proj
+            to_proj = self._to_proj
 
         # get x and y coordinates
         if len(coords.shape) == 1:
@@ -208,8 +223,8 @@ class GeoTransform:
 
         # coordinate projection
         t_xy = np.array(pyproj.transform(
-            fromProj.pyproj,
-            toProj.pyproj,
+            from_proj.pyproj,
+            to_proj.pyproj,
             x,
             y
         )).T
