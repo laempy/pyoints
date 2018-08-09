@@ -141,7 +141,7 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
     # create lookup array
     lookup = np.empty(shape, dtype=list)
     lookup.fill([])
-    lookup[keys.T[mask].tolist()] = list(groupDict.values())
+    lookup[tuple(keys.T[mask].tolist())] = list(groupDict.values())
 
     # Aggregate per cell
     if dtype is None:

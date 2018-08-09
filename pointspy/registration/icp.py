@@ -1,11 +1,12 @@
 # BEGIN OF LICENSE NOTE
 # This file is part of PoYnts.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
-# 
+#
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
-"""Implementation of the Iterative Closest Point Algorithm"""
+"""Implementation of the Iterative Closest Point Algorithm.
+"""
 
 import numpy as np
 
@@ -36,21 +37,21 @@ class ICP:
 
     Notes
     -----
-    An own variant of the originally ICP algorithm presented by Besl and McKay 
+    An own variant of the originally ICP algorithm presented by Besl and McKay
     (1992) [1].
 
     References
     ----------
-    
-    [1] P.J. Besl and N.D. McKay (1992): "A Method for Registration of 3-D 
-    Shapes", IEEE Transactions on Pattern Analysis and Machine Intelligence, 
-    vol. 14 (2): 239–256.
+
+    [1] P.J. Besl and N.D. McKay (1992): "A Method for Registration of 3-D
+    Shapes", IEEE Transactions on Pattern Analysis and Machine Intelligence,
+    vol. 14 (2): 239-256.
 
     Examples
     --------
 
     Create corresponding point sets.
-    
+
     >>> A = np.array([
     ...     (0.5, 0.5), (0, 0), (0, -0.1), (1.3, 1), (1, 0), (-1, -2)
     ... ])
@@ -103,7 +104,7 @@ class ICP:
     ...     'B': fit.fit_normals(B, normals_r)
     ... }
     >>> radii = (0.25, 0.25, 0.3, 0.3)
-    
+
     >>> nicp = ICP(radii, max_iter=10, k=1)
     >>> T, pairs = nicp(coords_dict, normals_dict=normals_dict)
 

@@ -52,8 +52,11 @@ def classes_to_dict(
     --------
 
     >>> classes = ['cat', 'cat', 'dog', 'bird', 'dog', 'bird', 'cat', 'dog']
-    >>> print(classes_to_dict(classes))
-    {'cat': [0, 1, 6], 'dog': [2, 4, 7], 'bird': [3, 5]}
+    >>> class_dict = classes_to_dict(classes)
+    >>> print(sorted(class_dict))
+    ['bird', 'cat', 'dog']
+    >>> print(class_dict['cat'])
+    [0, 1, 6]
 
     >>> classes = [0, 0, 1, 2, 1, 0, 3, 3, 5, 3, 2, 1, 0]
     >>> print(classes_to_dict(classes))

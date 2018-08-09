@@ -1,7 +1,7 @@
 # BEGIN OF LICENSE NOTE
 # This file is part of PoYnts.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
-# 
+#
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
@@ -44,7 +44,7 @@ def fit_sphere(coords, weights=1.0):
     References
     ----------
 
-    [1] Arndt Brünner (2001): URL
+    [1] A. Bruenner (2001): URL
     http://www.arndt-bruenner.de/mathe/scripts/kreis3p.htm
 
     Examples

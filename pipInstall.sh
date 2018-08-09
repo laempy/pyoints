@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VENV="venv"
+VENV=""
 REQUIREMENTS='requirements.txt'
 DEV_REQUIREMENTS='dev_requirements.txt'
 USAGE='Usage: pipInstall.sh -v venv (-d)'

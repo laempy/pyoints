@@ -1,4 +1,3 @@
-pip
 numpy
 rtree
 laspy
@@ -14,4 +13,3 @@ plyfile
 networkx
 cylinder_fitting
 matplotlib
-#pygdal
