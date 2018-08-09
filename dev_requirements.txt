@@ -6,3 +6,5 @@ pycodestyle
 matplotlib
 Sphinx
 sphinxcontrib-napoleon
+ipykernel
+cloudpickle
