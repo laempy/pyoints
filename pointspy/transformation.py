@@ -1,7 +1,7 @@
 # BEGIN OF LICENSE NOTE
-# This file is part of PoYnts.
+# This file is part of Pointspy.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
-# 
+#
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
@@ -52,12 +52,12 @@ def transform(coords, T, inverse=False, precise=False):
 
     Examples
     --------
-    
+
     Transform coordinates forth and back again.
-    
+
     >>> coords = [(0, 0), (1, 2), (2, 3), (0, 3)]
     >>> T = [(1, 0, 5), (0, 1, 3), (0, 0, 1)]
-    
+
     >>> tcoords = transform(coords, T)
     >>> print(tcoords)
     [[5. 3.]
@@ -143,8 +143,8 @@ def matrix(t=None, r=None, s=None, order='srt'):
         Transformation coefficients for translation `t`, rotation `r` and
         scale `s`.
     order : optional, string
-        Order to compute the matrix multiplications. For example, an `order` of 
-        `trs` means first translate `t`, then rotate `r`, and finally scale 
+        Order to compute the matrix multiplications. For example, an `order` of
+        `trs` means first translate `t`, then rotate `r`, and finally scale
         `s`.
 
     Returns
@@ -496,7 +496,7 @@ def decomposition(T, ignore_warnings=False):
     [1] https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati
     [2] https://math.stackexchange.com/questions/13150/extracting-rotation-scale-values-from-2d-transformation-matrix/13165#13165
     [3] https://www.learnopencv.com/rotation-matrix-to-euler-angles/
-    
+
     """
     T = ensure_tmatrix(T)
     dim = T.shape[0] - 1
@@ -669,32 +669,32 @@ class LocalSystem(np.matrix, object):
     def decomposition(self):
         """Determinates some characteristic parameters of the transformation
         matrix.
-        
+
         Returns
         -------
         tuple
             Decomposition values.
-            
+
         See Also
         --------
         decomposition
-        
+
         """
         return decomposition(self)
 
     def reflect(self, axis=0):
         """Reflects a specific coordinate axis.
-        
+
         Parameters
         ----------
         axis : positive int
             Coordinate axis to reflect.
-        
+
         Examples
         --------
-        
+
         Reflect a two dimensional transformation matrix.
-        
+
         >>> L = LocalSystem(matrix(t=[1, 2], s=[0.5, 2]))
         >>> print(L)
         [[0.5 0.  1. ]
@@ -702,7 +702,7 @@ class LocalSystem(np.matrix, object):
          [0.  0.  1. ]]
         >>> print(L.to_local([2, 3]))
         [2. 8.]
-        
+
         >>> L.reflect()
         >>> print(L)
         [[-0.5 -0.  -1. ]
@@ -710,9 +710,9 @@ class LocalSystem(np.matrix, object):
          [ 0.   0.   1. ]]
         >>> print(L.to_local([2, 3]))
         [-2.  8.]
-        
+
         Reflect a three dimensional transformation matrix.
-        
+
         >>> L = LocalSystem(matrix(t=[1, 2, 3], s=[0.5, -2, 1]))
         >>> print(L)
         [[ 0.5  0.   0.   1. ]
@@ -721,7 +721,7 @@ class LocalSystem(np.matrix, object):
          [ 0.   0.   0.   1. ]]
         >>> print(L.to_local([1, 2, 3]))
         [ 1.5 -2.   6. ]
-        
+
         >>> L.reflect(axis=1)
         >>> print(L)
         [[ 0.5  0.   0.   1. ]
@@ -730,7 +730,7 @@ class LocalSystem(np.matrix, object):
          [ 0.   0.   0.   1. ]]
         >>> print(L.to_local([1, 2, 3]))
         [1.5 2.  6. ]
-        
+
         """
         R = np.eye(self.dim + 1)
         R[axis, axis] = -1
@@ -793,7 +793,7 @@ class LocalSystem(np.matrix, object):
         return transform(local_coords, self, inverse=True)
 
     def explained_variance(self, global_coords):
-        """Calculate the variance of global coordinates explained by the 
+        """Calculate the variance of global coordinates explained by the
         coordinate axes.
 
         Parameters
@@ -828,9 +828,9 @@ class LocalSystem(np.matrix, object):
         return np.var(global_coords, axis=0)
 
     def explained_variance_ratio(self, global_coords):
-        """Calculate the relative variance of global coordinates explained by 
+        """Calculate the relative variance of global coordinates explained by
         the coordinate axes.
-        
+
         Parameters
         ----------
         global_coords : array_like(Number, shape=(n, k))
@@ -890,10 +890,10 @@ def eigen(coords):
     See Also
     --------
     PCA
-    
+
     Examples
     --------
-    
+
     >>> coords = [(0, 0), (3, 4)]
     >>> eigen_vectors, eigen_values = eigen(coords)
     >>> print(eigen_vectors)
@@ -901,7 +901,7 @@ def eigen(coords):
      [ 0.8  0.6]]
     >>> print(eigen_values)
     [12.5  0. ]
-    
+
     """
     coords = ensure_coords(coords)
     cCoords = coords - coords.mean(0)

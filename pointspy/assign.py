@@ -1,7 +1,7 @@
 # BEGIN OF LICENSE NOTE
-# This file is part of PoYnts.
+# This file is part of Pointspy.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
-# 
+#
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
@@ -29,6 +29,7 @@ class Matcher:
         Defines the sphere within the points can get assigned.
 
     """
+
     def __init__(self, coords, radii):
         coords = assertion.ensure_coords(coords)
         radii = assertion.ensure_numvector(radii, length=coords.shape[1])
@@ -84,6 +85,7 @@ class PairMatcher(Matcher):
      [-0.2  0. ]]
 
     """
+
     def __init__(self, coords, radii):
         coords = assertion.ensure_coords(coords)
         radii = assertion.ensure_numvector(radii, length=coords.shape[1])
@@ -120,7 +122,7 @@ class SphereMatcher(Matcher):
 
     Examples
     --------
-    
+
     Create point sets.
 
     >>> A = np.array([(0, 0), (0, 0.1), (1, 1), (1, 0), (0.5, 0.5), (-1, -2)])

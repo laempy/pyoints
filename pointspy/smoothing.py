@@ -1,7 +1,7 @@
 # BEGIN OF LICENSE NOTE
-# This file is part of PoYnts.
+# This file is part of Pointspy.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
-# 
+#
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
@@ -15,11 +15,11 @@ from . import assertion
 
 
 def mean_ball(
-        coords, r,
-        num_iter=1,
-        update_pairs=False,
-        f=lambda coord, ncoords: ncoords.mean(0)
-    ):
+    coords, r,
+    num_iter=1,
+    update_pairs=False,
+    f=lambda coord, ncoords: ncoords.mean(0)
+):
     """Smoothing of spatial structures by iterative averaging the coordinates
     of neighboured points.
 
@@ -35,45 +35,45 @@ def mean_ball(
         Specifies weather or not point pairs are updated on each iteration.
     f : callable
         Aggregate function used for smoothing. It recieves the original point
-        coordinate and the coordinates of neighboured points as an argument 
+        coordinate and the coordinates of neighboured points as an argument
         and returns a smoothed coordinate.
 
     See Also
     --------
     mean_knn
-    
+
     Examples
     --------
-    
+
     Create a three dimensional irregular suface of points.
-    
+
     >>> coords = np.ones((100, 3), dtype=float)
     >>> coords[:, 0:2] = np.vstack(np.mgrid[0:10, 0:10].T)
     >>> coords[:, 2] = np.tile([1.05, 0.95], 50)
-    
+
     Get value range in each coordinate dimension.
-    
+
     >>> print(np.ptp(coords, axis=0))
     [9.  9.  0.1]
-    
+
     Smooth coordinates to get a more regular surface. But, the first two
     coordinate dimensions are affected, too.
-    
+
     >>> scoords = mean_ball(coords, 1.5)
     >>> print(np.round(np.ptp(scoords, axis=0), 3))
     [8.    8.    0.033]
-    
+
     Modyify the aggregation function to smooth the third coordinate axis only.
-    
+
     >>> def aggregate_function(coord, ncoords):
     ...     coord[2] = ncoords[:, 2].mean(0)
     ...     return coord
     >>> scoords = mean_ball(coords, 1.5, f=aggregate_function)
     >>> print(np.round(np.ptp(scoords, axis=0), 3))
     [9.    9.    0.026]
-    
+
     Increase number of iterations to get a smoother result.
-    
+
     >>> scoords = mean_ball(coords, 1.5, num_iter=3, f=aggregate_function)
     >>> print(np.round(np.ptp(scoords, axis=0), 3))
     [9.   9.   0.01]
@@ -104,12 +104,12 @@ def mean_ball(
 
 
 def mean_knn(
-        coords,
-        k,
-        num_iter=1,
-        update_pairs=False,
-        f=lambda coord, ncoords: ncoords.mean(0)
-    ):
+    coords,
+    k,
+    num_iter=1,
+    update_pairs=False,
+    f=lambda coord, ncoords: ncoords.mean(0)
+):
     """Smoothing of spatial structures by averaging neighboured point
     coordinates.
 
@@ -125,9 +125,9 @@ def mean_knn(
         Specifies weather or not point pairs are updated on each iteration.
     f : callable
         Aggregate function used for smoothing. It recieves the original point
-        coordinate and the coordinates of neighboured points as an argument 
+        coordinate and the coordinates of neighboured points as an argument
         and returns a smoothed coordinate.
-        
+
     See Also
     --------
     mean_ball
@@ -136,25 +136,25 @@ def mean_knn(
     --------
 
     Create a three dimensional irregular suface of points.
-    
+
     >>> coords = np.ones((100, 3), dtype=float)
     >>> coords[:, 0:2] = np.vstack(np.mgrid[0:10, 0:10].T)
     >>> coords[:, 2] = np.tile([1.05, 0.95], 50)
-    
+
     Get value range in each coordinate dimension.
-    
+
     >>> print(np.ptp(coords, axis=0))
     [9.  9.  0.1]
-    
+
     Smooth coordinates to get a more regular surface. But, the first two
     coordinate dimensions are affected, too.
-    
+
     >>> scoords = mean_knn(coords, 5)
     >>> print(np.round(np.ptp(scoords, axis=0), 3))
     [8.2  8.2  0.02]
-    
+
     Modyify the aggregation function to smooth the third coordinate axis only.
-    
+
     >>> def aggregate_function(coord, ncoords):
     ...     coord[2] = ncoords[:, 2].mean(0)
     ...     return coord

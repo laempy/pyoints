@@ -1,7 +1,7 @@
 # BEGIN OF LICENSE NOTE
-# This file is part of PoYnts.
+# This file is part of Pointspy.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
-# 
+#
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
@@ -208,7 +208,7 @@ class Extent(np.recarray, object):
 
         >>> print(ext.intersection(ext.corners))
         [0 1 2 3]
-        
+
         """
         # normalize data
         coords = assertion.ensure_numarray(coords)

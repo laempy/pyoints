@@ -1,7 +1,7 @@
 # BEGIN OF LICENSE NOTE
-# This file is part of PoYnts.
+# This file is part of Pointspy.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
-# 
+#
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
@@ -43,8 +43,8 @@ class Grid(GeoRecords):
         Multidimensional array of objects. Each cell of the matrix represents a
         geo-object with `k` dimensional coordinates.
     T : array_like(Number, shape=(k+1, k+1))
-        A linear transformation matrix to transform the coordinates. The 
-        translation represents the origin, the rotation the orientation, and 
+        A linear transformation matrix to transform the coordinates. The
+        translation represents the origin, the rotation the orientation, and
         the scale the pixel size of the matrix.
 
     Examples
@@ -53,7 +53,7 @@ class Grid(GeoRecords):
     >>> from pointspy import transformation, projection
 
     Create a raster with a projection and a transformation matrix.
-    
+
     >>> proj = projection.Proj()
     >>> data = np.recarray((4, 3), dtype=[('values', int)])
     >>> data['values'] = np.arange(np.product(data.shape)).reshape(data.shape)

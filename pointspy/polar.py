@@ -1,7 +1,7 @@
 # BEGIN OF LICENSE NOTE
-# This file is part of PoYnts.
+# This file is part of Pointspy.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
-# 
+#
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
@@ -104,7 +104,7 @@ def polar_to_coords(pcoords):
     coords : array_like(Number, shape=(n, k))
         Represents `n` data points of `k` dimensions in a Cartesian coordinate
         system.
-        
+
     See Also
     --------
     coords_to_polar

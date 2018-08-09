@@ -1,7 +1,7 @@
 # BEGIN OF LICENSE NOTE
-# This file is part of PoYnts.
+# This file is part of Pointspy.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
-# 
+#
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
@@ -26,7 +26,7 @@ def extrema(indexKD, attributes, r, inverse=False):
     indexKD : IndexKD
         Spatial index of `n` points to filter.
     attributes : array_like(Number, shape=(n))
-        Attributes to search for extrema. If None, the last coordinate 
+        Attributes to search for extrema. If None, the last coordinate
         dimension is used as the attributes.
     r : positive Number
         Maximum distance between two points to be considered as neighbours.
@@ -100,7 +100,7 @@ def min_filter(indexKD, attributes, r, inverse=False):
     indexKD : IndexKD
         Spatial index of `n` points to filter.
     attributes : array_like(Number, shape=(n))
-        Attributes to search for extrema. If None, the last coordinate 
+        Attributes to search for extrema. If None, the last coordinate
         dimension is used as attributes.
     r : positive Number
         Local radius to search for a minimum.
@@ -191,7 +191,7 @@ def is_isolated(indexKD, r):
     Yields
     ------
     positive int
-        Index of an isolated point with no neighbouring point within radius 
+        Index of an isolated point with no neighbouring point within radius
         `r`.
 
     See Also
@@ -240,7 +240,7 @@ def ball(indexKD, r, order=None, inverse=False, axis=-1, min_pts=1):
     inverse : bool
         Indicates whether or not the `order` is inversed.
     min_pts : optional, int
-        Specifies how many neighbouring points within radius `r` shall be 
+        Specifies how many neighbouring points within radius `r` shall be
         required to yield a filtered point. This parameter can be used to
         filter noisy point sets.
 
@@ -251,7 +251,7 @@ def ball(indexKD, r, order=None, inverse=False, axis=-1, min_pts=1):
 
     Notes
     -----
-    Within a dense point cloud the filter guarantees the distance of 
+    Within a dense point cloud the filter guarantees the distance of
     neighboured points in a range of `]r, 2*r[`.
 
     """
@@ -411,9 +411,9 @@ def dem_filter(coords, r):
 
 def radial_dem_filter(coords, angle_res, center=None):
     """Filter surface points based on distance to the center. The algorithm
-    is designed to create digital elevation models of terrestial laser scans. 
+    is designed to create digital elevation models of terrestial laser scans.
     Terrestrial laser scans are characterized by decreasing point densities
-    with increasing distance to the scanner position. Thus, the radius to 
+    with increasing distance to the scanner position. Thus, the radius to
     identify neighbouring points is adjusted to the distance to the scanner.
 
     Parameters

@@ -1,5 +1,5 @@
 # BEGIN OF LICENSE NOTE
-# This file is part of PoYnts.
+# This file is part of Pointspy.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
 #
 # This software is copyright protected. A decision on a less restrictive
@@ -126,6 +126,7 @@ class ICP:
      [-1.  -2. ]]
 
     """
+
     def __init__(self,
                  radii,
                  max_iter=10,

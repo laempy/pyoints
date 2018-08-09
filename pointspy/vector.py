@@ -1,7 +1,7 @@
 # BEGIN OF LICENSE NOTE
-# This file is part of PoYnts.
+# This file is part of Pointspy.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
-# 
+#
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
@@ -161,11 +161,11 @@ def axes_angles(v, deg=False):
 
     Examples
     --------
-    
+
     >>> v = [1, 1]
     >>> print(axes_angles(v, deg=True))
     [45. 45.]
-    
+
     >>> v = [0, 1, 0]
     >>> print(axes_angles(v, deg=True))
     [90.  0. 90.]
@@ -191,10 +191,10 @@ def direction(v, deg=False):
     -------
     Number or np.ndarray(Number, shape=(k))
         Rotation angles.
-    
+
     Examples
     --------
-    
+
     >>> v = [0, 1]
     >>> print(direction(v, deg=True))
     90.0
@@ -202,7 +202,7 @@ def direction(v, deg=False):
     >>> v = [0, 1, 1]
     >>> print(direction(v, deg=True))
     [90. 45.]
-    
+
     """
     v = assertion.ensure_numvector(v)
     v = v / distance.norm(v)
@@ -323,7 +323,7 @@ def orthogonal(v, w):
 
 
 def basis(vec, origin=None):
-    """Generates a local coordinate system based on a vector. The local 
+    """Generates a local coordinate system based on a vector. The local
     coordinate system is represented by a rotation matrix.
 
     Parameters
@@ -348,7 +348,7 @@ def basis(vec, origin=None):
 
 
     Create some two dimensional coordinates.
-    
+
     >>> coords = [(0, 0), (0, 1), (1, 0), (1, 1), (0.5, 0.5), (-1, -1)]
 
     Flip the basic axes.
@@ -358,7 +358,7 @@ def basis(vec, origin=None):
     [[0. 1. 0.]
      [1. 0. 0.]
      [0. 0. 1.]]
-    
+
     >>> local_coords = transformation.transform(coords, b)
     >>> print(local_coords)
     [[ 0.   0. ]
@@ -367,7 +367,7 @@ def basis(vec, origin=None):
      [ 1.   1. ]
      [ 0.5  0.5]
      [-1.  -1. ]]
-    
+
     Keep the original orientation, but set a new origin.
 
     >>> b = basis([2, 0], origin=[2, 3])
@@ -425,7 +425,7 @@ class Vector(object):
     ----------
     origin,vec : array_like(Number, shape=(k))
         The arrays `origin` and `vec` define the location and orientation of
-        the vector in a `k` dimensional vector space. 
+        the vector in a `k` dimensional vector space.
 
     Attributes
     ----------
@@ -478,6 +478,7 @@ class Vector(object):
     origin: [-1 -2]; vec: [6 6]
 
     """
+
     def __init__(self, origin, vec):
         self.origin = origin
         self.vec = vec
@@ -786,9 +787,9 @@ class Vector(object):
         Parameters
         ----------
         surface : callable
-            Surface model. The model needs to recieve coordinates as an 
-            argument and needs to return the distance to the surface. 
-            
+            Surface model. The model needs to recieve coordinates as an
+            argument and needs to return the distance to the surface.
+
         Returns
         -------
         coord:
@@ -798,7 +799,7 @@ class Vector(object):
         --------
 
         >>> from pointspy import surface, interpolate
-        
+
         >>> method = interpolate.LinearInterpolator
         >>> surface = surface.Surface(
         ...         [(0, 0, 0), (0, 2, 0), (2, 1, 4)],

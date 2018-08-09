@@ -1,7 +1,7 @@
 # BEGIN OF LICENSE NOTE
-# This file is part of PoYnts.
+# This file is part of Pointspy.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
-# 
+#
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
@@ -121,6 +121,7 @@ class LasReader(GeoFile):
     GeoFile
 
     """
+
     def __init__(self, infile, proj=None):
         GeoFile.__init__(self, infile)
 
@@ -408,7 +409,6 @@ class LasRecords(GeoRecords):
         return np.where(np.in1d(self.classification, classes))[0]
 
 
-
 def _updateLasHeader(las_file, offset=None, translate=None, precision=None):
     # experimental
     lasFile = laspy.file.File(las_file, mode='rw')
@@ -439,7 +439,7 @@ def _updateLasHeader(las_file, offset=None, translate=None, precision=None):
 
 def _createTypeTestLas(outfile):
     # experimental
-    
+
     # Create file header
     header = laspy.header.Header()
     header.file_sig = 'LASF'

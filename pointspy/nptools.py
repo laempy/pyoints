@@ -1,7 +1,7 @@
 # BEGIN OF LICENSE NOTE
-# This file is part of PoYnts.
+# This file is part of Pointspy.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
-# 
+#
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
@@ -113,7 +113,7 @@ def missing(data):
     Parameters
     ----------
     data : array_like
-        A array like object which might contain missing values. Missing values 
+        A array like object which might contain missing values. Missing values
         are assumed to be either None or NaN.
 
     Returns
@@ -192,7 +192,7 @@ def dtype_subset(dtype, names):
 
 
 def recarray(data_dict, dtype=[], dim=1):
-    """Converts a dictionary of array like objects to a numpy record array. 
+    """Converts a dictionary of array like objects to a numpy record array.
     This function is mostly used for convienience.
 
     Parameters
@@ -201,11 +201,11 @@ def recarray(data_dict, dtype=[], dim=1):
         Dictionary of array like objects to convert to a numpy record array.
         Each key in `data_dict` represents a field name of the output record
         array. Each item in `data_dict` represents the corresponding values.
-        Thus at least `shape[0:dim]` of all input arrays in `data_dict` have 
+        Thus at least `shape[0:dim]` of all input arrays in `data_dict` have
         to match.
     dtype : optional, numpy.dtype
         Describes the desired data types of specific fields. If the data dype
-        of a field is not given, the data type is estimated from by numpy. 
+        of a field is not given, the data type is estimated from by numpy.
     dim : positive int
         Desired dimension of the resulting numpy record array.
 
@@ -404,7 +404,7 @@ def fuse(*recarrays):
     ...         'c1': [['c1', 'c2'], ['c3', 'c4']],
     ...         'c2': [[0.1, 0.2], [0.3, 0.3]],
     ...     }, dim = 2)
-        
+
     >>> D = fuse(A, B, C)
     >>> print(D.shape)
     (2, 2)
@@ -451,7 +451,7 @@ def merge(arrays, strategy=np.concatenate):
     arrays : list of np.recarray
         Numpy arrays to merge.
     strategy : optional, function
-        Aggregate function to apply during merging. Suggested values: 
+        Aggregate function to apply during merging. Suggested values:
         np.conatenate, np.hstack, np.vstack, np.dstack.
 
     Returns
@@ -614,7 +614,7 @@ def unnest(arr, deep=False):
     rec: np.recarray or np.ndarray
         Numpy array to unnest.
     deep : bool
-        Indicates whether or not numpy ndarrays shall be splitted into 
+        Indicates whether or not numpy ndarrays shall be splitted into
         individual colums or not.
 
     Raises
@@ -640,7 +640,7 @@ def unnest(arr, deep=False):
     >>> print(rec.nested.child2)
     [[1. 1.]
      [1. 1.]]
-    
+
     >>> unnested = unnest(rec)
     >>> print(unnested[0])
     [1 1]
@@ -785,7 +785,7 @@ def indices(shape, flatten=False):
     Returns
     -------
     np.ndarray(int, shape=(\*shape, len(shape)))
-        Array of indices with desired `shape`. Each entry provides a index 
+        Array of indices with desired `shape`. Each entry provides a index
         tuple to access the array entries.
 
     Examples

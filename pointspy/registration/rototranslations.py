@@ -1,7 +1,7 @@
 # BEGIN OF LICENSE NOTE
-# This file is part of PoYnts.
+# This file is part of Pointspy.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
-# 
+#
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
@@ -31,7 +31,7 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     weights : optional, dict or list or int.
         Try to keep the original location and orientation by weighting. Each
         point set can be weighted by a list of values. The first `k` values r
-        epresent the weighting factors for location. The last values 
+        epresent the weighting factors for location. The last values
         represent the weighting factors for orientation (angles).
         The weights can be provided for each point set individially in form
         of a dictionary. If not provided, weights are set to zero.

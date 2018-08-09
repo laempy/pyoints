@@ -1,7 +1,7 @@
 # BEGIN OF LICENSE NOTE
-# This file is part of PoYnts.
+# This file is part of Pointspy.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
-# 
+#
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
@@ -174,7 +174,7 @@ def split_by_breaks(values, breaks):
     -------
     classification : np.ndarray(int, shape=(n))
         Desired class affiliation of `values`. A value of `classification[i]`
-        equal to `k` means that 'values[i]' is in range 
+        equal to `k` means that 'values[i]' is in range
         `[breaks[k], breaks[k][`
 
     Examples

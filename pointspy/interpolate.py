@@ -1,7 +1,7 @@
 # BEGIN OF LICENSE NOTE
-# This file is part of PoYnts.
+# This file is part of Pointspy.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
-# 
+#
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
@@ -37,6 +37,7 @@ class Interpolator:
         Number of coordinate dimensions.
 
     """
+
     def __init__(self, coords, values):
         self._coords = assertion.ensure_coords(coords)
         values = assertion.ensure_numvector(values)
@@ -50,7 +51,7 @@ class Interpolator:
 
     def __call__(self, coords):
         """Apply interpolation.
-        
+
         Parameters
         ----------
         coords : array_like(Number, shape=(m, self.dim))
@@ -87,13 +88,13 @@ class LinearInterpolator(Interpolator):
     See Also
     --------
     Interpolator
-    
+
     Examples
     --------
-    
+
     >>> coords = [(0, 0), (0, 2), (2, 1)]
     >>> values = [0, 3, 6]
-    
+
     >>> interpolator = LinearInterpolator(coords, values)
     >>> print(interpolator([(1, 1)]))
     [3.75]
@@ -101,6 +102,7 @@ class LinearInterpolator(Interpolator):
     [nan]
 
     """
+
     def __init__(self, coords, values):
         Interpolator.__init__(self, coords, values)
         self._interpolator = LinearNDInterpolator(coords, values, rescale=True)
@@ -129,10 +131,10 @@ class KnnInterpolator(Interpolator):
 
     Examples
     --------
-    
+
     >>> coords = [(0, 0), (0, 2), (2, 1)]
     >>> values = [0, 3, 6]
-    
+
     >>> interpolator = KnnInterpolator(coords, values, k=2, max_dist=1)
     >>> print(interpolator([(1, 1)]))
     [6.]
@@ -140,20 +142,22 @@ class KnnInterpolator(Interpolator):
     [0.]
 
     """
+
     def __init__(self, coords, values, k=None, max_dist=None):
         Interpolator.__init__(self, coords, values)
-        
+
         if k is None:
             k = self.dim + 1
         else:
             if not (isinstance(k, int) and k > 0):
                 raise ValueError("'k' needs to be an integer greater 0")
-                
+
         if max_dist is None:
             weight_function = 'distance'
         else:
             if not (isinstance(max_dist, Number) and max_dist > 0):
                 raise ValueError("'max_dist' needs to be a number greater 0")
+
             def weight_function(dists):
                 w = np.zeros(dists.shape)
                 zeroMask = dists == 0
@@ -194,21 +198,21 @@ class PolynomInterpolator(Interpolator):
 
     See Also
     --------
-    Interpolator, sklearn.preprocessing.PolynomialFeatures, 
+    Interpolator, sklearn.preprocessing.PolynomialFeatures,
     sklearn.linear_model.LinearRegression
 
     Examples
     --------
-    
+
     >>> coords = [(0, 0), (0, 2), (2, 1)]
     >>> values = [0, 3, 6]
-    
+
     >>> interpolator = PolynomInterpolator(coords, values, deg=1)
     >>> print(interpolator([(1, 1)]))
     [3.75]
     >>> print(interpolator([(-1, -0.5)]))
     [-3.]
-    
+
     >>> interpolator = PolynomInterpolator(coords, values, deg=0)
     >>> print(interpolator([(1, 1)]))
     [3.]
@@ -217,6 +221,7 @@ class PolynomInterpolator(Interpolator):
 
 
     """
+
     def __init__(
             self,
             coords,
@@ -224,11 +229,11 @@ class PolynomInterpolator(Interpolator):
             deg=2,
             weights=None,
             interaction_only=False):
-        
+
         Interpolator.__init__(self, coords, values)
         if not (isinstance(deg, int)):
             raise ValueError("'deg' needs to be an integer")
-                
+
         self._deg = deg
         self._interaction_only = interaction_only
         self._interpolator = LinearRegression()

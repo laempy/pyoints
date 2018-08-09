@@ -1,7 +1,7 @@
 # BEGIN OF LICENSE NOTE
-# This file is part of PoYnts.
+# This file is part of Pointspy.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
-# 
+#
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
@@ -27,7 +27,7 @@ class Coords(np.ndarray, object):
     coords : array_like(Number)
         Represents `n` data points of `k` dimensions in a Cartesian coordinate
         system. Any desired shape of at least length two is allowed to enable
-        the representation point, voxel or raster data. The last shape element 
+        the representation point, voxel or raster data. The last shape element
         always represents the coordinate dimension.
 
     Attributes
@@ -100,7 +100,7 @@ class Coords(np.ndarray, object):
         ----------
         T : array_like(Number, shape=(self.dim+1, self.dim+1))
             Transformation matrix to apply.
-            
+
         Returns
         -------
         Coords(shape=self.shape)
@@ -108,9 +108,9 @@ class Coords(np.ndarray, object):
 
         Examples
         --------
-        
+
         Transform structured coordinates.
-        
+
         >>> coords = Coords(
         ...             [[(2, 3), (2, 4), (3, 2)], [(0, 0), (3, 5), (9, 4)]])
         >>> print(coords)
@@ -121,7 +121,7 @@ class Coords(np.ndarray, object):
          [[0 0]
           [3 5]
           [9 4]]]
-        
+
         >>> T = transformation.matrix(t=[10, 20], s=[0.5, 1])
         >>> tcoords = coords.transform(T)
         >>> print(tcoords)
@@ -137,7 +137,6 @@ class Coords(np.ndarray, object):
         T = assertion.ensure_tmatrix(T, dim=self.dim)
         tcoords = transformation.transform(self.flattened, T)
         return tcoords.reshape(self.shape).view(Coords)
-
 
     def indexKD(self, dim=None):
         """Get a spatial index of the coordinates.
@@ -193,7 +192,7 @@ class Coords(np.ndarray, object):
         Parameters
         ----------
         dim : optional, positive int
-            Define how many coordinate dimensions to use. If None, all 
+            Define how many coordinate dimensions to use. If None, all
             dimensions are used.
 
         Returns

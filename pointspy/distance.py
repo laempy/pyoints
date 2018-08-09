@@ -1,7 +1,7 @@
 # BEGIN OF LICENSE NOTE
-# This file is part of PoYnts.
+# This file is part of Pointspy.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
-# 
+#
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
@@ -32,11 +32,11 @@ def norm(coords):
 
     Examples
     --------
-    
+
     >>> coords = [(3, 4), (0, 1), (4, 3), (0, 0), (8, 6)]
     >>> print(norm(coords))
     [ 5.  1.  5.  0. 10.]
-    
+
     """
     return np.sqrt(snorm(coords))
 
@@ -92,24 +92,24 @@ def dist(p, coords):
     See Also
     --------
     sdist
-    
+
     Examples
     --------
-    
+
     Point to points distance.
-    
+
     >>> p = (1, 2)
     >>> coords = [(2, 2), (1, 1), (1, 2), (9, 8)]
     >>> print(dist(p, coords))
     [ 1.  1.  0. 10.]
 
     Points to points distance.
-    
+
     >>> A = [(2, 2), (1, 1), (1, 2)]
     >>> B = [(4, 2), (2, 1), (9, 8)]
     >>> print(dist(A, B))
     [ 2.  1. 10.]
-    
+
     """
     return np.sqrt(sdist(p, coords))
 
@@ -132,19 +132,19 @@ def sdist(p, coords):
     See Also
     --------
     dist
-    
+
     Examples
     --------
-    
+
     Squared point to points distance.
-    
+
     >>> p = (1, 2)
     >>> coords = [(2, 4), (1, 1), (1, 2), (9, 8)]
     >>> print(sdist(p, coords))
     [  5   1   0 100]
 
     Squared points to points distance.
-    
+
     >>> A = [(2, 2), (1, 1), (1, 2)]
     >>> B = [(4, 2), (2, 1), (9, 8)]
     >>> print(sdist(A, B))
@@ -180,7 +180,7 @@ def rmse(A, B):
 
     Examples
     --------
-    
+
     >>> A = [(2, 2), (1, 1), (1, 2)]
     >>> B = [(2.2, 2), (0.9, 1.1), (1, 2.1)]
     >>> print(np.round(rmse(A, B), 2))
@@ -207,15 +207,15 @@ def idw(dists, p=2):
 
     Examples
     --------
-    
+
     >>> dists = [0, 1, 4]
-    
+
     >>> print(idw(dists))
     [1.   0.25 0.04]
-    
+
     >>> print(idw(dists, p=1))
     [1.  0.5 0.2]
-    
+
     """
     dists = assertion.ensure_numvector(dists)
     return 1.0 / (1 + dists)**p

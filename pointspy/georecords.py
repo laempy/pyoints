@@ -1,7 +1,7 @@
 # BEGIN OF LICENSE NOTE
-# This file is part of PoYnts.
+# This file is part of Pointspy.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
-# 
+#
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
@@ -289,20 +289,20 @@ class GeoRecords(np.recarray, object):
         ----------
         T : array_like(Number, shape=(self.dim+1, self.dim+1))
             Transformation matrix to apply.
-            
+
         See Also
         --------
         Coords.transform
 
         Examples
         --------
-        
+
         >>> data = {
         ...    'coords': [(2, 3), (3, 2), (0, 1), (9, 5)],
         ...    'values': [1, 3, 4, 0]
         ... }
         >>> geo = GeoRecords(None, data)
-        
+
         >>> T = transformation.matrix(t=[10, 20], s=[0.5, 1])
         >>> geo.transform(T)
         >>> print(geo.coords)

@@ -1,7 +1,7 @@
 # BEGIN OF LICENSE NOTE
-# This file is part of PoYnts.
+# This file is part of Pointspy.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
-# 
+#
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
@@ -22,7 +22,7 @@ WGS84 = '+proj=latlong +datum=WGS84 +to +proj=latlong +datum=WGS84 +units=m ' \
 
 
 class Proj:
-    """Wrapper class for different commonly coordinate reference system 
+    """Wrapper class for different commonly coordinate reference system
     formats.
 
     Parameters
@@ -66,6 +66,7 @@ class Proj:
     True
 
     """
+
     def __init__(self, proj4=WGS84):
         if proj4 is None or not isinstance(proj4, str) or proj4 is '':
             raise ValueError("proj4 not defined")
@@ -161,7 +162,7 @@ class GeoTransform:
     ...     (6.922, 50.101)
     ... ]
     >>> geoTransfrom = GeoTransform(wgs84, gk2)
-    
+
     >>> tCoords = geoTransfrom(coords)
     >>> print(np.round(tCoords, 3))
     [[2560446.801 5537522.386]
@@ -178,6 +179,7 @@ class GeoTransform:
      [ 6.922 50.101]]
 
     """
+
     def __init__(self, from_proj, to_proj):
         if not isinstance(from_proj, Proj) or not isinstance(to_proj, Proj):
             raise TypeError("objects of type 'Proj' required")
@@ -186,19 +188,19 @@ class GeoTransform:
 
     def __call__(self, coords, reverse=False):
         """Applies the coordinate transformation.
-        
+
         Parameters
         ----------
         coords : array_like(Number, shape=(n, k))
             Represents `n` points of `k` dimensions to transform.
         reverse : optional, bool
             Indicate whether or not to apply the inverse transformation.
-        
+
         Returns
         -------
         np.ndarray(Number, shape=(n, k))
-            Transformed coordinates.    
-        
+            Transformed coordinates.
+
         """
         coords = assertion.ensure_numarray(coords)
         if not isinstance(reverse, bool):

@@ -1,7 +1,7 @@
 # BEGIN OF LICENSE NOTE
-# This file is part of PoYnts.
+# This file is part of Pointspy.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
-# 
+#
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
@@ -217,7 +217,7 @@ def transform_to_corners(T, shape):
         Transformation matrix in a `k` dimensional space.
     shape : array_like(int, shape=(k))
         Desired shape of the grid.
-        
+
     Returns
     -------
     np.ndarray(Number, shape=(2\*\*k, k))

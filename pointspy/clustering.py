@@ -1,7 +1,7 @@
 # BEGIN OF LICENSE NOTE
-# This file is part of PoYnts.
+# This file is part of Pointspy.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
-# 
+#
 # This software is copyright protected. A decision on a less restrictive
 # licencing model will be made before releasing this software.
 # END OF LICENSE NOTE
@@ -203,8 +203,8 @@ def dbscan(
         epsilon=None,
         quantile=0.8,
         factor=3):
-    """Variant of the DBSCAN algorithm [1] with automatic estimation of the 
-    `epsilon` parameter using point density. Usefull for automatic outlier 
+    """Variant of the DBSCAN algorithm [1] with automatic estimation of the
+    `epsilon` parameter using point density. Usefull for automatic outlier
     identification.
 
     Parameters
@@ -225,11 +225,11 @@ def dbscan(
 
     References
     ----------
-    
-    [1] M. Ester, et al. (1996): "A Density-Based Algorithm for Discovering 
-    Clusters in Large Spatial Databases with Noise", KDD-96 Proceedings, 
+
+    [1] M. Ester, et al. (1996): "A Density-Based Algorithm for Discovering
+    Clusters in Large Spatial Databases with Noise", KDD-96 Proceedings,
     pp. 226-231.
-    
+
     Examples
     --------
 
@@ -260,7 +260,7 @@ def dbscan(
     if not (isinstance(min_pts, int) and min_pts >= 0):
         m = "'min_pts' needs to be an integer greater or equal zero"
         raise ValueError(m)
-        
+
     coords = indexKD.coords
 
     # Estimate epsilon based on density
@@ -269,7 +269,7 @@ def dbscan(
             raise ValueError("'quantile' needs to be a number greater zero")
         if not (isinstance(factor, Number) and factor > 0):
             raise ValueError("'factor' needs to be a number greater zero")
-            
+
         if min_pts > 0:
             dists = indexKD.knn(coords, k=min_pts + 1)[0][:, 1:]
         else:
