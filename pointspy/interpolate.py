@@ -9,6 +9,7 @@
 """
 
 import numpy as np
+from numbers import Number
 
 from scipy.interpolate import LinearNDInterpolator
 from sklearn.neighbors import KNeighborsRegressor
@@ -31,14 +32,14 @@ class Interpolator:
     Attributes
     ----------
     coords : np.ndarray(Number, shape=(n, k))
-        Represents `n` data points of `k` dimensions.
+        Provided coordinates.
     dim : positive int
         Number of coordinate dimensions.
 
     """
     def __init__(self, coords, values):
         self._coords = assertion.ensure_coords(coords)
-        assertion.ensure_numvector(values)
+        values = assertion.ensure_numvector(values)
         if not len(self._coords) == len(values):
             raise ValueError("array dimensions do not fit")
         self._shift = self._coords.min(0)
@@ -48,6 +49,19 @@ class Interpolator:
         raise NotImplementedError()
 
     def __call__(self, coords):
+        """Apply interpolation.
+        
+        Parameters
+        ----------
+        coords : array_like(Number, shape=(m, self.dim))
+            Represents `m` points to interpolate.
+
+        Returns
+        -------
+        np.ndarray(Number, shape=(m))
+            Interpolated values.
+
+        """
         coords = assertion.ensure_coords(coords)
         return self._interpolate(coords[:, :self.dim])
 
@@ -63,16 +77,30 @@ class Interpolator:
 class LinearInterpolator(Interpolator):
     """Linear interpolation.
 
-    Examples
-    --------
-    TODO
+    Parameters
+    ----------
+    coords : array_like(Number, shape=(n, k))
+        Represents `n` data points of `k` dimensions.
+    values : array_like(Number, shape=(n))
+        Values to interpolate.
 
     See Also
     --------
     Interpolator
+    
+    Examples
+    --------
+    
+    >>> coords = [(0, 0), (0, 2), (2, 1)]
+    >>> values = [0, 3, 6]
+    
+    >>> interpolator = LinearInterpolator(coords, values)
+    >>> print(interpolator([(1, 1)]))
+    [3.75]
+    >>> print(interpolator([(-1, -1)]))
+    [nan]
 
     """
-
     def __init__(self, coords, values):
         Interpolator.__init__(self, coords, values)
         self._interpolator = LinearNDInterpolator(coords, values, rescale=True)
@@ -86,28 +114,46 @@ class KnnInterpolator(Interpolator):
 
     Parameters
     ----------
+    coords : array_like(Number, shape=(n, k))
+        Represents `n` data points of `k` dimensions.
+    values : array_like(Number, shape=(n))
+        Values to interpolate.
     k : optional, positive int
         Number of neighbours used for interpolation.
-    max_dist : optional, positive float
+    max_dist : optional, positive Number
         Maximum distance of a neigbouring point to be used for interpolation.
-
-    Examples
-    --------
-    TODO
 
     See Also
     --------
     Interpolator
 
+    Examples
+    --------
+    
+    >>> coords = [(0, 0), (0, 2), (2, 1)]
+    >>> values = [0, 3, 6]
+    
+    >>> interpolator = KnnInterpolator(coords, values, k=2, max_dist=1)
+    >>> print(interpolator([(1, 1)]))
+    [6.]
+    >>> print(interpolator([(-0.5, -0.5)]))
+    [0.]
+
     """
     def __init__(self, coords, values, k=None, max_dist=None):
-        # TODO assetion
         Interpolator.__init__(self, coords, values)
+        
         if k is None:
             k = self.dim + 1
+        else:
+            if not (isinstance(k, int) and k > 0):
+                raise ValueError("'k' needs to be an integer greater 0")
+                
         if max_dist is None:
             weight_function = 'distance'
         else:
+            if not (isinstance(max_dist, Number) and max_dist > 0):
+                raise ValueError("'max_dist' needs to be a number greater 0")
             def weight_function(dists):
                 w = np.zeros(dists.shape)
                 zeroMask = dists == 0
@@ -135,20 +181,40 @@ class PolynomInterpolator(Interpolator):
 
     Parameters
     ----------
+    coords : array_like(Number, shape=(n, k))
+        Represents `n` data points of `k` dimensions.
+    values : array_like(Number, shape=(n))
+        Values to interpolate.
     deg : optional, positive int
-        TODO
-    weights : optional, TODO
-        TODO
+        The degree of the polynomial features.
+    weights : optional, array_like(shape=(n))
+        Weights for each sample.
     interaction_only : optional, bool
-        TODO
+        Indicates whether or not to calculate interaction only.
 
     See Also
     --------
-    Interpolator
+    Interpolator, sklearn.preprocessing.PolynomialFeatures, 
+    sklearn.linear_model.LinearRegression
 
     Examples
     --------
-    TODO
+    
+    >>> coords = [(0, 0), (0, 2), (2, 1)]
+    >>> values = [0, 3, 6]
+    
+    >>> interpolator = PolynomInterpolator(coords, values, deg=1)
+    >>> print(interpolator([(1, 1)]))
+    [3.75]
+    >>> print(interpolator([(-1, -0.5)]))
+    [-3.]
+    
+    >>> interpolator = PolynomInterpolator(coords, values, deg=0)
+    >>> print(interpolator([(1, 1)]))
+    [3.]
+    >>> print(interpolator([(-1, -0.5)]))
+    [3.]
+
 
     """
     def __init__(
@@ -158,8 +224,11 @@ class PolynomInterpolator(Interpolator):
             deg=2,
             weights=None,
             interaction_only=False):
-        # TODO assertion
+        
         Interpolator.__init__(self, coords, values)
+        if not (isinstance(deg, int)):
+            raise ValueError("'deg' needs to be an integer")
+                
         self._deg = deg
         self._interaction_only = interaction_only
         self._interpolator = LinearRegression()
