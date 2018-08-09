@@ -12,7 +12,7 @@ import numpy as np
 
 
 def isarray(o):
-    """Checks weather or nor an object is an array.
+    """Checks whether or nor an object is an array.
 
     Parameters
     ----------
@@ -22,10 +22,10 @@ def isarray(o):
     Returns
     -------
     bool
-        Indicates weather or not the object is an array.
+        Indicates whether or not the object is an array.
 
-    Example
-    -------
+    Examples
+    --------
 
     >>> isarray([1, 2, 3])
     True
@@ -39,11 +39,11 @@ def isarray(o):
 
 
 def isnumeric(arr, dtypes=[np.int32, np.int64, np.float32, np.float64]):
-    """Checks if the data type of an `numpy.ndarray` is numeric.
+    """Checks if the data type of an array is numeric.
 
     Parameters
     ----------
-    arr : np.ndarray
+    arr : array_like
         Numpy array to check.
     dtypes : optional, tuple
         Tuple of allowed numeric data types.
@@ -53,8 +53,12 @@ def isnumeric(arr, dtypes=[np.int32, np.int64, np.float32, np.float64]):
     bool
         Indicates weather or not the array is numeric.
 
-    Example
-    -------
+    Raises
+    ------
+    TypeError
+
+    Examples
+    --------
 
     >>> isnumeric([1, 2, 3])
     True
@@ -77,7 +81,7 @@ def isnumeric(arr, dtypes=[np.int32, np.int64, np.float32, np.float64]):
 
 
 def haskeys(d):
-    """Checks if object has keys and can be used like a dictionary.
+    """Checks if an object has keys and can be treated like a dictionary.
 
     Parameters
     ----------
@@ -104,18 +108,22 @@ def haskeys(d):
 
 
 def missing(data):
-    """Find missing values.
+    """Find missing values in an array.
 
     Parameters
     ----------
     data : array_like
-        A array like object to search missing values for. Missing values are
-        either None or NaN values.
+        A array like object which might contain missing values. Missing values 
+        are assumed to be either None or NaN.
 
     Returns
     -------
-    array_like(bool)
+    array_like(bool, shape=data.shape)
         Boolean values indicate missing values.
+
+    Raises
+    ------
+    ValueError
 
     Examples
     --------
@@ -126,16 +134,15 @@ def missing(data):
     >>> print(missing(arr))
     [False False  True  True  True]
 
-    Finding missing values in multidimensional arrays.
+    Finding missing values in a multi-dimensional array.
 
-    >>> arr = np.array([(0,np.nan),(None, 1),(2, 3)], dtype=float)
+    >>> arr = np.array([(0, np.nan), (None, 1), (2, 3)], dtype=float)
     >>> print(missing(arr))
     [[False  True]
      [ True False]
      [False False]]
 
     """
-
     if not hasattr(data, '__len__'):
         raise ValueError("'data' has be a array like object")
     strings = np.array(data, dtype=str)
@@ -156,6 +163,10 @@ def dtype_subset(dtype, names):
     names : list of str
         Fields to select.
 
+    Raises
+    ------
+    TypeError
+
     Returns
     -------
     list
@@ -170,7 +181,7 @@ def dtype_subset(dtype, names):
 
     """
     if not hasattr(names, '__iter__'):
-        raise ValueError("'names' needs to be iterable")
+        raise TypeError("'names' needs to be iterable")
     descr = np.dtype(dtype).descr
     out_dtype = []
     for name in names:
@@ -180,15 +191,21 @@ def dtype_subset(dtype, names):
     return out_dtype
 
 
-def recarray(dataDict, dtype=[], dim=1):
-    """Converts a dictionary of array like objects to a numpy record array.
+def recarray(data_dict, dtype=[], dim=1):
+    """Converts a dictionary of array like objects to a numpy record array. 
+    This function is mostly used for convienience.
 
     Parameters
     ----------
-    dataDict : dict
+    data_dict : dict
         Dictionary of array like objects to convert to a numpy record array.
+        Each key in `data_dict` represents a field name of the output record
+        array. Each item in `data_dict` represents the corresponding values.
+        Thus at least `shape[0:dim]` of all input arrays in `data_dict` have 
+        to match.
     dtype : optional, numpy.dtype
-        Describes the desired data type of specific fields.
+        Describes the desired data types of specific fields. If the data dype
+        of a field is not given, the data type is estimated from by numpy. 
     dim : positive int
         Desired dimension of the resulting numpy record array.
 
@@ -197,10 +214,14 @@ def recarray(dataDict, dtype=[], dim=1):
     np.recarray
         Numpy record array build from input dictionary.
 
+    Raises
+    ------
+    TypeError, ValueError
+
     Examples
     --------
 
-    Creation of an numpy record array using a dictionary.
+    Creation of a one dimensional numpy record array using a dictionary.
 
     >>> rec = recarray({
     ...    'coords': [ (3, 4), (3, 2), (0, 2), (5, 2)],
@@ -216,19 +237,28 @@ def recarray(dataDict, dtype=[], dim=1):
      [0 2]
      [5 2]]
 
-    Create a two dimensional array.
+    Create a two dimensional record array.
 
     >>> data = {
     ...    'coords': [
-    ...                 [(2, 3.2), (-3, 2.2)],
-    ...                 [(0, 1.1), (-1, 2.2)],
-    ...                 [(-7, -1), (9.2, -5)]
+    ...                 [(2, 3.2, 1), (-3, 2.2, 4)],
+    ...                 [(0, 1.1, 2), (-1, 2.2, 5)],
+    ...                 [(-7, -1, 3), (9.2, -5, 6)]
     ...             ],
     ...    'values': [[1, 3], [4, 0], [-4, 2]]
     ... }
     >>> rec = recarray(data, dim=2)
     >>> print(rec.shape)
     (3, 2)
+    >>> print(rec.coords)
+    [[[ 2.   3.2  1. ]
+      [-3.   2.2  4. ]]
+    <BLANKLINE>
+     [[ 0.   1.1  2. ]
+      [-1.   2.2  5. ]]
+    <BLANKLINE>
+     [[-7.  -1.   3. ]
+      [ 9.2 -5.   6. ]]]
     >>> print(rec.values)
     [[ 1  3]
      [ 4  0]
@@ -237,71 +267,72 @@ def recarray(dataDict, dtype=[], dim=1):
     ['coords', 'values']
 
     """
-
-    if not haskeys(dataDict):
-        raise ValueError("'dataDict' has to be a dictionary like object")
+    if not haskeys(data_dict):
+        raise TypeError("'dataDict' has to be a dictionary like object")
 
     # check data types
     dtype = np.dtype(dtype)
     for key in dtype.names:
-        if key not in dataDict.keys():
+        if key not in data_dict.keys():
             raise ValueError('column "%s" not found!' % key)
 
     if not isinstance(dim, int) and dim > 0:
         raise ValueError("'dim' has to be an integer greater zero")
 
     # convert to numpy arrays if neccessary
-    for key in dataDict.keys():
-        if not isinstance(dataDict[key], (np.ndarray, np.recarray)):
+    for key in data_dict.keys():
+        if not isinstance(data_dict[key], (np.ndarray, np.recarray)):
             if key in dtype.names:
                 dt = dtype_subset(dtype, [key])
-                dataDict[key] = np.array(dataDict[key], dtype=dt, copy=False)
+                data_dict[key] = np.array(data_dict[key], dtype=dt, copy=False)
             else:
-                dataDict[key] = np.array(dataDict[key], copy=False)
+                data_dict[key] = np.array(data_dict[key], copy=False)
 
     # get data types
     out_dtypes = []
-    for key in dataDict.keys():
+    for key in data_dict.keys():
         if key in dtype.names:
             dt = dtype_subset(dtype, [key])[0]
         else:
-            arr = dataDict[key]
+            arr = data_dict[key]
             dt = (key, arr.dtype.descr[0][1], arr.shape[dim:])
         out_dtypes.append(dt)
 
     # define array
-    shape = next(iter(dataDict.values())).shape
+    shape = next(iter(data_dict.values())).shape
     rec = np.recarray(shape[:dim], dtype=out_dtypes)
     if len(rec) > 0:
-        for key in dataDict.keys():
-            rec[key][:] = dataDict[key]
+        for key in data_dict.keys():
+            rec[key][:] = data_dict[key]
 
     return rec
 
 
 def add_fields(arr, dtypes, data=None):
-    """Adds fields to numpy record array.
+    """Adds additional fields to a numpy record array.
 
     Parameters
     ----------
-    arr : numpy.ndarray
-        Numpy array to add field to.
+    arr : np.recarray
+        Numpy record array to add fields to.
     dtypes : np.dtype
         Data types of the new fields.
-    data : optional, list of arrays
-        Data values of the new fields.
+    data : optional, list of array_like
+        Data values of the new fields. The shape of each array has to be
+        compatible to arr.
 
     Returns
     -------
     np.recarray
-        Record array similar to `A`, but with additional fields.
+        Record array similar to `A`, but with additional fields of type
+        `dtypes` and values of `data`.
 
     Examples
     --------
 
     >>> A = recarray({'a': [0, 1, 2, 3]})
     >>> C = add_fields(A, [('b', float, 2), ('c', int)])
-    >>> print(C.dtype.descr)
+    >>> print(sorted(C.dtype.descr))
     [('a', '<i8'), ('b', '<f8', (2,)), ('c', '<i8')]
 
     >>> D = add_fields(A, [('d', int), ('e', str)], data=[[1, 2, 3, 4], None])
@@ -309,8 +340,8 @@ def add_fields(arr, dtypes, data=None):
     [(0, 1, '') (1, 2, '') (2, 3, '') (3, 4, '')]
 
     """
-    if not isinstance(arr, np.ndarray):
-        raise TypeError("'arr' has to be an instance of 'np.ndarray'")
+    if not isinstance(arr, np.recarray):
+        raise TypeError("'arr' has to be an numpy record array")
     if data is not None and not hasattr(data, '__iter__'):
         raise ValueError("'data' has to be iterable")
 
@@ -340,22 +371,22 @@ def add_fields(arr, dtypes, data=None):
 
 
 def fuse(*recarrays):
-    """Fuses two numpy record arrays of identical shape to one array.
+    """Fuses multiple numpy record arrays of identical shape to one array.
 
     Parameters
     ----------
     \*recarrays : np.recarray
-        Numpy recarrays to fuse.
+        Numpy record arrays to fuse.
 
     Returns
     -------
     np.recarray
-        Record array with same fields as `A` and `B`.
+        Record array with all fields of `recarrays`.
 
     Examples
     --------
 
-    One dimensional arrays.
+    Fuse one dimensional arrays.
 
     >>> A = recarray({'a': [0, 1, 2, 3]})
     >>> B = recarray({'b': [4, 5, 6, 7]})
@@ -365,7 +396,7 @@ def fuse(*recarrays):
     >>> print(C.dtype.names)
     ('a', 'b')
 
-    Two dimensional arrays.
+    Fuse multiple two dimensional arrays.
 
     >>> A = recarray({'a': [[0, 1], [2, 3]]}, dim = 2)
     >>> B = recarray({'b': [[4, 5], [6, 7]]}, dim = 2)
@@ -373,6 +404,7 @@ def fuse(*recarrays):
     ...         'c1': [['c1', 'c2'], ['c3', 'c4']],
     ...         'c2': [[0.1, 0.2], [0.3, 0.3]],
     ...     }, dim = 2)
+        
     >>> D = fuse(A, B, C)
     >>> print(D.shape)
     (2, 2)
@@ -382,7 +414,6 @@ def fuse(*recarrays):
     >>> print(D.c1)
     [['c1' 'c2']
      ['c3' 'c4']]
-    
     >>> print(sorted(D.dtype.descr))
     [('a', '<i8'), ('b', '<i8'), ('c1', '<U2'), ('c2', '<f8')]
     >>> print(D.c1)
@@ -412,21 +443,25 @@ def fuse(*recarrays):
     return fused
 
 
-def merge(arrays, f=np.concatenate):
-    """Merges multiple arrays.
+def merge(arrays, strategy=np.concatenate):
+    """Merges multiple arrays with similar fields.
 
     Parameters
     ----------
     arrays : list of np.recarray
         Numpy arrays to merge.
-    f : optional, function
-        Aggregate function. Suggested values: np.conatenate, np.hstack,
-        np.vstack, np.dstack.
+    strategy : optional, function
+        Aggregate function to apply during merging. Suggested values: 
+        np.conatenate, np.hstack, np.vstack, np.dstack.
 
     Returns
     -------
     np.recarray
         Merged numpy record array of same data type as the first input array.
+
+    Raises
+    ------
+    TypeError
 
     Examples
     --------
@@ -445,19 +480,19 @@ def merge(arrays, f=np.concatenate):
     >>> print(D.shape)
     (9,)
 
-    >>> D = merge((A, B, C), f=np.hstack)
+    >>> D = merge((A, B, C), strategy=np.hstack)
     >>> print(D.shape)
     (9,)
 
-    >>> D = merge((A, B, C), f=np.vstack)
+    >>> D = merge((A, B, C), strategy=np.vstack)
     >>> print(D.shape)
     (3, 3)
 
-    >>> D = merge((A, B, C), f=np.dstack)
+    >>> D = merge((A, B, C), strategy=np.dstack)
     >>> print(D.shape)
     (1, 3, 3)
 
-    Two dimensional arrays.
+    Merge two dimensional arrays.
 
     >>> A = recarray({
     ...     'a': [(0, 1), (2, 3)], 'b': [('e', 'f'), ('g', 'h')]
@@ -482,32 +517,26 @@ def merge(arrays, f=np.concatenate):
     >>> print(D.shape)
     (6, 2)
 
-    >>> D = merge((A, B, C), f=np.hstack)
+    >>> D = merge((A, B, C), strategy=np.hstack)
     >>> print(D.shape)
     (2, 6)
-
-    >>> D = merge((A, B, C), f=np.vstack)
+    >>> D = merge((A, B, C), strategy=np.vstack)
     >>> print(D.shape)
     (6, 2)
-
-    >>> D = merge((A, B, C), f=np.dstack)
+    >>> D = merge((A, B, C), strategy=np.dstack)
     >>> print(D.shape)
     (2, 2, 3)
-
-    >>> D = merge((A, B, C), f=np.concatenate)
+    >>> D = merge((A, B, C), strategy=np.concatenate)
     >>> print(D.shape)
     (6, 2)
-
-
 
     >>> A = np.recarray(1, dtype=[('a', object, 2), ('b', str)])
     >>> B = np.recarray(2, dtype=[('a', object, 2), ('b', str)])
-    >>> D = merge((A, B), f=np.concatenate)
+    >>> D = merge((A, B), strategy=np.concatenate)
     >>> print(D)
     [([None, None], '') ([None, None], '') ([None, None], '')]
 
     """
-    # validate input
     if not hasattr(arrays, '__iter__'):
         raise TypeError("'arrays' needs to be iterable")
     dtype = None
@@ -518,12 +547,11 @@ def merge(arrays, f=np.concatenate):
             dtype = arrays[0].dtype.descr
         elif not arr.dtype.descr == dtype:
             raise TypeError("all data types need to match")
-
-    return arrays[0].__array_wrap__(f(arrays))
+    return arrays[0].__array_wrap__(strategy(arrays))
 
 
 def flatten_dtypes(np_dtypes):
-    """Exract name, datatype and shape information from numpy data type.
+    """Exract name, datatype and shape information from a numpy data type.
 
     Parameters
     ----------
@@ -555,8 +583,6 @@ def flatten_dtypes(np_dtypes):
     [0, 3]
 
     """
-
-    # ensure data type
     np_dtypes = np.dtype(np_dtypes)
 
     dtypes = []
@@ -580,15 +606,20 @@ def flatten_dtypes(np_dtypes):
 
 
 def unnest(arr, deep=False):
-    """Unnest a numpy record array. Recursively adds each named field to a list.
+    """Unnest a numpy record array. This function recursively splits a nested
+    numpy array to a list of arrays.
 
     Parameters
     ----------
     rec: np.recarray or np.ndarray
         Numpy array to unnest.
     deep : bool
-        Indicates wether numpy ndarrays shall be splitted into individual
-        colums or not.
+        Indicates whether or not numpy ndarrays shall be splitted into 
+        individual colums or not.
+
+    Raises
+    ------
+    TypeError
 
     Returns
     -------
@@ -609,6 +640,7 @@ def unnest(arr, deep=False):
     >>> print(rec.nested.child2)
     [[1. 1.]
      [1. 1.]]
+    
     >>> unnested = unnest(rec)
     >>> print(unnested[0])
     [1 1]
@@ -620,8 +652,8 @@ def unnest(arr, deep=False):
 
     """
     if not isinstance(arr, (np.recarray, np.ndarray)):
-        raise TypeError("'rec' has to a 'np.recarray' or 'np.ndarray'")
-
+        m = "'rec' has to be an instance of 'np.recarray' or 'np.ndarray'"
+        raise TypeError(m)
     if not isinstance(arr, np.recarray):
         if deep and len(arr.shape) > 1:
             ret = []
@@ -637,7 +669,7 @@ def unnest(arr, deep=False):
 
 
 def colzip(arr):
-    """Splits a two dimensional np.ndarray into a list of columns.
+    """Splits a two dimensional numpy array into a list of columns.
 
     Parameters
     ----------
@@ -648,6 +680,10 @@ def colzip(arr):
     -------
     columns : list of np.ndarray
         List of `k` numpy arrays.
+
+    Raises
+    ------
+    TypeError, ValueError
 
     Examples
     --------
@@ -670,30 +706,6 @@ def colzip(arr):
         raise TypeError("unexpected type of 'arr'")
 
 
-def fields_view(arr, fields, dtype=None):
-    """TODO
-
-    Parameters
-    ----------
-    TODO
-
-    Returns
-    -------
-    TODO
-
-    Examples
-    --------
-    TODO
-
-    """
-    if not isinstance(arr, np.ndarray):
-        raise TypeError("'arr' has be a 'np.ndarray'")
-
-    if dtype is None:
-        dtype = np.dtype({name: arr.dtype.fields[name] for name in fields})
-    return np.ndarray(arr.shape, dtype, arr, 0, arr.strides)
-
-
 def apply_function(ndarray, func, dtype=None):
     """Applies a function to each record of a numpy array.
 
@@ -714,7 +726,7 @@ def apply_function(ndarray, func, dtype=None):
     Examples
     --------
 
-    Numpy ndarray.
+    Apply a function to a numpy ndarray.
 
     >>> data = { 'a': [0, 1, 2, 3], 'b': [1, 2, 3, 4] }
     >>> arr = np.ones((2, 3), dtype=[('a', int), ('b', int)])
@@ -723,7 +735,7 @@ def apply_function(ndarray, func, dtype=None):
     [[2 2 2]
      [2 2 2]]
 
-    One dimensional case with aggregation.
+    Aggregate a one dimensional numpy reccord array.
 
     >>> data = { 'a': [0, 1, 2, 3], 'b': [1, 2, 3, 4] }
     >>> arr = recarray(data)
@@ -740,7 +752,7 @@ def apply_function(ndarray, func, dtype=None):
     [[ 0  1]
      [ 8 81]]
 
-    Multiple output data types.
+    Specify the output data type.
 
     >>> func = lambda record: (record.a + record.b, record.a ** record.b)
     >>> print(apply_function(arr, func, dtype=[('c', float), ('d', int)]))
@@ -748,10 +760,10 @@ def apply_function(ndarray, func, dtype=None):
      [(5.,  8) (7., 81)]]
 
     """
-    if not hasattr(func, '__call__'):
+    if not callable(func):
         raise ValueError("'func' needs to be callable")
     if not isinstance(ndarray, np.ndarray):
-        raise TypeError("'ndarray' needs to an instance of np.ndarray")
+        raise TypeError("'ndarray' needs to an instance of 'np.ndarray'")
     if dtype is not None:
         dtype = np.dtype(dtype).descr
 
@@ -763,7 +775,7 @@ def apply_function(ndarray, func, dtype=None):
 
 
 def indices(shape, flatten=False):
-    """Keys or indices of a numpy ndarray.
+    """Create keys or indices of a numpy ndarray.
 
     Parameters
     ----------
@@ -773,8 +785,8 @@ def indices(shape, flatten=False):
     Returns
     -------
     np.ndarray(int, shape=(\*shape, len(shape)))
-        Array of indices with desired shape. Each entry provides a index tuple
-        to access the array entries.
+        Array of indices with desired `shape`. Each entry provides a index 
+        tuple to access the array entries.
 
     Examples
     --------
