@@ -143,7 +143,7 @@ class GeoTransform:
 
     Parameters
     ----------
-    from_proj, to_proj : `Proj`
+    from_proj,to_proj : `Proj`
         Define the coordinate transformation form the origin projection system
         `from_proj` to the target projection system `to_proj`.
 

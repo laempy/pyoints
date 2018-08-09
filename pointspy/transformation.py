@@ -13,13 +13,14 @@ import warnings
 import numpy as np
 import itertools as it
 
-from . import (
-    distance,
-)
 from numpy.linalg import eigh
 from numpy import (
     identity,
     dot,
+)
+
+from . import (
+    distance,
 )
 from .assertion import (
     ensure_coords,
@@ -30,7 +31,7 @@ from .assertion import (
 )
 
 
-def transform(coords, T, inverse=False, extra_precise=False):
+def transform(coords, T, inverse=False, precise=False):
     """Performs a linear transformation to coordinates using a transformation
     matrix.
 
@@ -40,6 +41,9 @@ def transform(coords, T, inverse=False, extra_precise=False):
         Represents `n` data points of `k` dimensions.
     T : array_like(Number, shape=(k+1, k+1))
         Transformation matrix.
+    precise : optional, bool
+        Indicates whether or not to calculate the transformaton (at the expend
+        of increased computation time) extra precise.
 
     Returns
     -------
@@ -48,10 +52,27 @@ def transform(coords, T, inverse=False, extra_precise=False):
 
     Examples
     --------
-    TODO
+    
+    Transform coordinates forth and back again.
+    
+    >>> coords = [(0, 0), (1, 2), (2, 3), (0, 3)]
+    >>> T = [(1, 0, 5), (0, 1, 3), (0, 0, 1)]
+    
+    >>> tcoords = transform(coords, T)
+    >>> print(tcoords)
+    [[5. 3.]
+     [6. 5.]
+     [7. 6.]
+     [5. 6.]]
+    >>> print(transform(tcoords, T, inverse=True))
+    [[0. 0.]
+     [1. 2.]
+     [2. 3.]
+     [0. 3.]]
 
     """
     T = ensure_tmatrix(T)
+    coords = ensure_numarray(coords)
 
     if inverse:
         try:
@@ -61,9 +82,6 @@ def transform(coords, T, inverse=False, extra_precise=False):
             T = np.linalg.pinv(T)
 
     T = np.asarray(T)
-
-    coords = ensure_numarray(coords)
-
     if len(coords) == 0 or coords.shape[0] == 0:
         raise ValueError("can not transform empty array")
 
@@ -72,7 +90,7 @@ def transform(coords, T, inverse=False, extra_precise=False):
         return np.dot(np.append(coords, 1), T.T)[0: -1]
     elif len(coords.shape) == 2 and coords.shape[1] == T.shape[0] - 1:
         # multiple points
-        if extra_precise:
+        if precise:
             # precise, but slow
             return np.dot(homogenious(coords), T.T)[:, 0:-1]
         else:
@@ -93,7 +111,7 @@ def homogenious(coords, value=1):
     coords : array_like(Number, shape=(n, k))
         Represents `n` data points of `k` dimensions.
     value : optional, Number
-        Values to set.
+        Desired values of additional dimension.
 
     Returns
     -------
@@ -121,12 +139,13 @@ def matrix(t=None, r=None, s=None, order='srt'):
 
     Parameters
     ----------
-    t, r, s : optional, np.ndarray(Number, shape=(k))
+    t,r,s : optional, np.ndarray(Number, shape=(k))
         Transformation coefficients for translation `t`, rotation `r` and
         scale `s`.
     order : optional, string
-        Order to compute the matrix multiplications. A `order` of 'trs' means
-        first translate `t`, then rotate `r` and finally scale `s`.
+        Order to compute the matrix multiplications. For example, an `order` of 
+        `trs` means first translate `t`, then rotate `r`, and finally scale 
+        `s`.
 
     Returns
     -------
@@ -187,7 +206,7 @@ def matrix(t=None, r=None, s=None, order='srt'):
 
 
 def i_matrix(dim):
-    """Creates a identity transformation matrix.
+    """Creates an identity transformation matrix.
 
     Parameters
     ----------
@@ -300,8 +319,10 @@ def r_matrix(a, order='xyz'):
         Rotation coefficients for each coordinate dimension. At least two
         coefficients are required.
     order : optional, String
-        For at least three axes `order` specifies in which axis order the
-        rotations are applied.
+        For at least three axes, `order` specifies the order of rotations. For
+        example, an order of `zxy` means first translate according to z axis,
+        then rotate according to x-axis, and finally rotate according to
+        y-axis.
 
     Returns
     -------
@@ -314,7 +335,7 @@ def r_matrix(a, order='xyz'):
 
     Notes
     -----
-    Currently only two and tree coordinate dimensions are supported yet.
+    Currently only two and tree dimensions are supported yet.
 
     Examples
     --------
@@ -433,7 +454,7 @@ def add_dim(T):
 
 
 def decomposition(T, ignore_warnings=False):
-    """Determinates most important parameters of a transformation matrix.
+    """Determinates some characteristic parameters of a transformation matrix.
 
     Parameters
     ----------
@@ -442,11 +463,11 @@ def decomposition(T, ignore_warnings=False):
 
     Returns
     -------
-    t, r, s : optional, np.ndarray(Number, shape=(k))
+    t,r,s : optional, np.ndarray(Number, shape=(k))
         Transformation coefficients for translation `t`, rotation `r` and
         scale `s`.
     det : float
-        Derterminant `det` indicates a distorsion of `T`, if not `det` == 1.
+        Derterminant `det` indicates a distorsion of `T`.
 
     Examples
     --------
@@ -466,13 +487,17 @@ def decomposition(T, ignore_warnings=False):
     --------
     matrix
 
-    References
-    ----------
-    https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati
-    https://math.stackexchange.com/questions/13150/extracting-rotation-scale-values-from-2d-transformation-matrix/13165#13165
-    https://www.learnopencv.com/rotation-matrix-to-euler-angles/
-    """
+    Notes
+    -----
+    Idea taken from [1], [2] and [3].
 
+    References
+    -----
+    [1] https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati
+    [2] https://math.stackexchange.com/questions/13150/extracting-rotation-scale-values-from-2d-transformation-matrix/13165#13165
+    [3] https://www.learnopencv.com/rotation-matrix-to-euler-angles/
+    
+    """
     T = ensure_tmatrix(T)
     dim = T.shape[0] - 1
 
@@ -512,7 +537,7 @@ def decomposition(T, ignore_warnings=False):
 
 
 def matrix_from_gdal(t):
-    """Creates a transformation matrix based on gdal geotransfom array.
+    """Creates a transformation matrix using a gdal geotransfom array.
 
     Parameters
     ----------
@@ -596,11 +621,7 @@ class LocalSystem(np.matrix, object):
     ----------
     dim : positive int
         Number of coordinate dimensions.
-    components : np.ndarray(Number, shape=(k+1, k+1))
-        Components of the local coordinate system. Each component represents
-        a the direction vector of the coordinate axis in the global coordinate
-        system.
-    origin :T
+    origin : np.ndarray(Number, shape=(k))
         Global origin of the local coordinate system.
 
     Examples
@@ -621,7 +642,6 @@ class LocalSystem(np.matrix, object):
     matrix
 
     """
-
     def __new__(cls, T):
         return ensure_tmatrix(T).view(cls)
 
@@ -647,22 +667,82 @@ class LocalSystem(np.matrix, object):
         self[:self.dim, self.dim] = origin
 
     def decomposition(self):
+        """Determinates some characteristic parameters of the transformation
+        matrix.
+        
+        Returns
+        -------
+        tuple
+            Decomposition values.
+            
+        See Also
+        --------
+        decomposition
+        
+        """
         return decomposition(self)
 
-    def reflect(self):
-        """Reflects the first principal component.
+    def reflect(self, axis=0):
+        """Reflects a specific coordinate axis.
+        
+        Parameters
+        ----------
+        axis : positive int
+            Coordinate axis to reflect.
+        
+        Examples
+        --------
+        
+        Reflect a two dimensional transformation matrix.
+        
+        >>> L = LocalSystem(matrix(t=[1, 2], s=[0.5, 2]))
+        >>> print(L)
+        [[0.5 0.  1. ]
+         [0.  2.  2. ]
+         [0.  0.  1. ]]
+        >>> print(L.to_local([2, 3]))
+        [2. 8.]
+        
+        >>> L.reflect()
+        >>> print(L)
+        [[-0.5 -0.  -1. ]
+         [ 0.   2.   2. ]
+         [ 0.   0.   1. ]]
+        >>> print(L.to_local([2, 3]))
+        [-2.  8.]
+        
+        Reflect a three dimensional transformation matrix.
+        
+        >>> L = LocalSystem(matrix(t=[1, 2, 3], s=[0.5, -2, 1]))
+        >>> print(L)
+        [[ 0.5  0.   0.   1. ]
+         [ 0.  -2.   0.   2. ]
+         [ 0.   0.   1.   3. ]
+         [ 0.   0.   0.   1. ]]
+        >>> print(L.to_local([1, 2, 3]))
+        [ 1.5 -2.   6. ]
+        
+        >>> L.reflect(axis=1)
+        >>> print(L)
+        [[ 0.5  0.   0.   1. ]
+         [ 0.   2.   0.  -2. ]
+         [ 0.   0.   1.   3. ]
+         [ 0.   0.   0.   1. ]]
+        >>> print(L.to_local([1, 2, 3]))
+        [1.5 2.  6. ]
+        
         """
         R = np.eye(self.dim + 1)
-        R[0, 0] = -1
+        R[axis, axis] = -1
         self[:, :] = np.linalg.inv(np.linalg.inv(self) * R)
 
-    def to_local(self, gcoords):
+    def to_local(self, global_coords):
         """Transforms global coordinates into local coordinates.
 
         Parameters
         ----------
-        gcoords : array_like(Number, shape=(n, k))
-            Represents n data points of `k` dimensions in the global coordinate
+        global_coords : array_like(Number, shape=(n, k))
+            Represents `n` points of `k` dimensions in the global coordinate
             system.
 
         Returns
@@ -682,15 +762,15 @@ class LocalSystem(np.matrix, object):
          [ 1.5 -7. ]]
 
         """
-        return transform(gcoords, self)
+        return transform(global_coords, self)
 
-    def to_global(self, lcoords):
+    def to_global(self, local_coords):
         """Transforms local coordinates into global coordinates.
 
         Parameters
         ----------
-        lcoords : array_like(Number, shape=(n, k))
-            Represents n data points of `k` dimensions in the local coordinate
+        local_coords : array_like(Number, shape=(n, k))
+            Represents `n` points of `k` dimensions in the local coordinate
             system.
 
         Returns
@@ -710,15 +790,16 @@ class LocalSystem(np.matrix, object):
          [-1. -1.]]
 
         """
-        return transform(lcoords, self, inverse=True)
+        return transform(local_coords, self, inverse=True)
 
-    def explained_variance(self, gcoords):
-        """Get explained variance of global coordinates.
+    def explained_variance(self, global_coords):
+        """Calculate the variance of global coordinates explained by the 
+        coordinate axes.
 
         Parameters
         ----------
-        gcoords : array_like(Number, shape=(n, k))
-            Represents n data points of `k` dimensions in the global coordinate
+        global_coords : array_like(Number, shape=(n, k))
+            Represents 'n' points of `k` dimensions in the global coordinate
             system.
 
         Returns
@@ -743,23 +824,23 @@ class LocalSystem(np.matrix, object):
         LocalSystem.explained_variance_ratio
 
         """
-        lcoords = self.to_local(gcoords)
-        return np.var(lcoords, axis=0)
+        global_coords = self.to_local(global_coords)
+        return np.var(global_coords, axis=0)
 
-    def explained_variance_ratio(self, gcoords):
-        """Get relative amount of explained variance of global coordinates.
-
+    def explained_variance_ratio(self, global_coords):
+        """Calculate the relative variance of global coordinates explained by 
+        the coordinate axes.
+        
         Parameters
         ----------
-        gcoords : array_like(Number, shape=(n, k))
-            Represents n data points of `k` dimensions in the global coordinate
+        global_coords : array_like(Number, shape=(n, k))
+            Represents 'n' points of `k` dimensions in the global coordinate
             system.
 
         Returns
         -------
         np.ndarray(Number, shape=(self.dim))
-            Relative amount of explained variance by a specific coordinate
-            axis.
+            Relative amount of variance explained by each coordinate axis.
 
         Examples
         --------
@@ -778,12 +859,12 @@ class LocalSystem(np.matrix, object):
         LocalSystem.explained_variance
 
         """
-        var = self.explained_variance(gcoords)
+        var = self.explained_variance(global_coords)
         return var / var.sum()
 
 
 def eigen(coords):
-    """Fit eigenvectors to coordinates
+    """Fit eigenvectors to coordinates.
 
     Parameters
     ----------
@@ -796,18 +877,37 @@ def eigen(coords):
     eigen_vectors : np.ndarray(Number, shape=(k, k))
         Columnwise normalized eigenvectors in descending order of eigenvalue.
     eigen_values : np.ndarray(Number, shape=(k))
-        Eigenvalues in descending order.
+        Eigenvalues in descending order of magnitude.
+
+    Notes
+    -----
+    Implementation idea taken from [1].
+
+    References
+    ----------
+    [1] https://stackoverflow.com/questions/13224362/principal-component-analysis-pca-in-python
 
     See Also
     --------
     PCA
-
+    
+    Examples
+    --------
+    
+    >>> coords = [(0, 0), (3, 4)]
+    >>> eigen_vectors, eigen_values = eigen(coords)
+    >>> print(eigen_vectors)
+    [[ 0.6 -0.8]
+     [ 0.8  0.6]]
+    >>> print(eigen_values)
+    [12.5  0. ]
+    
     """
     coords = ensure_coords(coords)
     cCoords = coords - coords.mean(0)
 
     # calculate Eigenvectors and Eigenvalues
-    # cov_matrix = np.cov(cCoords, rowvar=False)  # a bit slow
+    # cov_matrix = np.cov(cCoords, rowvar=False)  # a bit slower
     cov_matrix = dot(cCoords.T, cCoords)
     # cov_matrix = cCoords.T @ cCoords  # fastest solution found
     # cov_matrix is a Hermitian matrix
@@ -831,26 +931,30 @@ class PCA(LocalSystem):
     eigen_values : np.ndarray(Number, shape=(k))
         Characteristic Eigen Values of the PCA.
 
+    Notes
+    -----
+    Implementation idea taken from [1].
+
     References
     ----------
-    https://stackoverflow.com/questions/13224362/principal-component-analysis-pca-in-python
+    [1] https://stackoverflow.com/questions/13224362/principal-component-analysis-pca-in-python
 
     Examples
     --------
 
-    >>> coords = [(0, 0), (1, 1)]
+    >>> coords = [(0, 0), (3, 4)]
     >>> T = PCA(coords)
-    >>> print(np.round(T, 3))
-    [[ 0.707  0.707 -0.707]
-     [-0.707  0.707  0.   ]
-     [ 0.     0.     1.   ]]
-    >>> print(np.round(np.linalg.inv(T), 3))
-    [[ 0.707 -0.707  0.5  ]
-     [ 0.707  0.707  0.5  ]
-     [ 0.     0.     1.   ]]
-    >>> print(np.round(transform(coords, T), 3))
-    [[-0.707  0.   ]
-     [ 0.707  0.   ]]
+    >>> print(T)
+    [[ 0.6  0.8 -2.5]
+     [-0.8  0.6  0. ]
+     [ 0.   0.   1. ]]
+    >>> print(np.linalg.inv(T))
+    [[ 0.6 -0.8  1.5]
+     [ 0.8  0.6  2. ]
+     [ 0.   0.   1. ]]
+    >>> print(transform(coords, T))
+    [[-2.5  0. ]
+     [ 2.5  0. ]]
 
     """
     def __new__(cls, coords):
@@ -877,31 +981,31 @@ class PCA(LocalSystem):
         Parameters
         ----------
         k : positive int
-            `k` th principal component to select.
+            `k`-th principal component to return.
 
         Returns
         -------
         np.ndarray(Number, shape=(self.dim))
-            `k` th principal component.
+            `k`-th principal component.
 
         Examples
         --------
 
-        >>> coords = [(-1, -2), (0, 0), (1, 2)]
+        >>> coords = [(-3, -4), (0, 0), (12, 16)]
         >>> T = PCA(coords)
-        >>> print(np.round(T, 3))
-        [[ 0.447  0.894  0.   ]
-         [-0.894  0.447  0.   ]
-         [ 0.     0.     1.   ]]
+        >>> print(T)
+        [[ 0.6  0.8 -5. ]
+         [-0.8  0.6  0. ]
+         [ 0.   0.   1. ]]
 
-        >>> print(np.round(T.pc(1), 3))
-        [0.447 0.894]
-        >>> print(np.round(T.pc(2), 3))
-        [-0.894  0.447]
+        >>> print(T.pc(1))
+        [0.6 0.8]
+        >>> print(T.pc(2))
+        [-0.8  0.6]
 
         """
         if not (k >= 1 and k <= self.dim):
-            raise ValueError("%'th principal component not available")
+            raise ValueError("%-'th principal component not available")
 
         pc = self[k - 1, :self.dim]
         return np.asarray(pc)[0]
