@@ -316,8 +316,6 @@ def writeLas(geoRecords, outfile):
     lasFile.close()
     del lasFile
 
-    return LasReader(outfile)
-
 
 class LasRecords(GeoRecords):
     """Data structure extending GeoRecords to provide an optimized API for LAS

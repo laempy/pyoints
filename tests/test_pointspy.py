@@ -70,6 +70,7 @@ def load_tests(loader, tests, ignore):
     tests.addTests(get_tests(pyoints.surface))
     tests.addTests(get_tests(pyoints.transformation))
     tests.addTests(get_tests(pyoints.vector))
+    tests.addTests(get_tests(pyoints.examples))
 
     return tests
 

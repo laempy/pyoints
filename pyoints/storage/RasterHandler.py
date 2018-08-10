@@ -59,9 +59,9 @@ class RasterReader(GeoFile):
         else:
             self.proj = proj
 
-        self.t = np.matrix(
+        self.t = transformation.LocalSystem(np.matrix(
             Affine.from_gdal(*gdalRaster.GetGeoTransform())
-        ).reshape(3, 3)
+        ).reshape(3, 3))
 
         self._shape = (gdalRaster.RasterYSize, gdalRaster.RasterXSize)
         self._num_bands = gdalRaster.RasterCount

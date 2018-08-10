@@ -36,4 +36,5 @@ from . import (
     surface,
     transformation,
     vector,
+    examples,
 )
