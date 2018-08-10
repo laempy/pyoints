@@ -1,6 +1,6 @@
 # Pyoints
 
-**Pyoints** is a python library to conveniently process and analyze point
+``Pyoints`` is a python library to conveniently process and analyze point
 cloud data, voxels and raster images. It is intended to be used to support
 the development of advanced algorithms for geo-data processing.
 
@@ -102,13 +102,21 @@ apt install liblas-c3
 ```
 
 
-## Install library
+## Install Pyoints (Linux)
 
-### Installation via pip
+Unfortunately the gdal version is not detected automatically by ``pgdal``. 
+Thus, installation with ``setup.py`` might fail.
+
+### Installation with installation script (recommended)
 
 ```
-python setup.py build
-python setup.py install
+./pip_install.sh -v venv
+```
+
+## Installation with pip
+
+```
+pip install pygdal==$(gdal-config --version).* -r requirements.txt --upgrade
 ```
 
 ### Installation from source
@@ -117,6 +125,14 @@ python setup.py install
 python setup.py build
 python setup.py install
 ```
+
+### Installation via pip (not supported yet)
+
+```
+python setup.py build
+python setup.py install
+```
+
 
 
 # Development
@@ -149,18 +165,6 @@ Windows
 cd path\to\library
 venv\Scripts\activate.bat
 ```
-
-## Install python dependencies
-
-Linux
-```
-./pipInstall.sh venv
-```
-or activate virtualenv and install manually with pip.
-```
-pip install -r requirements.txt
-```
-
 
 # Acknowledgements
 
@@ -295,7 +299,7 @@ Howard Butler
 
 ## External Depencencies
 
-**Pyoints** binds following external libraries as required by some of the python
+``Pyoints` binds following external libraries as required by some of the python
 dependencies.
 
 
@@ -377,7 +381,10 @@ Rob Ruana
 
 # Licence
 
-Please see LICENCE file.
+Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
+
+``Pyoints`` is free software made available under the GNU General Public 
+License v3 or later (GPLv3+). For details see the LICENSE file.
 
 
 # TODO
