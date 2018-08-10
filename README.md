@@ -1,5 +1,7 @@
 # Pyoints
 
+![Logo.](figures/logo_pyoints.png)
+
 ``Pyoints`` is a python library to conveniently process and analyze point
 cloud data, voxels and raster images. It is intended to be used to support
 the development of advanced algorithms for geo-data processing.
@@ -54,14 +56,14 @@ effords. Of course, you might think: "Why should I use python for point cloud
 processing? Other languages are much more efficient." This is obviously true,
 but in the experience of the author, python is very useful to implement and
 test new algorithms very quickly. Algorithms for point cloud analysis and
-processing often rely on spatial neighborhood queries. Since here **Pyoints**
+processing often rely on spatial neighborhood queries. Since here ``Pyoints``
 takes advantage of very efficient python libraries, which are basically
 wrappers for binaries written in more efficient languages, the performance
 loss is limited. So, if you have an algorithm idea and you want to implement
-and test it quickly and want to play around with different settings, *Pointypy*
-is made for you. After finding an approiate algorithm it can be implemented in
-a more efficient language (if required). Thus *Pyoints* is particulary designed
-for scientists and developers.
+and test it quickly and want to play around with different settings, 
+``Pyoints`` is made for you. After finding an approiate algorithm it can be 
+implemented in a more efficient language (if required). Thus ``Pyoints`` is 
+particulary designed for scientists and developers.
 
 
 
@@ -165,6 +167,8 @@ Windows
 cd path\to\library
 venv\Scripts\activate.bat
 ```
+
+
 
 # Acknowledgements
 
@@ -385,19 +389,6 @@ Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
 
 ``Pyoints`` is free software made available under the GNU General Public 
 License v3 or later (GPLv3+). For details see the LICENSE file.
-
-
-# TODO
-
-Packaging
-https://packaging.python.org/tutorials/packaging-projects/
-
-setup.py
-setup.cfg
-README.rst
-MANIFEST.in
-LICENSE.txt
-
 
 
 
