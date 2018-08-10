@@ -1,6 +1,6 @@
 # Pyoints
 
-![Logo.](figures/logo_pyoints.png)
+![Logo.](figures/logo_pyoints.png =200x)
 
 ``Pyoints`` is a python library to conveniently process and analyze point
 cloud data, voxels and raster images. It is intended to be used to support
@@ -12,8 +12,8 @@ The key idea of the concept is to provide unified data structure to handle
 points, voxels and rasters in the same manner. It is always assumed that the
 data can be interpreted as two or three dimensional point cloud. Thus we have
 a collection of geo-objects (here called `GeoRecords`), which are characterized
-by two or three dimensional coordinates *coords* a spatial reference (*proj*)
-and a transformation matrix (*t*). The spatial reference and transformation
+by two or three dimensional coordinates *coords* a spatial reference *proj*
+and a transformation matrix *t*. The spatial reference and transformation
 matrix required to  define the location of the geo-objects on globe. Next to
 the origin the transformation  matrix also stores the scale and rotation of the
 local coordinate system.
@@ -32,19 +32,19 @@ three dimensional record arrays to represent three dimensional voxels.
 
 Since all objects of a voxel or raster are also interpreted as a point cloud,
 spatial neighborhood queries, like nearest neighbours or distance search, can
-be performed with unified functions. So, each extention of *GeoRecords*
-provides a spatial index *IndexKD* to conveniently perform efficient
+be performed with unified functions. So, each extension of `GeoRecords`
+provides a spatial index `IndexKD` to conveniently perform efficient
 neighborhood queries. The class `IndexKD` is wrapper of different spatial
 indices, to handle *k*-dimensional spatial queries of different kinds. The
 spatial indices are always initialized on demand for performance reasions, but
 cached for future queries. For example, an instance *geoRecords* of
-*GeoRecords* representing  three dimensional point allows to use create a three
+`GeoRecords` representing  three dimensional point allows to use create a three
 dimensional spatial index by calling `geoRecords.indexKD()`. If you are not
 interrested in the third dimension, you can call `geoRecords.indexKD(2)` to
 perform two dimensional spatial queries.
 
 If you just want handle coordinates without additional attributes, the class
-`Coords` might be interrest you. This class also provides the *IndexKD*
+`Coords` might be interrest you. This class also provides the `IndexKD`
 feature, but waives the use of a projection and transformation matrix.
 
 
@@ -67,11 +67,12 @@ particulary designed for scientists and developers.
 
 
 
-# Installation
+# Installation (Ubuntu)
 
-## Dependencies
+## Install external dependencies
 
-Following dependencies have to be installed manually.
+Following dependencies have to be installed manually, since they are required
+by the packages.
 
 ### Python
 
@@ -81,24 +82,19 @@ python2 >= 2.7, but hardly maintained.
 
 ### Gdal
 
-Installation (Ubuntu)
 ```
 sudo apt install gdal-bin
 sudo apt install libgdal-dev
 ```
 
-sudo apt-get install libgdal1-dev
-
 ### libspatialindex
 
-Installation (Ubuntu)
 ```
 apt install libspatialindex-dev
 ```
 
 ### Liblas
 
-Installation (Ubuntu)
 ```
 apt install liblas-c3
 ```
@@ -128,11 +124,10 @@ python setup.py build
 python setup.py install
 ```
 
-### Installation via pip (not supported yet)
+### Installation via pip (hopefully in future)
 
 ```
-python setup.py build
-python setup.py install
+pip install pyoints
 ```
 
 
@@ -241,7 +236,7 @@ Travis E. Oliphant et al.
 Olli-Pekka Heinisuo
 * [PyPI](https://pypi.org/project/opencv-python/)
 * [homepage](https://github.com/skvark/opencv-python)
-* [MIT licence](https://github.com/opencv/opencv/blob/master/LICENSE)
+* [MIT license](https://github.com/opencv/opencv/blob/master/LICENSE)
 
 
 ### pandas
@@ -311,21 +306,21 @@ dependencies.
 
 Frank Warmerdam
 * [homepage](https://www.gdal.org/)
-* [X11/MIT licence](https://trac.osgeo.org/gdal/wiki/FAQGeneral#WhatlicensedoesGDALOGRuse)
+* [X11/MIT license](https://trac.osgeo.org/gdal/wiki/FAQGeneral#WhatlicensedoesGDALOGRuse)
 
 
 ### Liblas
 
 Howard Butler, Mateusz Loskot and others
 * [homepage](https://liblas.org/)
-* [X11/MIT licence](https://liblas.org/copyright.html#license)
+* [X11/MIT license](https://liblas.org/copyright.html#license)
 
 
 ### libspatialindex
 
 Marios Hadjieleftheriou
 * [homepage](https://libspatialindex.github.io/)
-* [MIT licence](https://libspatialindex.github.io/)
+* [MIT license](https://libspatialindex.github.io/)
 
 
 
@@ -340,7 +335,7 @@ development, testing and documentation.
 Hideo Hattori
 * [PyPI](https://pypi.org/project/autopep8/)
 * [homepage](https://github.com/hhatto/autopep8)
-* [MIT compatible licence](https://github.com/matplotlib/matplotlib/blob/master/LICENSE/LICENSE)
+* [MIT compatible license](https://github.com/matplotlib/matplotlib/blob/master/LICENSE/LICENSE)
 
 
 ### CloudCompare
@@ -355,7 +350,7 @@ Daniel Girardeau-Montaut
 John D. Hunter, Michael Droettboom
 * [PyPI](https://pypi.org/project/matplotlib/)
 * [homepage](https://matplotlib.org/)
-* [BSD compatible](https://github.com/matplotlib/matplotlib/blob/master/LICENSE/LICENSE)
+* [BSD compatible license](https://github.com/matplotlib/matplotlib/blob/master/LICENSE/LICENSE)
 
 
 ### pycodestyle
@@ -363,7 +358,7 @@ John D. Hunter, Michael Droettboom
 Ian Lee
 * [PyPI](https://pypi.org/project/pycodestyle/)
 * [homepage](https://pycodestyle.readthedocs.io/en/latest/)
-* [Expat licence](https://pycodestyle.readthedocs.io/en/latest/index.html#license)
+* [Expat license](https://pycodestyle.readthedocs.io/en/latest/index.html#license)
 
 
 ### Sphinx
@@ -383,12 +378,10 @@ Rob Ruana
 
 
 
-# Licence
+# License
 
 Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
 
 ``Pyoints`` is free software made available under the GNU General Public 
 License v3 or later (GPLv3+). For details see the LICENSE file.
-
-
 
