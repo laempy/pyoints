@@ -214,7 +214,7 @@ def ensure_numvector(v, length=None, min_length=1, max_length=np.inf):
     Examples
     --------
 
-    Valid vector.
+    Check a valid vector.
 
     >>> v = (3, 2, 4, 4)
     >>> v = ensure_numvector(v)

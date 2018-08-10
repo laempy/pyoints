@@ -24,9 +24,9 @@ copyright = u'2018, Sebastian Lamprecht'
 author = u'Sebastian Lamprecht'
 
 # The short X.Y version
-version = u''
+version = u'0.2'
 # The full version, including alpha/beta/rc tags
-release = u'0.1'
+release = u'verson 0.2 alpha'
 
 
 # -- General configuration ---------------------------------------------------
