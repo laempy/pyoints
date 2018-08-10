@@ -1,6 +1,6 @@
-# Pointspy
+# Pyoints
 
-**Pointspy** is a python library to conveniently process and analyze point
+**Pyoints** is a python library to conveniently process and analyze point
 cloud data, voxels and raster images. It is intended to be used to support
 the development of advanced algorithms for geo-data processing.
 
@@ -46,7 +46,7 @@ If you just want handle coordinates without additional attributes, the class
 feature, but waives the use of a projection and transformation matrix.
 
 
-## When should I use Pointspy?
+## When should I use Pyoints?
 
 Beased on the general concept presented above, a bunch of algorithms, functions
 and filters have been implemented, to process geo-data with low programming
@@ -54,13 +54,13 @@ effords. Of course, you might think: "Why should I use python for point cloud
 processing? Other languages are much more efficient." This is obviously true,
 but in the experience of the author, python is very useful to implement and
 test new algorithms very quickly. Algorithms for point cloud analysis and
-processing often rely on spatial neighborhood queries. Since here **Pointspy**
+processing often rely on spatial neighborhood queries. Since here **Pyoints**
 takes advantage of very efficient python libraries, which are basically
 wrappers for binaries written in more efficient languages, the performance
 loss is limited. So, if you have an algorithm idea and you want to implement
 and test it quickly and want to play around with different settings, *Pointypy*
 is made for you. After finding an approiate algorithm it can be implemented in
-a more efficient language (if required). Thus *Pointspy* is particulary designed
+a more efficient language (if required). Thus *Pyoints* is particulary designed
 for scientists and developers.
 
 
@@ -295,7 +295,7 @@ Howard Butler
 
 ## External Depencencies
 
-**Pointspy** binds following external libraries as required by some of the python
+**Pyoints** binds following external libraries as required by some of the python
 dependencies.
 
 
