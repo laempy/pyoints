@@ -6,6 +6,7 @@
 # model will be made before releasing this software.
 # END OF LICENSE NOTE
 __version__ = '0.1'
+"""Pyoints: A Python package for point cloud, voxel and raster processing."""
 
 from .indexkd import IndexKD
 from .coords import Coords

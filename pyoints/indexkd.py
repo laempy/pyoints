@@ -5,7 +5,7 @@
 # This software is copyright protected. A decision on a less restrictive licencing 
 # model will be made before releasing this software.
 # END OF LICENSE NOTE
-"""Generic spatial index.
+"""A generic spatial index.
 """
 
 import bisect
@@ -23,15 +23,15 @@ from . import (
 
 
 class IndexKD(object):
-    """Wrapper class of serveral spatial indices to speed up spatial queries
-    and ease usage.
+    """Wrapper class for serveral spatial indices to speed up spatial queries
+    and ease the usage.
 
     Parameters
     ----------
     coords : array_like(Number, shape=(n, k))
         Represents `n` data points of `k` dimensions in a Cartesian coordinate
         system.
-    transform : optional, np.matrix(Number, shape=(k+1, k+1))
+    transform : optional, array_like(Number, shape=(k+1, k+1))
         Represents any kind of transformation matrix applied to the coordinates
         before index computation.
     leafsize : optional, positive int
@@ -45,10 +45,10 @@ class IndexKD(object):
     Attributes
     ----------
     dim : positive int
-        Number of coordinate dimensions
-    t : (self.dim+1, self.dim+1), array_like
+        Number of coordinate dimensions `k`.
+    t : np.matrix(Number, shape=(k+1, k+1))
         Transformation matrix.
-    coords : (len(self), self.dim), array_like
+    coords : np.ndarray(Number, shape=(n, k))
         Coordinates of the spatial index.
     kd_tree : `scipy.spatial.cKDTree`
         KD-tree for rapid neighbourhood queries. Generated on first demand.
@@ -156,14 +156,14 @@ class IndexKD(object):
 
         Parameters
         ----------
-        coords : iterable of array_like(shape=(k))
+        coords : iterable of array_like(Number, shape=(k))
             Coordinates of at least `self.dim` dimensions.
         bulk : positive int
             Size of bulk.
 
         Yields
         ------
-        array_like(shape=(self.dim))
+        array_like(Number, shape=(self.dim))
 
         """
         dim = self.dim
@@ -220,19 +220,19 @@ class IndexKD(object):
 
         Parameters
         ----------
-        coords : (n, k), array_like
+        coords : array_like(Number, shape=(n, k)) 
             Represents `n` data points of `k` dimensions.
         r : positive float
             Radius of ball.
-        bulk : positive int
+        bulk : optional, positive int
             Reduce required memory by performing bulk queries.
         \*\*kwargs : optional
-            Additional parameters similar to
+            Additional parameters passed to 
             `scipy.spatial.cKDTree.query_ball_point`
 
         Returns
         -------
-        nIds: `list or array of lists`
+        nIds: list or array of lists
             If coords is a single point, returns a list neighbours. If coords
             is an list of points, returns a list containing lists of
             neighbours.
@@ -264,7 +264,7 @@ class IndexKD(object):
 
         Yields
         ------
-        nIds : list of ints
+        nIds : list of int
             Lists of indices of neighbouring points.
 
         See Also
@@ -291,7 +291,7 @@ class IndexKD(object):
 
         Parameters
         ----------
-        radii: iterable of floats
+        radii: iterable of float
             Radii to query.
 
         Yields
@@ -313,12 +313,15 @@ class IndexKD(object):
 
         Parameters
         ----------
-        r : float or iterable of floats
+        r : float or iterable of float
             Iterable radii to query.
         coords : optional, array_like(Number, shape=(n, k)) or iterable
             Represents `n` points of `k` dimensions. If None it is set to
             `self.coords`.
-
+        \*\*kwargs : optional
+            Additional parameters passed to 
+            `scipy.spatial.cKDTree.query_ball_point`
+            
         Returns
         -------
         numpy.ndarray(int, shape=(n))
@@ -357,11 +360,14 @@ class IndexKD(object):
 
         Parameters
         ----------
-        r : float or iterable of floats
+        r : float or iterable of float
             Iterable radii to query.
         coords : optional, array_like(Number, shape=(n, k)) or iterable
             Represents `n` points of `k` dimensions. If None it is set to
             `self.coords`.
+        \*\*kwargs : optional
+            Additional parameters passed to 
+            `scipy.spatial.cKDTree.query_ball_point`
 
         Yields
         ------
@@ -388,14 +394,15 @@ class IndexKD(object):
             Inner radius of the sphere.
         r_max : float
             Outer radius of the sphere.
-        coord: (k), `array_like`
+        coord : array_like(Number, shape=(k))
             Center of sphere.
-        \*\*kwargs:
-            Additional parameters similar to `self.ball`.
+        \*\*kwargs : optional
+            Additional parameters passed to 
+            `scipy.spatial.cKDTree.query_ball_point`
 
         Returns
         -------
-        list of ints
+        list of int
             Indices of points within sphere.
 
         Examples
@@ -422,22 +429,23 @@ class IndexKD(object):
         return np.intersect1d(outer, inner)
 
     def knn(self, coords, k=1, bulk=100000, **kwargs):
-        """Query for k nearest neighbours.
+        """Query for `k` nearest neighbours.
 
         Parameters
         ----------
-        coords : (n, k), array_like
-            Represents n data points of k dimensions.
-        k : positive int, optional
+        coords : array_like(Number, shape=(n, k)) 
+            Represents `n` points of `k` dimensions.
+        k : optional, positive int 
             Number of nearest numbers to return.
         \*\*kwargs : optional
-            Additional parameters similar to `scipy.spatial.cKDTree.query`.
+            Additional parameters passed to 
+            `scipy.spatial.cKDTree.query_ball_point`
 
         Returns
         -------
-        dists, dist : (n, k), list
+        dists : np.ndarray(Number, shape=(n, k)) 
             Distances to nearest neihbours.
-        indices : (n, k), list
+        indices : np.ndarray(int, shape=(n, k))
             Indices of nearest neihbours.
 
         Examples
@@ -489,10 +497,11 @@ class IndexKD(object):
 
         Yields
         -------
-        dists, indices : (k), list
-            List of distances to nearest neighbours and corresponding point
-            indices.
-
+        dists : np.ndarray(Number, shape=(k)) 
+            List of distances to nearest neighbours.
+        indices : np.ndarray(int, shape=(k)) 
+            List of and corresponding point indices.
+            
         See Also
         --------
         knn, knns_iter
@@ -515,15 +524,15 @@ class IndexKD(object):
 
         Parameters
         ----------
-        ks : (n), iterable
+        ks : iterable of int
             Iterable numbers of neighbours to query.
-
+            
         Yields
         -------
-        dists: (k), list
-            Distances to nearest neihbours.
-        indices: (k), list
-            Indices of nearest neihbours.
+        dists : np.ndarray(Number, shape=(k)) 
+            List of distances to nearest neighbours.
+        indices : np.ndarray(int, shape=(k)) 
+            List of and corresponding point indices.
 
         See Also
         --------
@@ -555,18 +564,20 @@ class IndexKD(object):
         return self._NN
 
     def closest(self, ids, **kwargs):
-        """Provides nearest neighbour of a specific point.
+        """Provides nearest neighbour of a point.
 
         Parameters
         ----------
-        id : int
-            Index of a point in `self.coords`.
+        ids : int or array_like(int, shape=(m))
+            Index of point or indices of points in `self.coords`.
+        \*\*kwargs : optional
+            Additional parameters similar to `scipy.spatial.cKDTree.query`.
 
         Returns:
         --------
-        distance : positive float
+        distances : np.ndarray(Number, shape=(n))
             Distance to closest point.
-        id : positive int
+        indices : np.ndarray(int, shape=(n))
             Index of closest point.
 
         See Also
@@ -595,11 +606,12 @@ class IndexKD(object):
 
         Notes
         -----
-        Wrapper of self.ball with `p=np.inf`.
+        Wrapper for `self.ball` with `p=np.inf`.
 
         See Also
         --------
         ball
+        
         """
         return self.ball(coords, r, p=np.inf, **kwargs)
 
@@ -615,7 +627,7 @@ class IndexKD(object):
 
         Returns
         -------
-        list of ints
+        list of int
             Indices of points within the extent.
 
         See Also
@@ -636,7 +648,7 @@ class IndexKD(object):
 
         Returns
         -------
-        list of ints
+        list of int
             Number of points within the extent.
 
         See Also
@@ -652,14 +664,14 @@ class IndexKD(object):
 
         Parameters
         ----------
-        min_th, max_th : float
+        min_th,max_th : Number
             A point `p` is returned `min_th <= p[axis] <= max_th`.
         axis : int
             Axis to evaluate.
 
         Returns
         -------
-        list of ints
+        list of int
             Indices of points within the slice.
 
         See Also

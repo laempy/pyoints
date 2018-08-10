@@ -5,6 +5,7 @@
 # This software is copyright protected. A decision on a less restrictive licencing 
 # model will be made before releasing this software.
 # END OF LICENSE NOTE
+"""Loading and saving of files."""
 from .BaseGeoHandler import *
 from .LasHandler import *
 from .RasterHandler import *
