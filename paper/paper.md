@@ -16,14 +16,6 @@ date: 10 August 2018
 bibliography: paper.bib
 ---
 
-# TODO
-
-A list of the authors of the software and their affiliations
-A summary describing the high-level functionality and purpose of the software for a diverse, non-specialist audience
-A clear statement of need that illustrates the purpose of the software
-A list of key references including a link to the software archive
-Mentions (if applicable) of any ongoing research projects using the software or recent scholarly publications enabled by it
-
 
 # Summary
 
@@ -72,22 +64,13 @@ API for loading and saving commonly used geo-data formats.
 
 ``Pyoints`` was designed to support research activities and algorithm
 development in the field of geoinformatis and remote sensing. Early versions of 
-the software have been used for TODO aTrunk and TODO bwiCoorection and some 
-pre-studies at Trier University. ``Pyoints`` is also used in the TODO PANTHEON 
-project to monitor hazelnut orchards.
+the software have been used for [@Lamprecht_2017a] and some pre-studies at 
+Trier University. ``Pyoints`` is also used in the [@PANTHEON] project to 
+monitor hazelnut orchards.
 
 The source code for ``Pyoints`` has been archived to [@GitHub].
 
-
-# Citations
-
-Citations to entries in paper.bib should be in
-[rMarkdown](http://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html)
-format.
-
-# Figures
-
-Figures can be included like this: ![Example figure.](figure.png)
+![Logo.](figures/logo_pyoints.png)
 
 # Acknowledgements
 
