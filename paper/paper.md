@@ -40,16 +40,16 @@ conceptually and technically by different data dimensions, data structures and
 various spatial, spectral and temporal resolutions.
 
 Today various software to deal with these different data sources is available.
-Software like gdal and opencv is intended for image processing. Libraries,
-like pcl, Open3D and pdal focus on 3D point clouds processing.
-Each of these software packages provide an API specially designed to solve the
-problems of their field efficiently. When developing algorithms for automated
-processing of various types of input data, the differing APIs and programming
-languages of these software packages becomes a drawback. To support fast 
-algorithm development and a short familiarization, a unified API would be 
+Software like [@GDAL] and [@opencv_library] is intended for image processing. 
+Libraries, like [@PCL], [@Open3D] and [@PDAL] focus on 3D point cloud 
+processing. Each of these software packages provide an API specially designed 
+to solve the problems of their field efficiently. When developing algorithms 
+for automated processing of various types of input data, the differing APIs and
+programming languages of these software packages becomes a drawback. To support
+fast  algorithm development and a short familiarization, a unified API would be 
 desirable.
 
-``Pyoints`` is a python library to conveniently process and analyze point
+``Pyoints`` is a python package to conveniently process and analyze point
 cloud data, voxels and raster images. It is intended to be used to support
 the development of advanced algorithms for geo-data processing.
 
@@ -76,7 +76,7 @@ the software have been used for TODO aTrunk and TODO bwiCoorection and some
 pre-studies at Trier University. ``Pyoints`` is also used in the TODO PANTHEON 
 project to monitor hazelnut orchards.
 
-The source code for ``Pyoints`` has been archived to GitHub.
+The source code for ``Pyoints`` has been archived to [@GitHub].
 
 
 # Citations
