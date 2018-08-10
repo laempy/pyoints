@@ -85,6 +85,8 @@ sudo apt install gdal-bin
 sudo apt install libgdal-dev
 ```
 
+sudo apt-get install libgdal1-dev
+
 ### libspatialindex
 
 Installation (Ubuntu)
@@ -192,6 +194,14 @@ Mike McKerns
 * [PyPI](https://pypi.org/project/dill/)
 * [homepage](https://github.com/uqfoundation/dill)
 * [3-Clause BSD license](https://github.com/uqfoundation/dill/blob/master/LICENSE)
+
+
+### pygdal
+
+Frank Warmerdam
+* [PyPI](https://pypi.org/project/pygdal/)
+* [homepage](https://github.com/nextgis/pygdal)
+* [2-Clause BSD license](https://github.com/laspy/laspy/blob/master/LICENSE.txt)
 
 
 ### laspy

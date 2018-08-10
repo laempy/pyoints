@@ -13,10 +13,10 @@ with open('requirements.txt') as f:
             install_requires.append(pkgname)
 
 setuptools.setup (
-    name="pointspy",
+    name="Pyoints",
     version="0.1",
     author="Sebastian Lamprecht",
-    author_email="lamprecht@uni-trier.de",    
+    author_email="lamprecht@uni-trier.de",
     description="A python library to conveniently process point cloud data.",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -24,9 +24,14 @@ setuptools.setup (
     packages=setuptools.find_packages(),
     install_requires=install_requires,
     classifiers=(
+        "Intended Audience :: Science/Research",
+        "Topic :: Scientific/Engineering :: GIS",
+        "Topic :: Scientific/Engineering :: Information Analysis",
+        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
         "Operating System :: OS Independent",
+        "Development Status :: 3 - Alpha",
     ),
 
 )

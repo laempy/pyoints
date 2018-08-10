@@ -1,15 +1,15 @@
 # BEGIN OF LICENSE NOTE
-# This file is part of Pointspy.
+# This file is part of Pyoints.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
-#
-# This software is copyright protected. A decision on a less restrictive
-# licencing model will be made before releasing this software.
+# 
+# This software is copyright protected. A decision on a less restrictive licencing 
+# model will be made before releasing this software.
 # END OF LICENSE NOTE
 import unittest
 import doctest
 import pkgutil
 
-import pointspy
+import pyoints
 
 
 def get_tests(root_package):
@@ -47,38 +47,38 @@ def get_tests(root_package):
 
 def load_tests(loader, tests, ignore):
 
-    tests.addTests(get_tests(pointspy.grid))
-    tests.addTests(get_tests(pointspy.registration))
-    tests.addTests(get_tests(pointspy.storage))
-    tests.addTests(get_tests(pointspy.assertion))
-    tests.addTests(get_tests(pointspy.assign))
-    tests.addTests(get_tests(pointspy.classification))
-    tests.addTests(get_tests(pointspy.clustering))
-    tests.addTests(get_tests(pointspy.coords))
-    tests.addTests(get_tests(pointspy.distance))
-    tests.addTests(get_tests(pointspy.extent))
-    tests.addTests(get_tests(pointspy.filters))
-    tests.addTests(get_tests(pointspy.fit))
-    tests.addTests(get_tests(pointspy.georecords))
-    tests.addTests(get_tests(pointspy.indexkd))
-    tests.addTests(get_tests(pointspy.interpolate))
-    tests.addTests(get_tests(pointspy.misc))
-    tests.addTests(get_tests(pointspy.nptools))
-    tests.addTests(get_tests(pointspy.polar))
-    tests.addTests(get_tests(pointspy.projection))
-    tests.addTests(get_tests(pointspy.smoothing))
-    tests.addTests(get_tests(pointspy.surface))
-    tests.addTests(get_tests(pointspy.transformation))
-    tests.addTests(get_tests(pointspy.vector))
+    tests.addTests(get_tests(pyoints.grid))
+    tests.addTests(get_tests(pyoints.registration))
+    tests.addTests(get_tests(pyoints.storage))
+    tests.addTests(get_tests(pyoints.assertion))
+    tests.addTests(get_tests(pyoints.assign))
+    tests.addTests(get_tests(pyoints.classification))
+    tests.addTests(get_tests(pyoints.clustering))
+    tests.addTests(get_tests(pyoints.coords))
+    tests.addTests(get_tests(pyoints.distance))
+    tests.addTests(get_tests(pyoints.extent))
+    tests.addTests(get_tests(pyoints.filters))
+    tests.addTests(get_tests(pyoints.fit))
+    tests.addTests(get_tests(pyoints.georecords))
+    tests.addTests(get_tests(pyoints.indexkd))
+    tests.addTests(get_tests(pyoints.interpolate))
+    tests.addTests(get_tests(pyoints.misc))
+    tests.addTests(get_tests(pyoints.nptools))
+    tests.addTests(get_tests(pyoints.polar))
+    tests.addTests(get_tests(pyoints.projection))
+    tests.addTests(get_tests(pyoints.smoothing))
+    tests.addTests(get_tests(pyoints.surface))
+    tests.addTests(get_tests(pyoints.transformation))
+    tests.addTests(get_tests(pyoints.vector))
 
     return tests
 
 
-class test_pointpy(unittest.TestCase):
+class test_pyoints(unittest.TestCase):
 
     def test_version(self):
-        self.assertTrue(hasattr(pointspy, '__version__'))
-        self.assertTrue(float(pointspy.__version__) > 0)
+        self.assertTrue(hasattr(pyoints, '__version__'))
+        self.assertTrue(float(pyoints.__version__) > 0)
 
 
 if __name__ == '__main__':

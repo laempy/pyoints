@@ -1,17 +1,15 @@
 # BEGIN OF LICENSE NOTE
-# This file is part of Pointspy.
+# This file is part of Pyoints.
 # Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
 # 
-# This software is copyright protected. A decision on a less restrictive
-# licencing model will be made before releasing this software.
+# This software is copyright protected. A decision on a less restrictive licencing 
+# model will be made before releasing this software.
 # END OF LICENSE NOTE
 """Test to read and write .csv files.
 """
 
 import os
-from pointspy import (
-    storage,
-)
+from pyoints import storage
 
 outpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'output')
 
