@@ -28,7 +28,7 @@ Mentions (if applicable) of any ongoing research projects using the software or 
 # Summary
 
 The evolution of automated systems like autonomous robots and unmanned aerial 
-vehicles leads to manifold chances in science, agreculture and industry.
+vehicles leads to manifold chances in science, agriculture and industry.
 Remote sensing sensors, like laser scanners and multi-spectral cameras can be
 combined with sensor networks, to monitor a research object all-embracingly.
 
@@ -41,7 +41,7 @@ various spatial, spectral and temporal resolutions.
 
 Today various software to deal with these different data sources is available.
 Software like gdal and opencv is intended for image processing. Libraries,
-lik pcl, Open3D and pdal focus on 3D point clouds processing.
+like pcl, Open3D and pdal focus on 3D point clouds processing.
 Each of these software packages provide an API specially designed to solve the
 problems of their field efficiently. When developing algorithms for automated
 processing of various types of input data, the differing APIs and programming
@@ -53,16 +53,17 @@ desirable.
 cloud data, voxels and raster images. It is intended to be used to support
 the development of advanced algorithms for geo-data processing.
 
-The fundamental idea of ``Pyoints`` is to Grenzen zwischen point cloud, voxel
-spaces and rasters verschwimmen lassen to simplify data analysis and data fusion of
-variously structured data. Based on the assumtion that any geo-object can be represented by a point, a data
-structure has been designed, which provides an unified API for points, voxels
-and rasters. Each data structure maintains its characteristic features, to allow
-for an intuitive use, but all data is also considered as a two or three dimensional
-point cloud, providing spatial indices which are required in many applications
-to speed up spatial neighbourhood queries.
+The fundamental idea of ``Pyoints`` is to overcome the conceptual distinction 
+between point clouds, voxel spaces and rasters to simplify data analysis 
+and data fusion of variously structured data. Based on the assumtion that any 
+geo-object can be represented by a point, a data structure has been designed, 
+which provides an unified API for points, voxels and rasters. Each data 
+structure maintains its characteristic features, to allow for an intuitive use, 
+but all data is also considered as a two or three dimensional point cloud, 
+providing spatial indices which are required in many applications to speed up 
+spatial neighbourhood queries.
 
-During development great emphasis was put on designing a powerfull but simple 
+During development great emphasis was put on designing a powerful but simple 
 API while also providing solutions for most common problems. ``Pyoints`` 
 implements fundamental functions and some advanced algorithms for point cloud, 
 voxel and raster data processing, like coordinate transformation, vector
