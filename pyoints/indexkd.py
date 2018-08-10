@@ -63,12 +63,40 @@ class IndexKD(object):
     Examples
     --------
 
+    Create a simple spatial index.
+    
     >>> coords = np.indices((5, 10)).reshape((2, 50)).T
     >>> indexKD = IndexKD(coords)
     >>> len(indexKD)
     50
     >>> indexKD.dim
     2
+    
+    Query points within a sphere.
+    
+    >>> nids = indexKD.ball([0, 0], 1.1)
+    >>> print(nids)
+    [0, 1, 10]
+    >>> print(indexKD.coords[nids, :])
+    [[0 0]
+     [0 1]
+     [1 0]]
+    
+    Scale the coordinates using a transformation matrix to enable queries
+    in the shape of an ellipsoid.
+
+    >>> T = [(0.5, 0, 0), (0, 0.8, 0), (0, 0, 1)]
+    >>> indexKD = IndexKD(coords, T)
+    
+    >>> nids = indexKD.ball([0, 0], 1.1)
+    >>> print(nids)
+    [0, 1, 20, 10, 11]
+    >>> print(indexKD.coords[nids, :])
+    [[0.  0. ]
+     [0.  0.8]
+     [1.  0. ]
+     [0.5 0. ]
+     [0.5 0.8]]
 
     """
 
