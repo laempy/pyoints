@@ -1,6 +1,6 @@
 # Pyoints
 
-![Logo.](figures/logo_pyoints.png)
+![logo](figures/logo_pyoints.png)
 
 ``Pyoints`` is a python library to conveniently process and analyze point
 cloud data, voxels and raster images. It is intended to be used to support
@@ -173,16 +173,15 @@ venv\Scripts\activate.bat
 
 # Documentation
 
-You can find the documentation at 
-![docs](docs/_build/html/pyoints.html). Here you can find docstrings with
-examples for each module and some comprehensive examples. You also can take a 
-look at the source files directly.
+You can find the documentation at [docs](docs/_build/html/pyoints.html). Here 
+you can find docstrings with examples for each module and some comprehensive 
+examples. You also can take a look at the source files directly.
 
 
 
 # Testing
 
-To test the software please take a look at the ![tests](tests) directory. 
+To test the software please take a look at the [tests](tests) directory. 
 Currently python docstrings are used to test the the functionality of a 
 mayority of ``Pyoints`` classes and functions.
 
@@ -194,7 +193,7 @@ Copyright (c) 2018, Sebastian Lamprecht, Trier University,
 lamprecht@uni-trier.de
 
 ``Pyoints`` is free software made available under the GNU General Public 
-License v3 or later (GPLv3+). See ![LICENSE](LICENSE) for details.
+License v3 or later (GPLv3+). See [LICENSE](LICENSE) for details.
 
 
 
