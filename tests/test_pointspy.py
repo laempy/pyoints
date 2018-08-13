@@ -11,6 +11,9 @@ import pkgutil
 
 import pyoints
 
+"""Run all tests of Pyoints.
+"""
+
 
 def get_tests(root_package):
     """Collect all doctests within a package.
@@ -83,5 +86,5 @@ class test_pyoints(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    print('unittest poynts')
+    print('Run doctests for Pyoints')
     unittest.main()

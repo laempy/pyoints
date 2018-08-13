@@ -1,5 +1,6 @@
 This file is part of Pyoints.
-Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
+Copyright (c) 2018, Sebastian Lamprecht, Trier University, 
+lamprecht@uni-trier.de
 
 This software is copyright protected. A decision on a less restrictive licencing 
 model will be made before releasing this software.

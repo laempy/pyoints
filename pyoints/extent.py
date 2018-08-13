@@ -14,7 +14,7 @@ from . import assertion
 
 
 class Extent(np.recarray, object):
-    """Specifies spatial extent (or bounding box) of coordinates in k
+    """Specifies spatial extent (or bounding box) of coordinates in `k`
     dimensions.
 
     Parameters

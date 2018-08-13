@@ -1,5 +1,6 @@
 This file is part of Pyoints.
-Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
+Copyright (c) 2018, Sebastian Lamprecht, Trier University, 
+lamprecht@uni-trier.de
 
 Pyoints is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
