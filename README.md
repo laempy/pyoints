@@ -8,27 +8,27 @@ the development of advanced algorithms for geo-data processing.
 
 ## General concept
 
-The key idea of the concept is to provide unified data structure to handle
+The key idea of ``Pyoints`` is to provide unified data structure to handle
 points, voxels and rasters in the same manner. It is always assumed that the
-data can be interpreted as two or three dimensional point cloud. Thus we have
+data can be interpreted as a two or three dimensional point cloud. Thus we have
 a collection of geo-objects (here called `GeoRecords`), which are characterized
-by two or three dimensional coordinates *coords* a spatial reference *proj*
+by two or three dimensional coordinates *coords*, a spatial reference *proj*
 and a transformation matrix *t*. The spatial reference and transformation
-matrix required to  define the location of the geo-objects on globe. Next to
-the origin the transformation  matrix also stores the scale and rotation of the
+matrix are required to define the location of the geo-objects on globe. Next to
+the origin, the transformation matrix also stores the scale and rotation of the
 local coordinate system.
 
-The unified data structures simplifies the joint use of point clouds, voxels
+The unified data structures simplify the joint use of point clouds, voxels
 and rasters significantly, while keeping their natural characteristics. To
-simplify the processing analysis of the geo-data each point or raster cell
-is stored in a numpy record array aaccording to it's common structure. For
-example, a three dimensional point cloud represents a list of points, each
+ease the processing and analysis, each point, voxel or raster cell are stored 
+in the commonly used numpy record array according to its natural structure. For
+example, a three dimensional point cloud represents a set of points, each
 characterized by a coordinate and none to many additional attributes. So the
 points are stored in a one dimensional record array. On the other hand raster
 images are stored in a two dimensional record array, which allows for the
-commonly used index acces of raster cells. Still each cell is characterized
-by a coordinate and none to many additional attributes. We also can create
-three dimensional record arrays to represent three dimensional voxels.
+commonly used index access of raster cells. Still each cell is characterized
+by a coordinate and none to many additional attributes. Three dimensional
+voxels are accordingly represented by three dimensional record arrays.
 
 Since all objects of a voxel or raster are also interpreted as a point cloud,
 spatial neighborhood queries, like nearest neighbours or distance search, can
@@ -38,32 +38,38 @@ neighborhood queries. The class `IndexKD` is wrapper of different spatial
 indices, to handle *k*-dimensional spatial queries of different kinds. The
 spatial indices are always initialized on demand for performance reasions, but
 cached for future queries. For example, an instance *geoRecords* of
-`GeoRecords` representing  three dimensional point allows to use create a three
+`GeoRecords` representing three dimensional points allows to create a three
 dimensional spatial index by calling `geoRecords.indexKD()`. If you are not
 interrested in the third dimension, you can call `geoRecords.indexKD(2)` to
 perform two dimensional spatial queries.
 
-If you just want handle coordinates without additional attributes, the class
-`Coords` might be interrest you. This class also provides the `IndexKD`
-feature, but waives the use of a projection and transformation matrix.
+If you just want to handle coordinates without additional attributes, the class
+`Coords` might interrest you. This class also provides the `IndexKD` feature, 
+but waives the use of a projection and transformation matrix.
 
 
-## When should I use Pyoints?
+## When is Pyoints suitable for me?
 
-Beased on the general concept presented above, a bunch of algorithms, functions
-and filters have been implemented, to process geo-data with low programming
-effords. Of course, you might think: "Why should I use python for point cloud
-processing? Other languages are much more efficient." This is obviously true,
-but in the experience of the author, python is very useful to implement and
+Beased on the general concept of ``Pyoints`` presented above, a bunch of 
+algorithms, functions and filters have been implemented, to process geo-data 
+with low programming effords. 
+
+Of course, you might think: "Why should I use python for point cloud 
+processing? Other languages are much more efficient." This is obviously true, 
+but in the experience of the author, Python is very useful to implement and
 test new algorithms very quickly. Algorithms for point cloud analysis and
-processing often rely on spatial neighborhood queries. Since here ``Pyoints``
+processing often rely on spatial neighborhood queries. Since ``Pyoints``
 takes advantage of very efficient python libraries, which are basically
 wrappers for binaries written in more efficient languages, the performance
-loss is limited. So, if you have an algorithm idea and you want to implement
-and test it quickly and want to play around with different settings, 
-``Pyoints`` is made for you. After finding an approiate algorithm it can be 
-implemented in a more efficient language (if required). Thus ``Pyoints`` is 
-particulary designed for scientists and developers.
+loss is limited. Since ``Pyoints`` takes care of selecting and caching 
+appropiate spatial indices for you, you can focus on the core of your algorithm
+idea.
+
+So, if you have an algorithm idea and you want to implemen it quickly and play
+around with different settings, ``Pyoints`` is made for you. After finding an 
+approiate algorithm it can be implemented in a more efficient language 
+if you like. Thus ``Pyoints`` is particulary designed for scientists and 
+developers of new geo-spatial algorithms.
 
 
 
@@ -72,12 +78,12 @@ particulary designed for scientists and developers.
 ## Install external dependencies
 
 Following dependencies have to be installed manually, since they are required
-by the packages.
+by the pip packages.
 
 ### Python
 
-The software targets python3 >= 3.5. Most code is also compatible to
-python2 >= 2.7, but hardly maintained.
+The ``Pyoints`` targets Python3 >= 3.5. The code should also compatible to
+Python2 >= 2.7.
 
 
 ### Gdal
@@ -100,15 +106,17 @@ apt install liblas-c3
 ```
 
 
-## Install Pyoints (Linux)
+## Install Pyoints (Ubuntu)
 
 Unfortunately the gdal version is not detected automatically by ``pgdal``. 
 Thus, installation with ``setup.py`` might fail.
 
-### Installation with installation script (recommended)
+### Installation with installation script (currently recommended)
 
+The installation script asks you to provide a virtual python environment
+(virtualenv) . You need to initialize it first.
 ```
-./pip_install.sh -v venv
+./pip_install.sh -v path/to/virtualenv
 ```
 
 ## Installation with pip
@@ -131,12 +139,11 @@ pip install pyoints
 ```
 
 
-
 # Development
 
 ## Virtualenv
 
-### Install Virtualenv
+### Install Virtualenv 
 
 Installation (Ubuntu)
 ```
@@ -171,8 +178,8 @@ venv\Scripts\activate.bat
 
 ## Python Depencencies
 
-This software binds following python packages (distributed via pip)
-dynamically. Many thanks for providing such great open source software.
+This software dynamically binds following python packages (distributed via 
+pip). Many thanks to the authors for providing such great open source software.
 
 
 ### affine
@@ -298,8 +305,8 @@ Howard Butler
 
 ## External Depencencies
 
-``Pyoints` binds following external libraries as required by some of the python
-dependencies.
+``Pyoints` binds following external libraries as required by some of the pip
+packages.
 
 
 ### GDAL
@@ -326,8 +333,8 @@ Marios Hadjieleftheriou
 
 ## Software recommendations
 
-Following python packages (distributed via pip) were used for software
-development, testing and documentation.
+Following python packages were used for software development, testing and 
+documentation.
 
 
 ### autopep8
@@ -378,10 +385,36 @@ Rob Ruana
 
 
 
+# Documentation
+
+You can find the documentation at 
+![docs](./docs/_build/html/pyoints.html). Here you can find docstrings with
+examples for each module and some comprehensive examples. You also can take a 
+look at the source files directly.
+
+
+
+# Testing
+
+To test the software please take a look at the ![tests](./tests) directory. 
+Currently python docstrings are used to test the the functionality of a 
+mayority of ``Pyoints`` classes and functions.
+
+
+
 # License
 
-Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de
+Copyright (c) 2018, Sebastian Lamprecht, Trier University, 
+lamprecht@uni-trier.de
 
 ``Pyoints`` is free software made available under the GNU General Public 
-License v3 or later (GPLv3+). For details see the LICENSE file.
+License v3 or later (GPLv3+). See ![LICENSE](./LICENSE) for details.
+
+
+
+# Contact
+
+In case of questions, suggestions for improvement or software issues. Please 
+use the issue board or contact Sebastian Lamprecht, lamprecht@uni-trier.de.
+Contribution to the software is always welcome.
 
