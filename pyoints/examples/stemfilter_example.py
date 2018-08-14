@@ -3,8 +3,7 @@ of terrestrial laser scans. A couple of .las-files will be generated, which
 should be inspected with software like CloudCompare.
 
 
-
-Let's load the required modules.
+Let's begin with loading the required modules.
 
 >>> import os
 >>> import numpy as np
@@ -37,8 +36,8 @@ After that, we load a input LAS point cloud.
 10427269
 
 
-We begin with deriving a digital elevation model to calculate the height above 
-ground. So we load all points classified as ground `grd`.
+The algorithm idea begins with deriving a digital elevation model to calculate 
+the height above ground. So we load all points classified as ground `grd`.
 
 >>> grd = las.grd()
 >>> f_ids = filters.dem_filter(grd.coords, 0.5)
@@ -127,11 +126,11 @@ stems by clustering the points.
 
 In the next step we remove small clusters and unassigned points.
 
->>> cluster_dict = classification.classes_to_dict(cluster_indices, min_size=6)
+>>> cluster_dict = classification.classes_to_dict(cluster_indices, min_size=5)
 >>> cluster_indices = classification.dict_to_classes(cluster_dict, len(las))
 
 >>> print(list(cluster_dict.keys()))
-[15, 3, 4, 13, 7]
+[16, 3, 4, 7, 13, 15]
 
 
 We add an additional field to the point cloud to store the tree number.
