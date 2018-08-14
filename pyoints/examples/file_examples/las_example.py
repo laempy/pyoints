@@ -21,7 +21,8 @@
 >>> import numpy as np
 >>> from pyoints import storage
 
->>> outpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'output')
+>>> outpath = os.path.join(
+...             os.path.dirname(os.path.abspath(__file__)), '..', 'output')
 
 Create GeoRecords from scratch
 

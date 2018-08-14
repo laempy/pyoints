@@ -24,7 +24,7 @@
 Create an output path relative to the source file.
 
 >>> outpath = os.path.join(
-...                 os.path.dirname(os.path.abspath(__file__)), 'output')
+...             os.path.dirname(os.path.abspath(__file__)), '..', 'output')
 
 Create GeoRecords from scratch.
 

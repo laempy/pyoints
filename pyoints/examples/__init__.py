@@ -16,4 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # END OF LICENSE NOTE
 """Learn how to use 'Pyoints' as a powerfull tool.""" 
-from . import file_examples
+from . import (
+    file_examples,
+    base_example
+)

@@ -27,9 +27,9 @@
 Create input and output path.
 
 >>> inpath = os.path.join(
-...     os.path.dirname(os.path.abspath(__file__)), 'data')
+...     os.path.dirname(os.path.abspath(__file__)), '..', 'data')
 >>> outpath = os.path.join(
-...     os.path.dirname(os.path.abspath(__file__)), 'output')
+...     os.path.dirname(os.path.abspath(__file__)), '..', 'output')
 
 Load an image file.
 
