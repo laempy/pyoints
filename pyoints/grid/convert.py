@@ -158,31 +158,6 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
 
     rec = nptools.apply_function(lookup, agg_func, dtype=dtype)
     return rec
-    if dtype is None:
-        otypes = [type(rec)]
-        v = np.vectorize(agg_func, otypes=otypes)
-        res = v(lookup)
-    else:
-
-        dtype = np.dtype(dtype)
-        """otypes = [dtype[name].str for name in dtype.names]
-        print(otypes)
-        v = np.vectorize(agg_func)
-        res = np.recarray(lookup.shape, dtype=dtype)
-        print(lookup.shape)
-        v_arrays = v(lookup)
-        for i, name in enumerate(dtype.names):
-            print(v_arrays[i].shape)
-            print(res[name].shape)
-            res[name][:] = v_arrays[i]
-
-        """
-        v_arrays = np.apply_along_axis(agg_func, 0, lookup)
-        #v_arrays = list(map(agg_func, lookup))
-        print(v_arrays)
-        res = np.recarray(lookup.shape, dtype=dtype)
-                
-    return res
 
 
 def corners_to_transform(corners, scale=None):

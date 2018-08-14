@@ -716,12 +716,12 @@ def colzip(arr):
         raise TypeError("unexpected type of 'arr'")
 
 
-def apply_function(ndarray, func, dtype=None):
+def apply_function(arr, func, dtype=None):
     """Applies a function to each record of a numpy array.
 
     Parameters
     ----------
-    ndarray : np.ndarray
+    arr : np.ndarray or np.recarray
         Numpy array to apply function to.
     func : function
         Function to apply to each record.
@@ -738,7 +738,6 @@ def apply_function(ndarray, func, dtype=None):
 
     Apply a function to a numpy ndarray.
 
-    >>> data = { 'a': [0, 1, 2, 3], 'b': [1, 2, 3, 4] }
     >>> arr = np.ones((2, 3), dtype=[('a', int), ('b', int)])
     >>> func = lambda item: item[0] + item[1]
     >>> print(apply_function(arr, func))
@@ -769,14 +768,14 @@ def apply_function(ndarray, func, dtype=None):
     [[(1.,  0) (3.,  1)]
      [(5.,  8) (7., 81)]]
     
-    Specify multi-dimensional output data type.
+    Specify a multi-dimensional output data type.
     
     >>> func = lambda record: (record.a + 2, [record.a ** 2, record.b * 3])
     >>> print(apply_function(arr, func, dtype=[('c', float), ('d', int, 2)]))
     [[(2., [ 0,  3]) (3., [ 1,  6])]
      [(4., [ 4,  9]) (5., [ 9, 12])]]
     
-    >>> func = lambda record: ((record.a ** 2, record.b * 3))
+    >>> func = lambda record: ([record.a ** 2, record.b * 3],)
     >>> print(apply_function(arr, func, dtype=[('d', int, 2)]))
     [[([ 0,  3],) ([ 1,  6],)]
      [([ 4,  9],) ([ 9, 12],)]]
@@ -784,24 +783,34 @@ def apply_function(ndarray, func, dtype=None):
     """
     if not callable(func):
         raise ValueError("'func' needs to be callable")
-    if not isinstance(ndarray, np.ndarray):
-        raise TypeError("'ndarray' needs to an instance of 'np.ndarray'")
-
-    args = np.broadcast(None, ndarray)
-    values = [func(*arg[1:]) for arg in args]
-    if dtype is None:
-        res = np.array(values)
-        res = res.reshape(ndarray.shape).view(np.recarray)
-    else:
+    if not isinstance(arr, (np.ndarray, np.recarray)):
+        m = "'ndarray' needs to an instance of 'np.ndarray' or 'np.recarray'"
+        raise TypeError(m)
+    if dtype is not None:
         dtype = np.dtype(dtype)
-        res = np.empty(len(values), dtype=dtype).view(np.recarray)
-        for name, arr in zip(dtype.names, values):
-            res[name][:] = arr
+
+
+    args = np.broadcast(None, arr)
+    values = [func(*arg[1:]) for arg in args]
+    if dtype is None or dtype.names is None:
+        try:
+            res = np.array(values, dtype=dtype).reshape(arr.shape)
+        except Exception as e:
+            print(dtype)
+            print(values[0])
+            print(len(values))
+            print(arr.shape)
+            res = np.empty(arr.shape)
+            print(e)
+    else:
+        res = np.array(
+                values, dtype=dtype).view(np.recarray).reshape(arr.shape)
+        
     return res
        
     if len(dtype) > 1:
         res = np.array(values, dtype=dtype)
-        res = res.reshape(ndarray.shape).view(np.recarray)
+        res = res.reshape(arr.shape).view(np.recarray)
     else:
         res = np.array(values, dtype=dtype).view(np.recarray)
         return res
@@ -811,7 +820,7 @@ def apply_function(ndarray, func, dtype=None):
         except:
             print(values)
             print(res.shape)
-        res = res.reshape(ndarray.shape)
+        res = res.reshape(arr.shape)
     return res
 
 
