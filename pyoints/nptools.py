@@ -768,20 +768,51 @@ def apply_function(ndarray, func, dtype=None):
     >>> print(apply_function(arr, func, dtype=[('c', float), ('d', int)]))
     [[(1.,  0) (3.,  1)]
      [(5.,  8) (7., 81)]]
+    
+    Specify multi-dimensional output data type.
+    
+    >>> func = lambda record: (record.a + 2, [record.a ** 2, record.b * 3])
+    >>> print(apply_function(arr, func, dtype=[('c', float), ('d', int, 2)]))
+    [[(2., [ 0,  3]) (3., [ 1,  6])]
+     [(4., [ 4,  9]) (5., [ 9, 12])]]
+    
+    >>> func = lambda record: ((record.a ** 2, record.b * 3))
+    >>> print(apply_function(arr, func, dtype=[('d', int, 2)]))
+    [[([ 0,  3],) ([ 1,  6],)]
+     [([ 4,  9],) ([ 9, 12],)]]
 
     """
     if not callable(func):
         raise ValueError("'func' needs to be callable")
     if not isinstance(ndarray, np.ndarray):
         raise TypeError("'ndarray' needs to an instance of 'np.ndarray'")
-    if dtype is not None:
-        dtype = np.dtype(dtype).descr
 
     args = np.broadcast(None, ndarray)
     values = [func(*arg[1:]) for arg in args]
-    res = np.array(values, dtype=dtype)
-    res = res.reshape(ndarray.shape)
-    return res.view(np.recarray)
+    if dtype is None:
+        res = np.array(values)
+        res = res.reshape(ndarray.shape).view(np.recarray)
+    else:
+        dtype = np.dtype(dtype)
+        res = np.empty(len(values), dtype=dtype).view(np.recarray)
+        for name, arr in zip(dtype.names, values):
+            res[name][:] = arr
+    return res
+       
+    if len(dtype) > 1:
+        res = np.array(values, dtype=dtype)
+        res = res.reshape(ndarray.shape).view(np.recarray)
+    else:
+        res = np.array(values, dtype=dtype).view(np.recarray)
+        return res
+        res = np.empty(len(values), dtype=dtype).view(np.recarray)
+        try:
+            res[dtype.names[0]][:] = values
+        except:
+            print(values)
+            print(res.shape)
+        res = res.reshape(ndarray.shape)
+    return res
 
 
 def indices(shape, flatten=False):
