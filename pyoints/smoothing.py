@@ -28,8 +28,7 @@ def mean_ball(
     coords, r,
     num_iter=1,
     update_pairs=False,
-    f=lambda coord, ncoords: ncoords.mean(0)
-):
+    f=lambda coord, ncoords: ncoords.mean(0)):
     """Smoothing of spatial structures by iterative averaging the coordinates
     of neighboured points.
 
@@ -118,8 +117,7 @@ def mean_knn(
     k,
     num_iter=1,
     update_pairs=False,
-    f=lambda coord, ncoords: ncoords.mean(0)
-):
+    f=lambda coord, ncoords: ncoords.mean(0)):
     """Smoothing of spatial structures by averaging neighboured point
     coordinates.
 

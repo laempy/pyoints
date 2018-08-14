@@ -789,40 +789,15 @@ def apply_function(arr, func, dtype=None):
     if dtype is not None:
         dtype = np.dtype(dtype)
 
-
     args = np.broadcast(None, arr)
     values = [func(*arg[1:]) for arg in args]
     if dtype is None or dtype.names is None:
-        try:
-            res = np.array(values, dtype=dtype).reshape(arr.shape)
-        except Exception as e:
-            print(dtype)
-            print(values[0])
-            print(len(values))
-            print(arr.shape)
-            res = np.empty(arr.shape)
-            print(e)
+        res = np.array(values, dtype=dtype).reshape(arr.shape)
     else:
         res = np.array(
-                values, dtype=dtype).view(np.recarray).reshape(arr.shape)
-        
+                values, dtype=dtype).reshape(arr.shape).view(np.recarray)
     return res
        
-    if len(dtype) > 1:
-        res = np.array(values, dtype=dtype)
-        res = res.reshape(arr.shape).view(np.recarray)
-    else:
-        res = np.array(values, dtype=dtype).view(np.recarray)
-        return res
-        res = np.empty(len(values), dtype=dtype).view(np.recarray)
-        try:
-            res[dtype.names[0]][:] = values
-        except:
-            print(values)
-            print(res.shape)
-        res = res.reshape(arr.shape)
-    return res
-
 
 def indices(shape, flatten=False):
     """Create keys or indices of a numpy ndarray.

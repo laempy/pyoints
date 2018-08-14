@@ -152,7 +152,8 @@ def writeRaster(raster, outfile, field='bands', noData=np.nan):
     if not os.access(os.path.dirname(outfile), os.W_OK):
         raise IOError('File %s is not writable' % outfile)
     if not isinstance(raster, grid.Grid):
-        raise TypeError("'geoRecords' needs to be of type 'Grid'")
+        m = "'geoRecords' needs to be of type 'Grid', got %s" % type(raster)
+        raise TypeError(m)
     if not raster.dim == 2:
         raise ValueError("'geoRecords' needs to be two dimensional")
     if not isinstance(field, str):

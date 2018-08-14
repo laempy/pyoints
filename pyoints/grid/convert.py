@@ -27,6 +27,7 @@ from .. import (
     registration,
     Extent,
     nptools,
+    GeoRecords,
 )
 
 from .transformation import (
@@ -41,7 +42,7 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
 
     Parameters
     ----------
-    rec : np.recarray(shape=(n, ))
+    rec : np.recarray(shape=(n, )) or GeoRecords
         Numpy record array of `n` points to voxelize. It requires a two
         dimensional field 'coords' associated with `k` dimensional coordinates.
     T : array_like(Number, shape=(m+1, m+1))
@@ -53,16 +54,18 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
         Function to aggregate the record array. If None, `agg_func` set to
         `lambda ids: rec[ids]`.
     dtype : optional, np.dtype
-        Output data type. If None, set to `[type(rec)]`.
+        Output data type. If None, set to automatically.
 
     Returns
     -------
-    np.recarray(dtype=dtype)
-        Output `m` dimensional matrix.
+    np.ndarray or np.recarray(dtype=dtype) or Grid
+        Desired `m` dimensional matrix. If `rec` is an istance of `GeoRecords`
+        and `dtype` has named fields, an instance of `Grid` is returned. If
+        no point falls within `T`, None is returned.
 
     See Also
     --------
-    Grid
+    Grid, np.apply_function
 
     Examples
     --------
@@ -135,9 +138,11 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
     keys = coords_to_keys(T, coords[:, :T.dim])
 
     if shape is None:
-        shape = tuple(keys.max(0)[:T.dim] + 1)
+        shape = keys.max(0)[:T.dim] + 1
     else:
         shape = assertion.ensure_shape(shape, dim=T.dim)
+    if np.any(np.array(shape)<0):
+        return None
 
     # group keys
     df = pandas.DataFrame({'indices': keys_to_indices(keys, shape)})
@@ -147,17 +152,22 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
     # cut by extent
     min_mask = np.all(keys >= 0, axis=1)
     max_mask = np.all(keys < shape, axis=1)
-    mask = np.all((min_mask, max_mask), axis=1)
+    mask = np.where(np.all((min_mask, max_mask), axis=0))[0]
 
     # create lookup array
     lookup = np.empty(shape, dtype=list)
     lookup.fill([])
-    lookup[tuple(keys.T[mask].tolist())] = list(groupDict.values())
+
+    values = list(groupDict.values())
+    lookup[tuple(keys[mask].T.tolist())] = [values[i] for i in mask]
 
     # Aggregate per cell
-
-    rec = nptools.apply_function(lookup, agg_func, dtype=dtype)
-    return rec
+    try:
+        res = nptools.apply_function(lookup, agg_func, dtype=dtype)
+        return res
+    except:
+        m = "aggregation failed, please check 'agg_func' and 'dtype'"
+        raise ValueError(m)
 
 
 def corners_to_transform(corners, scale=None):

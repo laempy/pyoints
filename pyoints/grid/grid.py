@@ -168,7 +168,7 @@ class Grid(GeoRecords):
             m = "'proj' needs to be of type 'Proj', got %s" % type(proj)
             raise TypeError(m)
         if not isinstance(rec, np.recarray):
-            raise TypeError('numpy record array required')
+            raise TypeError('numpy record array required, got %s' % type(rec))
         if not len(rec.shape) > 1:
             raise ValueError('at least two dimensions required')
         T = assertion.ensure_tmatrix(T)
