@@ -8,13 +8,6 @@ venv*
 # Python specific
 *.pyc
 
-
-# Docs
-docs/*
-!docs/conf.py
-!docs/Makefile
-!docs/make.bat
-
 # IDE
 .spyproject
 .spyderproject*

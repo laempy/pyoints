@@ -17,7 +17,7 @@ setuptools.setup (
     version="0.1",
     author="Sebastian Lamprecht",
     author_email="lamprecht@uni-trier.de",
-    description="A python library to conveniently process point cloud data.",
+    description="Pyoints: A python library to conveniently process point cloud data.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="TODO",
