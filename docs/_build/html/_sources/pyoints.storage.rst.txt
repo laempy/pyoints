@@ -1,0 +1,70 @@
+pyoints.storage package
+=======================
+
+Submodules
+----------
+
+pyoints.storage.BaseGeoHandler module
+-------------------------------------
+
+.. automodule:: pyoints.storage.BaseGeoHandler
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.storage.CsvHandler module
+---------------------------------
+
+.. automodule:: pyoints.storage.CsvHandler
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.storage.DumpHandler module
+----------------------------------
+
+.. automodule:: pyoints.storage.DumpHandler
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.storage.LasHandler module
+---------------------------------
+
+.. automodule:: pyoints.storage.LasHandler
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.storage.PlyHandler module
+---------------------------------
+
+.. automodule:: pyoints.storage.PlyHandler
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.storage.RasterHandler module
+------------------------------------
+
+.. automodule:: pyoints.storage.RasterHandler
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.storage.misc module
+---------------------------
+
+.. automodule:: pyoints.storage.misc
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: pyoints.storage
+    :members:
+    :undoc-members:
+    :show-inheritance:

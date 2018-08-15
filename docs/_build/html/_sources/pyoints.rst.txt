@@ -1,0 +1,184 @@
+pyoints package
+===============
+
+Subpackages
+-----------
+
+.. toctree::
+
+    pyoints.examples
+    pyoints.grid
+    pyoints.registration
+    pyoints.storage
+
+Submodules
+----------
+
+pyoints.assertion module
+------------------------
+
+.. automodule:: pyoints.assertion
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.assign module
+---------------------
+
+.. automodule:: pyoints.assign
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.classification module
+-----------------------------
+
+.. automodule:: pyoints.classification
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.clustering module
+-------------------------
+
+.. automodule:: pyoints.clustering
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.coords module
+---------------------
+
+.. automodule:: pyoints.coords
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.distance module
+-----------------------
+
+.. automodule:: pyoints.distance
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.extent module
+---------------------
+
+.. automodule:: pyoints.extent
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.filters module
+----------------------
+
+.. automodule:: pyoints.filters
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.fit module
+------------------
+
+.. automodule:: pyoints.fit
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.georecords module
+-------------------------
+
+.. automodule:: pyoints.georecords
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.indexkd module
+----------------------
+
+.. automodule:: pyoints.indexkd
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.interpolate module
+--------------------------
+
+.. automodule:: pyoints.interpolate
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.misc module
+-------------------
+
+.. automodule:: pyoints.misc
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.nptools module
+----------------------
+
+.. automodule:: pyoints.nptools
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.polar module
+--------------------
+
+.. automodule:: pyoints.polar
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.projection module
+-------------------------
+
+.. automodule:: pyoints.projection
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.smoothing module
+------------------------
+
+.. automodule:: pyoints.smoothing
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.surface module
+----------------------
+
+.. automodule:: pyoints.surface
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.transformation module
+-----------------------------
+
+.. automodule:: pyoints.transformation
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.vector module
+---------------------
+
+.. automodule:: pyoints.vector
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: pyoints
+    :members:
+    :undoc-members:
+    :show-inheritance:

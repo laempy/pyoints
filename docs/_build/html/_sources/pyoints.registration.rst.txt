@@ -1,0 +1,38 @@
+pyoints.registration package
+============================
+
+Submodules
+----------
+
+pyoints.registration.icp module
+-------------------------------
+
+.. automodule:: pyoints.registration.icp
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.registration.registration module
+----------------------------------------
+
+.. automodule:: pyoints.registration.registration
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.registration.rototranslations module
+--------------------------------------------
+
+.. automodule:: pyoints.registration.rototranslations
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: pyoints.registration
+    :members:
+    :undoc-members:
+    :show-inheritance:

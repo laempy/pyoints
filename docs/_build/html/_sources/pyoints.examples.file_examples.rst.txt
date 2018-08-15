@@ -1,0 +1,54 @@
+pyoints.examples.file\_examples package
+=======================================
+
+Submodules
+----------
+
+pyoints.examples.file\_examples.csv\_example module
+---------------------------------------------------
+
+.. automodule:: pyoints.examples.file_examples.csv_example
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.examples.file\_examples.dump\_example module
+----------------------------------------------------
+
+.. automodule:: pyoints.examples.file_examples.dump_example
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.examples.file\_examples.las\_example module
+---------------------------------------------------
+
+.. automodule:: pyoints.examples.file_examples.las_example
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.examples.file\_examples.ply\_example module
+---------------------------------------------------
+
+.. automodule:: pyoints.examples.file_examples.ply_example
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.examples.file\_examples.raster\_example module
+------------------------------------------------------
+
+.. automodule:: pyoints.examples.file_examples.raster_example
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: pyoints.examples.file_examples
+    :members:
+    :undoc-members:
+    :show-inheritance:

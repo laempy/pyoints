@@ -1,0 +1,474 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyoints.registration package &#8212; Pyoints verson 0.2 alpha documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pyoints.storage package" href="pyoints.storage.html" />
+    <link rel="prev" title="pyoints.grid package" href="pyoints.grid.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="pyoints-registration-package">
+<h1>pyoints.registration package<a class="headerlink" href="#pyoints-registration-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pyoints.registration.icp">
+<span id="pyoints-registration-icp-module"></span><h2>pyoints.registration.icp module<a class="headerlink" href="#module-pyoints.registration.icp" title="Permalink to this headline">¶</a></h2>
+<p>Implementation of the Iterative Closest Point Algorithm.</p>
+<dl class="class">
+<dt id="pyoints.registration.icp.ICP">
+<em class="property">class </em><code class="descclassname">pyoints.registration.icp.</code><code class="descname">ICP</code><span class="sig-paren">(</span><em>radii</em>, <em>max_iter=10</em>, <em>assign_class=&lt;class 'pyoints.assign.KnnMatcher'&gt;</em>, <em>**assign_parameters</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/registration/icp.html#ICP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.registration.icp.ICP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Implementation of a variant of the Iterative Closest Point algorithm [1]
+with support of multiple point sets and point normals.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>radii</strong> (<em>array_like</em><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>s</em><em>)</em><em>)</em>) – Maximum distances in each coordinate dimension to assign corresponding
+points of <cite>k</cite> dimensions. The length of <cite>radii</cite> is equal to <cite>2 * k</cite>
+if point normals shall also be used to find point pairs, <cite>k</cite>
+otherwise.</li>
+<li><strong>assign_class</strong> (<em>optional</em><em>, </em><em>callable class</em>) – Class which assigns pairs of points.</li>
+<li><strong>max_iter</strong> (<em>optional</em><em>, </em><em>positive int</em>) – Maximum number of iterations.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>An own variant of the originally ICP algorithm presented by Besl and McKay
+(1992) [1].</p>
+<p class="rubric">References</p>
+<p>[1] P.J. Besl and N.D. McKay (1992): “A Method for Registration of 3-D
+Shapes”, IEEE Transactions on Pattern Analysis and Machine Intelligence,
+vol. 14 (2): 239-256.</p>
+<p class="rubric">Examples</p>
+<p>Create corresponding point sets.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)])</span>
+</pre></div>
+</div>
+<p>Standard ICP.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">coords_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="n">A</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="n">B</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">radii</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">weights</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">icp</span> <span class="o">=</span> <span class="n">ICP</span><span class="p">(</span><span class="n">radii</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span><span class="p">,</span> <span class="n">pairs</span> <span class="o">=</span> <span class="n">icp</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tA</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tB</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">tA</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="go">[[ 0.5  0.5]</span>
+<span class="go"> [ 0.   0. ]</span>
+<span class="go"> [-0.  -0.1]</span>
+<span class="go"> [ 1.3  1. ]</span>
+<span class="go"> [ 1.  -0. ]</span>
+<span class="go"> [-1.  -2. ]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">tB</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="go">[[ 0.56  0.48]</span>
+<span class="go"> [ 0.43 -0.01]</span>
+<span class="go"> [ 1.19  0.95]</span>
+<span class="go"> [ 2.18  0.89]</span>
+<span class="go"> [-0.97 -1.94]]</span>
+</pre></div>
+</div>
+<p>Find matches and compare RMSE.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">matcher</span> <span class="o">=</span> <span class="n">assign</span><span class="o">.</span><span class="n">KnnMatcher</span><span class="p">(</span><span class="n">tA</span><span class="p">,</span> <span class="n">radii</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pairs</span> <span class="o">=</span> <span class="n">matcher</span><span class="p">(</span><span class="n">tB</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rmse</span> <span class="o">=</span> <span class="n">distance</span><span class="o">.</span><span class="n">rmse</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">:],</span> <span class="n">B</span><span class="p">[</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">:])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">rmse</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="go">0.183</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rmse</span> <span class="o">=</span> <span class="n">distance</span><span class="o">.</span><span class="n">rmse</span><span class="p">(</span><span class="n">tA</span><span class="p">[</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">:],</span> <span class="n">tB</span><span class="p">[</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">:])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">rmse</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="go">0.09</span>
+</pre></div>
+</div>
+<p>ICP also take advantage of normals (NICP).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyoints</span> <span class="k">import</span> <span class="n">fit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normals_r</span> <span class="o">=</span> <span class="mf">1.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normals_dict</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="n">fit</span><span class="o">.</span><span class="n">fit_normals</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">normals_r</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="n">fit</span><span class="o">.</span><span class="n">fit_normals</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">normals_r</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">radii</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nicp</span> <span class="o">=</span> <span class="n">ICP</span><span class="p">(</span><span class="n">radii</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span><span class="p">,</span> <span class="n">pairs</span> <span class="o">=</span> <span class="n">nicp</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">,</span> <span class="n">normals_dict</span><span class="o">=</span><span class="n">normals_dict</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tA</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">tA</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="go">[[ 0.5  0.5]</span>
+<span class="go"> [ 0.   0. ]</span>
+<span class="go"> [ 0.  -0.1]</span>
+<span class="go"> [ 1.3  1. ]</span>
+<span class="go"> [ 1.   0. ]</span>
+<span class="go"> [-1.  -2. ]]</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tB</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">tB</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="go">[[ 0.4  0.5]</span>
+<span class="go"> [ 0.3  0. ]</span>
+<span class="go"> [ 1.   1. ]</span>
+<span class="go"> [ 2.   1. ]</span>
+<span class="go"> [-1.  -2. ]]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyoints.registration.registration">
+<span id="pyoints-registration-registration-module"></span><h2>pyoints.registration.registration module<a class="headerlink" href="#module-pyoints.registration.registration" title="Permalink to this headline">¶</a></h2>
+<p>Registration or alignment of point sets.</p>
+<dl class="function">
+<dt id="pyoints.registration.registration.find_rototranslation">
+<code class="descclassname">pyoints.registration.registration.</code><code class="descname">find_rototranslation</code><span class="sig-paren">(</span><em>A</em>, <em>B</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/registration/registration.html#find_rototranslation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.registration.registration.find_rototranslation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the optimal roto-translation matrix <cite>M</cite> between two point sets.
+Each point of point set <cite>A</cite> is associated with exactly one point in point
+set <cite>B</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>A</strong><strong>,</strong><strong>B</strong> (<em>array_like</em><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>n</em><em>, </em><em>k</em><em>)</em><em>)</em>) – Arrays representing <cite>n</cite> corresponding points with <cite>k</cite> dimensions.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>M</strong> – Roto-translation matrix to map <cite>B</cite> to <cite>A</cite> with <cite>A = B * M.T</cite>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">numpy.matrix(float, shape=(k+1, k+1))</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>Implements the registration algorithm of Besl and McKay (1992) [1]. The
+idea has been taken from Nghia Ho (2013) [2]. Code of [2] has been adapted
+generalized to <cite>k</cite> dimensional space.</p>
+<p class="rubric">References</p>
+<p>[1] P. J. Besl and N. D. McKay (1992): “A Method for Registration of 3-D
+Shapes”, IEEE Transactions on Pattern Analysis and Machine Intelligence,
+Institute of Electrical and Electronics Engineers (IEEE), vol. 14,
+pp. 239-256.</p>
+<p>[2] Nghia Ho (2013): “Finding optimal rotation and translation between
+corresponding 3D points”, URL <a class="reference external" href="http://nghiaho.com/?page_id=671">http://nghiaho.com/?page_id=671</a>.</p>
+<p>[3] Nghia Ho (2013): “Finding optimal rotation and translation between
+corresponding 3D points”, URL
+<a class="reference external" href="http://nghiaho.com/uploads/code/rigid_transform_3D.py_">http://nghiaho.com/uploads/code/rigid_transform_3D.py_</a>.</p>
+<p class="rubric">Examples</p>
+<p>Create similar, but shifted and rotated point sets.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">B</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">transformation</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">r</span><span class="o">=</span><span class="mf">0.3</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Find roto-translation.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">M</span> <span class="o">=</span> <span class="n">find_rototranslation</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">C</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="go">[[0. 0.]</span>
+<span class="go"> [0. 1.]</span>
+<span class="go"> [1. 1.]</span>
+<span class="go"> [1. 0.]]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyoints.registration.registration.find_transformation">
+<code class="descclassname">pyoints.registration.registration.</code><code class="descname">find_transformation</code><span class="sig-paren">(</span><em>A</em>, <em>B</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/registration/registration.html#find_transformation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.registration.registration.find_transformation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the optimal (non-rigid) transformation matrix <cite>M</cite> between two
+point sets. Each point of point set <cite>A</cite> is associated with exactly one
+point in point set <cite>B</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>A</strong> (<em>array_like</em><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>n</em><em>, </em><em>k</em><em>)</em><em>)</em>) – Array representing n reference points with k dimensions.</li>
+<li><strong>B</strong> (<em>array_like</em><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>n</em><em>, </em><em>k</em><em>)</em><em>)</em>) – Array representing n points with k dimensions.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>M</strong> – Tranformation matrix which maps <cite>B</cite> to <cite>A</cite> with A = <cite>B * M.T</cite>.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.matrix(Number, shape=(k+1, k+1))</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#pyoints.registration.registration.find_rototranslation" title="pyoints.registration.registration.find_rototranslation"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_rototranslation()</span></code></a></p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyoints.registration.rototranslations">
+<span id="pyoints-registration-rototranslations-module"></span><h2>pyoints.registration.rototranslations module<a class="headerlink" href="#module-pyoints.registration.rototranslations" title="Permalink to this headline">¶</a></h2>
+<p>Find roto-translation matrices of multiple point sets.</p>
+<dl class="function">
+<dt id="pyoints.registration.rototranslations.find_rototranslations">
+<code class="descclassname">pyoints.registration.rototranslations.</code><code class="descname">find_rototranslations</code><span class="sig-paren">(</span><em>coords_dict</em>, <em>pairs_dict</em>, <em>weights=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/registration/rototranslations.html#find_rototranslations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.registration.rototranslations.find_rototranslations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the optimal roto-translation matrices between multiple
+point sets using pairs of points. The algorithm assumes infinitissimal
+rotations between the point sets.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>coords_dict</strong> (<em>dict of array_like</em><em>(</em><em>int</em><em>, </em><em>shape=</em><em>(</em><em>n</em><em>, </em><em>k</em><em>)</em><em>)</em>) – Dictionary of point sets with <cite>k</cite> dimensions.</li>
+<li><strong>pairs_dict</strong> (<em>dict of array_like</em><em>(</em><em>int</em><em>, </em><em>shape=</em><em>(</em><em>m</em><em>, </em><em>2</em><em>)</em><em>)</em>) – Dictionary of point pairs.</li>
+<li><strong>weights</strong> (<em>optional</em><em>, </em><em>dict</em><em> or </em><em>list</em><em> or </em><em>int.</em>) – Try to keep the original location and orientation by weighting. Each
+point set can be weighted by a list of values. The first <cite>k</cite> values r
+epresent the weighting factors for location. The last values
+represent the weighting factors for orientation (angles).
+The weights can be provided for each point set individially in form
+of a dictionary. If not provided, weights are set to zero.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>T_dict</strong> – Dictionary of desired roto-translation matrices.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict of np.ndarray(Number, shape=(k+1, k+1))</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>Algorithm idea taken from [1].</p>
+<p class="rubric">References</p>
+<p>[1]  University of Genoa (2017):
+URL <a class="reference external" href="http://geomatica.como.polimi.it/corsi/def_monitoring/roto-translationsb.pdf">http://geomatica.como.polimi.it/corsi/def_monitoring/roto-translationsb.pdf</a>.</p>
+<p class="rubric">Examples</p>
+<p>2D coordinates.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">coordsA</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">r</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coordsB</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">coordsA</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">coords_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="n">coordsA</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="n">coordsB</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pairs_dict</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span> <span class="p">}</span> <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">weights</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">find_rototranslations</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">,</span> <span class="n">pairs_dict</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+<span class="go">[&#39;A&#39;, &#39;B&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tA</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">tA</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="go">[[-1. -2.]</span>
+<span class="go"> [-1.  2.]</span>
+<span class="go"> [ 1.  2.]</span>
+<span class="go"> [ 1. -2.]</span>
+<span class="go"> [ 5. 10.]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tB</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">tB</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="go">[[-1. -2.]</span>
+<span class="go"> [-1.  2.]</span>
+<span class="go"> [ 1.  2.]</span>
+<span class="go"> [ 1. -2.]</span>
+<span class="go"> [ 5. 10.]]</span>
+</pre></div>
+</div>
+<p>3D coordinates.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">coordsA</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">60</span><span class="p">)]</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">TB</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="n">r</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">],</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;trs&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coordsB</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">coordsA</span><span class="p">,</span> <span class="n">TB</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">TC</span><span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">6</span><span class="p">],</span> <span class="n">r</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">0.03</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.02</span><span class="p">],</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;trs&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coordsC</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">coordsA</span><span class="p">,</span> <span class="n">TC</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">coords_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="n">coordsA</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="n">coordsB</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="n">coordsC</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pairs_dict</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)],</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]</span>  <span class="p">},</span>
+<span class="gp">... </span>    <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)],</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span> <span class="p">},</span>
+<span class="gp">... </span>    <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)],</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span> <span class="p">},</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">weights</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">find_rototranslations</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">,</span> <span class="n">pairs_dict</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+<span class="go">[&#39;A&#39;, &#39;B&#39;, &#39;C&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tA</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">tA</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="go">[[-10. -20.   3.]</span>
+<span class="go"> [ -1.   2.   4.]</span>
+<span class="go"> [  1.  10.   5.]</span>
+<span class="go"> [  1.  -2.  60.]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tB</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">tB</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="go">[[-10. -20.   3.]</span>
+<span class="go"> [ -1.   2.   4.]</span>
+<span class="go"> [  1.  10.   5.]</span>
+<span class="go"> [  1.  -2.  60.]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tC</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">tC</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="go">[[-10. -20.   3.]</span>
+<span class="go"> [ -1.   2.   4.]</span>
+<span class="go"> [  1.  10.   5.]</span>
+<span class="go"> [  1.  -2.  60.]]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyoints.registration">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyoints.registration" title="Permalink to this headline">¶</a></h2>
+<p>Alignment of point clouds.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="modules.html">Pyoints</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="pyoints.html">pyoints package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pyoints.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pyoints.examples.html">pyoints.examples package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.grid.html">pyoints.grid package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">pyoints.registration package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyoints.registration.icp">pyoints.registration.icp module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyoints.registration.registration">pyoints.registration.registration module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyoints.registration.rototranslations">pyoints.registration.rototranslations module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyoints.registration">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.storage.html">pyoints.storage package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.assertion">pyoints.assertion module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.assign">pyoints.assign module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.classification">pyoints.classification module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.clustering">pyoints.clustering module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.coords">pyoints.coords module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.distance">pyoints.distance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.extent">pyoints.extent module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.filters">pyoints.filters module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.fit">pyoints.fit module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.georecords">pyoints.georecords module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.indexkd">pyoints.indexkd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.interpolate">pyoints.interpolate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.misc">pyoints.misc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.nptools">pyoints.nptools module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.polar">pyoints.polar module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.projection">pyoints.projection module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.smoothing">pyoints.smoothing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.surface">pyoints.surface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.transformation">pyoints.transformation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.vector">pyoints.vector module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="modules.html">Documentation overview</a><ul>
+  <li><a href="pyoints.html">pyoints package</a><ul>
+      <li>Previous: <a href="pyoints.grid.html" title="previous chapter">pyoints.grid package</a></li>
+      <li>Next: <a href="pyoints.storage.html" title="next chapter">pyoints.storage package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Sebastian Lamprecht.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      
+      |
+      <a href="_sources/pyoints.registration.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

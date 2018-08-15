@@ -1,0 +1,45 @@
+pyoints.examples package
+========================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    pyoints.examples.file_examples
+
+Submodules
+----------
+
+pyoints.examples.base\_example module
+-------------------------------------
+
+.. automodule:: pyoints.examples.base_example
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.examples.grid\_example module
+-------------------------------------
+
+.. automodule:: pyoints.examples.grid_example
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.examples.stemfilter\_example module
+-------------------------------------------
+
+.. automodule:: pyoints.examples.stemfilter_example
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: pyoints.examples
+    :members:
+    :undoc-members:
+    :show-inheritance:

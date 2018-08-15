@@ -1,0 +1,54 @@
+pyoints\.examples\.storage package
+==================================
+
+Submodules
+----------
+
+pyoints\.examples\.storage\.csv\_example module
+-----------------------------------------------
+
+.. automodule:: pyoints.examples.storage.csv_example
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints\.examples\.storage\.dump\_example module
+------------------------------------------------
+
+.. automodule:: pyoints.examples.storage.dump_example
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints\.examples\.storage\.las\_example module
+-----------------------------------------------
+
+.. automodule:: pyoints.examples.storage.las_example
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints\.examples\.storage\.ply\_example module
+-----------------------------------------------
+
+.. automodule:: pyoints.examples.storage.ply_example
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints\.examples\.storage\.raster\_example module
+--------------------------------------------------
+
+.. automodule:: pyoints.examples.storage.raster_example
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: pyoints.examples.storage
+    :members:
+    :undoc-members:
+    :show-inheritance:

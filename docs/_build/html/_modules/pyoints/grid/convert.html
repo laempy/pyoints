@@ -1,0 +1,327 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyoints.grid.convert &#8212; Pyoints verson 0.2 alpha documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     'verson 0.2 alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyoints.grid.convert</h1><div class="highlight"><pre>
+<span></span><span class="c1"># BEGIN OF LICENSE NOTE</span>
+<span class="c1"># This file is part of Pyoints.</span>
+<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, lamprecht@uni-trier.de</span>
+<span class="c1"># </span>
+<span class="c1"># This software is copyright protected. A decision on a less restrictive licencing </span>
+<span class="c1"># model will be made before releasing this software.</span>
+<span class="c1"># END OF LICENSE NOTE</span>
+<span class="sd">&quot;&quot;&quot;Convertion of grid data structures.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">assertion</span><span class="p">,</span>
+    <span class="n">transformation</span><span class="p">,</span>
+    <span class="n">registration</span><span class="p">,</span>
+    <span class="n">Extent</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">.transformation</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">coords_to_keys</span><span class="p">,</span>
+    <span class="n">keys_to_indices</span><span class="p">,</span>
+    <span class="n">indices_to_keys</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="voxelize"><a class="viewcode-back" href="../../../pyoints.grid.html#pyoints.grid.convert.voxelize">[docs]</a><span class="k">def</span> <span class="nf">voxelize</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">agg_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Aggregate a point cloud to a voxel or raster.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    rec : np.recarray(shape=(n, ))</span>
+<span class="sd">        Numpy record array of `n` points to voxelize. It requires a two</span>
+<span class="sd">        dimensional field &#39;coords&#39; associated with `k` dimensional coordinates.</span>
+<span class="sd">    T : array_like(Number, shape=(m+1, m+1))</span>
+<span class="sd">        Transformation matrix defining the `m &lt;= k` dimensional voxel system.</span>
+<span class="sd">    shape : optional, array_like(int, shape=(m))</span>
+<span class="sd">        Shape of the output voxel space. If None, `shape` is fit to</span>
+<span class="sd">        `rec.coords`.</span>
+<span class="sd">    agg_func : optional, callable</span>
+<span class="sd">        Function to aggregate the record array. If None, `agg_func` set to</span>
+<span class="sd">        `lambda ids: rec[ids]`.</span>
+<span class="sd">    dtype : optional, np.dtype</span>
+<span class="sd">        Output data type. If None, set to `[type(rec)]`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.recarray(dtype=dtype)</span>
+<span class="sd">        Output `m` dimensional matrix.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    Grid</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    Create record array with coordinates.</span>
+
+<span class="sd">    &gt;&gt;&gt; coords = [(0, 0), (1, 0.5), (2, 2), (4, 6), (3, 2), (1, 5), (3, 0)]</span>
+<span class="sd">    &gt;&gt;&gt; rec = np.recarray(len(coords), dtype=[(&#39;coords&#39;, float, 2)])</span>
+<span class="sd">    &gt;&gt;&gt; rec[&#39;coords&#39;] = coords</span>
+
+<span class="sd">    Voxelize records.</span>
+
+<span class="sd">    &gt;&gt;&gt; T = transformation.matrix(s=(2.5, 3), t=[0, 0])</span>
+<span class="sd">    &gt;&gt;&gt; grid = voxelize(rec, T)</span>
+
+<span class="sd">    &gt;&gt;&gt; print(grid.dtype)</span>
+<span class="sd">    object</span>
+<span class="sd">    &gt;&gt;&gt; print(grid.shape)</span>
+<span class="sd">    (3, 2)</span>
+<span class="sd">    &gt;&gt;&gt; print(grid[0, 0].coords)</span>
+<span class="sd">    [[0.  0. ]</span>
+<span class="sd">     [1.  0.5]</span>
+<span class="sd">     [2.  2. ]]</span>
+
+<span class="sd">    Voxelize with aggregation function.</span>
+
+<span class="sd">    &gt;&gt;&gt; dtype = [(&#39;points&#39;, type(rec)), (&#39;count&#39;, int)]</span>
+<span class="sd">    &gt;&gt;&gt; agg_func = lambda ids: (rec[ids], len(ids))</span>
+<span class="sd">    &gt;&gt;&gt; grid = voxelize(rec, T, agg_func=agg_func, dtype=dtype)</span>
+
+<span class="sd">    &gt;&gt;&gt; print(grid.dtype.descr)</span>
+<span class="sd">    [(&#39;points&#39;, &#39;|O&#39;), (&#39;count&#39;, &#39;&lt;i8&#39;)]</span>
+<span class="sd">    &gt;&gt;&gt; print(grid.shape)</span>
+<span class="sd">    (3, 2)</span>
+<span class="sd">    &gt;&gt;&gt; print(grid.count)</span>
+<span class="sd">    [[3 2]</span>
+<span class="sd">     [1 0]</span>
+<span class="sd">     [0 1]]</span>
+<span class="sd">    &gt;&gt;&gt; print(grid[0, 0].points.coords)</span>
+<span class="sd">    [[0.  0. ]</span>
+<span class="sd">     [1.  0.5]</span>
+<span class="sd">     [2.  2. ]]</span>
+
+<span class="sd">    Voxelize three dimensional coordinates to recieve a two dimensional raster.</span>
+
+<span class="sd">    &gt;&gt;&gt; coords = [(0, 0, 1), (-2, 0.3, 5), (2, 2, 3), (4, 6, 2), (3, 2, 1)]</span>
+<span class="sd">    &gt;&gt;&gt; rec = np.recarray(len(coords), dtype=[(&#39;coords&#39;, float, 3)])</span>
+<span class="sd">    &gt;&gt;&gt; rec[&#39;coords&#39;] = coords</span>
+
+<span class="sd">    &gt;&gt;&gt; T = transformation.matrix(s=(2.5, 3), t=[0, 0])</span>
+<span class="sd">    &gt;&gt;&gt; grid = voxelize(rec, T)</span>
+<span class="sd">    &gt;&gt;&gt; print(grid.shape)</span>
+<span class="sd">    (3, 2)</span>
+<span class="sd">    &gt;&gt;&gt; print(grid[0, 0].coords)</span>
+<span class="sd">    [[0. 0. 1.]</span>
+<span class="sd">     [2. 2. 3.]]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">recarray</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;rec&#39; need an instance of np.recarray&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;coords&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rec</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;rec&#39; requires field &#39;coords&#39;&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">agg_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">agg_func</span><span class="p">(</span><span class="n">ids</span><span class="p">):</span> <span class="k">return</span> <span class="n">rec</span><span class="p">[</span><span class="n">ids</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">agg_func</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;agg_func&#39; needs to be callable&quot;</span><span class="p">)</span>
+
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_coords</span><span class="p">(</span><span class="n">rec</span><span class="o">.</span><span class="n">coords</span><span class="p">,</span> <span class="n">min_dim</span><span class="o">=</span><span class="n">T</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="n">coords_to_keys</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">coords</span><span class="p">[:,</span> <span class="p">:</span><span class="n">T</span><span class="o">.</span><span class="n">dim</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">keys</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">0</span><span class="p">)[:</span><span class="n">T</span><span class="o">.</span><span class="n">dim</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_shape</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="n">T</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+
+    <span class="c1"># group keys</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;indices&#39;</span><span class="p">:</span> <span class="n">keys_to_indices</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">shape</span><span class="p">)})</span>
+    <span class="n">groupDict</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="n">indices_to_keys</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">groupDict</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span> <span class="n">shape</span><span class="p">)</span>
+
+    <span class="c1"># cut by extent</span>
+    <span class="n">min_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">keys</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">max_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">keys</span> <span class="o">&lt;</span> <span class="n">shape</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">((</span><span class="n">min_mask</span><span class="p">,</span> <span class="n">max_mask</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># create lookup array</span>
+    <span class="n">lookup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">lookup</span><span class="o">.</span><span class="n">fill</span><span class="p">([])</span>
+    <span class="n">lookup</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">keys</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">groupDict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+    <span class="c1"># Aggregate per cell</span>
+    <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">otypes</span> <span class="o">=</span> <span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="n">rec</span><span class="p">)]</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">agg_func</span><span class="p">,</span> <span class="n">otypes</span><span class="o">=</span><span class="n">otypes</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">v</span><span class="p">(</span><span class="n">lookup</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">otypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">dtype</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">str</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">]</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">agg_func</span><span class="p">,</span> <span class="n">otypes</span><span class="o">=</span><span class="n">otypes</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">recarray</span><span class="p">(</span><span class="n">lookup</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">v_arrays</span> <span class="o">=</span> <span class="n">v</span><span class="p">(</span><span class="n">lookup</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">):</span>
+            <span class="n">res</span><span class="p">[</span><span class="n">name</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">v_arrays</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+
+
+<div class="viewcode-block" id="corners_to_transform"><a class="viewcode-back" href="../../../pyoints.grid.html#pyoints.grid.convert.corners_to_transform">[docs]</a><span class="k">def</span> <span class="nf">corners_to_transform</span><span class="p">(</span><span class="n">corners</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a transformation matrix using the corners of a raster.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    corners : array_like(Number, shape=(2\*\*k, k))</span>
+<span class="sd">        Corners of a `k` dimensional grid in a `k` dimensional space.</span>
+<span class="sd">    scale : optional, array_like(Number, shape=(k))</span>
+<span class="sd">        Optional scale to define the pixel resolution of a raster.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    Create some corners.</span>
+
+<span class="sd">    &gt;&gt;&gt; T = transformation.matrix(t=[3, 5], s=[10, 20], r=np.pi/2)</span>
+<span class="sd">    &gt;&gt;&gt; coords = Extent([np.zeros(2), np.ones(2)]).corners</span>
+<span class="sd">    &gt;&gt;&gt; corners = transformation.transform(coords, T)</span>
+
+<span class="sd">    Create transformation matrix without scale.</span>
+
+<span class="sd">    &gt;&gt;&gt; M = corners_to_transform(corners)</span>
+<span class="sd">    &gt;&gt;&gt; print(np.round(M, 3))</span>
+<span class="sd">    [[ 0. -1.  3.]</span>
+<span class="sd">     [ 1.  0.  5.]</span>
+<span class="sd">     [ 0.  0.  1.]]</span>
+
+<span class="sd">    Create a transformation matrix with a scale.</span>
+
+<span class="sd">    &gt;&gt;&gt; M = corners_to_transform(corners, [0.5, 2])</span>
+<span class="sd">    &gt;&gt;&gt; print(np.round(M, 3))</span>
+<span class="sd">    [[ 0.  -2.   3. ]</span>
+<span class="sd">     [ 0.5  0.   5. ]</span>
+<span class="sd">     [ 0.   0.   1. ]]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">corners</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_coords</span><span class="p">(</span><span class="n">corners</span><span class="p">)</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="n">corners</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">pts</span> <span class="o">=</span> <span class="n">Extent</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">dim</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">dim</span><span class="p">)])</span><span class="o">.</span><span class="n">corners</span>
+
+    <span class="c1"># find transformation matrix</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">registration</span><span class="o">.</span><span class="n">find_transformation</span><span class="p">(</span><span class="n">corners</span><span class="p">,</span> <span class="n">pts</span><span class="p">)</span>
+
+    <span class="c1"># get translation, rotation and scale</span>
+    <span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">det</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">decomposition</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">transformation</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">scale</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="transform_to_corners"><a class="viewcode-back" href="../../../pyoints.grid.html#pyoints.grid.convert.transform_to_corners">[docs]</a><span class="k">def</span> <span class="nf">transform_to_corners</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generates the corners of a grid using a transformation matrix.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    T : array_like(Number, shape=(k+1, k+1))</span>
+<span class="sd">        Transformation matrix in a `k` dimensional space.</span>
+<span class="sd">    shape : array_like(int, shape=(k))</span>
+<span class="sd">        Desired shape of the grid.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray(Number, shape=(2\*\*k, k))</span>
+<span class="sd">        Desired corners of the grid.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; T = transformation.matrix(t=[10, 20], s=[0.5, 2])</span>
+<span class="sd">    &gt;&gt;&gt; print(np.round(T, 3))</span>
+<span class="sd">    [[ 0.5  0.  10. ]</span>
+<span class="sd">     [ 0.   2.  20. ]</span>
+<span class="sd">     [ 0.   0.   1. ]]</span>
+
+<span class="sd">    &gt;&gt;&gt; corners = transform_to_corners(T, (100, 200))</span>
+<span class="sd">    &gt;&gt;&gt; print(np.round(corners, 3))</span>
+<span class="sd">    [[ 10.  20.]</span>
+<span class="sd">     [ 60.  20.]</span>
+<span class="sd">     [ 60. 420.]</span>
+<span class="sd">     [ 10. 420.]]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ext</span> <span class="o">=</span> <span class="n">Extent</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)),</span> <span class="n">shape</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">transformation</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">ext</span><span class="o">.</span><span class="n">corners</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../modules.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Sebastian Lamprecht.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,363 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyoints.interpolate &#8212; Pyoints verson 0.2 alpha documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for pyoints.interpolate</h1><div class="highlight"><pre>
+<span></span><span class="c1"># BEGIN OF LICENSE NOTE</span>
+<span class="c1"># This file is part of Pyoints.</span>
+<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University, </span>
+<span class="c1"># lamprecht@uni-trier.de</span>
+<span class="c1"># </span>
+<span class="c1"># Pyoints is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1"># </span>
+<span class="c1"># Pyoints is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1"># </span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># END OF LICENSE NOTE</span>
+<span class="sd">&quot;&quot;&quot;Spatial interpolation methods.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="k">import</span> <span class="n">Number</span>
+
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">LinearNDInterpolator</span>
+<span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="k">import</span> <span class="n">KNeighborsRegressor</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="k">import</span> <span class="n">PolynomialFeatures</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="k">import</span> <span class="n">LinearRegression</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">assertion</span>
+
+
+<div class="viewcode-block" id="Interpolator"><a class="viewcode-back" href="../../pyoints.html#pyoints.interpolate.Interpolator">[docs]</a><span class="k">class</span> <span class="nc">Interpolator</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Abstract generic multidimensional interpolation class.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coords : array_like(Number, shape=(n, k))</span>
+<span class="sd">        Represents `n` data points of `k` dimensions.</span>
+<span class="sd">    values : array_like(Number, shape=(n))</span>
+<span class="sd">        Values to interpolate.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coords : np.ndarray(Number, shape=(n, k))</span>
+<span class="sd">        Provided coordinates.</span>
+<span class="sd">    dim : positive int</span>
+<span class="sd">        Number of coordinate dimensions.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_coords</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numvector</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_coords</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;array dimensions do not fit&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shift</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shift</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_interpolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Apply interpolation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        coords : array_like(Number, shape=(m, self.dim))</span>
+<span class="sd">            Represents `m` points to interpolate.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray(Number, shape=(m))</span>
+<span class="sd">            Interpolated values.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_coords</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpolate</span><span class="p">(</span><span class="n">coords</span><span class="p">[:,</span> <span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">coords</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dim</span></div>
+
+
+<div class="viewcode-block" id="LinearInterpolator"><a class="viewcode-back" href="../../pyoints.html#pyoints.interpolate.LinearInterpolator">[docs]</a><span class="k">class</span> <span class="nc">LinearInterpolator</span><span class="p">(</span><span class="n">Interpolator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Linear interpolation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coords : array_like(Number, shape=(n, k))</span>
+<span class="sd">        Represents `n` data points of `k` dimensions.</span>
+<span class="sd">    values : array_like(Number, shape=(n))</span>
+<span class="sd">        Values to interpolate.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    Interpolator</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; coords = [(0, 0), (0, 2), (2, 1)]</span>
+<span class="sd">    &gt;&gt;&gt; values = [0, 3, 6]</span>
+
+<span class="sd">    &gt;&gt;&gt; interpolator = LinearInterpolator(coords, values)</span>
+<span class="sd">    &gt;&gt;&gt; print(interpolator([(1, 1)]))</span>
+<span class="sd">    [3.75]</span>
+<span class="sd">    &gt;&gt;&gt; print(interpolator([(-1, -1)]))</span>
+<span class="sd">    [nan]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="n">Interpolator</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_interpolator</span> <span class="o">=</span> <span class="n">LinearNDInterpolator</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">rescale</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_interpolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpolator</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="KnnInterpolator"><a class="viewcode-back" href="../../pyoints.html#pyoints.interpolate.KnnInterpolator">[docs]</a><span class="k">class</span> <span class="nc">KnnInterpolator</span><span class="p">(</span><span class="n">Interpolator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Nearest neighbour interpolation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coords : array_like(Number, shape=(n, k))</span>
+<span class="sd">        Represents `n` data points of `k` dimensions.</span>
+<span class="sd">    values : array_like(Number, shape=(n))</span>
+<span class="sd">        Values to interpolate.</span>
+<span class="sd">    k : optional, positive int</span>
+<span class="sd">        Number of neighbours used for interpolation.</span>
+<span class="sd">    max_dist : optional, positive Number</span>
+<span class="sd">        Maximum distance of a neigbouring point to be used for interpolation.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    Interpolator</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; coords = [(0, 0), (0, 2), (2, 1)]</span>
+<span class="sd">    &gt;&gt;&gt; values = [0, 3, 6]</span>
+
+<span class="sd">    &gt;&gt;&gt; interpolator = KnnInterpolator(coords, values, k=2, max_dist=1)</span>
+<span class="sd">    &gt;&gt;&gt; print(interpolator([(1, 1)]))</span>
+<span class="sd">    [6.]</span>
+<span class="sd">    &gt;&gt;&gt; print(interpolator([(-0.5, -0.5)]))</span>
+<span class="sd">    [0.]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_dist</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">Interpolator</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;k&#39; needs to be an integer greater 0&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">max_dist</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">weight_function</span> <span class="o">=</span> <span class="s1">&#39;distance&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">max_dist</span><span class="p">,</span> <span class="n">Number</span><span class="p">)</span> <span class="ow">and</span> <span class="n">max_dist</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;max_dist&#39; needs to be a number greater 0&quot;</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">weight_function</span><span class="p">(</span><span class="n">dists</span><span class="p">):</span>
+                <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">dists</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+                <span class="n">zeroMask</span> <span class="o">=</span> <span class="n">dists</span> <span class="o">==</span> <span class="mi">0</span>
+
+                <span class="n">w</span><span class="p">[</span><span class="o">~</span><span class="n">zeroMask</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">dists</span><span class="p">[</span><span class="o">~</span><span class="n">zeroMask</span><span class="p">]</span>
+                <span class="n">w</span><span class="p">[</span><span class="n">dists</span> <span class="o">&gt;</span> <span class="n">max_dist</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+                <span class="n">w</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">zeroMask</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">w</span><span class="p">[</span><span class="n">zeroMask</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">return</span> <span class="n">w</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_interpolator</span> <span class="o">=</span> <span class="n">KNeighborsRegressor</span><span class="p">(</span>
+            <span class="n">n_neighbors</span><span class="o">=</span><span class="n">k</span><span class="p">,</span>
+            <span class="n">weights</span><span class="o">=</span><span class="n">weight_function</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_interpolator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_interpolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="p">):</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpolator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pred</span></div>
+
+
+<div class="viewcode-block" id="PolynomInterpolator"><a class="viewcode-back" href="../../pyoints.html#pyoints.interpolate.PolynomInterpolator">[docs]</a><span class="k">class</span> <span class="nc">PolynomInterpolator</span><span class="p">(</span><span class="n">Interpolator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Polynom interpolation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coords : array_like(Number, shape=(n, k))</span>
+<span class="sd">        Represents `n` data points of `k` dimensions.</span>
+<span class="sd">    values : array_like(Number, shape=(n))</span>
+<span class="sd">        Values to interpolate.</span>
+<span class="sd">    deg : optional, positive int</span>
+<span class="sd">        The degree of the polynomial features.</span>
+<span class="sd">    weights : optional, array_like(shape=(n))</span>
+<span class="sd">        Weights for each sample.</span>
+<span class="sd">    interaction_only : optional, bool</span>
+<span class="sd">        Indicates whether or not to calculate interaction only.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    Interpolator, sklearn.preprocessing.PolynomialFeatures,</span>
+<span class="sd">    sklearn.linear_model.LinearRegression</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; coords = [(0, 0), (0, 2), (2, 1)]</span>
+<span class="sd">    &gt;&gt;&gt; values = [0, 3, 6]</span>
+
+<span class="sd">    &gt;&gt;&gt; interpolator = PolynomInterpolator(coords, values, deg=1)</span>
+<span class="sd">    &gt;&gt;&gt; print(interpolator([(1, 1)]))</span>
+<span class="sd">    [3.75]</span>
+<span class="sd">    &gt;&gt;&gt; print(interpolator([(-1, -0.5)]))</span>
+<span class="sd">    [-3.]</span>
+
+<span class="sd">    &gt;&gt;&gt; interpolator = PolynomInterpolator(coords, values, deg=0)</span>
+<span class="sd">    &gt;&gt;&gt; print(interpolator([(1, 1)]))</span>
+<span class="sd">    [3.]</span>
+<span class="sd">    &gt;&gt;&gt; print(interpolator([(-1, -0.5)]))</span>
+<span class="sd">    [3.]</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">coords</span><span class="p">,</span>
+            <span class="n">values</span><span class="p">,</span>
+            <span class="n">deg</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">interaction_only</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="n">Interpolator</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">deg</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;deg&#39; needs to be an integer&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_deg</span> <span class="o">=</span> <span class="n">deg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_interaction_only</span> <span class="o">=</span> <span class="n">interaction_only</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_interpolator</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_interpolator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_prepare</span><span class="p">(</span><span class="n">coords</span><span class="p">),</span>
+            <span class="n">values</span><span class="p">,</span>
+            <span class="n">sample_weight</span><span class="o">=</span><span class="n">weights</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_interpolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="p">):</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpolator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prepare</span><span class="p">(</span><span class="n">coords</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">pred</span>
+
+    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">PolynomialFeatures</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_deg</span><span class="p">,</span>
+            <span class="n">interaction_only</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_interaction_only</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">coef</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpolator</span><span class="o">.</span><span class="n">coef_</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../modules.html">Pyoints</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../pyoints.html">pyoints package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../modules.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Sebastian Lamprecht.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

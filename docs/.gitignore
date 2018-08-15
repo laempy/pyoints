@@ -1,0 +1,6 @@
+*.rst
+_build/doctrees
+_static
+!conf.py
+!Makefile
+!make.bat

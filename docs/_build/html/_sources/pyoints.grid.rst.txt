@@ -1,0 +1,30 @@
+pyoints.grid package
+====================
+
+Submodules
+----------
+
+pyoints.grid.grid module
+------------------------
+
+.. automodule:: pyoints.grid.grid
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyoints.grid.transformation module
+----------------------------------
+
+.. automodule:: pyoints.grid.transformation
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: pyoints.grid
+    :members:
+    :undoc-members:
+    :show-inheritance:

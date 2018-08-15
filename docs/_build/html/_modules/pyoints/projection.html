@@ -1,0 +1,346 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyoints.projection &#8212; Pyoints verson 0.2 alpha documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for pyoints.projection</h1><div class="highlight"><pre>
+<span></span><span class="c1"># BEGIN OF LICENSE NOTE</span>
+<span class="c1"># This file is part of Pyoints.</span>
+<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University, </span>
+<span class="c1"># lamprecht@uni-trier.de</span>
+<span class="c1"># </span>
+<span class="c1"># Pyoints is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1"># </span>
+<span class="c1"># Pyoints is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1"># </span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># END OF LICENSE NOTE</span>
+<span class="sd">&quot;&quot;&quot;Coordinate Reference Systems and two dimensional geograpic coordinate</span>
+<span class="sd">transformations.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">pyproj</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">osgeo</span> <span class="k">import</span> <span class="n">osr</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">assertion</span>
+
+
+<span class="c1"># Global proj4 definitions</span>
+<span class="n">WGS84</span> <span class="o">=</span> <span class="s1">&#39;+proj=latlong +datum=WGS84 +to +proj=latlong +datum=WGS84 +units=m &#39;</span> \
+    <span class="s1">&#39;+no_defs&#39;</span>
+
+
+<div class="viewcode-block" id="Proj"><a class="viewcode-back" href="../../pyoints.html#pyoints.projection.Proj">[docs]</a><span class="k">class</span> <span class="nc">Proj</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Wrapper class for different commonly coordinate reference system</span>
+<span class="sd">    formats.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    proj4 : optional, str</span>
+<span class="sd">        Coordinate reference system definition in Proj4 format. WGS84, if None</span>
+<span class="sd">        or empty string.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    proj4 : str</span>
+<span class="sd">        Projection in Proj4 format.</span>
+<span class="sd">    wkt : str</span>
+<span class="sd">        Projection in Well Known Text format.</span>
+<span class="sd">    pyproj : `pyproj.Proj`</span>
+<span class="sd">        Projection as `pyproj.Proj` object.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    Create from EPSG code.</span>
+
+<span class="sd">    &gt;&gt;&gt; proj = Proj.from_epsg(4326)</span>
+<span class="sd">    &gt;&gt;&gt; print(&#39;AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]&#39; in proj.wkt)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; print(&#39;WGS84&#39; in proj.proj4)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    Create from Proj4 string.</span>
+
+<span class="sd">    &gt;&gt;&gt; proj = Proj.from_proj4(&#39;+proj=longlat +datum=WGS84 +no_defs&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(proj.proj4)</span>
+<span class="sd">    +proj=longlat +datum=WGS84 +no_defs</span>
+<span class="sd">    &gt;&gt;&gt; print(&#39;AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]&#39; in proj.wkt)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    Create from Well Known Text.</span>
+
+<span class="sd">    &gt;&gt;&gt; proj = Proj.from_wkt(proj.wkt)</span>
+<span class="sd">    &gt;&gt;&gt; print(&#39;WGS84&#39; in proj.proj4)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proj4</span><span class="o">=</span><span class="n">WGS84</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">proj4</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">proj4</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="n">proj4</span> <span class="ow">is</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;proj4 not defined&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_proj4</span> <span class="o">=</span> <span class="n">proj4</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">proj4</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proj4</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">wkt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">sr</span> <span class="o">=</span> <span class="n">osr</span><span class="o">.</span><span class="n">SpatialReference</span><span class="p">()</span>
+        <span class="n">sr</span><span class="o">.</span><span class="n">ImportFromProj4</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proj4</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sr</span><span class="o">.</span><span class="n">ExportToWkt</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pyproj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">pyproj</span><span class="o">.</span><span class="n">Proj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proj4</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;proj4: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proj4</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Proj.from_proj4"><a class="viewcode-back" href="../../pyoints.html#pyoints.projection.Proj.from_proj4">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_proj4</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">proj4</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create `Proj` object from Proj4 format.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        proj4 : str</span>
+<span class="sd">            Coordinate projection definition in Proj4 format.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Proj</span><span class="p">(</span><span class="n">proj4</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Proj.from_wkt"><a class="viewcode-back" href="../../pyoints.html#pyoints.projection.Proj.from_wkt">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_wkt</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">wkt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create `Proj` object from Well Known Text.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        wkt : str</span>
+<span class="sd">            Coordinate projection definition in Well Known Text format.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">wkt</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;wkt&#39; needs to be a string&quot;</span><span class="p">)</span>
+        <span class="n">proj4</span> <span class="o">=</span> <span class="n">osr</span><span class="o">.</span><span class="n">SpatialReference</span><span class="p">(</span><span class="n">wkt</span><span class="o">=</span><span class="n">wkt</span><span class="p">)</span><span class="o">.</span><span class="n">ExportToProj4</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">proj4</span> <span class="ow">is</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;WKT unknown&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Proj</span><span class="o">.</span><span class="n">from_proj4</span><span class="p">(</span><span class="n">proj4</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Proj.from_epsg"><a class="viewcode-back" href="../../pyoints.html#pyoints.projection.Proj.from_epsg">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_epsg</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">epsg</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create `Proj` object from EPSG code.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        epsg : int</span>
+<span class="sd">            Coordinate projection definition in EPSG format.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">epsg</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;epsg&#39; needs to be an integer&quot;</span><span class="p">)</span>
+        <span class="n">sr</span> <span class="o">=</span> <span class="n">osr</span><span class="o">.</span><span class="n">SpatialReference</span><span class="p">()</span>
+        <span class="n">sr</span><span class="o">.</span><span class="n">ImportFromEPSG</span><span class="p">(</span><span class="n">epsg</span><span class="p">)</span>
+        <span class="n">proj4</span> <span class="o">=</span> <span class="n">sr</span><span class="o">.</span><span class="n">ExportToProj4</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">proj4</span> <span class="ow">is</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;epsg code &#39;</span><span class="si">%i</span><span class="s2">&#39; unknown&quot;</span> <span class="o">%</span> <span class="n">epsg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Proj</span><span class="o">.</span><span class="n">from_proj4</span><span class="p">(</span><span class="n">proj4</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="GeoTransform"><a class="viewcode-back" href="../../pyoints.html#pyoints.projection.GeoTransform">[docs]</a><span class="k">class</span> <span class="nc">GeoTransform</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Provides a coordinate transformation between different spatial reference</span>
+<span class="sd">    systems.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    from_proj,to_proj : `Proj`</span>
+<span class="sd">        Define the coordinate transformation form the origin projection system</span>
+<span class="sd">        `from_proj` to the target projection system `to_proj`.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    Transform coordinates.</span>
+
+<span class="sd">    &gt;&gt;&gt; wgs84 = Proj.from_epsg(4326)</span>
+<span class="sd">    &gt;&gt;&gt; gk2 = Proj.from_epsg(31466)</span>
+<span class="sd">    &gt;&gt;&gt; coords = [</span>
+<span class="sd">    ...     (6.842, 49.971),</span>
+<span class="sd">    ...     (6.847, 49.969),</span>
+<span class="sd">    ...     (6.902, 49.991),</span>
+<span class="sd">    ...     (6.922, 50.101)</span>
+<span class="sd">    ... ]</span>
+<span class="sd">    &gt;&gt;&gt; geoTransfrom = GeoTransform(wgs84, gk2)</span>
+
+<span class="sd">    &gt;&gt;&gt; tCoords = geoTransfrom(coords)</span>
+<span class="sd">    &gt;&gt;&gt; print(np.round(tCoords, 3))</span>
+<span class="sd">    [[2560446.801 5537522.386]</span>
+<span class="sd">     [2560808.009 5537303.984]</span>
+<span class="sd">     [2564724.211 5539797.116]</span>
+<span class="sd">     [2566007.32  5552049.646]]</span>
+
+<span class="sd">    Reverse transformation.</span>
+
+<span class="sd">    &gt;&gt;&gt; print(np.round(geoTransfrom(tCoords, reverse=True), 3))</span>
+<span class="sd">    [[ 6.842 49.971]</span>
+<span class="sd">     [ 6.847 49.969]</span>
+<span class="sd">     [ 6.902 49.991]</span>
+<span class="sd">     [ 6.922 50.101]]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_proj</span><span class="p">,</span> <span class="n">to_proj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">from_proj</span><span class="p">,</span> <span class="n">Proj</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to_proj</span><span class="p">,</span> <span class="n">Proj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;objects of type &#39;Proj&#39; required&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_from_proj</span> <span class="o">=</span> <span class="n">from_proj</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_to_proj</span> <span class="o">=</span> <span class="n">to_proj</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Applies the coordinate transformation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        coords : array_like(Number, shape=(n, k))</span>
+<span class="sd">            Represents `n` points of `k` dimensions to transform.</span>
+<span class="sd">        reverse : optional, bool</span>
+<span class="sd">            Indicate whether or not to apply the inverse transformation.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray(Number, shape=(n, k))</span>
+<span class="sd">            Transformed coordinates.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numarray</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reverse</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;reverse&#39; needs to be boolean&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">reverse</span><span class="p">:</span>
+            <span class="n">from_proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_proj</span>
+            <span class="n">to_proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from_proj</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">from_proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from_proj</span>
+            <span class="n">to_proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_proj</span>
+
+        <span class="c1"># get x and y coordinates</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_coords</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;malformed coordinate dimensions&#39;</span><span class="p">)</span>
+
+        <span class="c1"># coordinate projection</span>
+        <span class="n">t_xy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pyproj</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
+            <span class="n">from_proj</span><span class="o">.</span><span class="n">pyproj</span><span class="p">,</span>
+            <span class="n">to_proj</span><span class="o">.</span><span class="n">pyproj</span><span class="p">,</span>
+            <span class="n">x</span><span class="p">,</span>
+            <span class="n">y</span>
+        <span class="p">))</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="c1"># set new coordinates</span>
+        <span class="n">tCoords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">tCoords</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_xy</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tCoords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_xy</span>
+
+        <span class="k">return</span> <span class="n">tCoords</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../modules.html">Pyoints</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../pyoints.html">pyoints package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../modules.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Sebastian Lamprecht.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
