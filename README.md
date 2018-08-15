@@ -196,6 +196,23 @@ lamprecht@uni-trier.de
 License v3 or later (GPLv3+). See [LICENSE](LICENSE) for details.
 
 
+# Citing
+
+Cite `Pyoints` as:
+
+Sebastian Lamprecht (2018): "Pyoints: A python library to conveniently process 
+point cloud data", URL TODO, [Online; accessed <today>].
+
+```
+@Misc{,
+  author = {Sebastian Lamprecht},
+  organization = {Trier University}
+  title = {{Pyoints}: A python library to conveniently process point cloud data.},
+  year = {2018--},
+  url = "TODO",
+  note = {[Online; accessed <today>]}
+}
+```
 
 # Contact
 
