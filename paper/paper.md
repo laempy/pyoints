@@ -7,7 +7,7 @@ tags:
   - raster analysis
 authors:
   - name: Sebastian Lamprecht
-    orcid: TODO
+    orcid: 0000-0002-8963-2762
     affiliation: 1 # (Multiple affiliations must be quoted)
 affiliations:
  - name: Trier University
@@ -70,7 +70,6 @@ monitor hazelnut orchards.
 
 The source code for ``Pyoints`` has been archived to [@GitHub].
 
-![Logo.](figures/logo_pyoints.png)
 
 # Acknowledgements
 
