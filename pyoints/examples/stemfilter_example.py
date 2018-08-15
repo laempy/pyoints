@@ -8,7 +8,7 @@ Let's begin with loading the required modules.
 >>> import os
 >>> import numpy as np
 
->>> from pyoints.interpolate import LinearInterpolator
+>>> from pyoints.interpolate import KnnInterpolator
 >>> from pyoints import (
 ...     storage,
 ...     grid,
@@ -25,31 +25,31 @@ Let's begin with loading the required modules.
 First, we define an input and an output path.
 
 >>> inpath = os.path.join(
-...                 os.path.dirname(os.path.abspath(__file__)), '')
+...                 os.path.dirname(os.path.abspath(__file__)), 'data')
 >>> outpath = os.path.join(
 ...                 os.path.dirname(os.path.abspath(__file__)), 'output')
 
 
 After that, we load a input LAS point cloud.
 
->>> infile = os.path.join(inpath, 'plot17_subset.las')
+>>> infile = os.path.join(inpath, 'forest.las')
 >>> lasReader = storage.LasReader(infile)
 >>> las = lasReader.load()
 >>> print(len(las))
-10427269
+482981
 
 
 The algorithm idea begins with deriving a digital elevation model to calculate 
 the height above ground. We simply rasterize the point cloud by deriving the
 lowest z-coordinate of each cell.
 
->>> T = transformation.matrix(t=las.t.origin[:2], s=[0.3, 0.3])
+>>> T = transformation.matrix(t=las.t.origin[:2], s=[0.8, 0.8])
 >>> def aggregate_function(ids):
 ...     return las.coords[ids, 2].min() if len(ids) > 0 else np.nan
 >>> dtype = [('z', float)]
 >>> dem_grid = grid.voxelize(las, T, agg_func=aggregate_function, dtype=dtype)
 >>> print(dem_grid.shape)
-(34, 34)
+(9, 9)
 
 
 We save the DEM as a .tif-image.
@@ -60,7 +60,7 @@ We save the DEM as a .tif-image.
 
 We create a surface inerpolator.
 
->>> dem = LinearInterpolator(dem_grid.records().coords, dem_grid.records().z)
+>>> dem = KnnInterpolator(dem_grid.records().coords, dem_grid.records().z)
 
 
 For the stem detection we will focus on points with height above ground greater
@@ -69,7 +69,7 @@ For the stem detection we will focus on points with height above ground greater
 >>> height = las.coords[:, 2] - dem(las.coords)
 >>> s_ids = np.where(height > 0.5)[0]
 >>> print(len(s_ids))
-4768817
+251409
 
 
 We filter the point cloud using a small filter radius. Only a subset of points
@@ -78,7 +78,7 @@ is kept, with a point distance of at least 10 cm.
 >>> f_ids = list(filters.ball(las.indexKD(), 0.1, order=s_ids))
 >>> las = las[f_ids]
 >>> print(len(las))
-57537
+11181
 
 >>> outfile = os.path.join(outpath, 'stemfilter_ball_10.las')
 >>> storage.writeLas(las, outfile)
@@ -87,10 +87,10 @@ is kept, with a point distance of at least 10 cm.
 We only keep points with a lot of neighbours to reduce noise. 
 
 >>> count = las.indexKD().ball_count(0.3)
->>> mask = count > 20
+>>> mask = count > 10
 >>> las = las[mask]
 >>> print(len(las))
-35492
+8154
 
 >>> outfile = os.path.join(outpath, 'stemfilter_denoised.las')
 >>> storage.writeLas(las, outfile)
@@ -103,7 +103,7 @@ arranged in straight lines.
 >>> f_ids = list(filters.ball(las.indexKD(), 1.0))
 >>> las = las[f_ids]
 >>> print(len(las))
-425
+189
 
 >>> outfile = os.path.join(outpath, 'stemfilter_ball_100.las')
 >>> storage.writeLas(las, outfile)
@@ -116,7 +116,7 @@ have 2 to 3 neighbouring points within a radius of 1.5 m.
 >>> mask = np.all((count >= 2, count <= 3), axis=0)
 >>> las = las[mask]
 >>> print(len(las))
-132
+84
 
 >>> outfile = os.path.join(outpath, 'stemfilter_linear.las')
 >>> storage.writeLas(las, outfile)
@@ -128,9 +128,9 @@ stems by clustering the points.
 >>> cluster_indices = clustering.dbscan(las.indexKD(), 2, epsilon=1.5)
 
 >>> print(len(cluster_indices))
-132
+84
 >>> print(np.unique(cluster_indices))
-[-1  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17]
+[-1  0  1  2  3  4  5]
 
 
 In the next step we remove small clusters and unassigned points.
@@ -139,7 +139,7 @@ In the next step we remove small clusters and unassigned points.
 >>> cluster_indices = classification.dict_to_classes(cluster_dict, len(las))
 
 >>> print(sorted(cluster_dict.keys()))
-[3, 5, 7, 14, 16]
+[0, 1, 3, 5]
 
 
 We add an additional field to the point cloud to store the tree number.

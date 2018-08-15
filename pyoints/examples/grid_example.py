@@ -19,13 +19,14 @@
 Define input and output path.
 
 >>> inpath = os.path.join(
-...                 os.path.dirname(os.path.abspath(__file__)), '')
+...                 os.path.dirname(os.path.abspath(__file__)), 'data')
 >>> outpath = os.path.join(
 ...                 os.path.dirname(os.path.abspath(__file__)), 'output')
 
+
 Select a input LAS point cloud.
 
->>> infile = os.path.join(inpath, 'plot17_subset.las')
+>>> infile = os.path.join(inpath, 'forest.las')
 >>> lasReader = storage.LasReader(infile)
 >>> las = lasReader.load()
 
@@ -40,25 +41,25 @@ are grouped to an individual point cloud.
 Let's inspect the properties of the raster.
 
 >>> print(raster.shape)
-(5, 10)
+(4, 7)
 >>> print(raster.dtype)
 object
 >>> print(len(raster[0, 0]))
-187284
+11473
 >>> print(sorted(raster[0, 0].dtype.descr))
-[('classification', '|u1'), ('coords', '<f8', (3,)), ('intensity', '<u2'), ('user_data', '|u1')]
-
+[('classification', '|u1'), ('coords', '<f8', (3,)), ('intensity', '<u2')]
+ 
 
 We can save the points of specific cells indiviudally.
 
 >>> outfile = os.path.join(outpath, 'grid_cell.las')
->>> storage.writeLas(raster[3, 5], outfile)
+>>> storage.writeLas(raster[2, 1], outfile)
 
 
 We create a new raster, aggregating the point cloud data in a more specific
 manner.
 
->>> T = transformation.matrix(t=las.t.origin[:2], s=[0.5, 0.5])
+>>> T = transformation.matrix(t=las.t.origin[:2], s=[0.3, 0.3])
 >>> def aggregate_function(ids):
 ...     z = las.coords[ids, 2]
 ...     n = len(ids)
@@ -72,7 +73,7 @@ manner.
 >>> raster = Grid(las.proj, raster, T)
 
 >>> print(raster.shape)
-(20, 20)
+(24, 24)
 >>> print(sorted(raster.dtype.descr))
 [('cell_count', '<i8'), ('coords', '<f8', (2,)), ('z', '<f8', (3,))]
 
@@ -101,9 +102,10 @@ Now let's create a three dimensional voxel space.
 >>> voxels = Grid(las.proj, voxels, T)
 
 >>> print(voxels.shape)
-(63, 25, 25)
+(61, 18, 18)
 >>> print(sorted(voxels.dtype.descr))
 [('cell_count', '<i8'), ('coords', '<f8', (3,)), ('intensity', '<i8')]
+
 
 Finally save only the non empty voxel cells.
 
