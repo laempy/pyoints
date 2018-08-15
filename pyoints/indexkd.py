@@ -41,7 +41,7 @@ class IndexKD(object):
     coords : array_like(Number, shape=(n, k))
         Represents `n` data points of `k` dimensions in a Cartesian coordinate
         system.
-    transform : optional, array_like(Number, shape=(k+1, k+1))
+    T : optional, array_like(Number, shape=(k+1, k+1))
         Represents any kind of transformation matrix applied to the coordinates
         before index computation.
     leafsize : optional, positive int
@@ -113,7 +113,7 @@ class IndexKD(object):
     def __init__(
             self,
             coords,
-            transform=None,
+            T=None,
             leafsize=16,
             quickbuild=True,
             copy=True):
@@ -132,11 +132,11 @@ class IndexKD(object):
         self._balanced = not quickbuild
         self._compact = not quickbuild
 
-        if transform is None:
+        if T is None:
             self._coords = coords
             self._t = transformation.i_matrix(self._coords.shape[1])
         else:
-            self._t = assertion.ensure_tmatrix(transform)
+            self._t = assertion.ensure_tmatrix(T)
             self._coords = transformation.transform(coords, self._t)
 
     def __len__(self):
@@ -389,6 +389,9 @@ class IndexKD(object):
         ball_iter, balls_iter
 
         """
+        if coords is None:
+            coords = self.coords
+        
         if hasattr(r, '__iter__'):
             nIdsGen = self.balls_iter(coords, r, **kwargs)
         else:
