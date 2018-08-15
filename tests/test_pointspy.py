@@ -83,7 +83,11 @@ def load_tests(loader, tests, ignore):
     tests.addTests(get_tests(pyoints.surface))
     tests.addTests(get_tests(pyoints.transformation))
     tests.addTests(get_tests(pyoints.vector))
-    tests.addTests(get_tests(pyoints.examples))
+
+    # tests.addTests(get_tests(pyoints.examples.file_examples))
+    # tests.addTests(get_tests(pyoints.examples.base_example))
+    # tests.addTests(get_tests(pyoints.examples.grid_example))
+    # tests.addTests(get_tests(pyoints.examples.stemfilter_example))
 
     return tests
 
