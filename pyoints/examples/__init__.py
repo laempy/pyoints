@@ -19,5 +19,6 @@
 from . import (
     file_examples,
     base_example,
+    grid_example,
     stemfilter_example,
 )

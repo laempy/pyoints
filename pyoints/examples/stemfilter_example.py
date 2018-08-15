@@ -1,4 +1,4 @@
-"""In this tutorial we try to dectect stems in a forest using a point cloud
+"""In this example we try to dectect stems in a forest using a point cloud
 of terrestrial laser scans. A couple of .las-files will be generated, which
 should be inspected with software like CloudCompare.
 
@@ -7,13 +7,16 @@ Let's begin with loading the required modules.
 
 >>> import os
 >>> import numpy as np
+
+>>> from pyoints.interpolate import LinearInterpolator
 >>> from pyoints import (
 ...     storage,
+...     grid,
+...     transformation,
 ...     filters,
 ...     clustering,
 ...     classification,
 ...     vector,
-...     Surface,
 ...     GeoRecords,
 ...     interpolate,
 ... )
@@ -37,21 +40,27 @@ After that, we load a input LAS point cloud.
 
 
 The algorithm idea begins with deriving a digital elevation model to calculate 
-the height above ground. So we load all points classified as ground `grd`.
+the height above ground. We simply rasterize the point cloud by deriving the
+lowest z-coordinate of each cell.
 
->>> grd = las.grd()
->>> f_ids = filters.dem_filter(grd.coords, 0.5)
->>> grd = grd[f_ids]
->>> print(len(grd))
-299
+>>> T = transformation.matrix(t=las.t.origin[:2], s=[0.3, 0.3])
+>>> def aggregate_function(ids):
+...     return las.coords[ids, 2].min() if len(ids) > 0 else np.nan
+>>> dtype = [('z', float)]
+>>> dem_grid = grid.voxelize(las, T, agg_func=aggregate_function, dtype=dtype)
+>>> print(dem_grid.shape)
+(34, 34)
 
->>> dem = Surface(grd.coords)
+
+We save the DEM as a .tif-image.
+
+>>> outfile = os.path.join(outpath, 'stemfilter_dem.tif')
+>>> storage.writeRaster(dem_grid, outfile, field='z')
 
 
-We save the ground points in a seperate .las-file.
+We create a surface inerpolator.
 
->>> outfile = os.path.join(outpath, 'stemfilter_dem.las')
->>> storage.writeLas(grd, outfile)
+>>> dem = LinearInterpolator(dem_grid.records().coords, dem_grid.records().z)
 
 
 For the stem detection we will focus on points with height above ground greater
@@ -60,7 +69,7 @@ For the stem detection we will focus on points with height above ground greater
 >>> height = las.coords[:, 2] - dem(las.coords)
 >>> s_ids = np.where(height > 0.5)[0]
 >>> print(len(s_ids))
-4967153
+4768817
 
 
 We filter the point cloud using a small filter radius. Only a subset of points
@@ -69,7 +78,7 @@ is kept, with a point distance of at least 10 cm.
 >>> f_ids = list(filters.ball(las.indexKD(), 0.1, order=s_ids))
 >>> las = las[f_ids]
 >>> print(len(las))
-59931
+57537
 
 >>> outfile = os.path.join(outpath, 'stemfilter_ball_10.las')
 >>> storage.writeLas(las, outfile)
@@ -81,7 +90,7 @@ We only keep points with a lot of neighbours to reduce noise.
 >>> mask = count > 20
 >>> las = las[mask]
 >>> print(len(las))
-37210
+35492
 
 >>> outfile = os.path.join(outpath, 'stemfilter_denoised.las')
 >>> storage.writeLas(las, outfile)
@@ -94,7 +103,7 @@ arranged in straight lines.
 >>> f_ids = list(filters.ball(las.indexKD(), 1.0))
 >>> las = las[f_ids]
 >>> print(len(las))
-440
+425
 
 >>> outfile = os.path.join(outpath, 'stemfilter_ball_100.las')
 >>> storage.writeLas(las, outfile)
@@ -107,7 +116,7 @@ have 2 to 3 neighbouring points within a radius of 1.5 m.
 >>> mask = np.all((count >= 2, count <= 3), axis=0)
 >>> las = las[mask]
 >>> print(len(las))
-134
+132
 
 >>> outfile = os.path.join(outpath, 'stemfilter_linear.las')
 >>> storage.writeLas(las, outfile)
@@ -119,9 +128,9 @@ stems by clustering the points.
 >>> cluster_indices = clustering.dbscan(las.indexKD(), 2, epsilon=1.5)
 
 >>> print(len(cluster_indices))
-134
+132
 >>> print(np.unique(cluster_indices))
-[-1  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16]
+[-1  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17]
 
 
 In the next step we remove small clusters and unassigned points.
@@ -129,8 +138,8 @@ In the next step we remove small clusters and unassigned points.
 >>> cluster_dict = classification.classes_to_dict(cluster_indices, min_size=5)
 >>> cluster_indices = classification.dict_to_classes(cluster_dict, len(las))
 
->>> print(list(cluster_dict.keys()))
-[16, 3, 4, 7, 13, 15]
+>>> print(sorted(cluster_dict.keys()))
+[3, 5, 7, 14, 16]
 
 
 We add an additional field to the point cloud to store the tree number.
