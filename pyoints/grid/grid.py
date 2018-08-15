@@ -19,17 +19,14 @@
 """
 
 import numpy as np
+import pandas
 
 from .. import (
     assertion,
     nptools,
     projection,
     GeoRecords,
-    Extent
-)
-
-from . import (
-    convert
+    Extent,
 )
 
 from .transformation import (
@@ -301,6 +298,7 @@ class Grid(GeoRecords):
         slices = [slice(min_idx[i], max_idx[i], 1) for i in range(self.dim)]
         return self[slices]
 
+
     def voxelize(self, rec, **kwargs):
         """Convert a point cloud to a voxel or raster.
 
@@ -346,4 +344,143 @@ class Grid(GeoRecords):
          [3.  2. ]]
 
         """
-        return convert.voxelize(rec, self.t, shape=self.shape, **kwargs)
+        return voxelize(rec, self.t, shape=self.shape, **kwargs)
+
+
+def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
+    """Aggregate a point cloud to a voxel or raster.
+
+    Parameters
+    ----------
+    rec : np.recarray(shape=(n, )) or GeoRecords
+        Numpy record array of `n` points to voxelize. It requires a two
+        dimensional field 'coords' associated with `k` dimensional coordinates.
+    T : array_like(Number, shape=(m+1, m+1))
+        Transformation matrix defining the `m <= k` dimensional voxel system.
+    shape : optional, array_like(int, shape=(m))
+        Shape of the output voxel space. If None, `shape` is fit to
+        `rec.coords`.
+    agg_func : optional, callable
+        Function to aggregate the record array. If None, `agg_func` set to
+        `lambda ids: rec[ids]`.
+    dtype : optional, np.dtype
+        Output data type. If None, set to automatically.
+
+    Returns
+    -------
+    np.ndarray or np.recarray(dtype=dtype) or Grid
+        Desired `m` dimensional matrix. If `rec` is an istance of `GeoRecords`
+        and `dtype` has named fields, an instance of `Grid` is returned. If
+        no point falls within `T`, None is returned.
+
+    See Also
+    --------
+    Grid, np.apply_function
+
+    Examples
+    --------
+
+    >>> from pyoints import transformation
+
+    Create record array with coordinates.
+
+    >>> coords = [(0, 0), (1, 0.5), (2, 2), (4, 6), (3, 2), (1, 5), (3, 0)]
+    >>> rec = np.recarray(len(coords), dtype=[('coords', float, 2)])
+    >>> rec['coords'] = coords
+
+    Voxelize records.
+
+    >>> T = transformation.matrix(s=(2.5, 3), t=[0, 0])
+    >>> grid = voxelize(rec, T)
+
+    >>> print(grid.dtype)
+    object
+    >>> print(grid.shape)
+    (3, 2)
+    >>> print(grid[0, 0].coords)
+    [[0.  0. ]
+     [1.  0.5]
+     [2.  2. ]]
+
+    Voxelize with aggregation function.
+
+    >>> dtype = [('points', type(rec)), ('count', int)]
+    >>> agg_func = lambda ids: (rec[ids], len(ids))
+    >>> grid = voxelize(rec, T, agg_func=agg_func, dtype=dtype)
+
+    >>> print(grid.dtype.descr)
+    [('points', '|O'), ('count', '<i8')]
+    >>> print(grid.shape)
+    (3, 2)
+    >>> print(grid.count)
+    [[3 2]
+     [1 0]
+     [0 1]]
+    >>> print(grid[0, 0].points.coords)
+    [[0.  0. ]
+     [1.  0.5]
+     [2.  2. ]]
+
+    Voxelize three dimensional coordinates to recieve a two dimensional raster.
+
+    >>> coords = [(0, 0, 1), (-2, 0.3, 5), (2, 2, 3), (4, 6, 2), (3, 2, 1)]
+    >>> rec = np.recarray(len(coords), dtype=[('coords', float, 3)])
+    >>> rec['coords'] = coords
+
+    >>> T = transformation.matrix(s=(2.5, 3), t=[0, 0])
+    >>> grid = voxelize(rec, T)
+    >>> print(grid.shape)
+    (3, 2)
+    >>> print(grid[0, 0].coords)
+    [[0. 0. 1.]
+     [2. 2. 3.]]
+
+    """
+    if not isinstance(rec, np.recarray):
+        raise TypeError("'rec' need an instance of np.recarray")
+    if 'coords' not in rec.dtype.names:
+        raise ValueError("'rec' requires field 'coords'")
+
+    if agg_func is None:
+        def agg_func(ids): return rec[ids]
+    elif not callable(agg_func):
+        raise ValueError("'agg_func' needs to be callable")
+
+    coords = assertion.ensure_coords(rec.coords, min_dim=T.dim)
+    keys = coords_to_keys(T, coords[:, :T.dim])
+
+    if shape is None:
+        shape = keys.max(0)[:T.dim] + 1
+    else:
+        shape = assertion.ensure_shape(shape, dim=T.dim)
+    if np.any(np.array(shape)<0):
+        return None
+
+    # group keys
+    df = pandas.DataFrame({'indices': keys_to_indices(keys, shape)})
+    groupDict = df.groupby(by=df.indices).groups
+    keys = indices_to_keys(list(groupDict.keys()), shape)
+
+    # cut by extent
+    min_mask = np.all(keys >= 0, axis=1)
+    max_mask = np.all(keys < shape, axis=1)
+    mask = np.where(np.all((min_mask, max_mask), axis=0))[0]
+
+    # create lookup array
+    lookup = np.empty(shape, dtype=list)
+    lookup.fill([])
+
+    values = list(groupDict.values())
+    lookup[tuple(keys[mask].T.tolist())] = [values[i] for i in mask]
+
+    # Aggregate per cell
+    try:
+        res = nptools.apply_function(lookup, agg_func, dtype=dtype)
+    except:
+        m = "aggregation failed, please check 'agg_func' and 'dtype'"
+        raise ValueError(m)
+        
+    if isinstance(rec, GeoRecords) and isinstance(res, np.recarray):
+        res = Grid(rec.proj, res, T)
+
+    return res

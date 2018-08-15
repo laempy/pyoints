@@ -16,6 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # END OF LICENSE NOTE
 """Handling of grid objects, like image rasters or voxels."""
-from .grid import Grid
-from .convert import *
+
+from .grid import *
 from .transformation import *
