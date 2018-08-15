@@ -2,7 +2,7 @@
 
 ![logo](figures/logo_pyoints.png)
 
-``Pyoints`` is a python library to conveniently process and analyze point
+``Pyoints`` is a python package to conveniently process and analyze point
 cloud data, voxels and raster images. It is intended to be used to support
 the development of advanced algorithms for geo-data processing.
 
@@ -200,8 +200,8 @@ License v3 or later (GPLv3+). See [LICENSE](LICENSE) for details.
 
 Please cite `Pyoints` as:
 
-Sebastian Lamprecht (2018): "Pyoints: A python library to conveniently process 
-point cloud data", URL TODO, [Online; accessed date].
+Sebastian Lamprecht (2018): "Pyoints: A Python package for point cloud, voxel 
+and raster processing.", URL TODO, [Online; accessed date].
 
 ```
 @Misc{,
