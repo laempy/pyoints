@@ -198,16 +198,16 @@ License v3 or later (GPLv3+). See [LICENSE](LICENSE) for details.
 
 # Citing
 
-Cite `Pyoints` as:
+Please cite `Pyoints` as:
 
 Sebastian Lamprecht (2018): "Pyoints: A python library to conveniently process 
-point cloud data", URL TODO, [Online; accessed <today>].
+point cloud data", URL TODO, [Online; accessed date].
 
 ```
 @Misc{,
   author = {Sebastian Lamprecht},
   organization = {Trier University}
-  title = {{Pyoints}: A python library to conveniently process point cloud data.},
+  title = {{Pyoints}: A Python package for point cloud, voxel and raster processing.},
   year = {2018--},
   url = "TODO",
   note = {[Online; accessed <today>]}
