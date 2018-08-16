@@ -22,10 +22,8 @@
 
 import numpy as np
 
-from . import (
-    projection,
-    GeoRecords
-)
+from .. import projection
+from ..georecords import GeoRecords
 
 
 def create_random_GeoRecords(center=None, epsg=25832, dim=3, n=1000, scale=10):

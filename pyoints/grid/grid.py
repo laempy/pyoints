@@ -25,9 +25,9 @@ from .. import (
     assertion,
     nptools,
     projection,
-    GeoRecords,
-    Extent,
 )
+from .. georecords import GeoRecords
+from .. extent import Extent
 
 from .transformation import (
     keys_to_coords,

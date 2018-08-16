@@ -19,19 +19,20 @@ import os
 import numpy as np
 import datetime
 from affine import Affine
-
 from osgeo import (
     gdal,
     osr,
 )
+
 from .BaseGeoHandler import GeoFile
+from ..extent import Extent
 from .. import (
     grid,
     nptools,
     projection,
     transformation,
-    Extent,
 )
+
 
 
 class RasterReader(GeoFile):

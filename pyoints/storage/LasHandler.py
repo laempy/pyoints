@@ -22,8 +22,8 @@ import os
 import numpy as np
 import laspy
 
-from .. extent import Extent
-from .. georecords import (
+from ..extent import Extent
+from ..georecords import (
     GeoRecords,
     LasRecords,
 )
