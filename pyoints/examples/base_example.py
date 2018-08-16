@@ -1,4 +1,22 @@
-"""In this example we learn the basics of point cloud processing using Pyoints. 
+# BEGIN OF LICENSE NOTE
+# This file is part of Pyoints.
+# Copyright (c) 2018, Sebastian Lamprecht, Trier University,
+# lamprecht@uni-trier.de
+#
+# Pyoints is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Pyoints is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
+# END OF LICENSE NOTE
+"""In this example we learn the basics of point cloud processing using Pyoints.
 
 
 We begin with loading the required modules.
@@ -80,7 +98,7 @@ Take a look at the extent in 2D and 3D
 [364187.98, 5509577.71, -1.58, 364194.95, 5509584.71, 28.78]
 
 
-Now we take a closer look at the spatial index. We begin with selecting all 
+Now we take a closer look at the spatial index. We begin with selecting all
 points close to the corners of the point cloud.
 
 >>> radius = 1.0
@@ -94,10 +112,10 @@ points close to the corners of the point cloud.
  [ 364195 5509585      29]
  [ 364195 5509578      29]
  [ 364188 5509578      29]]
-    
+
 
 But, before we select the points, we count the number of neighbours within the
-radius. 
+radius.
 
 >>> count = las.indexKD().ball_count(radius, coords=corners)
 >>> print(count)
@@ -111,9 +129,9 @@ OK, now we actually select the points.
 8
 
 
-For each point we recieve a list of indices. So we concatenate them to save 
+For each point we recieve a list of indices. So we concatenate them to save
 the resulting subset as a point cloud.
- 
+
 >>> n_ids = np.concatenate(n_ids).astype(int)
 >>> print(len(n_ids))
 8988
@@ -122,7 +140,7 @@ the resulting subset as a point cloud.
 >>> storage.writeLas(las[n_ids], outfile)
 
 
-We also can select the `k` nearest neighbours. 
+We also can select the `k` nearest neighbours.
 
 >>> dists, n_ids = las.indexKD().knn(corners, k=2)
 
@@ -158,7 +176,7 @@ Again, we save the resulting subset.
 >>> storage.writeLas(las[n_ids], outfile)
 
 
-If we need to select points in the shape of an ellipsoid, we also can create a 
+If we need to select points in the shape of an ellipsoid, we also can create a
 scaled spatial index. Doing so, each coordinate axis is scaled individually.
 
 >>> T = transformation.s_matrix([1.5, 0.9, 0.5])

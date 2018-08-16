@@ -1,19 +1,20 @@
 # BEGIN OF LICENSE NOTE
 # This file is part of Pyoints.
-# Copyright (c) 2018, Sebastian Lamprecht, Trier University, 
+# Copyright (c) 2018, Sebastian Lamprecht, Trier University,
 # lamprecht@uni-trier.de
-# 
+#
 # Pyoints is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # Pyoints is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
+# along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
 # END OF LICENSE NOTE
 """Multidimensional transformation matrices and coordinate transformations.
 """
@@ -94,23 +95,24 @@ def transform(coords, T, inverse=False, precise=False):
     T = np.asarray(T)
     if len(coords) == 0 or coords.shape[0] == 0:
         raise ValueError("can not transform empty array")
-
     elif len(coords.shape) == 1 and coords.shape[0] == T.shape[0] - 1:
         # single point
-        return np.dot(np.append(coords, 1), T.T)[0: -1]
+        tcoords = np.dot(np.append(coords, 1), T.T)[0: -1]
     elif len(coords.shape) == 2 and coords.shape[1] == T.shape[0] - 1:
         # multiple points
         if precise:
             # precise, but slow
-            return np.dot(homogenious(coords), T.T)[:, 0:-1]
+            tcoords = np.dot(homogenious(coords), T.T)[:, 0:-1]
         else:
             # fast, but not very precise
-            return cv2.transform(
+            tcoords = cv2.transform(
                 np.expand_dims(coords.astype(np.float64), axis=0),
                 T
             )[0][:, 0:-1]
     else:
         raise ValueError("dimensions do not match")
+
+    return tcoords.view(coords.__class__)
 
 
 def homogenious(coords, value=1):

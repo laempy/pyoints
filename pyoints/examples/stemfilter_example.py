@@ -1,3 +1,21 @@
+# BEGIN OF LICENSE NOTE
+# This file is part of Pyoints.
+# Copyright (c) 2018, Sebastian Lamprecht, Trier University,
+# lamprecht@uni-trier.de
+#
+# Pyoints is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Pyoints is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
+# END OF LICENSE NOTE
 """In this example we try to dectect stems in a forest using a point cloud
 of terrestrial laser scans. A couple of .las-files will be generated, which
 should be inspected with software like CloudCompare.
@@ -39,7 +57,7 @@ After that, we load a input LAS point cloud.
 482981
 
 
-The algorithm idea begins with deriving a digital elevation model to calculate 
+The algorithm idea begins with deriving a digital elevation model to calculate
 the height above ground. We simply rasterize the point cloud by deriving the
 lowest z-coordinate of each cell.
 
@@ -84,7 +102,7 @@ is kept, with a point distance of at least 10 cm.
 >>> storage.writeLas(las, outfile)
 
 
-We only keep points with a lot of neighbours to reduce noise. 
+We only keep points with a lot of neighbours to reduce noise.
 
 >>> count = las.indexKD().ball_count(0.3)
 >>> mask = count > 10
@@ -97,7 +115,7 @@ We only keep points with a lot of neighbours to reduce noise.
 
 
 Now, we will filter with a radius of 1 m. This results in a point cloud
-with point distances of at least 1 m. Here points associated with stems are 
+with point distances of at least 1 m. Here points associated with stems are
 arranged in straight lines.
 
 >>> f_ids = list(filters.ball(las.indexKD(), 1.0))
@@ -108,7 +126,7 @@ arranged in straight lines.
 >>> outfile = os.path.join(outpath, 'stemfilter_ball_100.las')
 >>> storage.writeLas(las, outfile)
 
-For dense point clouds the filtering technique results in point distances 
+For dense point clouds the filtering technique results in point distances
 between 1 m and 2 m. So, we can assume that linear arranged points should
 have 2 to 3 neighbouring points within a radius of 1.5 m.
 
@@ -122,7 +140,7 @@ have 2 to 3 neighbouring points within a radius of 1.5 m.
 >>> storage.writeLas(las, outfile)
 
 
-Now the stems are clearly visible in the point cloud. So, we can detect the 
+Now the stems are clearly visible in the point cloud. So, we can detect the
 stems by clustering the points.
 
 >>> cluster_indices = clustering.dbscan(las.indexKD(), 2, epsilon=1.5)
@@ -150,7 +168,7 @@ We add an additional field to the point cloud to store the tree number.
 >>> storage.writeLas(las, outfile)
 
 
-Now we can fit a vector to each stem. You should take a close look at the 
+Now we can fit a vector to each stem. You should take a close look at the
 characteristics of the `Vector` object.
 
 >>> stems = {}

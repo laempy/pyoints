@@ -1,19 +1,20 @@
 # BEGIN OF LICENSE NOTE
 # This file is part of Pyoints.
-# Copyright (c) 2018, Sebastian Lamprecht, Trier University, 
+# Copyright (c) 2018, Sebastian Lamprecht, Trier University,
 # lamprecht@uni-trier.de
-# 
+#
 # Pyoints is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # Pyoints is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
+# along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
 # END OF LICENSE NOTE
 """A generic spatial index.
 """
@@ -74,16 +75,16 @@ class IndexKD(object):
     --------
 
     Create a simple spatial index.
-    
+
     >>> coords = np.indices((5, 10)).reshape((2, 50)).T
     >>> indexKD = IndexKD(coords)
     >>> len(indexKD)
     50
     >>> indexKD.dim
     2
-    
+
     Query points within a sphere.
-    
+
     >>> nids = indexKD.ball([0, 0], 1.1)
     >>> print(nids)
     [0, 1, 10]
@@ -91,13 +92,13 @@ class IndexKD(object):
     [[0 0]
      [0 1]
      [1 0]]
-    
+
     Scale the coordinates using a transformation matrix to enable queries
     in the shape of an ellipsoid.
 
     >>> T = [(0.5, 0, 0), (0, 0.8, 0), (0, 0, 1)]
     >>> indexKD = IndexKD(coords, T)
-    
+
     >>> nids = indexKD.ball([0, 0], 1.1)
     >>> print(nids)
     [0, 1, 20, 10, 11]
@@ -230,14 +231,14 @@ class IndexKD(object):
 
         Parameters
         ----------
-        coords : array_like(Number, shape=(n, k)) 
+        coords : array_like(Number, shape=(n, k))
             Represents `n` data points of `k` dimensions.
         r : positive float
             Radius of ball.
         bulk : optional, positive int
             Reduce required memory by performing bulk queries.
         \*\*kwargs : optional
-            Additional parameters passed to 
+            Additional parameters passed to
             `scipy.spatial.cKDTree.query_ball_point`
 
         Returns
@@ -329,9 +330,9 @@ class IndexKD(object):
             Represents `n` points of `k` dimensions. If None it is set to
             `self.coords`.
         \*\*kwargs : optional
-            Additional parameters passed to 
+            Additional parameters passed to
             `scipy.spatial.cKDTree.query_ball_point`
-            
+
         Returns
         -------
         numpy.ndarray(int, shape=(n))
@@ -376,7 +377,7 @@ class IndexKD(object):
             Represents `n` points of `k` dimensions. If None it is set to
             `self.coords`.
         \*\*kwargs : optional
-            Additional parameters passed to 
+            Additional parameters passed to
             `scipy.spatial.cKDTree.query_ball_point`
 
         Yields
@@ -391,7 +392,7 @@ class IndexKD(object):
         """
         if coords is None:
             coords = self.coords
-        
+
         if hasattr(r, '__iter__'):
             nIdsGen = self.balls_iter(coords, r, **kwargs)
         else:
@@ -410,7 +411,7 @@ class IndexKD(object):
         coord : array_like(Number, shape=(k))
             Center of sphere.
         \*\*kwargs : optional
-            Additional parameters passed to 
+            Additional parameters passed to
             `scipy.spatial.cKDTree.query_ball_point`
 
         Returns
@@ -446,17 +447,17 @@ class IndexKD(object):
 
         Parameters
         ----------
-        coords : array_like(Number, shape=(n, k)) 
+        coords : array_like(Number, shape=(n, k))
             Represents `n` points of `k` dimensions.
-        k : optional, positive int 
+        k : optional, positive int
             Number of nearest numbers to return.
         \*\*kwargs : optional
-            Additional parameters passed to 
+            Additional parameters passed to
             `scipy.spatial.cKDTree.query_ball_point`
 
         Returns
         -------
-        dists : np.ndarray(Number, shape=(n, k)) 
+        dists : np.ndarray(Number, shape=(n, k))
             Distances to nearest neihbours.
         indices : np.ndarray(int, shape=(n, k))
             Indices of nearest neihbours.
@@ -510,11 +511,11 @@ class IndexKD(object):
 
         Yields
         -------
-        dists : np.ndarray(Number, shape=(k)) 
+        dists : np.ndarray(Number, shape=(k))
             List of distances to nearest neighbours.
-        indices : np.ndarray(int, shape=(k)) 
+        indices : np.ndarray(int, shape=(k))
             List of and corresponding point indices.
-            
+
         See Also
         --------
         knn, knns_iter
@@ -539,12 +540,12 @@ class IndexKD(object):
         ----------
         ks : iterable of int
             Iterable numbers of neighbours to query.
-            
+
         Yields
         -------
-        dists : np.ndarray(Number, shape=(k)) 
+        dists : np.ndarray(Number, shape=(k))
             List of distances to nearest neighbours.
-        indices : np.ndarray(int, shape=(k)) 
+        indices : np.ndarray(int, shape=(k))
             List of and corresponding point indices.
 
         See Also
@@ -624,7 +625,7 @@ class IndexKD(object):
         See Also
         --------
         ball
-        
+
         """
         return self.ball(coords, r, p=np.inf, **kwargs)
 

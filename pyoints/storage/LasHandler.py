@@ -1,19 +1,20 @@
 # BEGIN OF LICENSE NOTE
 # This file is part of Pyoints.
-# Copyright (c) 2018, Sebastian Lamprecht, Trier University, 
+# Copyright (c) 2018, Sebastian Lamprecht, Trier University,
 # lamprecht@uni-trier.de
-# 
+#
 # Pyoints is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # Pyoints is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
+# along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
 # END OF LICENSE NOTE
 """Hanlding of .las-files.
 """
@@ -178,7 +179,7 @@ class LasReader(GeoFile):
         ]  # ugly workaround to get actual strings
 
         points = lasFile.points['point'].copy().view(np.recarray)
-        
+
         # Close File
         lasFile.close()
         del lasFile
@@ -328,7 +329,6 @@ def writeLas(geoRecords, outfile):
     lasFile.header.update_min_max()
     lasFile.close()
     del lasFile
-
 
 
 def _updateLasHeader(las_file, offset=None, translate=None, precision=None):

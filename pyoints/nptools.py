@@ -1,19 +1,20 @@
 # BEGIN OF LICENSE NOTE
 # This file is part of Pyoints.
-# Copyright (c) 2018, Sebastian Lamprecht, Trier University, 
+# Copyright (c) 2018, Sebastian Lamprecht, Trier University,
 # lamprecht@uni-trier.de
-# 
+#
 # Pyoints is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # Pyoints is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
+# along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
 # END OF LICENSE NOTE
 """Functions for convienient handling of numpy arrays.
 """
@@ -768,14 +769,14 @@ def apply_function(arr, func, dtype=None):
     >>> print(apply_function(arr, func, dtype=[('c', float), ('d', int)]))
     [[(1.,  0) (3.,  1)]
      [(5.,  8) (7., 81)]]
-    
+
     Specify a multi-dimensional output data type.
-    
+
     >>> func = lambda record: (record.a + 2, [record.a ** 2, record.b * 3])
     >>> print(apply_function(arr, func, dtype=[('c', float), ('d', int, 2)]))
     [[(2., [ 0,  3]) (3., [ 1,  6])]
      [(4., [ 4,  9]) (5., [ 9, 12])]]
-    
+
     >>> func = lambda record: ([record.a ** 2, record.b * 3],)
     >>> print(apply_function(arr, func, dtype=[('d', int, 2)]))
     [[([ 0,  3],) ([ 1,  6],)]
@@ -796,9 +797,9 @@ def apply_function(arr, func, dtype=None):
         res = np.array(values, dtype=dtype).reshape(arr.shape)
     else:
         res = np.array(
-                values, dtype=dtype).reshape(arr.shape).view(np.recarray)
+            values, dtype=dtype).reshape(arr.shape).view(np.recarray)
     return res
-       
+
 
 def indices(shape, flatten=False):
     """Create keys or indices of a numpy ndarray.
@@ -878,58 +879,58 @@ def indices(shape, flatten=False):
 
 def range_filter(arr, min_value=-np.inf, max_value=np.inf):
     """Filter values by range.
-    
+
     Parameters
     ----------
-    
+
     arr : array_like(Number)
         Numeric array to filter.
     min_value,max_value : Number
-        Minimum and maximum values to define the desired value range 
+        Minimum and maximum values to define the desired value range
         `[min_value, max_value]` of `arr`.
-        
+
     Returns
     -------
     np.ndarray(int)
         Indices of all values of `arr` in the desired range.
-    
+
     Examples
     --------
-    
+
     Filter a one dimensional array.
-    
+
     >>> a = [0, 2, 1, -1, 5, 7, 9, 4, 3, 2, -2, -11]
-    
+
     >>> indices = range_filter(a, min_value=0)
     >>> print(indices)
     [0 1 2 4 5 6 7 8 9]
-    
+
     >>> indices = range_filter(a, max_value=5)
     >>> print(indices)
     [ 0  1  2  3  4  7  8  9 10 11]
-    
+
     >>> indices = range_filter(a, min_value=0, max_value=5)
     >>> print(indices)
     [0 1 2 4 7 8 9]
     >>> print(np.array(a)[indices])
     [0 2 1 5 4 3 2]
-     
+
     Filter a multi-dimensional array.
-    
+
     >>> a = [(1, 0), (-2, -1), (3, -5), (4, 2), (-7, 9), (0.5, 2)]
-    
-    >>> indices = range_filter(a, min_value=2) 
+
+    >>> indices = range_filter(a, min_value=2)
     >>> print(indices)
     [(2, 3, 3, 4, 5), (0, 0, 1, 1, 1)]
     >>> print(np.array(a)[indices])
     [3. 4. 2. 9. 2.]
-    
-    >>> indices = range_filter(a, min_value=2, max_value=5) 
+
+    >>> indices = range_filter(a, min_value=2, max_value=5)
     >>> print(indices)
     [(2, 3, 3, 5), (0, 0, 1, 1)]
     >>> print(np.array(a)[indices])
     [3. 4. 2. 2.]
-    
+
     """
     if not isnumeric(arr):
         raise TypeError("'arr' needs to be an numeric array")

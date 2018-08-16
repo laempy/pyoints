@@ -1,19 +1,20 @@
 # BEGIN OF LICENSE NOTE
 # This file is part of Pyoints.
-# Copyright (c) 2018, Sebastian Lamprecht, Trier University, 
+# Copyright (c) 2018, Sebastian Lamprecht, Trier University,
 # lamprecht@uni-trier.de
-# 
+#
 # Pyoints is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # Pyoints is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
+# along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
 # END OF LICENSE NOTE
 """Handling of grided data, like voxels or rasters.
 """
@@ -298,7 +299,6 @@ class Grid(GeoRecords):
         slices = [slice(min_idx[i], max_idx[i], 1) for i in range(self.dim)]
         return self[slices]
 
-
     def voxelize(self, rec, **kwargs):
         """Convert a point cloud to a voxel or raster.
 
@@ -453,7 +453,7 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
         shape = keys.max(0)[:T.dim] + 1
     else:
         shape = assertion.ensure_shape(shape, dim=T.dim)
-    if np.any(np.array(shape)<0):
+    if np.any(np.array(shape) < 0):
         return None
 
     # group keys
@@ -476,10 +476,10 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
     # Aggregate per cell
     try:
         res = nptools.apply_function(lookup, agg_func, dtype=dtype)
-    except:
+    except BaseException:
         m = "aggregation failed, please check 'agg_func' and 'dtype'"
         raise ValueError(m)
-        
+
     if isinstance(rec, GeoRecords) and isinstance(res, np.recarray):
         res = Grid(rec.proj, res, T)
 

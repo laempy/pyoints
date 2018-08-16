@@ -56,7 +56,11 @@ function update_license_notes(){
 
     echo $heading_lines > $outfile
     while read line; do
-        echo "# $line" >> $outfile
+        if [[ !  -z  $line  ]]; then
+            echo "# $line" >> $outfile
+        else
+            echo "#" >> $outfile
+        fi
     done <$LICENSE_NOTES_FILE
     echo $tailing_lines >> $outfile
 }

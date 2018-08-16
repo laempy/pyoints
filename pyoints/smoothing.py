@@ -1,19 +1,20 @@
 # BEGIN OF LICENSE NOTE
 # This file is part of Pyoints.
-# Copyright (c) 2018, Sebastian Lamprecht, Trier University, 
+# Copyright (c) 2018, Sebastian Lamprecht, Trier University,
 # lamprecht@uni-trier.de
-# 
+#
 # Pyoints is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # Pyoints is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
+# along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
 # END OF LICENSE NOTE
 """Collection of algorithms to smooth point clouds.
 """
@@ -25,10 +26,10 @@ from . import assertion
 
 
 def mean_ball(
-    coords, r,
-    num_iter=1,
-    update_pairs=False,
-    f=lambda coord, ncoords: ncoords.mean(0)):
+        coords, r,
+        num_iter=1,
+        update_pairs=False,
+        f=lambda coord, ncoords: ncoords.mean(0)):
     """Smoothing of spatial structures by iterative averaging the coordinates
     of neighboured points.
 
@@ -113,11 +114,11 @@ def mean_ball(
 
 
 def mean_knn(
-    coords,
-    k,
-    num_iter=1,
-    update_pairs=False,
-    f=lambda coord, ncoords: ncoords.mean(0)):
+        coords,
+        k,
+        num_iter=1,
+        update_pairs=False,
+        f=lambda coord, ncoords: ncoords.mean(0)):
     """Smoothing of spatial structures by averaging neighboured point
     coordinates.
 
