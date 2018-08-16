@@ -180,11 +180,9 @@ class ICP:
         """
         # validate input
         coords_dict, dim = _ensure_coords_dict(coords_dict)
-        print(sample_dict)
         normals_dict = _ensure_normals_dict(normals_dict, coords_dict)
         T_dict = _ensure_T_dict(T_dict, coords_dict, pairs_dict, weights)
         sample_dict = _ensure_sample_dict(sample_dict, coords_dict)
-
 
         # check radii
         if len(normals_dict) > 0:
@@ -267,41 +265,44 @@ def _ensure_coords_dict(coords_dict):
         raise TypeError("'coords_dict' needs to be a dictionary")
 
     dim = None
+    out_coords_dict = {}
     for key in coords_dict:
         if dim is None:
-            coords_dict[key] = assertion.ensure_coords(coords_dict[key])
-            dim = coords_dict[key].shape[1]
-        coords_dict[key] = assertion.ensure_coords(
-            coords_dict[key], dim=dim)
-    return coords_dict, dim
+            out_coords_dict[key] = assertion.ensure_coords(coords_dict[key])
+            dim = out_coords_dict[key].shape[1]
+        else:
+            out_coords_dict[key] = assertion.ensure_coords(
+                    coords_dict[key], dim=dim)
+    return out_coords_dict, dim
 
 
 def _ensure_normals_dict(normals_dict, coords_dict):
     if not isinstance(normals_dict, dict):
         raise TypeError("'normals_dict' needs to be a dictionary")
+    out_normals_dict = {}
     if len(normals_dict) > 0:
         for key in coords_dict:
             dim = coords_dict[key].shape[1]
             if key in normals_dict:
-                normals_dict[key] = assertion.ensure_coords(
+                out_normals_dict[key] = assertion.ensure_coords(
                     normals_dict[key], dim=dim)
             else:
                 raise ValueError("missing normals for '%s'" % key)
-    return normals_dict
+    return out_normals_dict
 
 
-def _ensure_sample_dict(sampleids_dict, coords_dict):
-    if not isinstance(sampleids_dict, dict):
+def _ensure_sample_dict(sample_dict, coords_dict):
+    if not isinstance(sample_dict, dict):
         raise TypeError("'sampleids_dict' needs to be a dictionary")
-    sample_dict = {}
+    out_sample_dict = {}
     for key in coords_dict:
         n = len(coords_dict[key])
-        if key in sampleids_dict:
-            sample_dict[key] = assertion.ensure_indices(
-                sampleids_dict[key], max_value=n).copy()
+        if key in sample_dict:
+            out_sample_dict[key] = assertion.ensure_indices(
+                sample_dict[key], max_value=n).copy()
         else:
-            sample_dict[key] = np.arange(n)
-    return sample_dict
+            out_sample_dict[key] = np.arange(n)
+    return out_sample_dict
 
 
 def _ensure_T_dict(T_dict, coords_dict, pairs_dict, weights):
@@ -312,14 +313,15 @@ def _ensure_T_dict(T_dict, coords_dict, pairs_dict, weights):
     if len(T_dict) > 0 and len(pairs_dict) > 0:
         raise ValueError("please specifiy either 'T_dict' or 'pairs_dict'")
 
+    out_T_dict = {}
     if len(T_dict) == 0 and len(pairs_dict) > 0:
-        T_dict = rototranslations.find_rototranslations(
+        out_T_dict = rototranslations.find_rototranslations(
             coords_dict, pairs_dict, weights=weights)
     else:
         for key in coords_dict:
             if key in T_dict.keys():
-                T_dict[key] = assertion.ensure_tmatrix(T_dict[key])
+                out_T_dict[key] = assertion.ensure_tmatrix(T_dict[key])
             else:
                 dim = coords_dict[key].shape[1]
-                T_dict[key] = transformation.i_matrix(dim)
-    return T_dict
+                out_T_dict[key] = transformation.i_matrix(dim)
+    return out_T_dict
