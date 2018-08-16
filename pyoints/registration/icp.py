@@ -1,19 +1,20 @@
 # BEGIN OF LICENSE NOTE
 # This file is part of Pyoints.
-# Copyright (c) 2018, Sebastian Lamprecht, Trier University, 
+# Copyright (c) 2018, Sebastian Lamprecht, Trier University,
 # lamprecht@uni-trier.de
-# 
+#
 # Pyoints is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # Pyoints is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
+# along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
 # END OF LICENSE NOTE
 """Implementation of the Iterative Closest Point Algorithm.
 """
@@ -153,13 +154,8 @@ class ICP:
         self._max_iter = max_iter
         self._assign_parameters = assign_parameters
 
-    def __call__(self,
-                 coords_dict,
-                 sampleids_dict={},
-                 normals_dict={},
-                 pairs_dict={},
-                 T_dict={},
-                 weights=None):
+
+    def __call__(self, coords_dict, sample_dict={}, normals_dict={}, pairs_dict={}, T_dict={}, weights=None):
         """Calls the ICP algorithm to align multiple point sets.
 
         Parameters
@@ -184,10 +180,11 @@ class ICP:
         """
         # validate input
         coords_dict, dim = _ensure_coords_dict(coords_dict)
-        sampleids_dict = _ensure_sampleids_dict(
-            sampleids_dict, coords_dict)
+        print(sample_dict)
         normals_dict = _ensure_normals_dict(normals_dict, coords_dict)
         T_dict = _ensure_T_dict(T_dict, coords_dict, pairs_dict, weights)
+        sample_dict = _ensure_sample_dict(sample_dict, coords_dict)
+
 
         # check radii
         if len(normals_dict) > 0:
@@ -216,7 +213,7 @@ class ICP:
 
                         B = _get_nCoords(
                             coords_dict, normals_dict, T_dict, keyB)
-                        sids = sampleids_dict[keyB]
+                        sids = sample_dict[keyB]
                         pairs = matcher(B[sids, :], **self._assign_parameters)
 
                         if len(pairs) > 0:
@@ -293,17 +290,18 @@ def _ensure_normals_dict(normals_dict, coords_dict):
     return normals_dict
 
 
-def _ensure_sampleids_dict(sampleids_dict, coords_dict):
+def _ensure_sample_dict(sampleids_dict, coords_dict):
     if not isinstance(sampleids_dict, dict):
         raise TypeError("'sampleids_dict' needs to be a dictionary")
+    sample_dict = {}
     for key in coords_dict:
         n = len(coords_dict[key])
         if key in sampleids_dict:
-            sampleids_dict[key] = assertion.ensure_indices(
-                sampleids_dict[key], max_value=n)
+            sample_dict[key] = assertion.ensure_indices(
+                sampleids_dict[key], max_value=n).copy()
         else:
-            sampleids_dict[key] = np.arange(n)
-    return sampleids_dict
+            sample_dict[key] = np.arange(n)
+    return sample_dict
 
 
 def _ensure_T_dict(T_dict, coords_dict, pairs_dict, weights):
