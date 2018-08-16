@@ -19,6 +19,7 @@
 """
 
 import numpy as np
+from numbers import Number
 
 
 def isarray(o):
@@ -873,3 +874,78 @@ def indices(shape, flatten=False):
         else:
             keys = np.moveaxis(keys, 0, -1)
     return keys
+
+
+def range_filter(arr, min_value=-np.inf, max_value=np.inf):
+    """Filter values by range.
+    
+    Parameters
+    ----------
+    
+    arr : array_like(Number)
+        Numeric array to filter.
+    min_value,max_value : Number
+        Minimum and maximum values to define the desired value range 
+        `[min_value, max_value]` of `arr`.
+        
+    Returns
+    -------
+    np.ndarray(int)
+        Indices of all values of `arr` in the desired range.
+    
+    Examples
+    --------
+    
+    Filter a one dimensional array.
+    
+    >>> a = [0, 2, 1, -1, 5, 7, 9, 4, 3, 2, -2, -11]
+    
+    >>> indices = range_filter(a, min_value=0)
+    >>> print(indices)
+    [0 1 2 4 5 6 7 8 9]
+    
+    >>> indices = range_filter(a, max_value=5)
+    >>> print(indices)
+    [ 0  1  2  3  4  7  8  9 10 11]
+    
+    >>> indices = range_filter(a, min_value=0, max_value=5)
+    >>> print(indices)
+    [0 1 2 4 7 8 9]
+    >>> print(np.array(a)[indices])
+    [0 2 1 5 4 3 2]
+     
+    Filter a multi-dimensional array.
+    
+    >>> a = [(1, 0), (-2, -1), (3, -5), (4, 2), (-7, 9), (0.5, 2)]
+    
+    >>> indices = range_filter(a, min_value=2) 
+    >>> print(indices)
+    [(2, 3, 3, 4, 5), (0, 0, 1, 1, 1)]
+    >>> print(np.array(a)[indices])
+    [3. 4. 2. 9. 2.]
+    
+    >>> indices = range_filter(a, min_value=2, max_value=5) 
+    >>> print(indices)
+    [(2, 3, 3, 5), (0, 0, 1, 1)]
+    >>> print(np.array(a)[indices])
+    [3. 4. 2. 2.]
+    
+    """
+    if not isnumeric(arr):
+        raise TypeError("'arr' needs to be an numeric array")
+    if not isinstance(min_value, Number):
+        raise TypeError("'min_value' needs to a number")
+    if not isinstance(max_value, Number):
+        raise TypeError("'max_value' needs to a number")
+    if not max_value >= min_value:
+        m = "'max_value' needs to be greater or equal 'min_value'"
+        raise ValueError(m)
+
+    arr = np.array(arr)
+    mask = np.all((arr >= min_value, arr <= max_value), axis=0)
+    if len(arr.shape) == 1:
+        ids = np.where(mask)[0]
+    else:
+        ids = list(map(tuple, np.array(np.where(mask))))
+
+    return ids
