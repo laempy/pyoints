@@ -430,3 +430,93 @@ class GeoRecords(np.recarray, object):
         """
         data = nptools.apply_function(self, func, dtypes=dtypes)
         return self.__class__(self.proj, data, T=self.t)
+
+
+class LasRecords(GeoRecords):
+    """Data structure extending GeoRecords to provide an optimized API for LAS
+    data.
+
+    Attributes
+    ----------
+    last_return : np.ndarray(bool)
+        Array indicating if a point is a last return point.
+    first_return : np.ndarray(bool)
+        Array indicating if a point is a first return point.
+    only_return : np.ndarray(bool)
+        Array indicating if a point is the only returned point.
+
+    See Also
+    --------
+    GeoRecords
+
+    """
+    USER_DEFINED_FIELDS = [
+        ('coords', np.float, 3),
+        ('classification', np.uint8),
+        ('num_returns', np.uint8),
+        ('return_num', np.uint8),
+    ]
+
+    @property
+    def last_return(self):
+        return self.return_num == self.num_returns
+
+    @property
+    def first_return(self):
+        return self.return_num == 1
+
+    @property
+    def only_return(self):
+        return self.num_returns == 1
+
+    def activate(self, field_name):
+        """Activates a desired field on demand.
+
+        Parameters
+        ----------
+        field_name : String
+            Name of the field to activate.
+
+        """
+        for field in self.USER_DEFINED_FIELDS:
+            if field[0] == field_name:
+                return self.add_fields([field])
+        raise ValueError('field "%s" not found' % field_name)
+
+    def grd(self):
+        """Filter by points classified as ground.
+
+        Returns
+        -------
+        LasRecords
+            Filtered records.
+
+        """
+        return self[self.class_indices(2, 11)]
+
+    def veg(self):
+        """Filter by points classified as vegetation.
+
+        Returns
+        -------
+        LasRecords
+            Filtered records.
+
+        """
+        return self[self.class_indices(3, 4, 5, 20)]
+
+    def class_indices(self, *classes):
+        """Filter by classes.
+
+        Parameters
+        ----------
+        *classes : int
+            Classes to filter by.
+
+        Returns
+        -------
+        np.ndarray(int)
+            Filtered record indices.
+
+        """
+        return np.where(np.in1d(self.classification, classes))[0]

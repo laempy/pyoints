@@ -22,9 +22,12 @@ from .indexkd import IndexKD
 from .coords import Coords
 from .extent import Extent
 from .projection import Proj
-from .georecords import GeoRecords
 from .grid import Grid
 from .surface import Surface
+from .georecords import (
+    GeoRecords,
+    LasRecords,
+)
 from . import (
     grid,
     registration,
