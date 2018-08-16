@@ -177,8 +177,8 @@ class LasReader(GeoFile):
             str(dim.name.encode().decode()) for dim in lasFile.point_format
         ]  # ugly workaround to get actual strings
 
-        points = lasFile.points.view(np.recarray).point.copy()
-
+        points = lasFile.points['point'].copy().view(np.recarray)
+        
         # Close File
         lasFile.close()
         del lasFile
