@@ -921,13 +921,13 @@ def range_filter(arr, min_value=-np.inf, max_value=np.inf):
 
     >>> indices = range_filter(a, min_value=2)
     >>> print(indices)
-    [(2, 3, 3, 4, 5), (0, 0, 1, 1, 1)]
+    ((2, 3, 3, 4, 5), (0, 0, 1, 1, 1))
     >>> print(np.array(a)[indices])
     [3. 4. 2. 9. 2.]
 
     >>> indices = range_filter(a, min_value=2, max_value=5)
     >>> print(indices)
-    [(2, 3, 3, 5), (0, 0, 1, 1)]
+    ((2, 3, 3, 5), (0, 0, 1, 1))
     >>> print(np.array(a)[indices])
     [3. 4. 2. 2.]
 
@@ -947,6 +947,6 @@ def range_filter(arr, min_value=-np.inf, max_value=np.inf):
     if len(arr.shape) == 1:
         ids = np.where(mask)[0]
     else:
-        ids = list(map(tuple, np.array(np.where(mask))))
+        ids = tuple(map(tuple, np.array(np.where(mask))))
 
     return ids
