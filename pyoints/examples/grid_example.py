@@ -34,7 +34,7 @@
 ... )
 
 
-Define input and output path.
+First, we define input and output paths.
 
 >>> inpath = os.path.join(
 ...                 os.path.dirname(os.path.abspath(__file__)), 'data')
@@ -42,7 +42,7 @@ Define input and output path.
 ...                 os.path.dirname(os.path.abspath(__file__)), 'output')
 
 
-Select a input LAS point cloud.
+Then we select an input LAS point cloud.
 
 >>> infile = os.path.join(inpath, 'forest.las')
 >>> lasReader = storage.LasReader(infile)
@@ -96,7 +96,7 @@ manner.
 [('cell_count', '<i8'), ('coords', '<f8', (2,)), ('z', '<f8', (3,))]
 
 
-Save the fields as individual raster images.
+We save the fields as individual raster images.
 
 >>> outfile = os.path.join(outpath, 'grid_count.tif')
 >>> storage.writeRaster(raster, outfile, field='cell_count')
@@ -125,7 +125,7 @@ Now let's create a three dimensional voxel space.
 [('cell_count', '<i8'), ('coords', '<f8', (3,)), ('intensity', '<i8')]
 
 
-Finally save only the non empty voxel cells.
+Finally we save only the non-empty voxel cells.
 
 >>> outfile = os.path.join(outpath, 'grid_voxels.las')
 >>> storage.writeLas(voxels[voxels.cell_count > 0], outfile)

@@ -50,7 +50,7 @@ Apply a transformation to the matrix to get a propper spatial reference.
 ...         t=[332575, 5513229], s=[0.5, -0.5], r=0.1, order='srt')
 >>> raster.transform(T)
 
-Save the image as an tif-file. You might like to check the spatial reference of
+Save the image as a tif-file. You might like to check the spatial reference of
 the output image using a Geographic Information System (GIS).
 
 >>> outfile = os.path.join(outpath, 'test.tif')
@@ -63,11 +63,11 @@ Load image again and check characteristics.
 [ 332575. 5513229.]
 
 >>> raster = rasterHandler.load()
+
 >>> print(raster.t.origin)
 [ 332575. 5513229.]
 >>> print(raster.shape)
 (96, 250)
-
 >>> print(sorted(raster.dtype.descr))
 [('bands', '<i8', (3,)), ('coords', '<f8', (2,))]
 

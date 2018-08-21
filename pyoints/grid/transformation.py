@@ -31,7 +31,7 @@ from .. import (
 
 
 def keys_to_indices(keys, shape):
-    """Convert matrix keys to indices.
+    """Converts matrix keys to indices.
 
     Parameters
     ----------
@@ -54,7 +54,7 @@ def keys_to_indices(keys, shape):
 
 
 def indices_to_keys(indices, shape):
-    """Convert indices vector to keys of a matrix.
+    """Converts indices vector to keys of a matrix.
 
     Parameters
     ----------
@@ -118,7 +118,6 @@ def coords_to_keys(T, coords):
     values = T.to_global(flat_coords)
 
     keys = values.astype(int)[:, ::-1]
-    #keys = np.floor(values).astype(int)[:, ::-1]
     return keys.reshape(coords.shape)
 
 
@@ -176,7 +175,7 @@ def coords_to_coords(T, coords):
 
 
 def corners_to_transform(corners, scale=None):
-    """Create a transformation matrix using the corners of a raster.
+    """Creates a transformation matrix using the corners of a raster.
 
     Parameters
     ----------
@@ -286,7 +285,7 @@ def transform_to_corners(T, shape):
 
 
 def extentinfo(T, extent):
-    """Recieve information on a raster subset with given boundaries.
+    """Receives information on a raster subset with given boundaries.
 
     Parameters
     ----------

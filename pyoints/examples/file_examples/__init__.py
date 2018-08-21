@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
 # END OF LICENSE NOTE
-"""Examples to explain, how files can be saved and loaded."""
+"""Examples to explain how files can be saved and loaded."""
 from . import (
     csv_example,
     dump_example,

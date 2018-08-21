@@ -36,12 +36,12 @@ Create GeoRecords from scratch.
 >>> print(sorted(geoRecords.dtype.descr))
 [('classification', '<i8'), ('coords', '<f8', (3,)), ('intensity', '<i8'), ('values', '<f8')]
 
-Save as DUMP-file.
+Save as a DUMP-file.
 
 >>> outfile = os.path.join(outpath, 'test.pydump')
 >>> storage.writeDump(geoRecords, outfile)
 
-Load DUMP-file again and check the characteristics.
+Load the DUMP-file again and check the characteristics.
 
 >>> dumpReader = storage.DumpReader(outfile)
 >>> geoRecords = dumpReader.load()

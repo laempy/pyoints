@@ -22,7 +22,7 @@ bibliography: paper.bib
 The evolution of automated systems like autonomous robots and unmanned aerial 
 vehicles leads to manifold chances in science, agriculture and industry.
 Remote sensing sensors, like laser scanners and multi-spectral cameras can be
-combined with sensor networks, to monitor a research object all-embracingly.
+combined with sensor networks to monitor a research object all-embracingly.
 
 The analysis of such big data is based on techniques of geoinformatics and 
 remote sensing. Next to physically driven approaches, today machine learning 
@@ -37,7 +37,7 @@ Libraries, like [@PCL], [@Open3D] and [@PDAL] focus on 3D point cloud
 processing. Each of these software packages provide an API specially designed 
 to solve the problems of their field efficiently. When developing algorithms 
 for automated processing of various types of input data, the differing APIs and
-programming languages of these software packages becomes a drawback. To support
+programming languages of these software packages become a drawback. To support
 fast  algorithm development and a short familiarization, a unified API would be 
 desirable.
 
@@ -47,9 +47,9 @@ the development of advanced algorithms for geo-data processing.
 
 The fundamental idea of ``Pyoints`` is to overcome the conceptual distinction 
 between point clouds, voxel spaces and rasters to simplify data analysis 
-and data fusion of variously structured data. Based on the assumtion that any 
-geo-object can be represented by a point, a data structure has been designed, 
-which provides an unified API for points, voxels and rasters. Each data 
+and data fusion of variously structured data. Based on the assumption that any 
+geo-object can be represented by a point, a data structure has been designed 
+which provides a unified API for points, voxels and rasters. Each data 
 structure maintains its characteristic features, to allow for an intuitive use, 
 but all data is also considered as a two or three dimensional point cloud, 
 providing spatial indices which are required in many applications to speed up 
@@ -59,7 +59,7 @@ During development great emphasis was put on designing a powerful but simple
 API while also providing solutions for most common problems. ``Pyoints`` 
 implements fundamental functions and some advanced algorithms for point cloud, 
 voxel and raster data processing, like coordinate transformation, vector
-algebra, point filters, or interpolation. ``Pyoints`` also provides an unified 
+algebra, point filters, or interpolation. ``Pyoints`` also provides a unified 
 API for loading and saving commonly used geo-data formats.
 
 ``Pyoints`` was designed to support research activities and algorithm

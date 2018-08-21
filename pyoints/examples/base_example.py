@@ -31,7 +31,7 @@ We begin with loading the required modules.
 ... )
 
 
-Define input and output path.
+Then we define input and output paths.
 
 >>> inpath = os.path.join(
 ...                 os.path.dirname(os.path.abspath(__file__)), 'data')
@@ -39,38 +39,38 @@ Define input and output path.
 ...                 os.path.dirname(os.path.abspath(__file__)), 'output')
 
 
-Select a input LAS point cloud.
+We select an input LAS point cloud.
 
 >>> infile = os.path.join(inpath, 'forest.las')
 >>> lasReader = storage.LasReader(infile)
 
 
-Get the origin of the point cloud.
+We get the origin of the point cloud.
 
 >>> print(np.round(lasReader.t.origin, 2).tolist())
 [364187.98, 5509577.71, -1.58]
 
 
-Get the projection of the point cloud.
+Then we get the projection of the point cloud...
 
 >>> print(lasReader.proj.proj4)
 +proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs
 
 
-Get the number of points.
+... and the number of points.
 
 >>> print(len(lasReader))
 482981
 
 
-Get the spatial extent in 3D.
+We get the spatial extent in 3D.
 
 >>> print(np.round(lasReader.extent, 2).tolist())
 [364187.98, 5509577.71, -1.58, 364194.95, 5509584.71, 28.78]
 
 
-Now we actually load the point cloud data from disc. We recieve an instance of
-`GeoRecords`, which is an extension of a numpy record array.
+Now we actually load the point cloud data from the disc. We receive an instance
+of `GeoRecords`, which is an extension of a numpy record array.
 
 >>> las = lasReader.load()
 
@@ -78,7 +78,7 @@ Now we actually load the point cloud data from disc. We recieve an instance of
 (482981,)
 
 
-Get some information on the fields.
+We get some information on the fields...
 
 >>> print(sorted(las.dtype.descr))
 [('classification', '|u1'), ('coords', '<f8', (3,)), ('intensity', '<u2')]
@@ -90,7 +90,7 @@ Get some information on the fields.
 [2 5]
 
 
-Take a look at the extent in 2D and 3D
+... and take a look at the extent in 2D and 3D.
 
 >>> print(np.round(las.extent(2), 2).tolist())
 [364187.98, 5509577.71, 364194.95, 5509584.71]
@@ -98,7 +98,7 @@ Take a look at the extent in 2D and 3D
 [364187.98, 5509577.71, -1.58, 364194.95, 5509584.71, 28.78]
 
 
-Now we take a closer look at the spatial index. We begin with selecting all
+Now we take a closer look at the spatial index. We begin with selecting all 
 points close to the corners of the point cloud.
 
 >>> radius = 1.0
@@ -113,8 +113,7 @@ points close to the corners of the point cloud.
  [ 364195 5509578      29]
  [ 364188 5509578      29]]
 
-
-But, before we select the points, we count the number of neighbours within the
+But before we select the points, we count the number of neighbors within the
 radius.
 
 >>> count = las.indexKD().ball_count(radius, coords=corners)
@@ -129,7 +128,7 @@ OK, now we actually select the points.
 8
 
 
-For each point we recieve a list of indices. So we concatenate them to save
+For each point we receive a list of indices. So we concatenate them to save 
 the resulting subset as a point cloud.
 
 >>> n_ids = np.concatenate(n_ids).astype(int)
@@ -140,11 +139,11 @@ the resulting subset as a point cloud.
 >>> storage.writeLas(las[n_ids], outfile)
 
 
-We also can select the `k` nearest neighbours.
+We can also select the `k` nearest neighbors. 
 
 >>> dists, n_ids = las.indexKD().knn(corners, k=2)
 
-We recieve a matrix of distances and a matrix of indices.
+We receive a matrix of distances and a matrix of indices.
 
 >>> print(np.round(dists, 2))
 [[0.3  0.3 ]
@@ -176,15 +175,15 @@ Again, we save the resulting subset.
 >>> storage.writeLas(las[n_ids], outfile)
 
 
-If we need to select points in the shape of an ellipsoid, we also can create a
+If we need to select points in the shape of an ellipsoid, we can also create a 
 scaled spatial index. Doing so, each coordinate axis is scaled individually.
 
 >>> T = transformation.s_matrix([1.5, 0.9, 0.5])
 >>> indexKD = IndexKD(las.coords, T=T)
 
 
-Again, we select neighbouring points using the `ball` query. But here, we need
-to scale the input coordinates before.
+Again, we select neighboring points using the `ball` query. But here, we need
+to scale the input coordinates beforehand.
 
 >>> s_corners = T.to_local(corners)
 >>> print(np.round(s_corners).astype(int))

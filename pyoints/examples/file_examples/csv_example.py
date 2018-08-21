@@ -36,12 +36,12 @@ Create GeoRecords from scratch.
 >>> print(sorted(geoRecords.dtype.descr))
 [('classification', '<i8'), ('coords', '<f8', (3,)), ('intensity', '<i8'), ('values', '<f8')]
 
-Save as .csv-file.
+Save as a .csv-file.
 
 >>> outfile = os.path.join(outpath, 'test.csv')
 >>> storage.writeCsv(geoRecords, outfile)
 
-Load .csv-file again and check the characteristics.
+Load the .csv-file again and check the characteristics.
 
 >>> geoRecords = storage.loadCsv(outfile, header=True)
 >>> print(geoRecords.shape)

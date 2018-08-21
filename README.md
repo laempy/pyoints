@@ -34,38 +34,38 @@ Since all objects of a voxel or raster are also interpreted as a point cloud,
 spatial neighborhood queries, like nearest neighbours or distance search, can
 be performed with unified functions. So, each extension of `GeoRecords`
 provides a spatial index `IndexKD` to conveniently perform efficient
-neighborhood queries. The class `IndexKD` is wrapper of different spatial
+neighborhood queries. The class `IndexKD` is a wrapper of different spatial
 indices, to handle *k*-dimensional spatial queries of different kinds. The
-spatial indices are always initialized on demand for performance reasions, but
+spatial indices are always only initialized on demand for performance reasons, but
 cached for future queries. For example, an instance *geoRecords* of
 `GeoRecords` representing three dimensional points allows to create a three
 dimensional spatial index by calling `geoRecords.indexKD()`. If you are not
-interrested in the third dimension, you can call `geoRecords.indexKD(2)` to
+interested in the third dimension, you can call `geoRecords.indexKD(2)` to
 perform two dimensional spatial queries.
 
 If you just want to handle coordinates without additional attributes, the class
-`Coords` might interrest you. This class also provides the `IndexKD` feature, 
+`Coords` might interest you. This class also provides the `IndexKD` feature, 
 but waives the use of a projection and transformation matrix.
 
 
 ## When is Pyoints suitable for me?
 
-Beased on the general concept of ``Pyoints`` presented above, a bunch of 
+Based on the general concept of ``Pyoints`` presented above, a bunch of 
 algorithms, functions and filters have been implemented, to process geo-data 
-with low programming effords. 
+with low programming efforts. 
 
-Of course, you might think: "Why should I use python for point cloud 
+Of course, you might think: "Why should I use Python for point cloud 
 processing? Other languages are much more efficient." This is obviously true, 
 but in the experience of the author, Python is very useful to implement and
 test new algorithms very quickly. Algorithms for point cloud analysis and
 processing often rely on spatial neighborhood queries. Since ``Pyoints``
-takes advantage of very efficient python libraries, which are basically
+takes advantage of very efficient Python libraries, which are basically
 wrappers for binaries written in more efficient languages, the performance
-loss is limited. Since ``Pyoints`` takes care of selecting and caching 
-appropiate spatial indices for you, you can focus on the core of your algorithm
+loss is limited. Additionally, ``Pyoints`` takes care of selecting and caching 
+appropiate spatial indices for you, so you can focus on the core of your algorithm
 idea.
 
-So, if you have an algorithm idea and you want to implemen it quickly and play
+So, if you have an algorithm idea and you want to implement it quickly and play
 around with different settings, ``Pyoints`` is made for you. After finding an 
 approiate algorithm it can be implemented in a more efficient language 
 if you like. Thus ``Pyoints`` is particulary designed for scientists and 
@@ -77,12 +77,12 @@ developers of new geo-spatial algorithms.
 
 ## Install external dependencies
 
-Following dependencies have to be installed manually, since they are required
+The following dependencies have to be installed manually, since they are required
 by the pip packages.
 
 ### Python
 
-The ``Pyoints`` targets Python3 >= 3.5. The code should also compatible to
+The ``Pyoints`` targets Python3 >= 3.5. The code should also be compatible to
 Python2 >= 2.7.
 
 
@@ -113,7 +113,7 @@ Thus, installation with ``setup.py`` might fail.
 
 ### Installation with installation script (currently recommended)
 
-The installation script asks you to provide a virtual python environment
+The installation script asks you to provide a virtual Python environment
 (virtualenv) . You need to initialize it first.
 ```
 ./pip_install.sh -v path/to/virtualenv
@@ -175,15 +175,15 @@ venv\Scripts\activate.bat
 
 You can find the documentation at [docs](docs/_build/html/pyoints.html). Here 
 you can find docstrings with examples for each module and some comprehensive 
-examples. You also can take a look at the source files directly.
+examples. You can also take a look at the source files directly.
 
 
 
 # Testing
 
 To test the software please take a look at the [tests](tests) directory. 
-Currently python docstrings are used to test the the functionality of a 
-mayority of ``Pyoints`` classes and functions.
+Currently Python docstrings are used to test the functionality of a 
+majority of ``Pyoints`` classes and functions.
 
 
 
@@ -216,7 +216,7 @@ and raster processing.", URL TODO, [Online; accessed date].
 
 # Contact
 
-In case of questions, suggestions for improvement or software issues. Please 
+In case of questions, suggestions for improvement or software issues please 
 use the issue board or contact Sebastian Lamprecht, lamprecht@uni-trier.de.
 Contribution to the software is always welcome.
 
@@ -227,7 +227,7 @@ Contribution to the software is always welcome.
 
 ## Python Depencencies
 
-This software dynamically binds following python packages (distributed via 
+This software dynamically binds the following Python packages (distributed via 
 pip). Many thanks to the authors for providing such great open source software.
 
 
@@ -367,7 +367,7 @@ Frank Warmerdam
 
 ### Liblas
 
-Howard Butler, Mateusz Loskot and others
+Howard Butler, Mateusz Loskot et. al.
 * [homepage](https://liblas.org/)
 * [X11/MIT license](https://liblas.org/copyright.html#license)
 
@@ -382,7 +382,7 @@ Marios Hadjieleftheriou
 
 ## Software recommendations
 
-Following python packages were used for software development, testing and 
+The following Python packages were used for software development, testing and 
 documentation.
 
 

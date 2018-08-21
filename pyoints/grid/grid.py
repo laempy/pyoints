@@ -143,7 +143,7 @@ class Grid(GeoRecords):
       [10.75 21.4 ]
       [11.25 21.4 ]]]
 
-    Useage of the spatial index.
+    Usage of the spatial index.
 
     >>> dists, indices = raster.indexKD().knn(raster.t.origin, k=5)
     >>> print(dists)
@@ -272,7 +272,7 @@ class Grid(GeoRecords):
     
 
     def transform(self, T):
-        """Transform coordinates.
+        """Transforms coordinates.
 
         Parameters
         ----------
@@ -293,7 +293,7 @@ class Grid(GeoRecords):
         self.coords[:] = self.keys_to_coords(self.keys)
 
     def keys_to_indices(self, keys):
-        """Convert grid keys to indices.
+        """Converts grid keys to indices.
 
         See Also
         --------
@@ -303,7 +303,7 @@ class Grid(GeoRecords):
         return keys_to_indices(keys, self.shape)
 
     def indices_to_keys(self, indices):
-        """Convert cell indices to keys.
+        """Converts cell indices to keys.
 
         See Also
         --------
@@ -313,7 +313,7 @@ class Grid(GeoRecords):
         return indices_to_keys(indices, self.shape)
 
     def keys_to_coords(self, keys):
-        """Convert cell indices to coordinates.
+        """Converts cell indices to coordinates.
 
         See Also
         --------
@@ -323,7 +323,7 @@ class Grid(GeoRecords):
         return keys_to_coords(self.t, keys)
 
     def coords_to_keys(self, coords):
-        """Convert coordinates to cell indices.
+        """Converts coordinates to cell indices.
 
         See Also
         --------
@@ -333,7 +333,7 @@ class Grid(GeoRecords):
         return coords_to_keys(self.t, coords)
 
     def coords_to_coords(self, coords):
-        """Set coordinate to closest grid coordinate.
+        """Sets coordinate to closest grid coordinate.
 
         See Also
         --------
@@ -343,7 +343,7 @@ class Grid(GeoRecords):
         return coords_to_coords(self.t, coords)
 
     def window_by_extent(self, extent):
-        """Get a subset of the grid within a given extent.
+        """Gets a subset of the grid within a given extent.
 
         Parameters
         ----------
@@ -391,12 +391,12 @@ class Grid(GeoRecords):
         return self[slices]
 
     def voxelize(self, rec, **kwargs):
-        """Convert a point cloud to a voxel or raster.
+        """Converts a point cloud to a voxel or raster.
 
         Parameters
         ----------
         rec : np.recarray(shape=(n, ))
-            Numpy record array of `n` points to voxelize. It reqires the two
+            Numpy record array of `n` points to voxelize. It requires the two
             dimensional field 'coords' associated with `k` dimensional
             coordinates.
         \*\*kwargs
@@ -460,7 +460,7 @@ class Grid(GeoRecords):
 
 
 def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
-    """Aggregate a point cloud to a voxel or raster.
+    """Aggregates a point cloud to a voxel or raster.
 
     Parameters
     ----------
@@ -533,7 +533,7 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
      [1.  0.5]
      [2.  2. ]]
 
-    Voxelize three dimensional coordinates to recieve a two dimensional raster.
+    Voxelize three dimensional coordinates to receive a two dimensional raster.
 
     >>> coords = [(0, 0, 1), (-2, 0.3, 5), (2, 2, 3), (4, 6, 2), (3, 2, 1)]
     >>> rec = np.recarray(len(coords), dtype=[('coords', float, 3)])
@@ -550,7 +550,7 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
 
     """
     if not isinstance(rec, np.recarray):
-        raise TypeError("'rec' need an instance of np.recarray")
+        raise TypeError("'rec' needs an instance of np.recarray")
     if 'coords' not in rec.dtype.names:
         raise ValueError("'rec' requires field 'coords'")
 

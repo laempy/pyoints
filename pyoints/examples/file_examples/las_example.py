@@ -25,7 +25,7 @@
 >>> outpath = os.path.join(
 ...             os.path.dirname(os.path.abspath(__file__)), '..', 'output')
 
-Create GeoRecords from scratch
+Create GeoRecords from scratch.
 
 >>> geoRecords = storage.misc.create_random_GeoRecords(
 ...                     center=[332592.88, 5513244.80, 120], epsg=25832)
