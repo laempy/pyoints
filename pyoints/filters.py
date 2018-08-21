@@ -20,12 +20,15 @@
 """
 
 import numpy as np
+from numbers import Number
 
 from . import (
     assertion,
     distance,
     interpolate,
     IndexKD,
+    transformation,
+    vector,
 )
 
 
@@ -374,7 +377,7 @@ def surface(indexKD, r, order=None, inverse=False, axis=-1):
             yield nIds[np.argmin(inverseOrder[nIds])]
 
 
-def dem_filter(coords, r):
+def dem_filter(coords, r, max_angle=70):
     """Select points suitable for generating a digital elevation model.
 
     Parameters
@@ -383,6 +386,8 @@ def dem_filter(coords, r):
         Represents `n` points of `k` dimensions to filter.
     r : Number or array_like(Number, shape=(n))
         Radius or radii to apply.
+    max_angle : Number
+        Maximum allowed angle of a simplex.
 
     Returns
     -------
@@ -401,6 +406,9 @@ def dem_filter(coords, r):
         r = np.repeat(r, len(order))
     r = assertion.ensure_numvector(r)
 
+    if not (isinstance(max_angle, Number) and max_angle > 0):
+        raise ValueError("'max_angle' needs to be a number greater zero")
+
     # filter
     ball_gen = ball(IndexKD(coords[:, :-1]), r, order=order)
     fIds = np.array(list(ball_gen), dtype=int)
@@ -409,12 +417,25 @@ def dem_filter(coords, r):
     count = IndexKD(coords[fIds, :]).ball_count(2 * r[fIds])
     fIds = fIds[count >= 6]
 
-    # subsequent filter
-    while True:
-        m = len(fIds)
-        count = IndexKD(coords[fIds, :]).ball_count(2 * r[fIds])
-        fIds = fIds[count >= 3]
-        if m == len(fIds):
+    # subsequent filtering of the simplices
+    while True:        
+        old_len = len(fIds)
+
+        fcoords = coords[fIds, :]
+        dem = interpolate.LinearInterpolator(fcoords[:, :-1], fcoords[:, -1])
+
+        # check principal component of the simplices
+        mask = np.ones(len(fIds), dtype=bool)
+        for simplex_indices in dem.delaunay.simplices:
+            simplex = fcoords[simplex_indices, :]
+            eig_vec = transformation.eigen(simplex)[0][:, -1]
+            angle = vector.zenith(eig_vec, deg=True)
+            if angle > max_angle:
+                idx = simplex_indices[np.argmax(simplex[:, -1])]
+                mask[idx] = False
+        fIds = fIds[mask]
+        
+        if old_len == len(fIds):
             break
 
     return fIds
