@@ -45,6 +45,10 @@ class ICP:
         Class which assigns pairs of points.
     max_iter : optional, positive int
         Maximum number of iterations.
+    update_normals : bool
+        Indicates whether or not to also transform the normals.
+    \*\*assign_parameters
+        Parameters passed to `assign_class`.
 
     Notes
     -----
@@ -111,8 +115,8 @@ class ICP:
     >>> from pyoints import fit
     >>> normals_r = 1.5
     >>> normals_dict = {
-    ...     'A': fit.fit_normals(A, normals_r),
-    ...     'B': fit.fit_normals(B, normals_r)
+    ...     'A': fit.fit_normals_ball(A, normals_r),
+    ...     'B': fit.fit_normals_ball(B, normals_r)
     ... }
     >>> radii = (0.25, 0.25, 0.3, 0.3)
 
@@ -142,20 +146,32 @@ class ICP:
                  radii,
                  max_iter=10,
                  assign_class=assign.KnnMatcher,
+                 update_normals=False,
                  **assign_parameters):
 
-        if not hasattr(assign_class, '__call__'):
-            raise TypeError("'assign_class' must be a callable object")
+        if not callable(assign_class):
+            raise TypeError("'assign_class' must be a callable")
         if not (isinstance(max_iter, int) and max_iter >= 0):
             raise ValueError("'max_iter' needs to be an integer greater zero")
+        if not isinstance(update_normals, bool):
+            raise TypeError("'update_normals' must be boolean")
 
         self._assign_class = assign_class
         self._radii = assertion.ensure_numvector(radii, min_length=2)
         self._max_iter = max_iter
+        self._update_normals = update_normals
         self._assign_parameters = assign_parameters
 
 
-    def __call__(self, coords_dict, sample_dict={}, normals_dict={}, pairs_dict={}, T_dict={}, weights=None):
+    def __call__(
+            self,
+            coords_dict,
+            sample_dict={},
+            normals_dict={},
+            pairs_dict={},
+            T_dict={},
+            cloud_pairs_dict={},
+            weights=None):
         """Calls the ICP algorithm to align multiple point sets.
 
         Parameters
@@ -180,6 +196,8 @@ class ICP:
         """
         # validate input
         coords_dict, dim = _ensure_coords_dict(coords_dict)
+        cloud_pairs_dict = _ensure_cloud_pairs_dict(
+                                coords_dict, cloud_pairs_dict)
         normals_dict = _ensure_normals_dict(normals_dict, coords_dict)
         T_dict = _ensure_T_dict(T_dict, coords_dict, pairs_dict, weights)
         sample_dict = _ensure_sample_dict(sample_dict, coords_dict)
@@ -199,29 +217,38 @@ class ICP:
 
             # assign pairs
             pairs_dict = {}
-            for keyA in coords_dict:
+            for keyA in cloud_pairs_dict:
                 pairs_dict[keyA] = {}
 
                 A = _get_nCoords(
-                    coords_dict, normals_dict, T_dict, keyA)
+                    coords_dict,
+                    normals_dict,
+                    T_dict, keyA,
+                    self._update_normals
+                )
                 matcher = self._assign_class(A, self._radii)
 
-                for keyB in coords_dict:
-                    if keyB != keyA:
+                for keyB in cloud_pairs_dict[keyA]:
 
-                        B = _get_nCoords(
-                            coords_dict, normals_dict, T_dict, keyB)
-                        sids = sample_dict[keyB]
-                        pairs = matcher(B[sids, :], **self._assign_parameters)
+                    B = _get_nCoords(
+                        coords_dict,
+                        normals_dict,
+                        T_dict, keyB,
+                        self._update_normals
+                    )
+                    sids = sample_dict[keyB]
+                    pairs = matcher(B[sids, :], **self._assign_parameters)
 
-                        if len(pairs) > 0:
-                            pairs[:, 1] = sids[pairs[:, 1]]
-                            dists = distance.dist(
-                                A[pairs[:, 0], :dim], B[pairs[:, 1], :dim])
-                            w = distance.idw(dists, p=2)
-                        else:
-                            w = []
-                        pairs_dict[keyA][keyB] = (pairs, w)
+                    if len(pairs) > 0:
+                        pairs[:, 1] = sids[pairs[:, 1]]
+                        dists = distance.dist(
+                            A[pairs[:, 0], :],
+                            B[pairs[:, 1], :],
+                        )
+                        w = distance.idw(dists, p=2)
+                    else:
+                        w = []
+                    pairs_dict[keyA][keyB] = (pairs, w)
 
             # find roto-translation matrices
             T_dict = rototranslations.find_rototranslations(
@@ -232,13 +259,12 @@ class ICP:
                 pairs_old = pairs_dict
             else:
                 change = False
-                for keyA in pairs_dict:
-                    for keyB in pairs_dict:
-                        if not keyB == keyA:
-                            p_old = pairs_old[keyA][keyB][0]
-                            p_new = pairs_dict[keyA][keyB][0]
-                            if not np.array_equal(p_new, p_old):
-                                change = True
+                for keyA in cloud_pairs_dict:
+                    for keyB in cloud_pairs_dict[keyA]:
+                        p_old = pairs_old[keyA][keyB][0]
+                        p_new = pairs_dict[keyA][keyB][0]
+                        if not np.array_equal(p_new, p_old):
+                            change = True
                 if not change:
                     break
                 pairs_old = pairs_dict
@@ -246,16 +272,17 @@ class ICP:
         return T_dict, pairs_dict
 
 
-def _get_nCoords(coords_dict, normals_dict, T_dict, key):
+def _get_nCoords(coords_dict, normals_dict, T_dict, key, update_normals):
     nCoords = coords_dict[key]
     T = T_dict[key]
     nCoords = transformation.transform(coords_dict[key], T)
 
     if len(normals_dict) > 0:
-        # update normal orientation
-        #R = transformation.r_matrix(transformation.decomposition(T)[1])
-        #normals = transformation.transform(normals_dict[key], R)
-        normals = normals_dict[key]
+        if update_normals:
+            R = transformation.r_matrix(transformation.decomposition(T)[1])
+            normals = transformation.transform(normals_dict[key], R)
+        else:
+            normals = normals_dict[key]
         nCoords = np.hstack((nCoords, normals))
     return nCoords
 
@@ -276,7 +303,29 @@ def _ensure_coords_dict(coords_dict):
     return out_coords_dict, dim
 
 
-def _ensure_normals_dict(normals_dict, coords_dict):
+def _ensure_cloud_pairs_dict(coords_dict, cloud_pairs_dict):
+    if not isinstance(cloud_pairs_dict, dict):
+        raise TypeError("'cloud_pairs_dict' needs to be a dictionary")
+
+    out_dict = {}
+    if len(cloud_pairs_dict) == 0:
+        for keyA in coords_dict:
+            out_dict[keyA] = [keyB for keyB in coords_dict if keyB is not keyA]
+    else:
+        # check dict
+        for keyA in coords_dict:
+            if keyA not in cloud_pairs_dict:
+                raise ValueError("missing key")
+            if not isinstance(cloud_pairs_dict[keyA], (list, tuple)):
+                raise ValueError("tuple or list required")
+            for keyB in cloud_pairs_dict[keyA]:
+                if keyB not in coords_dict:
+                    raise ValueError("unknown key")
+            out_dict[keyA] = cloud_pairs_dict[keyA]
+    return out_dict
+
+
+def _ensure_normals_dict(normals_dict, coords_dict,):
     if not isinstance(normals_dict, dict):
         raise TypeError("'normals_dict' needs to be a dictionary")
     out_normals_dict = {}

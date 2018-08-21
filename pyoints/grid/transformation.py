@@ -117,7 +117,8 @@ def coords_to_keys(T, coords):
     flat_coords = coords.reshape((s, dim))
     values = T.to_global(flat_coords)
 
-    keys = np.floor(values).astype(int)[:, ::-1]
+    keys = values.astype(int)[:, ::-1]
+    #keys = np.floor(values).astype(int)[:, ::-1]
     return keys.reshape(coords.shape)
 
 
@@ -184,6 +185,13 @@ def corners_to_transform(corners, scale=None):
     scale : optional, array_like(Number, shape=(k))
         Optional scale to define the pixel resolution of a raster.
 
+    Returns
+    -------
+    T : np.matrix(Number, shape=(k+1, k+1))
+        Desired transformation matrix.
+    shape : np.ndarray(int, shape=(k))
+        Shape of a grid required to cover all corners.    
+    
     Examples
     --------
 
@@ -192,35 +200,57 @@ def corners_to_transform(corners, scale=None):
     >>> T = transformation.matrix(t=[3, 5], s=[10, 20], r=np.pi/2)
     >>> coords = Extent([np.zeros(2), np.ones(2)]).corners
     >>> corners = transformation.transform(coords, T)
+    >>> print(corners)
+    [[  3.   5.]
+     [  3.  15.]
+     [-17.  15.]
+     [-17.   5.]]
 
     Create transformation matrix without scale.
 
-    >>> M = corners_to_transform(corners)
+    >>> M, shape = corners_to_transform(corners)
     >>> print(np.round(M, 3))
     [[ 0. -1.  3.]
      [ 1.  0.  5.]
      [ 0.  0.  1.]]
+    >>> print(shape)
+    [20 10]
 
     Create transformation matrix with a scale.
 
-    >>> M = corners_to_transform(corners, [0.5, 2])
+    >>> M, shape = corners_to_transform(corners, [0.5, 2])
     >>> print(np.round(M, 3))
     [[ 0.  -2.   3. ]
      [ 0.5  0.   5. ]
      [ 0.   0.   1. ]]
+    >>> print(shape)
+    [10 20]
 
-    """
+    """    
     corners = assertion.ensure_coords(corners)
     dim = corners.shape[1]
-    pts = Extent([np.zeros(dim), np.ones(dim)]).corners
+    
+    if scale is None:
+        scale = np.ones(dim)
+    else:
+        scale = assertion.ensure_numvector(scale, length=dim)
 
     # find transformation matrix
+    pts = Extent([np.zeros(dim), np.sign(scale)]).corners
     T = registration.find_transformation(corners, pts)
-
+    
     # get translation, rotation and scale
     t, r, s, det = transformation.decomposition(T)
 
-    return transformation.matrix(t=t, r=r, s=scale)
+    T = transformation.matrix(t=t, r=r, s=scale)
+
+    indices = coords_to_keys(T, corners)
+    assert np.all(indices >= 0), (
+            'not all indices greater zero, got %s' % str(indices))
+    
+    shape = indices.max(0).astype(int)
+
+    return T, shape
 
 
 def transform_to_corners(T, shape):

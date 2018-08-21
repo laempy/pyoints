@@ -919,7 +919,6 @@ def eigen(coords):
     cCoords = coords - coords.mean(0)
 
     # calculate Eigenvectors and Eigenvalues
-    # cov_matrix = np.cov(cCoords, rowvar=False)  # a bit slower
     cov_matrix = dot(cCoords.T, cCoords)
     # cov_matrix = cCoords.T @ cCoords  # fastest solution found
     # cov_matrix is a Hermitian matrix

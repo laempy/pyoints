@@ -36,6 +36,8 @@ from .transformation import (
     coords_to_coords,
     keys_to_indices,
     indices_to_keys,
+    corners_to_transform,
+    extentinfo,
 )
 
 
@@ -179,6 +181,95 @@ class Grid(GeoRecords):
 
         grid = GeoRecords(proj, rec, T=T).reshape(rec.shape).view(cls)
         return grid
+    
+    @classmethod
+    def from_corners(cls, proj, corners, scale):
+        """Alternative constructor using grid corners.
+        
+        Parameters
+        ----------
+        proj : pyoints.projection.Proj
+            Projection object provides the geograpic projection of the grid.
+        corners : array_like(Number, shape=(n, k))
+            Desired `k` dimensional corners of the gird.
+        scale : array_like(int, shape=(k))
+            Desired scale of the pixel cells.
+            
+        See also
+        --------
+        Grid.from_extent
+            
+        Examples
+        --------
+        
+        >>> corners = [(1, 1), (3, 1), (3, 4), (1, 4)]
+        >>> raster = Grid.from_corners(projection.Proj(), corners, [-0.5, -1])
+        
+        >>> print(raster.shape)
+        (2, 4)
+        >>> print(raster.t.origin)
+        [3. 4.]
+        >>> print(sorted(raster.dtype.descr))
+        [('coords', '<f8', (2,))]
+        
+        """
+        T, shape = corners_to_transform(corners, scale=scale)
+        keys = nptools.indices(shape)
+        coords = keys_to_coords(T, keys)
+        rec = np.recarray(shape, dtype=[('coords', float, len(shape))])
+        rec['coords'] = coords
+        return cls(proj, rec, T)
+        
+    @classmethod
+    def from_extent(cls, proj, ext, scale):
+        """Alternative constructor using grid corners.
+        
+        Parameters
+        ----------
+        proj : pyoints.projection.Proj
+            Projection object provides the geograpic projection of the grid.
+        ext : array_like(Number, shape=(2 * k)) or array_like(Number, shape=(n, k))
+            Desired `k` dimensional extent of the gird. You can also specifiy 
+            the extent by providing coordinates.
+        scale : array_like(int, shape=(k))
+            Desired scale of the pixel cells.
+            
+        See also
+        --------
+        Grid.from_corners
+            
+        Examples
+        --------
+        
+        Defining a raster using a two dimensional extent.
+        
+        >>> extent = [1, 1, 3, 4]
+        >>> raster = Grid.from_extent(projection.Proj(), extent, [0.5, 1])
+        
+        >>> print(raster.shape)
+        (3, 4)
+        >>> print(sorted(raster.dtype.descr))
+        [('coords', '<f8', (2,))]
+        >>> print(raster.coords)
+        [[[1.25 1.5 ]
+          [1.75 1.5 ]
+          [2.25 1.5 ]
+          [2.75 1.5 ]]
+        <BLANKLINE>
+         [[1.25 2.5 ]
+          [1.75 2.5 ]
+          [2.25 2.5 ]
+          [2.75 2.5 ]]
+        <BLANKLINE>
+         [[1.25 3.5 ]
+          [1.75 3.5 ]
+          [2.25 3.5 ]
+          [2.75 3.5 ]]]
+         
+        """
+        corners = Extent(ext).corners
+        return cls.from_corners(proj, corners, scale)
+    
 
     def transform(self, T):
         """Transform coordinates.
@@ -327,6 +418,26 @@ class Grid(GeoRecords):
         >>> proj = projection.Proj()
         >>> grid = Grid(proj, np.recarray((3, 4), dtype=dtype), T=T)
 
+        >>> print(grid.shape)
+        (3, 4)
+        >>> print(grid.coords)
+        [[[2.25 1.5 ]
+          [4.75 1.5 ]
+          [7.25 1.5 ]
+          [9.75 1.5 ]]
+        <BLANKLINE>
+         [[2.25 4.5 ]
+          [4.75 4.5 ]
+          [7.25 4.5 ]
+          [9.75 4.5 ]]
+        <BLANKLINE>
+         [[2.25 7.5 ]
+          [4.75 7.5 ]
+          [7.25 7.5 ]
+          [9.75 7.5 ]]]
+        >>> print(grid.t.origin)
+        [1. 0.]
+         
         Create records to voxelize.
 
         >>> coords = [(0, 0), (1, 0.5), (2, 2), (4, 6), (3, 2), (1, 5), (3, 5)]
@@ -339,7 +450,8 @@ class Grid(GeoRecords):
         >>> grid['points'] = voxels
 
         >>> print(grid['points'][0, 0].coords)
-        [[1.  0.5]
+        [[0.  0. ]
+         [1.  0.5]
          [2.  2. ]
          [3.  2. ]]
 
@@ -432,8 +544,9 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
     >>> print(grid.shape)
     (3, 2)
     >>> print(grid[0, 0].coords)
-    [[0. 0. 1.]
-     [2. 2. 3.]]
+    [[ 0.   0.   1. ]
+     [-2.   0.3  5. ]
+     [ 2.   2.   3. ]]
 
     """
     if not isinstance(rec, np.recarray):
