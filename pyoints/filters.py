@@ -418,7 +418,7 @@ def dem_filter(coords, r, max_angle=70):
     fIds = fIds[count >= 6]
 
     # subsequent filtering of the simplices
-    while True:        
+    while True:
         old_len = len(fIds)
 
         fcoords = coords[fIds, :]
@@ -434,7 +434,7 @@ def dem_filter(coords, r, max_angle=70):
                 idx = simplex_indices[np.argmax(simplex[:, -1])]
                 mask[idx] = False
         fIds = fIds[mask]
-        
+
         if old_len == len(fIds):
             break
 

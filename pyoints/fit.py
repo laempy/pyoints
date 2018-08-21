@@ -260,9 +260,12 @@ def fit_normals_ball(coords, r, indices=None, preferred_normals=None):
     return normals
 
 
-
-
-def fit_normals_knn(coords, k=3, distance_upper_bound=np.inf, indices=None, preferred_normals=None):
+def fit_normals_knn(
+        coords,
+        k=3,
+        distance_upper_bound=np.inf,
+        indices=None,
+        preferred_normals=None):
     """Fits normals to points by selecting `k` nearest neighbours.
 
     Parameters
@@ -320,7 +323,7 @@ def fit_normals_knn(coords, k=3, distance_upper_bound=np.inf, indices=None, pref
         raise ValueError(m)
 
     knn_gen = indexKD.knn_iter(
-            coords[indices, :], k=k, distance_upper_bound=distance_upper_bound)
+        coords[indices, :], k=k, distance_upper_bound=distance_upper_bound)
 
     # generate normals
     normals = np.zeros((len(indices), dim), dtype=float)

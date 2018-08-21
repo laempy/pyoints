@@ -59,7 +59,7 @@ class Interpolator:
 
     def _interpolate(self, coords):
         raise NotImplementedError()
-        
+
     def _prepare(self, coords):
         coords = assertion.ensure_numarray(coords)
         if len(coords.shape) == 1:
@@ -104,7 +104,7 @@ class LinearInterpolator(Interpolator):
         Represents `n` data points of `k` dimensions.
     values : array_like(Number, shape=(n)) or array_like(Number, shape=(n, m))
         One dimensional or `m` dimensional values to interpolate.
-        
+
     See Also
     --------
     Interpolator, scipy.interpolate.LinearNDInterpolator
@@ -118,7 +118,7 @@ class LinearInterpolator(Interpolator):
     >>> values = [0, 3, 6]
 
     >>> interpolator = LinearInterpolator(coords, values)
-    
+
     >>> print(interpolator([0, 1]))
     1.5
     >>> print(interpolator([(0, 1), (0, 0), (0, -1)]))
@@ -130,7 +130,7 @@ class LinearInterpolator(Interpolator):
     >>> values = [(0, 1, 3), (2, 3, 8), (6, 4, 4)]
 
     >>> interpolator = LinearInterpolator(coords, values)
-    
+
     >>> print(interpolator([0, 1]))
     [1.  2.  5.5]
     >>> print(interpolator([(0, 1), (0, 0), (0, -1)]))
@@ -143,31 +143,31 @@ class LinearInterpolator(Interpolator):
     def __init__(self, coords, values):
         Interpolator.__init__(self, coords, values)
         self._interpolator = LinearNDInterpolator(
-                self._prepare(coords), values, rescale=False)
+            self._prepare(coords), values, rescale=False)
 
     def _interpolate(self, prepared_coords):
         return self._interpolator(prepared_coords)
-    
+
     def simplex(self, coords):
         """Finds the corresponding simplex to a coordinate.
-        
+
         Parameters
         ----------
         coords : array_like(Number, shape=(n, k))
             Represents `n` points of `k` dimensions.
-            
+
         Returns
         -------
-        list(int) or list of np.ndarray(int shape=(k+1)) 
+        list(int) or list of np.ndarray(int shape=(k+1))
             Simplex indices. If no simplex is found, an empty list is returned.
-        
+
         Examples
         --------
         >>> coords = [(0, 0), (0, 2), (3, 0), (3, 2), (1, 1)]
         >>> values = [0, 3, 6, 5, 9]
-    
+
         >>> interpolator = LinearInterpolator(coords, values)
-        
+
         >>> simplex_ids = interpolator.simplex([0, 1])
         >>> print(simplex_ids)
         [4 1 0]
@@ -175,7 +175,7 @@ class LinearInterpolator(Interpolator):
         [[1 1]
          [0 2]
          [0 0]]
-        
+
         >>> simplex_ids = interpolator.simplex([(0.5, 0.5), (-1, 1), (3, 2)])
         >>> print(interpolator.coords[simplex_ids[0], :])
         [[1 1]
@@ -201,7 +201,7 @@ class LinearInterpolator(Interpolator):
         if len(indices) == 1:
             indices = indices[0]
         return indices
-    
+
     @property
     def delaunay(self):
         return self._interpolator.tri
@@ -235,7 +235,7 @@ class KnnInterpolator(Interpolator):
     >>> values = [0, 3, 6]
 
     >>> interpolator = KnnInterpolator(coords, values, k=2, max_dist=1)
-    
+
     >>> print(interpolator([0, 1]))
     1.5
     >>> print(interpolator([(0, 1), (0, 0), (0, -1)]))
@@ -247,7 +247,7 @@ class KnnInterpolator(Interpolator):
     >>> values = [(0, 1, 3), (2, 3, 8), (6, 4, 4)]
 
     >>> interpolator = KnnInterpolator(coords, values, k=2)
-    
+
     >>> print(interpolator([0, 1]))
     [1.  2.  5.5]
     >>> print(interpolator([(0, 1), (0, 0), (0, -1)]))
@@ -323,7 +323,7 @@ class PolynomInterpolator(Interpolator):
     >>> values = [0, 3, 6]
 
     >>> interpolator = PolynomInterpolator(coords, values, deg=1)
-    
+
     >>> print(interpolator([0, 1]))
     1.5
     >>> print(interpolator([(0, 1), (0, 0), (0, -1)]))
@@ -335,7 +335,7 @@ class PolynomInterpolator(Interpolator):
     >>> values = [(0, 1, 3), (2, 3, 8), (6, 4, 4)]
 
     >>> interpolator = PolynomInterpolator(coords, values, deg=1)
-    
+
     >>> print(np.round(interpolator([0, 1]), 2))
     [1.  2.  5.5]
     >>> print(np.round(interpolator([(0, 1), (0, 0), (0, -1)]), 2))
@@ -359,21 +359,20 @@ class PolynomInterpolator(Interpolator):
 
         self._deg = deg
         self._interaction_only = interaction_only
-        
+
         self._poly_features = PolynomialFeatures(
-                self._deg, interaction_only=self._interaction_only)
-        
+            self._deg, interaction_only=self._interaction_only)
+
         self._interpolator = LinearRegression()
         self._interpolator.fit(
             self._poly_features.fit_transform(self._prepare(coords)),
             values,
             sample_weight=weights
         )
-        
+
     def _interpolate(self, prepared_coords):
         poly = self._poly_features.transform(prepared_coords)
         return self._interpolator.predict(poly)
-
 
     @property
     def coef(self):

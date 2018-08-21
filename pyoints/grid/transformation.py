@@ -189,8 +189,8 @@ def corners_to_transform(corners, scale=None):
     T : np.matrix(Number, shape=(k+1, k+1))
         Desired transformation matrix.
     shape : np.ndarray(int, shape=(k))
-        Shape of a grid required to cover all corners.    
-    
+        Shape of a grid required to cover all corners.
+
     Examples
     --------
 
@@ -225,10 +225,10 @@ def corners_to_transform(corners, scale=None):
     >>> print(shape)
     [10 20]
 
-    """    
+    """
     corners = assertion.ensure_coords(corners)
     dim = corners.shape[1]
-    
+
     if scale is None:
         scale = np.ones(dim)
     else:
@@ -237,7 +237,7 @@ def corners_to_transform(corners, scale=None):
     # find transformation matrix
     pts = Extent([np.zeros(dim), np.sign(scale)]).corners
     T = registration.find_transformation(corners, pts)
-    
+
     # get translation, rotation and scale
     t, r, s, det = transformation.decomposition(T)
 
@@ -245,8 +245,8 @@ def corners_to_transform(corners, scale=None):
 
     indices = coords_to_keys(T, corners)
     assert np.all(indices >= 0), (
-            'not all indices greater zero, got %s' % str(indices))
-    
+        'not all indices greater zero, got %s' % str(indices))
+
     shape = indices.max(0).astype(int)
 
     return T, shape

@@ -181,11 +181,11 @@ class Grid(GeoRecords):
 
         grid = GeoRecords(proj, rec, T=T).reshape(rec.shape).view(cls)
         return grid
-    
+
     @classmethod
     def from_corners(cls, proj, corners, scale):
         """Alternative constructor using grid corners.
-        
+
         Parameters
         ----------
         proj : pyoints.projection.Proj
@@ -194,24 +194,24 @@ class Grid(GeoRecords):
             Desired `k` dimensional corners of the gird.
         scale : array_like(int, shape=(k))
             Desired scale of the pixel cells.
-            
+
         See also
         --------
         Grid.from_extent
-            
+
         Examples
         --------
-        
+
         >>> corners = [(1, 1), (3, 1), (3, 4), (1, 4)]
         >>> raster = Grid.from_corners(projection.Proj(), corners, [-0.5, -1])
-        
+
         >>> print(raster.shape)
         (2, 4)
         >>> print(raster.t.origin)
         [3. 4.]
         >>> print(sorted(raster.dtype.descr))
         [('coords', '<f8', (2,))]
-        
+
         """
         T, shape = corners_to_transform(corners, scale=scale)
         keys = nptools.indices(shape)
@@ -219,33 +219,33 @@ class Grid(GeoRecords):
         rec = np.recarray(shape, dtype=[('coords', float, len(shape))])
         rec['coords'] = coords
         return cls(proj, rec, T)
-        
+
     @classmethod
     def from_extent(cls, proj, ext, scale):
         """Alternative constructor using grid corners.
-        
+
         Parameters
         ----------
         proj : pyoints.projection.Proj
             Projection object provides the geograpic projection of the grid.
         ext : array_like(Number, shape=(2 * k)) or array_like(Number, shape=(n, k))
-            Desired `k` dimensional extent of the gird. You can also specifiy 
+            Desired `k` dimensional extent of the gird. You can also specifiy
             the extent by providing coordinates.
         scale : array_like(int, shape=(k))
             Desired scale of the pixel cells.
-            
+
         See also
         --------
         Grid.from_corners
-            
+
         Examples
         --------
-        
+
         Defining a raster using a two dimensional extent.
-        
+
         >>> extent = [1, 1, 3, 4]
         >>> raster = Grid.from_extent(projection.Proj(), extent, [0.5, 1])
-        
+
         >>> print(raster.shape)
         (3, 4)
         >>> print(sorted(raster.dtype.descr))
@@ -265,11 +265,10 @@ class Grid(GeoRecords):
           [1.75 3.5 ]
           [2.25 3.5 ]
           [2.75 3.5 ]]]
-         
+
         """
         corners = Extent(ext).corners
         return cls.from_corners(proj, corners, scale)
-    
 
     def transform(self, T):
         """Transforms coordinates.
@@ -437,7 +436,7 @@ class Grid(GeoRecords):
           [9.75 7.5 ]]]
         >>> print(grid.t.origin)
         [1. 0.]
-         
+
         Create records to voxelize.
 
         >>> coords = [(0, 0), (1, 0.5), (2, 2), (4, 6), (3, 2), (1, 5), (3, 5)]

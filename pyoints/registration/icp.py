@@ -162,7 +162,6 @@ class ICP:
         self._update_normals = update_normals
         self._assign_parameters = assign_parameters
 
-
     def __call__(
             self,
             coords_dict,
@@ -197,7 +196,7 @@ class ICP:
         # validate input
         coords_dict, dim = _ensure_coords_dict(coords_dict)
         cloud_pairs_dict = _ensure_cloud_pairs_dict(
-                                coords_dict, cloud_pairs_dict)
+            coords_dict, cloud_pairs_dict)
         normals_dict = _ensure_normals_dict(normals_dict, coords_dict)
         T_dict = _ensure_T_dict(T_dict, coords_dict, pairs_dict, weights)
         sample_dict = _ensure_sample_dict(sample_dict, coords_dict)
@@ -299,7 +298,7 @@ def _ensure_coords_dict(coords_dict):
             dim = out_coords_dict[key].shape[1]
         else:
             out_coords_dict[key] = assertion.ensure_coords(
-                    coords_dict[key], dim=dim)
+                coords_dict[key], dim=dim)
     return out_coords_dict, dim
 
 

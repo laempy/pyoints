@@ -98,7 +98,7 @@ We get some information on the fields...
 [364187.98, 5509577.71, -1.58, 364194.95, 5509584.71, 28.78]
 
 
-Now we take a closer look at the spatial index. We begin with selecting all 
+Now we take a closer look at the spatial index. We begin with selecting all
 points close to the corners of the point cloud.
 
 >>> radius = 1.0
@@ -128,7 +128,7 @@ OK, now we actually select the points.
 8
 
 
-For each point we receive a list of indices. So we concatenate them to save 
+For each point we receive a list of indices. So we concatenate them to save
 the resulting subset as a point cloud.
 
 >>> n_ids = np.concatenate(n_ids).astype(int)
@@ -139,7 +139,7 @@ the resulting subset as a point cloud.
 >>> storage.writeLas(las[n_ids], outfile)
 
 
-We can also select the `k` nearest neighbors. 
+We can also select the `k` nearest neighbors.
 
 >>> dists, n_ids = las.indexKD().knn(corners, k=2)
 
@@ -175,7 +175,7 @@ Again, we save the resulting subset.
 >>> storage.writeLas(las[n_ids], outfile)
 
 
-If we need to select points in the shape of an ellipsoid, we can also create a 
+If we need to select points in the shape of an ellipsoid, we can also create a
 scaled spatial index. Doing so, each coordinate axis is scaled individually.
 
 >>> T = transformation.s_matrix([1.5, 0.9, 0.5])

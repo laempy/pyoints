@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
 # END OF LICENSE NOTE
-"""Learn how to use Pyoints as a powerful tool.""" 
+"""Learn how to use Pyoints as a powerful tool."""
 from . import (
     file_examples,
     base_example,
