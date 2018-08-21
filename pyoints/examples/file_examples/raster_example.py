@@ -66,8 +66,9 @@ Load image again and check characteristics.
 >>> print(raster.t.origin)
 [ 332575. 5513229.]
 >>> print(raster.shape)
- (96, 250)
- >>> print(sorted(raster.dtype.descr))
+(96, 250)
+
+>>> print(sorted(raster.dtype.descr))
 [('bands', '<i8', (3,)), ('coords', '<f8', (2,))]
 
 """

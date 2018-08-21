@@ -22,5 +22,5 @@ from . import (
     dump_example,
     las_example,
     ply_example,
-    # raster_example
+    raster_example,
 )
