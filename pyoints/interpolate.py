@@ -37,8 +37,8 @@ class Interpolator:
     ----------
     coords : array_like(Number, shape=(n, k))
         Represents `n` data points of `k` dimensions.
-    values : array_like(Number, shape=(n))
-        Values to interpolate.
+    values : array_like(Number, shape=(n)) or array_like(Number, shape=(n, m))
+        One dimensional or `m` dimensional values to interpolate.
 
     Attributes
     ----------
@@ -51,7 +51,7 @@ class Interpolator:
 
     def __init__(self, coords, values):
         self._coords = assertion.ensure_coords(coords)
-        values = assertion.ensure_numvector(values)
+        values = assertion.ensure_numarray(values)
         if not len(self._coords) == len(values):
             raise ValueError("array dimensions do not fit")
         self._shift = self._coords.min(0)
@@ -74,8 +74,15 @@ class Interpolator:
             Interpolated values.
 
         """
+        coords = assertion.ensure_numarray(coords)
+        is_point = len(coords.shape) == 1
+        if is_point:
+            coords = [coords]
         coords = assertion.ensure_coords(coords)
-        return self._interpolate(coords[:, :self.dim])
+        values = self._interpolate(coords[:, :self.dim])
+        if is_point:
+            values = values[0]
+        return values
 
     @property
     def coords(self):
@@ -87,30 +94,47 @@ class Interpolator:
 
 
 class LinearInterpolator(Interpolator):
-    """Linear interpolation.
+    """Linear interpolation using Delaunay triangilation.
 
     Parameters
     ----------
     coords : array_like(Number, shape=(n, k))
         Represents `n` data points of `k` dimensions.
-    values : array_like(Number, shape=(n))
-        Values to interpolate.
-
+    values : array_like(Number, shape=(n)) or array_like(Number, shape=(n, m))
+        One dimensional or `m` dimensional values to interpolate.
+        
     See Also
     --------
-    Interpolator
+    Interpolator, scipy.interpolate.LinearNDInterpolator
 
     Examples
     --------
+
+    Interpolation of one-dimensional values.
 
     >>> coords = [(0, 0), (0, 2), (2, 1)]
     >>> values = [0, 3, 6]
 
     >>> interpolator = LinearInterpolator(coords, values)
-    >>> print(interpolator([(1, 1)]))
-    [3.75]
-    >>> print(interpolator([(-1, -1)]))
-    [nan]
+    
+    >>> print(interpolator([0, 1]))
+    1.5
+    >>> print(interpolator([(0, 1), (0, 0), (0, -1)]))
+    [1.5 0.  nan]
+
+    Interpolation of multi-dimensional values.
+
+    >>> coords = [(0, 0), (0, 2), (2, 3)]
+    >>> values = [(0, 1, 3), (2, 3, 8), (6, 4, 4)]
+
+    >>> interpolator = LinearInterpolator(coords, values)
+    
+    >>> print(interpolator([0, 1]))
+    [1.  2.  5.5]
+    >>> print(interpolator([(0, 1), (0, 0), (0, -1)]))
+    [[1.  2.  5.5]
+     [0.  1.  3. ]
+     [nan nan nan]]
 
     """
 
@@ -129,8 +153,8 @@ class KnnInterpolator(Interpolator):
     ----------
     coords : array_like(Number, shape=(n, k))
         Represents `n` data points of `k` dimensions.
-    values : array_like(Number, shape=(n))
-        Values to interpolate.
+    values : array_like(Number, shape=(n)) or array_like(Number, shape=(n, m))
+        One dimensional or `m` dimensional values to interpolate.
     k : optional, positive int
         Number of neighbours used for interpolation.
     max_dist : optional, positive Number
@@ -138,19 +162,37 @@ class KnnInterpolator(Interpolator):
 
     See Also
     --------
-    Interpolator
+    Interpolator, sklearn.neighbors.KNeighborsRegressor
+
 
     Examples
     --------
+
+    Interpolation of one-dimensional values.
 
     >>> coords = [(0, 0), (0, 2), (2, 1)]
     >>> values = [0, 3, 6]
 
     >>> interpolator = KnnInterpolator(coords, values, k=2, max_dist=1)
-    >>> print(interpolator([(1, 1)]))
-    [6.]
-    >>> print(interpolator([(-0.5, -0.5)]))
-    [0.]
+    
+    >>> print(interpolator([0, 1]))
+    1.5
+    >>> print(interpolator([(0, 1), (0, 0), (0, -1)]))
+    [1.5 0.  0. ]
+
+    Interpolation of multi-dimensional values.
+
+    >>> coords = [(0, 0), (0, 2), (2, 3)]
+    >>> values = [(0, 1, 3), (2, 3, 8), (6, 4, 4)]
+
+    >>> interpolator = KnnInterpolator(coords, values, k=2)
+    
+    >>> print(interpolator([0, 1]))
+    [1.  2.  5.5]
+    >>> print(interpolator([(0, 1), (0, 0), (0, -1)]))
+    [[1.   2.   5.5 ]
+     [0.   1.   3.  ]
+     [0.5  1.5  4.25]]
 
     """
 
@@ -192,14 +234,14 @@ class KnnInterpolator(Interpolator):
 
 
 class PolynomInterpolator(Interpolator):
-    """Polynom interpolation.
+    """Polynomial interpolation.
 
     Parameters
     ----------
     coords : array_like(Number, shape=(n, k))
         Represents `n` data points of `k` dimensions.
-    values : array_like(Number, shape=(n))
-        Values to interpolate.
+    values : array_like(Number, shape=(n)) or array_like(Number, shape=(n, m))
+        One dimensional or `m` dimensional values to interpolate.
     deg : optional, positive int
         The degree of the polynomial features.
     weights : optional, array_like(shape=(n))
@@ -215,21 +257,31 @@ class PolynomInterpolator(Interpolator):
     Examples
     --------
 
+    Interpolation of one-dimensional values.
+
     >>> coords = [(0, 0), (0, 2), (2, 1)]
     >>> values = [0, 3, 6]
 
     >>> interpolator = PolynomInterpolator(coords, values, deg=1)
-    >>> print(interpolator([(1, 1)]))
-    [3.75]
-    >>> print(interpolator([(-1, -0.5)]))
-    [-3.]
+    
+    >>> print(interpolator([0, 1]))
+    1.5
+    >>> print(interpolator([(0, 1), (0, 0), (0, -1)]))
+    [ 1.5  0.  -1.5]
+
+    Interpolation of multi-dimensional values.
+
+    >>> coords = [(0, 0), (0, 2), (2, 3)]
+    >>> values = [(0, 1, 3), (2, 3, 8), (6, 4, 4)]
 
     >>> interpolator = PolynomInterpolator(coords, values, deg=0)
-    >>> print(interpolator([(1, 1)]))
-    [3.]
-    >>> print(interpolator([(-1, -0.5)]))
-    [3.]
-
+    
+    >>> print(np.round(interpolator([0, 1]), 2))
+    [2.67 2.67 5.  ]
+    >>> print(np.round(interpolator([(0, 1), (0, 0), (0, -1)]), 2))
+    [[2.67 2.67 5.  ]
+     [2.67 2.67 5.  ]
+     [2.67 2.67 5.  ]]
 
     """
 
