@@ -64,7 +64,7 @@ class Interpolator:
         coords = assertion.ensure_numarray(coords)
         if len(coords.shape) == 1:
             coords = np.array([coords], dtype=float)
-        return coords - self._shift
+        return coords[:, :self.dim] - self._shift
 
     def __call__(self, coords):
         """Apply interpolation.
@@ -189,19 +189,22 @@ class LinearInterpolator(Interpolator):
          [3 0]]
 
         """
-        delaunay = self._interpolator.tri
-        simplex_ids_list = delaunay.find_simplex(self._prepare(coords))
+        simplex_ids_list = self.delaunay.find_simplex(self._prepare(coords))
 
         indices = []
         for simplex_ids in simplex_ids_list:
             if simplex_ids == -1:
                 nIds = []
             else:
-                nIds = delaunay.simplices[simplex_ids, :]
+                nIds = self.delaunay.simplices[simplex_ids, :]
             indices.append(nIds)
         if len(indices) == 1:
             indices = indices[0]
         return indices
+    
+    @property
+    def delaunay(self):
+        return self._interpolator.tri
 
 
 class KnnInterpolator(Interpolator):
