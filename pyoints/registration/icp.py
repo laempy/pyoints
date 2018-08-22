@@ -165,7 +165,6 @@ class ICP:
     def __call__(
             self,
             coords_dict,
-            sample_dict={},
             normals_dict={},
             pairs_dict={},
             T_dict={},
@@ -183,7 +182,7 @@ class ICP:
             Dictionary of point pairs.
         T_dict : optional, dict of array_like(int, shape=(k+1, k+1))
             Dictionary of transformation matrices. If `pairs_dict` is provided,
-            `T_dict` will be calculated automatically.
+            `T_dict` will be overwritten.
 
         Returns
         -------
@@ -199,7 +198,7 @@ class ICP:
             coords_dict, cloud_pairs_dict)
         normals_dict = _ensure_normals_dict(normals_dict, coords_dict)
         T_dict = _ensure_T_dict(T_dict, coords_dict, pairs_dict, weights)
-        sample_dict = _ensure_sample_dict(sample_dict, coords_dict)
+
 
         # check radii
         if len(normals_dict) > 0:
@@ -235,11 +234,9 @@ class ICP:
                         T_dict, keyB,
                         self._update_normals
                     )
-                    sids = sample_dict[keyB]
-                    pairs = matcher(B[sids, :], **self._assign_parameters)
+                    pairs = matcher(B, **self._assign_parameters)
 
                     if len(pairs) > 0:
-                        pairs[:, 1] = sids[pairs[:, 1]]
                         dists = distance.dist(
                             A[pairs[:, 0], :],
                             B[pairs[:, 1], :],
@@ -339,27 +336,11 @@ def _ensure_normals_dict(normals_dict, coords_dict,):
     return out_normals_dict
 
 
-def _ensure_sample_dict(sample_dict, coords_dict):
-    if not isinstance(sample_dict, dict):
-        raise TypeError("'sampleids_dict' needs to be a dictionary")
-    out_sample_dict = {}
-    for key in coords_dict:
-        n = len(coords_dict[key])
-        if key in sample_dict:
-            out_sample_dict[key] = assertion.ensure_indices(
-                sample_dict[key], max_value=n).copy()
-        else:
-            out_sample_dict[key] = np.arange(n)
-    return out_sample_dict
-
-
 def _ensure_T_dict(T_dict, coords_dict, pairs_dict, weights):
     if not isinstance(T_dict, dict):
         raise TypeError("'T_dict' needs to be a dictionary")
     if not isinstance(pairs_dict, dict):
         raise TypeError("'pairs_dict' needs to be a dictionary")
-    if len(T_dict) > 0 and len(pairs_dict) > 0:
-        raise ValueError("please specifiy either 'T_dict' or 'pairs_dict'")
 
     out_T_dict = {}
     if len(T_dict) == 0 and len(pairs_dict) > 0:
