@@ -672,7 +672,7 @@ class IndexKD(object):
         """
         return self.r_tree.count(extent)
 
-    def slice(self, min_th, max_th, axis=-1):
+    def slice(self, min_th=-np.inf, max_th=np.inf, axis=-1):
         """Select points with coordinate value of axis `axis` within range the
         [`min_th`, `max_th`].
 
@@ -705,6 +705,6 @@ class IndexKD(object):
         iMin = bisect.bisect_left(values[order], min_th) - 1
         iMax = bisect.bisect_left(values[order], max_th)
 
-        # get original order (for performance reasons of later operations)
+        # keep original order (for performance reasons of later operations)
         ids = np.sort(order[iMin:iMax])
         return ids
