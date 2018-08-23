@@ -20,6 +20,7 @@
 """
 
 import numpy as np
+from numbers import Number
 
 from . import rototranslations
 from .. import (
@@ -144,7 +145,8 @@ class ICP:
 
     def __init__(self,
                  radii,
-                 max_iter=10,
+                 max_iter=50,
+                 max_change_ratio=0.01,
                  assign_class=assign.KnnMatcher,
                  update_normals=False,
                  **assign_parameters):
@@ -155,12 +157,17 @@ class ICP:
             raise ValueError("'max_iter' needs to be an integer greater zero")
         if not isinstance(update_normals, bool):
             raise TypeError("'update_normals' must be boolean")
+        if not (isinstance(max_change_ratio, Number) and max_change_ratio > 0):
+            raise ValueError("'max_change_ratio' must be a number greater zero")
 
         self._assign_class = assign_class
         self._radii = assertion.ensure_numvector(radii, min_length=2)
         self._max_iter = max_iter
+        self._max_change_ratio = max_change_ratio
         self._update_normals = update_normals
         self._assign_parameters = assign_parameters
+
+
 
     def __call__(
             self,
@@ -199,16 +206,18 @@ class ICP:
         normals_dict = _ensure_normals_dict(normals_dict, coords_dict)
         T_dict = _ensure_T_dict(T_dict, coords_dict, pairs_dict, weights)
 
-
         # check radii
         if len(normals_dict) > 0:
             if not len(self._radii) == 2 * dim:
-                m = "NICP requires %i radii got %i"
+                m = "NICP requires %i radii, got %i"
                 raise ValueError(m % (2 * dim, len(self._radii)))
         else:
             if not len(self._radii) == dim:
-                m = "ICP requires %i radii got %i" % (dim, len(self._radii))
+                m = "ICP requires %i radii, got %i" % (dim, len(self._radii))
                 raise ValueError(m % (2 * dim, len(self._radii)))
+
+        max_change = distance.norm(self._radii[:dim]) * self._max_change_ratio
+        print('maxrmse', max_change)
 
         # ICP algorithm
         for num_iter in range(self._max_iter):
@@ -238,8 +247,8 @@ class ICP:
 
                     if len(pairs) > 0:
                         dists = distance.dist(
-                            A[pairs[:, 0], :],
-                            B[pairs[:, 1], :],
+                            A[pairs[:, 0], :dim],
+                            B[pairs[:, 1], :dim],
                         )
                         w = distance.idw(dists, p=2)
                     else:
@@ -247,25 +256,27 @@ class ICP:
                     pairs_dict[keyA][keyB] = (pairs, w)
 
             # find roto-translation matrices
-            T_dict = rototranslations.find_rototranslations(
+            T_dict_new = rototranslations.find_rototranslations(
                 coords_dict, pairs_dict, weights=weights)
 
-            # termination
-            if num_iter == 0:
-                pairs_old = pairs_dict
-            else:
-                change = False
-                for keyA in cloud_pairs_dict:
-                    for keyB in cloud_pairs_dict[keyA]:
-                        p_old = pairs_old[keyA][keyB][0]
-                        p_new = pairs_dict[keyA][keyB][0]
-                        if not np.array_equal(p_new, p_old):
-                            change = True
-                if not change:
-                    break
-                pairs_old = pairs_dict
+            # take a look at the residuals between before and after
+            rmse = _get_change_rmse(coords_dict, T_dict, T_dict_new)
+            print(num_iter, rmse)
+            if rmse <= max_change:
+                break
+
+            T_dict = T_dict_new
 
         return T_dict, pairs_dict
+
+
+def _get_change_rmse(coords_dict, T_dict_old, T_dict_new):
+    rmse_dict = {}
+    for key, coords in coords_dict.items():
+        coords_old = transformation.transform(coords, T_dict_old[key])
+        coords_new = transformation.transform(coords, T_dict_new[key])
+        rmse_dict[key] = distance.rmse(coords_new, coords_old)
+    return np.max(list(rmse_dict.values()))
 
 
 def _get_nCoords(coords_dict, normals_dict, T_dict, key, update_normals):

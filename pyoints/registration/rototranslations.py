@@ -157,9 +157,9 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     M = np.linalg.lstsq(mA, mB, rcond=None)[0]
 
     # Extract roto-transformation matrices
-    T = _extract_transformations(M, centers, center)
+    T_dict = _extract_transformations(M, centers, center)
 
-    return T
+    return T_dict
 
 
 def _unknowns(dim):

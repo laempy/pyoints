@@ -193,6 +193,8 @@ def _orient_normals(normals, p_normals):
     return normals
 
 
+# TODO revise (as class with input validation)
+
 def fit_normals_ball(coords, r, indices=None, preferred_normals=None):
     """Fits normals to points, by selecting all neighbours within a sphere.
 

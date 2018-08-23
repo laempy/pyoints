@@ -493,6 +493,7 @@ class IndexKD(object):
         knn, knns_iter, scipy.spatial.cKDTree.query
 
         """
+
         if assertion.iscoord(coords):
             # single point query
             dists, nIds = self.kd_tree.query(coords[:self.dim], k, **kwargs)
