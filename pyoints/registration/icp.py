@@ -158,7 +158,8 @@ class ICP:
         if not isinstance(update_normals, bool):
             raise TypeError("'update_normals' must be boolean")
         if not (isinstance(max_change_ratio, Number) and max_change_ratio > 0):
-            raise ValueError("'max_change_ratio' must be a number greater zero")
+            raise ValueError(
+                "'max_change_ratio' must be a number greater zero")
 
         self._assign_class = assign_class
         self._radii = assertion.ensure_numvector(radii, min_length=2)
@@ -166,8 +167,6 @@ class ICP:
         self._max_change_ratio = max_change_ratio
         self._update_normals = update_normals
         self._assign_parameters = assign_parameters
-
-
 
     def __call__(
             self,
