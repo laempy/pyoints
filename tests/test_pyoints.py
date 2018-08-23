@@ -60,9 +60,6 @@ def get_tests(root_package):
 
 
 def load_tests(loader, tests, ignore):
-
-    tests.addTests(get_tests(pyoints.grid))
-    tests.addTests(get_tests(pyoints.registration))
     tests.addTests(get_tests(pyoints.storage))
     tests.addTests(get_tests(pyoints.assertion))
     tests.addTests(get_tests(pyoints.assign))
@@ -74,12 +71,15 @@ def load_tests(loader, tests, ignore):
     tests.addTests(get_tests(pyoints.filters))
     tests.addTests(get_tests(pyoints.fit))
     tests.addTests(get_tests(pyoints.georecords))
+    tests.addTests(get_tests(pyoints.grid))
     tests.addTests(get_tests(pyoints.indexkd))
     tests.addTests(get_tests(pyoints.interpolate))
     tests.addTests(get_tests(pyoints.misc))
+    tests.addTests(get_tests(pyoints.normals))
     tests.addTests(get_tests(pyoints.nptools))
     tests.addTests(get_tests(pyoints.polar))
     tests.addTests(get_tests(pyoints.projection))
+    tests.addTests(get_tests(pyoints.registration))
     tests.addTests(get_tests(pyoints.smoothing))
     tests.addTests(get_tests(pyoints.surface))
     tests.addTests(get_tests(pyoints.transformation))
