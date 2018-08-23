@@ -453,6 +453,7 @@ class LasRecords(GeoRecords):
     """
     USER_DEFINED_FIELDS = [
         ('coords', np.float, 3),
+        ('normals', np.float, 3),
         ('classification', np.uint8),
         ('num_returns', np.uint8),
         ('return_num', np.uint8),
@@ -479,6 +480,12 @@ class LasRecords(GeoRecords):
             Name of the field to activate.
 
         """
+        if not isinstance(field_name, str):
+            raise TypeError("'field_name' needs to be a string")
+            
+        if field_name in self.dtype.names:
+            return self
+        
         for field in self.USER_DEFINED_FIELDS:
             if field[0] == field_name:
                 return self.add_fields([field])

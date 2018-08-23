@@ -34,7 +34,7 @@ class Surface:
         Interpolation method to use.
     \*\*kwargs : optional
         Arguments passed to the interpolation `method`.
-
+        
     See Also
     --------
     poynts.interpolate.Interpolator
@@ -44,8 +44,13 @@ class Surface:
 
     >>> method = interpolate.LinearInterpolator
     >>> surface = Surface([(0, 0, 0), (0, 2, 0), (2, 1, 4)], method=method)
+    
     >>> print(surface([(1, 1)]))
-    [2.]
+    2.0
+    >>> print(surface([(1, 1), (0.5, 1)]))
+    [2. 1.]
+    >>> print(surface([(1, 1, 2), (0.5, 1, 9)]))
+    [2. 1.]
 
     """
 

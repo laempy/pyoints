@@ -245,7 +245,7 @@ def ball(indexKD, r, order=None, inverse=False, axis=-1, min_pts=1):
     indexKD : IndexKD
         IndexKD containing `n` points to filter.
     r : positive float or array_like(float, shape=(n))
-        Ball radius or radii to apply.
+        Ball radius or radii to select neighbouring points.
     order : optional, array_like(int, shape=(m))
         Order to proceed. If m < n, only a subset of points is investigated. If
         None, ordered by `axis`.
@@ -290,7 +290,7 @@ def ball(indexKD, r, order=None, inverse=False, axis=-1, min_pts=1):
     not_classified = np.ones(len(indexKD), dtype=np.bool)
     for pId in order:
         if not_classified[pId]:
-            nIds = indexKD.ball(coords[pId], r[pId])
+            nIds = indexKD.ball(coords[pId, :], r[pId])
             if len(nIds) >= min_pts:
                 not_classified[nIds] = False
                 yield pId

@@ -113,11 +113,11 @@ class ICP:
 
     ICP also take advantage of normals (NICP).
 
-    >>> from pyoints import fit
+    >>> from pyoints.normals import fit_normals
     >>> normals_r = 1.5
     >>> normals_dict = {
-    ...     'A': fit.fit_normals_ball(A, normals_r),
-    ...     'B': fit.fit_normals_ball(B, normals_r)
+    ...     'A': fit_normals(A, normals_r),
+    ...     'B': fit_normals(B, normals_r)
     ... }
     >>> radii = (0.25, 0.25, 0.3, 0.3)
 
@@ -174,7 +174,7 @@ class ICP:
             normals_dict={},
             pairs_dict={},
             T_dict={},
-            cloud_pairs_dict={},
+            overlap_dict={},
             weights=None):
         """Calls the ICP algorithm to align multiple point sets.
 
@@ -189,6 +189,10 @@ class ICP:
         T_dict : optional, dict of array_like(int, shape=(k+1, k+1))
             Dictionary of transformation matrices. If `pairs_dict` is provided,
             `T_dict` will be overwritten.
+        overlap_dict : optional, dict of list(str)
+            Dictionary specifying which point clouds overlap.
+        weights : optional, array_like
+            Weights passed to `find_rototranslations`.
 
         Returns
         -------
@@ -197,11 +201,15 @@ class ICP:
         pairs_dict : dict of array_like(int, shape=(m, 2))
             Desired dictionary of point pairs.
 
+        See Also
+        --------
+        find_rototranslations
+
         """
         # validate input
         coords_dict, dim = _ensure_coords_dict(coords_dict)
-        cloud_pairs_dict = _ensure_cloud_pairs_dict(
-            coords_dict, cloud_pairs_dict)
+        overlap_dict = _ensure_overlap_dict(
+            coords_dict, overlap_dict)
         normals_dict = _ensure_normals_dict(normals_dict, coords_dict)
         T_dict = _ensure_T_dict(T_dict, coords_dict, pairs_dict, weights)
 
@@ -223,7 +231,7 @@ class ICP:
 
             # assign pairs
             pairs_dict = {}
-            for keyA in cloud_pairs_dict:
+            for keyA in overlap_dict:
                 pairs_dict[keyA] = {}
 
                 A = _get_nCoords(
@@ -234,7 +242,7 @@ class ICP:
                 )
                 matcher = self._assign_class(A, self._radii)
 
-                for keyB in cloud_pairs_dict[keyA]:
+                for keyB in overlap_dict[keyA]:
 
                     B = _get_nCoords(
                         coords_dict,
@@ -309,25 +317,25 @@ def _ensure_coords_dict(coords_dict):
     return out_coords_dict, dim
 
 
-def _ensure_cloud_pairs_dict(coords_dict, cloud_pairs_dict):
-    if not isinstance(cloud_pairs_dict, dict):
+def _ensure_overlap_dict(coords_dict, overlap_dict):
+    if not isinstance(overlap_dict, dict):
         raise TypeError("'cloud_pairs_dict' needs to be a dictionary")
 
     out_dict = {}
-    if len(cloud_pairs_dict) == 0:
+    if len(overlap_dict) == 0:
         for keyA in coords_dict:
             out_dict[keyA] = [keyB for keyB in coords_dict if keyB is not keyA]
     else:
         # check dict
         for keyA in coords_dict:
-            if keyA not in cloud_pairs_dict:
+            if keyA not in overlap_dict:
                 raise ValueError("missing key")
-            if not isinstance(cloud_pairs_dict[keyA], (list, tuple)):
+            if not isinstance(overlap_dict[keyA], (list, tuple)):
                 raise ValueError("tuple or list required")
-            for keyB in cloud_pairs_dict[keyA]:
+            for keyB in overlap_dict[keyA]:
                 if keyB not in coords_dict:
                     raise ValueError("unknown key")
-            out_dict[keyA] = cloud_pairs_dict[keyA]
+            out_dict[keyA] = overlap_dict[keyA]
     return out_dict
 
 
