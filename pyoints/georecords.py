@@ -458,6 +458,16 @@ class LasRecords(GeoRecords):
         ('num_returns', np.uint8),
         ('return_num', np.uint8),
     ]
+    STANDARD_FIELDS = [
+        ('user_data', np.uint8),
+        ('intensity', np.uint8),
+        ('pt_src_id', np.uint8),
+        ('gps_time', np.float),
+        ('red', np.uint8),
+        ('green', np.uint8),
+        ('blue', np.uint8),
+        ('nir', np.uint8),
+    ]
 
     @property
     def last_return(self):
@@ -486,7 +496,7 @@ class LasRecords(GeoRecords):
         if field_name in self.dtype.names:
             return self
         
-        for field in self.USER_DEFINED_FIELDS:
+        for field in [*self.USER_DEFINED_FIELDS, *self.STANDARD_FIELDS]:
             if field[0] == field_name:
                 return self.add_fields([field])
         raise ValueError('field "%s" not found' % field_name)

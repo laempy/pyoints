@@ -322,6 +322,20 @@ def writeLas(geoRecords, outfile):
             lasFile.flag_byte = lasFile.flag_byte + records.num_returns * 8
         elif name == 'intensity':
             lasFile.set_intensity(records.intensity)
+        elif name == 'user_data':
+            lasFile.set_user_data(records.user_data)
+        elif name == 'red':
+            lasFile.set_red(records.red)
+        elif name == 'green':
+            lasFile.set_green(records.green)
+        elif name == 'blue':
+            lasFile.set_blue(records.blue)
+        elif name == 'nir':
+            lasFile.set_blue(records.nir)
+        elif name == 'pt_src_id':
+            lasFile.set_pt_src_id(records.pt_src_id)
+        elif name == 'gps_time':
+            lasFile.set_gps_time(records.gps_time) 
         elif name not in omit:
             lasFile._writer.set_dimension(name, records[name])
 
