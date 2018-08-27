@@ -492,11 +492,14 @@ class LasRecords(GeoRecords):
         """
         if not isinstance(field_name, str):
             raise TypeError("'field_name' needs to be a string")
-            
+
         if field_name in self.dtype.names:
             return self
-        
-        for field in [*self.USER_DEFINED_FIELDS, *self.STANDARD_FIELDS]:
+
+        fields = []
+        fields.extend(self.USER_DEFINED_FIELDS)
+        fields.extend(self.STANDARD_FIELDS)
+        for field in fields:
             if field[0] == field_name:
                 return self.add_fields([field])
         raise ValueError('field "%s" not found' % field_name)

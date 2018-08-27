@@ -79,7 +79,7 @@ class ICP:
     >>> radii = (0.25, 0.25)
     >>> weights = {'A': [1, 1, 1]}
     >>> icp = ICP(radii, max_iter=10, k=1)
-    >>> T, pairs = icp(coords_dict, weights=weights)
+    >>> T, pairs, report = icp(coords_dict, weights=weights)
 
     >>> tA = T['A'].to_local(A)
     >>> tB = T['B'].to_local(B)
@@ -122,7 +122,7 @@ class ICP:
     >>> radii = (0.25, 0.25, 0.3, 0.3)
 
     >>> nicp = ICP(radii, max_iter=10, k=1)
-    >>> T, pairs = nicp(coords_dict, normals_dict=normals_dict)
+    >>> T, pairs, report = nicp(coords_dict, normals_dict=normals_dict)
 
     >>> tA = T['A'].to_local(A)
     >>> print(np.round(tA, 2))
@@ -200,6 +200,8 @@ class ICP:
             Desired dictionary of transformation matrices.
         pairs_dict : dict of array_like(int, shape=(m, 2))
             Desired dictionary of point pairs.
+        report : dict
+            Report to validate the results.
 
         See Also
         --------
@@ -224,9 +226,10 @@ class ICP:
                 raise ValueError(m % (2 * dim, len(self._radii)))
 
         max_change = distance.norm(self._radii[:dim]) * self._max_change_ratio
-        print('maxrmse', max_change)
+
 
         # ICP algorithm
+        report = {'RMSE': []}
         for num_iter in range(self._max_iter):
 
             # assign pairs
@@ -268,13 +271,14 @@ class ICP:
 
             # take a look at the residuals between before and after
             rmse = _get_change_rmse(coords_dict, T_dict, T_dict_new)
-            print(num_iter, rmse)
+            report['RMSE'].append(rmse)
             if rmse <= max_change:
                 break
 
             T_dict = T_dict_new
 
-        return T_dict, pairs_dict
+        return T_dict, pairs_dict, report
+
 
 
 def _get_change_rmse(coords_dict, T_dict_old, T_dict_new):

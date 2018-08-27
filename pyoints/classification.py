@@ -160,8 +160,8 @@ def dict_to_classes(
         raise ValueError("'n' needs to be an integer greater zero")
 
     # prepare output
-    dt = np.array(classes_dict.keys()).dtype
-    classification = np.full(n, missing_value, dtype=dt)
+    dtype = np.array(classes_dict.values()).dtype
+    classification = np.full(n, missing_value, dtype=dtype)
 
     # assign classes
     for cId, ids in classes_dict.items():

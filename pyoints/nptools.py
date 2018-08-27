@@ -418,6 +418,9 @@ def fuse(*recarrays):
     ...     }, dim = 2)
 
     >>> D = fuse(A, B, C)
+
+    >>> print(sorted(D.dtype.names))
+    ['a', 'b', 'c1', 'c2']
     >>> print(D.shape)
     (2, 2)
     >>> print(D.a)
@@ -426,11 +429,9 @@ def fuse(*recarrays):
     >>> print(D.c1)
     [['c1' 'c2']
      ['c3' 'c4']]
-    >>> print(sorted(D.dtype.descr))
-    [('a', '<i8'), ('b', '<i8'), ('c1', '<U2'), ('c2', '<f8')]
-    >>> print(D.c1)
-    [['c1' 'c2']
-     ['c3' 'c4']]
+    >>> print(D.c2)
+    [[0.1 0.2]
+     [0.3 0.3]]
 
     """
     shape = None
