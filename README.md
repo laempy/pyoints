@@ -20,7 +20,7 @@ local coordinate system.
 
 The unified data structures simplify the joint use of point clouds, voxels
 and rasters significantly, while keeping their natural characteristics. To
-ease the processing and analysis, each point, voxel or raster cell are stored 
+ease the processing and analysis, each point, voxel or raster cell are stored
 in the commonly used numpy record array according to its natural structure. For
 example, a three dimensional point cloud represents a set of points, each
 characterized by a coordinate and none to many additional attributes. So the
@@ -44,31 +44,31 @@ interested in the third dimension, you can call `geoRecords.indexKD(2)` to
 perform two dimensional spatial queries.
 
 If you just want to handle coordinates without additional attributes, the class
-`Coords` might interest you. This class also provides the `IndexKD` feature, 
+`Coords` might interest you. This class also provides the `IndexKD` feature,
 but waives the use of a projection and transformation matrix.
 
 
 ## When is Pyoints suitable for me?
 
-Based on the general concept of ``Pyoints`` presented above, a bunch of 
-algorithms, functions and filters have been implemented, to process geo-data 
-with low programming efforts. 
+Based on the general concept of ``Pyoints`` presented above, a bunch of
+algorithms, functions and filters have been implemented, to process geo-data
+with low programming efforts.
 
-Of course, you might think: "Why should I use Python for point cloud 
-processing? Other languages are much more efficient." This is obviously true, 
+Of course, you might think: "Why should I use Python for point cloud
+processing? Other languages are much more efficient." This is obviously true,
 but in the experience of the author, Python is very useful to implement and
 test new algorithms very quickly. Algorithms for point cloud analysis and
 processing often rely on spatial neighborhood queries. Since ``Pyoints``
 takes advantage of very efficient Python libraries, which are basically
 wrappers for binaries written in more efficient languages, the performance
-loss is limited. Additionally, ``Pyoints`` takes care of selecting and caching 
+loss is limited. Additionally, ``Pyoints`` takes care of selecting and caching
 appropiate spatial indices for you, so you can focus on the core of your algorithm
 idea.
 
 So, if you have an algorithm idea and you want to implement it quickly and play
-around with different settings, ``Pyoints`` is made for you. After finding an 
-approiate algorithm it can be implemented in a more efficient language 
-if you like. Thus ``Pyoints`` is particulary designed for scientists and 
+around with different settings, ``Pyoints`` is made for you. After finding an
+approiate algorithm it can be implemented in a more efficient language
+if you like. Thus ``Pyoints`` is particulary designed for scientists and
 developers of new geo-spatial algorithms.
 
 
@@ -108,15 +108,15 @@ apt install liblas-c3
 
 ## Install Pyoints (Ubuntu)
 
-Unfortunately the gdal version is not detected automatically by ``pgdal``. 
+Unfortunately the gdal version is not detected automatically by ``pgdal``.
 Thus, installation with ``setup.py`` might fail.
 
 ### Installation with installation script (currently recommended)
 
 The installation script asks you to provide a virtual Python environment
-(virtualenv) . You need to initialize it first.
+(virtualenv). You need to initialize it first.
 ```
-./pip_install.sh -v path/to/virtualenv
+./scripts/pip_install.sh -v path/to/virtualenv
 ```
 
 ## Installation with pip
@@ -143,7 +143,7 @@ pip install pyoints
 
 ## Virtualenv
 
-### Install Virtualenv 
+### Install Virtualenv
 
 Installation (Ubuntu)
 ```
@@ -173,26 +173,26 @@ venv\Scripts\activate.bat
 
 # Documentation
 
-You can find the documentation at [docs](docs/_build/html/pyoints.html). Here 
-you can find docstrings with examples for each module and some comprehensive 
+You can find the documentation at [docs](docs/_build/html/pyoints.html). Here
+you can find docstrings with examples for each module and some comprehensive
 examples. You can also take a look at the source files directly.
 
 
 
 # Testing
 
-To test the software please take a look at the [tests](tests) directory. 
-Currently Python docstrings are used to test the functionality of a 
+To test the software please take a look at the [tests](tests) directory.
+Currently Python docstrings are used to test the functionality of a
 majority of ``Pyoints`` classes and functions.
 
 
 
 # License
 
-Copyright (c) 2018, Sebastian Lamprecht, Trier University, 
+Copyright (c) 2018, Sebastian Lamprecht, Trier University,
 lamprecht@uni-trier.de
 
-``Pyoints`` is free software made available under the GNU General Public 
+``Pyoints`` is free software made available under the GNU General Public
 License v3 or later (GPLv3+). See [LICENSE](LICENSE) for details.
 
 
@@ -200,7 +200,7 @@ License v3 or later (GPLv3+). See [LICENSE](LICENSE) for details.
 
 Please cite `Pyoints` as:
 
-Sebastian Lamprecht (2018): "Pyoints: A Python package for point cloud, voxel 
+Sebastian Lamprecht (2018): "Pyoints: A Python package for point cloud, voxel
 and raster processing.", URL TODO, [Online; accessed date].
 
 ```
@@ -216,7 +216,7 @@ and raster processing.", URL TODO, [Online; accessed date].
 
 # Contact
 
-In case of questions, suggestions for improvement or software issues please 
+In case of questions, suggestions for improvement or software issues please
 use the issue board or contact Sebastian Lamprecht, lamprecht@uni-trier.de.
 Contribution to the software is always welcome.
 
@@ -227,7 +227,7 @@ Contribution to the software is always welcome.
 
 ## Python Depencencies
 
-This software dynamically binds the following Python packages (distributed via 
+This software dynamically binds the following Python packages (distributed via
 pip). Many thanks to the authors for providing such great open source software.
 
 
@@ -382,7 +382,7 @@ Marios Hadjieleftheriou
 
 ## Software recommendations
 
-The following Python packages were used for software development, testing and 
+The following Python packages were used for software development, testing and
 documentation.
 
 

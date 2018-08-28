@@ -1,10 +1,10 @@
 #!/bin/bash
-
+SCRIPT_PATH=$(dirname $(realpath -s $0))
 VENV=""
-REQUIREMENTS='requirements.txt'
-DEV_REQUIREMENTS='dev_requirements.txt'
-USAGE='\nUsage:\n\npip_install.sh -v venv (-d)\n\n\t-v [arg]\t: Specify path to virtual 
-environment.\n\t-d\t\t: Also install packages used for development.\n\t-h\t\t: 
+REQUIREMENTS="${SCRIPT_PATH}/../requirements.txt"
+DEV_REQUIREMENTS="${SCRIPT_PATH}/../dev_requirements.txt"
+USAGE='\nUsage:\n\npip_install.sh -v venv (-d)\n\n\t-v [arg]\t: Specify path to virtual
+environment.\n\t-d\t\t: Also install packages used for development.\n\t-h\t\t:
 Display this help.'
 
 requirements="-r $REQUIREMENTS"
@@ -26,7 +26,7 @@ done
 
 if [ -n "$VENV" ]
 then
-    source ./${VENV}/bin/activate
+    source ${VENV}/bin/activate
     pip install pygdal==$(gdal-config --version).* $requirements --upgrade
 else
     echo "Please specify virtualenv with '-v [arg]'".
