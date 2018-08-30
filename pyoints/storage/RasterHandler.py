@@ -131,7 +131,7 @@ class RasterReader(GeoFile):
         return raster
 
 
-def writeRaster(raster, outfile, field='bands', noData=np.nan):
+def writeRaster(raster, outfile, field='bands', no_data=np.nan):
     """Writes a a Grid to disc.
 
     Parameters
@@ -181,13 +181,13 @@ def writeRaster(raster, outfile, field='bands', noData=np.nan):
 
     if num_bands == 1:
         band = gdalRaster.GetRasterBand(1)
-        band.SetNoDataValue(noData)
+        band.SetNoDataValue(no_data)
         band.WriteArray(bands)
         band.FlushCache()
     else:
         for i in range(num_bands):
             band = gdalRaster.GetRasterBand(i + 1)
-            band.SetNoDataValue(noData)
+            band.SetNoDataValue(no_data)
             band.WriteArray(bands[:, :, i])
             band.FlushCache()
             band = None

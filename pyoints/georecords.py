@@ -199,7 +199,7 @@ class GeoRecords(np.recarray, object):
             proj = projection.Proj()
             warnings.warn("'proj' not set, so I assume '%s'" % proj.proj4)
         elif not isinstance(proj, projection.Proj):
-            raise ValueError("'proj' needs to be of type 'projection.Proj'")
+            raise TypeError("'proj' needs to be of type 'projection.Proj'")
         self._proj = proj
 
     @property
