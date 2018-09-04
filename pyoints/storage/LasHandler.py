@@ -278,8 +278,9 @@ def writeLas(geoRecords, outfile):
     offset[:dim] = geoRecords.t.origin
 
     max_values = np.abs(records.extent().corners - offset[:dim]).max(0)
-    max_digits = 2**30  # long
+    max_digits = 2**30  # long int
     scale[:dim] = max_values / max_digits
+    scale[np.isclose(scale, 0)] = 1 / max_digits
 
     lasFile.header.scale = scale
     lasFile.header.offset = offset
