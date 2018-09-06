@@ -26,10 +26,6 @@ from . import (
     transformation,
     assertion,
     vector,
-    distance,
-    Coords,
-    IndexKD,
-    filters,
 )
 
 
