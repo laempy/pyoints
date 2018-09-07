@@ -568,10 +568,10 @@ def matrix_from_gdal(t):
     Examples
     --------
 
-    >>> T = matrix_from_gdal([-28493, 2, 0.0, 4255884, 0.0, -2.0])
+    >>> T = matrix_from_gdal([-28493, 9, 2, 4255884, 3, -9.0])
     >>> print(T.astype(int))
-    [[      2       0  -28493]
-     [      0      -2 4255884]
+    [[      9       2  -28493]
+     [      3      -9 4255884]
      [      0       0       1]]
 
     """
@@ -580,12 +580,11 @@ def matrix_from_gdal(t):
     T = np.matrix(np.zeros((3, 3), dtype=np.float))
     T[0, 2] = t[0]
     T[0, 0] = t[1]
-    T[1, 0] = t[2]
+    T[0, 1] = t[2]
     T[1, 2] = t[3]
-    T[0, 1] = t[4]
+    T[1, 0] = t[4]
     T[1, 1] = t[5]
     T[2, 2] = 1
-
     return LocalSystem(T)
 
 
@@ -618,7 +617,7 @@ def matrix_to_gdal(T):
     T = ensure_tmatrix(T)
     if not T.shape[0] == 3:
         raise ValueError('transformation matrix of shape (3, 3) required')
-    return (T[0, 2], T[0, 0], T[1, 0], T[1, 2], T[0, 1], T[1, 1])
+    return (T[0, 2], T[0, 0], T[0, 1], T[1, 2], T[1, 0], T[1, 1])
 
 
 class LocalSystem(np.matrix, object):

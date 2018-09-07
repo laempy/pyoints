@@ -19,7 +19,6 @@
 import os
 import numpy as np
 import datetime
-from affine import Affine
 from osgeo import (
     gdal,
     osr,
@@ -70,9 +69,7 @@ class RasterReader(GeoFile):
         else:
             self.proj = proj
 
-        self.t = transformation.LocalSystem(np.matrix(
-            Affine.from_gdal(*gdalRaster.GetGeoTransform())
-        ).reshape(3, 3))
+        self.t = transformation.matrix_from_gdal(gdalRaster.GetGeoTransform())
 
         self._shape = (gdalRaster.RasterYSize, gdalRaster.RasterXSize)
         self._num_bands = gdalRaster.RasterCount

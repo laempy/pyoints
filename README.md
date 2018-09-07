@@ -231,14 +231,6 @@ This software dynamically binds the following Python packages (distributed via
 pip). Many thanks to the authors for providing such great open source software.
 
 
-### affine
-
-Sean Gillies
-* [PyPI](https://pypi.org/project/affine/)
-* [homepage](https://github.com/sgillies/affine)
-* [3-Clause BSD license](https://github.com/sgillies/affine/blob/master/LICENSE.txt)
-
-
 ### cylinder_fitting
 
 Xingjie Pan

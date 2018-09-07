@@ -4,7 +4,6 @@ laspy
 scipy
 scikit-learn
 pyproj
-affine
 dill
 pandas
 psycopg2-binary
