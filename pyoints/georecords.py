@@ -300,6 +300,10 @@ class GeoRecords(np.recarray, object):
         ----------
         T : array_like(Number, shape=(self.dim+1, self.dim+1))
             Transformation matrix to apply.
+            
+        Returns
+        -------
+        self
 
         See Also
         --------
@@ -315,7 +319,7 @@ class GeoRecords(np.recarray, object):
         >>> geo = GeoRecords(None, data)
 
         >>> T = transformation.matrix(t=[10, 20], s=[0.5, 1])
-        >>> geo.transform(T)
+        >>> _ = geo.transform(T)
         >>> print(geo.coords)
         [[11 23]
          [11 22]
@@ -325,6 +329,7 @@ class GeoRecords(np.recarray, object):
         """
         self.coords = self.coords.transform(T)
         self.t = T * self.t
+        return self
 
     def project(self, proj):
         """Projects the coordinates to a different coordinate system.

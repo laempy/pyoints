@@ -609,6 +609,47 @@ class Vector(object):
 
         return self._t
 
+    def transform(self, T):
+        """Transforms the vector unsing a transformation matrix.
+        
+        Parameters
+        ----------
+        T : array_like(Number, shape=(self.dim+1, self.dim+1))
+            Transformation matrix to apply.
+        
+        Returns
+        -------
+        self
+        
+        Examples
+        --------
+        
+        Create a vector and a transformation matix.
+        
+        >>> vec = Vector([1, 1], [1, 0])
+        
+        >>> r = 45 * np.pi / 180.0
+        >>> t = [1, 2]
+        >>> T = transformation.matrix(t=t, r=r, order='rts')
+        >>> print(np.round(T, 2))
+        [[ 0.71 -0.71  1.  ]
+         [ 0.71  0.71  2.  ]
+         [ 0.    0.    1.  ]]
+                    
+        >>> vec = vec.transform(T)
+        >>> print(np.round(vec.origin, 2))
+        [1.   3.41]
+        >>> print(np.round(vec.vec, 2))
+        [0.71 0.71]
+        
+        """
+        T = assertion.ensure_tmatrix(T, self.dim)
+        target = transformation.transform(self.target, T)
+        origin = transformation.transform(self.origin, T)
+        self.origin = origin
+        self.vec = target - origin
+        return self
+
     def _clear_cache(self):
         if hasattr(self, '_t'):
             del self._t
@@ -812,6 +853,8 @@ class Plane(object):
         Origin of the plane.
     vec : np.ndarray(Number, shape=(k-1, k))
         Vectors defining the orientation of the plane.
+    target : np.ndarray(Number, shape=(k-1, k))
+        Points the vectors are pointing at.
     dim : positive int
         Number of coordinate dimensions of the vector.
     t : PCA(Number, shape=(k+1, k+1))
@@ -957,6 +1000,15 @@ class Plane(object):
         self._vec = assertion.ensure_numarray(vecs)
         self._clear_cache()
 
+    @property
+    def target(self):
+        return self.origin + self.vec
+
+    @target.setter
+    def target(self, target):
+        target = assertion.ensure_coords(target, self.dim)
+        self.vec = target - self.origin
+        
     def _clear_cache(self):
         if hasattr(self, '_t'):
             del self._t
@@ -1120,6 +1172,52 @@ class Plane(object):
         coords = self.origin + vec
         return coords
 
+    def transform(self, T):
+        """Transforms the vector unsing a transformation matrix.
+        
+        Parameters
+        ----------
+        T : array_like(Number, shape=(self.dim+1, self.dim+1))
+            Transformation matrix to apply.
+        
+        Returns
+        -------
+        self
+        
+        Examples
+        --------
+        
+        Create a plane and a tranformation matrix.
+        
+        >>> plane = Plane([1, 1], [1, 0])
+        >>> print(plane.origin)
+        [1 1]
+        >>> print(plane.vec)
+        [[1 0]]
+        
+        >>> r = 45 * np.pi / 180.0
+        >>> t = [1, 2]
+        >>> T = transformation.matrix(t=t, r=r, order='rts')
+        >>> print(np.round(T, 2))
+        [[ 0.71 -0.71  1.  ]
+         [ 0.71  0.71  2.  ]
+         [ 0.    0.    1.  ]]
+        
+        >>> plane = plane.transform(T)
+        >>> print(np.round(plane.origin, 2))
+        [1.   3.41]
+        >>> print(np.round(plane.vec, 2))
+        [[0.71 0.71]]
+        
+        """
+        T = assertion.ensure_tmatrix(T, self.dim)
+        target = transformation.transform(self.target, T)
+        origin = transformation.transform(self.origin, T)
+        self.origin = origin
+        self.vec = target - origin
+        return self
+
+
     def __str__(self):
         vec_str = ', '.join(str(vec) for vec in self.vec)
         return "origin: %s; vec: %s" % (str(self.origin), vec_str)
@@ -1218,8 +1316,11 @@ def vector_plane_intersection(vec, plane):
     >>> vec = Vector((1, 1, -1), (0, 0, 3))
     >>> plane = Plane((-1, 2, 5), (0, 2, 0), (1, 2, 2))
         
-    >>> print(vector_plane_intersection(vec, plane))
+    >>> intersection = vector_plane_intersection(vec, plane)
+    >>> print(intersection)
     [1. 1. 9.]
+    >>> print(vec.distance([intersection]))
+    [0.]
     
     Create a plane and a vector in two dimensional space and calculate the 
     intersection point.
@@ -1227,8 +1328,11 @@ def vector_plane_intersection(vec, plane):
     >>> vec = Vector((1, 1), (1, 2))
     >>> plane = Plane((-1, 5), (0, 1))
         
-    >>> print(vector_plane_intersection(vec, plane))
+    >>> intersection = vector_plane_intersection(vec, plane)
+    >>> print(intersection)
     [-1. -3.]
+    >>> print(vec.distance([intersection]))
+    [0.]
 
     """
     if not isinstance(vec, Vector):

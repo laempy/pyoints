@@ -277,6 +277,10 @@ class Grid(GeoRecords):
         ----------
         T : array_like(Number, shape=(self.dim+1, self.dim+1))
             Transformation matrix to apply.
+            
+        Returns
+        -------
+        self
 
         Notes
         -----
@@ -290,6 +294,7 @@ class Grid(GeoRecords):
         T = assertion.ensure_tmatrix(T, dim=self.dim)
         self.t = T * self.t
         self.coords[:] = self.keys_to_coords(self.keys)
+        return self
 
     def keys_to_indices(self, keys):
         """Converts grid keys to indices.
