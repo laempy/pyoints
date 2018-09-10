@@ -951,3 +951,56 @@ def range_filter(arr, min_value=-np.inf, max_value=np.inf):
         ids = tuple(map(tuple, np.array(np.where(mask))))
 
     return ids
+
+
+
+def max_value_range(arr):
+    """Returns the maximum value range of a numeric numpy array.
+    
+    Parameters
+    ----------
+    arr : np.ndarray(Number)
+        Array to derive allowed value range for.
+        
+    Returns
+    -------
+    min_value,max_value : int
+        Minimum and maximum value
+        
+    Examples
+    --------
+    
+    >>> arr = np.array([3, 4, 2, 1])
+    
+    >>> value_range = max_value_range(arr.astype(np.uint8))
+    >>> print(value_range)
+    (0, 255)
+    
+    >>> value_range = max_value_range(arr.astype(np.uint16))
+    >>> print(value_range)
+    (0, 65535)
+    
+    >>> value_range = max_value_range(arr.astype(np.int8))
+    >>> print(value_range)
+    (-128, 127)
+    
+    >>> value_range = max_value_range(arr.astype(np.int16))
+    >>> print(value_range)
+    (-32768, 32767)
+            
+    >>> value_range = max_value_range(arr.astype(np.float16))
+    >>> print(value_range)
+    (-65500.0, 65500.0)
+    
+    """
+    if not isinstance(arr, np.ndarray):
+        raise TypeError("'arr' needs to be a numpy array")
+    dtype = arr.dtype
+    if dtype.kind in ('i', 'u'):
+        info = np.iinfo(dtype)
+    elif dtype.kind in ('f'):
+        info = np.finfo(dtype)
+    else:
+        raise ValueError("unknown data type '%s'" % dtype)
+    
+    return info.min, info.max
