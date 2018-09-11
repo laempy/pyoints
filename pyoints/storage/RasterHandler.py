@@ -23,11 +23,11 @@ from osgeo import (
     gdal,
     osr,
 )
-
 from .BaseGeoHandler import GeoFile
 from .dtype_converters import numpy_to_gdal_dtype
 from ..extent import Extent
 from .. import (
+    assertion,
     grid,
     nptools,
     projection,
@@ -130,54 +130,70 @@ class RasterReader(GeoFile):
         return raster
 
 
-def writeRaster(raster, outfile, field='bands', no_data=np.nan):
-    """Writes a a Grid to disc.
+def writeTif(image, outfile, T=None, proj=None, no_data=np.nan):
+    """Writes an image to disc.
 
     Parameters
     ----------
-    raster : Grid(shape=(cols, rows))
-        A two dimensional Grid to be stored with of `cols` columns and `rows`
-        rows.
+    image : np.ndarray(Number, shape=(rows, cols, k))
+        Image to save
     outfile : String
         File to save the raster to.
-    field : optional, str
-        Field considered as raster bands.
+    no_data : optional, object
+        No data value to be used.
+    T : optional, array_like(Number, shape=(3, 3))
+        Projection matrix to be used.
+    proj : Proj
+        Projection to be used.
+    no_data : optional, object
+        Desired no data value.
 
     Raises
     ------
     IOError
+    
+    See Also
+    --------
+    writeRaster
 
     """
     # validate input
     if not os.access(os.path.dirname(outfile), os.W_OK):
         raise IOError('File %s is not writable' % outfile)
-    if not isinstance(raster, grid.Grid):
-        m = "'geoRecords' needs to be of type 'Grid', got %s" % type(raster)
-        raise TypeError(m)
-    if not raster.dim == 2:
-        raise ValueError("'geoRecords' needs to be two dimensional")
-    if not isinstance(field, str):
-        raise TypeError("'field' needs to be a string")
-    if not hasattr(raster, field):
-        raise ValueError("'geoRecords' needs to have a field '%s'" % field)
-    bands = raster[field]
-    if not nptools.isnumeric(bands):
-        raise ValueError("'geoRecords[%s]' needs to be numeric" % field)
-
-    if len(bands.shape) == 2:
-        num_bands = 1
-    else:
-        num_bands = bands.shape[2]
-
+    if not isinstance(image, np.ndarray):
+        m = "'image' needs to be an instance of 'np.ndarray', got %s" 
+        raise TypeError(m % type(image))     
+    if not len(image.shape) in (2, 3):
+        raise ValueError("'image' has an unexpected shape for a raster" )
+    if not nptools.isnumeric(image):
+        raise ValueError("'image' needs to be numeric")
+        
+    bands = image.astype(nptools.minimum_numeric_dtype(image))
+    
+    num_bands = 1 if len(bands.shape) == 2 else bands.shape[2]
+        
     driver = gdal.GetDriverByName('GTiff')
     gdalRaster = driver.Create(
         outfile,
-        raster.shape[1],
-        raster.shape[0],
+        bands.shape[1],
+        bands.shape[0],
         num_bands,
         numpy_to_gdal_dtype(bands.dtype)
     )
-
+    
+    # SetProjection
+    if proj is not None:
+        if not isinstance(proj, projection.Proj):
+            raise ValueError("'proj' needs to be an instance of Proj")
+        gdalRaster.SetProjection(proj.wkt)
+    
+    # SetGeoTransform
+    if T is not None:
+        T = assertion.ensure_tmatrix(T, dim=2)
+        t = transformation.matrix_to_gdal(T)      
+        gdalRaster.SetGeoTransform(t)
+    
+    # set bands
     if num_bands == 1:
         band = gdalRaster.GetRasterBand(1)
         band.SetNoDataValue(no_data)
@@ -192,9 +208,45 @@ def writeRaster(raster, outfile, field='bands', no_data=np.nan):
             band = None
             del band
 
-    gdalRaster.SetGeoTransform(transformation.matrix_to_gdal(raster.t))
-    gdalRaster.SetProjection(raster.proj.wkt)
-
     gdalRaster.FlushCache()
     gdalRaster = None
     del gdalRaster
+    
+
+def writeRaster(raster, outfile, field='bands', no_data=np.nan):
+    """Writes a a Grid to disc.
+
+    Parameters
+    ----------
+    raster : Grid(shape=(cols, rows))
+        A two dimensional Grid to be stored with of `cols` columns and `rows`
+        rows.
+    outfile : String
+        File to save the raster to.
+    field : optional, str
+        Field considered as raster bands.
+    no_data : optional, object
+        Desired no data value.
+
+    Raises
+    ------
+    IOError
+    
+    See Also
+    --------
+    writeTif
+
+    """
+    if not isinstance(raster, grid.Grid):
+        m = "'geoRecords' needs to be of type 'Grid', got %s" % type(raster)
+        raise TypeError(m)
+    if not raster.dim == 2:
+        raise ValueError("'geoRecords' needs to be two dimensional")
+    
+    if not isinstance(field, str):
+        raise TypeError("'field' needs to be a string")
+    if not hasattr(raster, field):
+        raise ValueError("'geoRecords' needs to have a field '%s'" % field)
+    image = raster[field]
+    
+    writeTif(image, outfile, T=raster.t, proj=raster.proj, no_data=no_data)
