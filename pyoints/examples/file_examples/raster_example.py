@@ -48,7 +48,7 @@ Apply a transformation to the matrix to get a propper spatial reference.
 
 >>> T = transformation.matrix(
 ...         t=[332575, 5513229], s=[0.5, -0.5], r=0.1, order='srt')
->>> raster.transform(T)
+>>> raster = raster.transform(T)
 
 Save the image as a tif-file. You might like to check the spatial reference of
 the output image using a Geographic Information System (GIS).
