@@ -25,6 +25,7 @@ from osgeo import (
 )
 
 from .BaseGeoHandler import GeoFile
+from .dtype_converters import numpy_to_gdal_dtype
 from ..extent import Extent
 from .. import (
     grid,
@@ -32,6 +33,7 @@ from .. import (
     projection,
     transformation,
 )
+
 
 
 class RasterReader(GeoFile):
@@ -173,7 +175,7 @@ def writeRaster(raster, outfile, field='bands', no_data=np.nan):
         raster.shape[1],
         raster.shape[0],
         num_bands,
-        gdal.GDT_Float32
+        numpy_to_gdal_dtype(bands.dtype)
     )
 
     if num_bands == 1:
