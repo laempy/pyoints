@@ -160,7 +160,13 @@ def load_gdal(filename, proj=None, extent=None):
     return bands, T, proj
 
 
-def write_gdal(image, outfile, T=None, proj=None, no_data=np.nan):
+def write_gdal(
+        image,
+        outfile,
+        T=None,
+        proj=None,
+        no_data=np.nan,
+        driver='GTiff'):
     """Writes an image to disc.
 
     Parameters
@@ -177,6 +183,8 @@ def write_gdal(image, outfile, T=None, proj=None, no_data=np.nan):
         Projection to be used.
     no_data : optional, object
         Desired no data value.
+    driver : optional, str
+        Gdal driver.
 
     Raises
     ------
@@ -199,10 +207,9 @@ def write_gdal(image, outfile, T=None, proj=None, no_data=np.nan):
         raise ValueError("'image' needs to be numeric")
         
     bands = image.astype(nptools.minimum_numeric_dtype(image))
-    
     num_bands = 1 if len(bands.shape) == 2 else bands.shape[2]
         
-    driver = gdal.GetDriverByName('GTiff')
+    driver = gdal.GetDriverByName(driver)
     gdalRaster = driver.Create(
         outfile,
         bands.shape[1],
