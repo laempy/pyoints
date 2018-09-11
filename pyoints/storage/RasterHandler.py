@@ -105,32 +105,62 @@ class RasterReader(GeoFile):
         return self._extent
 
     def load(self, extent=None):
+        bands, T, proj = load_gdal(self.file, proj=self.proj)
+        
+        shape = (bands.shape[0], bands.shape[1])
+        attr = np.recarray(shape, dtype=[('bands', int, bands.shape[2])])
+        
+        return grid.Grid(proj, attr, T)
+       
 
-        gdalRaster = gdal.Open(self.file, gdal.GA_ReadOnly)
+def load_gdal(filename, proj=None, extent=None):
+    """Loads an image from disc using gdal.
+    
+    Parameters
+    ----------
+    filename : str
+        Path to file.
+    proj : optional, Proj
+        Desired projection.
+    
+    Returns
+    -------
+    bands : np.array(Number, (rows, cols, bands))
+        Image data.
+    rotation : Number
+        Image orientation.
+    proj : Proj
+        Projection.
+    
+    """
+    gdalRaster = gdal.Open(filename, gdal.GA_ReadOnly)
 
-        T = self.t
-        shape = (gdalRaster.RasterYSize, gdalRaster.RasterXSize)
-        corner = (0, 0)
+    if proj is None:
+        wkt = gdalRaster.GetProjection()
+        if wkt is not '':
+            proj = projection.Proj.from_proj4(
+                osr.SpatialReference(wkt=wkt).ExportToProj4())
+        else:
+            raise ValueError("no projection found")
 
-        if extent is not None:
-            T, corner, shape = grid.extentinfo(T, extent)
+    T = transformation.matrix_from_gdal(gdalRaster.GetGeoTransform())
 
-        attr = np.recarray(
-            shape, dtype=[
-                ('bands', int, gdalRaster.RasterCount)])
-        attr.bands[:] = np.swapaxes(
-            gdalRaster.ReadAsArray(corner[1], corner[0], shape[1], shape[0]).T,
-            0,
-            1
-        )
-        raster = grid.Grid(self.proj, attr, T)
+    corner = (0, 0)
+    shape = (gdalRaster.RasterYSize, gdalRaster.RasterXSize)
 
-        del gdalRaster
+    if extent is not None:
+        T, corner, shape = grid.extentinfo(T, extent)
 
-        return raster
+    bands = np.swapaxes(
+        gdalRaster.ReadAsArray(corner[1], corner[0], shape[1], shape[0]).T,
+        0,
+        1
+    )
+    del gdalRaster
+    return bands, T, proj
 
 
-def writeTif(image, outfile, T=None, proj=None, no_data=np.nan):
+def write_gdal(image, outfile, T=None, proj=None, no_data=np.nan):
     """Writes an image to disc.
 
     Parameters
@@ -249,4 +279,4 @@ def writeRaster(raster, outfile, field='bands', no_data=np.nan):
         raise ValueError("'geoRecords' needs to have a field '%s'" % field)
     image = raster[field]
     
-    writeTif(image, outfile, T=raster.t, proj=raster.proj, no_data=no_data)
+    write_gdal(image, outfile, T=raster.t, proj=raster.proj, no_data=no_data)
