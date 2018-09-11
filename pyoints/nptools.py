@@ -23,6 +23,21 @@ import numpy as np
 from numbers import Number
 
 
+NUMERIC_DTYPES = [
+    np.uint8,
+    np.uint16,
+    np.uint32,
+    np.uint64,
+    np.int8,
+    np.int16,
+    np.int32,
+    np.int64,
+    np.float16,
+    np.float32,
+    np.float64,
+]
+
+
 def isarray(o):
     """Checks whether or nor an object is an array.
 
@@ -50,7 +65,7 @@ def isarray(o):
             hasattr(o, '__iter__'))
 
 
-def isnumeric(arr, dtypes=[np.uint8, np.uint16, np.int32, np.int64, np.float32, np.float64]):
+def isnumeric(arr, dtypes=NUMERIC_DTYPES):
     """Checks if the data type of an array is numeric.
 
     Parameters
@@ -910,26 +925,26 @@ def range_filter(arr, min_value=-np.inf, max_value=np.inf):
     >>> print(indices)
     [ 0  1  2  3  4  7  8  9 10 11]
 
-    >>> indices = range_filter(a, min_value=0, max_value=5)
-    >>> print(indices)
+    >>> idx = range_filter(a, min_value=0, max_value=5)
+    >>> print(idx)
     [0 1 2 4 7 8 9]
-    >>> print(np.array(a)[indices])
+    >>> print(np.array(a)[idx])
     [0 2 1 5 4 3 2]
 
     Filter a multi-dimensional array.
 
     >>> a = [(1, 0), (-2, -1), (3, -5), (4, 2), (-7, 9), (0.5, 2)]
 
-    >>> indices = range_filter(a, min_value=2)
-    >>> print(indices)
+    >>> idx = range_filter(a, min_value=2)
+    >>> print(idx)
     ((2, 3, 3, 4, 5), (0, 0, 1, 1, 1))
-    >>> print(np.array(a)[indices])
+    >>> print(np.array(a)[idx])
     [3. 4. 2. 9. 2.]
 
-    >>> indices = range_filter(a, min_value=2, max_value=5)
-    >>> print(indices)
+    >>> idx = range_filter(a, min_value=2, max_value=5)
+    >>> print(idx)
     ((2, 3, 3, 5), (0, 0, 1, 1))
-    >>> print(np.array(a)[indices])
+    >>> print(np.array(a)[idx])
     [3. 4. 2. 2.]
 
     """
@@ -953,14 +968,13 @@ def range_filter(arr, min_value=-np.inf, max_value=np.inf):
     return ids
 
 
-
-def max_value_range(arr):
-    """Returns the maximum value range of a numeric numpy array.
+def max_value_range(dtype):
+    """Returns the maximum value range of a numeric numpy data type.
     
     Parameters
     ----------
-    arr : np.ndarray(Number)
-        Array to derive allowed value range for.
+    dtype : np.dtype
+        Numeric data type to check
         
     Returns
     -------
@@ -970,37 +984,111 @@ def max_value_range(arr):
     Examples
     --------
     
-    >>> arr = np.array([3, 4, 2, 1])
-    
-    >>> value_range = max_value_range(arr.astype(np.uint8))
+    >>> value_range = max_value_range(np.dtype(np.uint8))
     >>> print(value_range)
     (0, 255)
     
-    >>> value_range = max_value_range(arr.astype(np.uint16))
+    >>> value_range = max_value_range(np.dtype(np.uint16))
     >>> print(value_range)
     (0, 65535)
     
-    >>> value_range = max_value_range(arr.astype(np.int8))
+    >>> value_range = max_value_range(np.dtype(np.int8))
     >>> print(value_range)
     (-128, 127)
     
-    >>> value_range = max_value_range(arr.astype(np.int16))
+    >>> value_range = max_value_range(np.dtype(np.int16))
     >>> print(value_range)
     (-32768, 32767)
             
-    >>> value_range = max_value_range(arr.astype(np.float16))
+    >>> value_range = max_value_range(np.dtype(np.float16))
     >>> print(value_range)
     (-65500.0, 65500.0)
     
     """
-    if not isinstance(arr, np.ndarray):
-        raise TypeError("'arr' needs to be a numpy array")
-    dtype = arr.dtype
+    dtype = np.dtype(dtype)
     if dtype.kind in ('i', 'u'):
         info = np.iinfo(dtype)
     elif dtype.kind in ('f'):
         info = np.finfo(dtype)
     else:
-        raise ValueError("unknown data type '%s'" % dtype)
+        raise ValueError("unknown numeric data type '%s'" % dtype)
     
     return info.min, info.max
+
+
+def minimum_numeric_dtype(arr):
+    """Determinates the minimum required data type of a numpy without loosing
+    accuracy.
+    
+    Parameters
+    ----------
+    arr : np.ndarray(Number)
+        Numeric array to find minimum data type for.
+        
+    Returns
+    -------
+    np.dtype
+        Minimum required data type.
+
+    Examples
+    --------
+    
+    Find minimum data type for integer arrays.
+    
+    >>> arr = np.array([0, 255])
+    >>> print(arr.dtype)
+    int64
+    >>> print(minimum_numeric_dtype(arr))
+    uint8
+    
+    >>> arr = np.array([0, 256])
+    >>> print(minimum_numeric_dtype(arr))
+    uint16
+    
+    >>> arr = np.array([-5, 127])
+    >>> print(minimum_numeric_dtype(arr))
+    int8
+   
+    >>> arr = np.array([-5, 128])
+    >>> print(minimum_numeric_dtype(arr))
+    int16
+    
+    >>> arr = np.array([-5, 214748364])
+    >>> print(minimum_numeric_dtype(arr))
+    int32
+    
+    Find minimum data type for floating point arrays.
+    
+    >>> arr = np.array([-5.2, 100.3])
+    >>> print(arr.dtype)
+    float64
+    >>> print(minimum_numeric_dtype(arr))
+    float16
+    
+    
+    """
+    if not isinstance(arr, np.ndarray):
+        raise TypeError("'arr' needs to be an instance of 'np.ndarray'")
+    
+    if not arr.dtype.kind in ('u', 'i', 'f'):
+        raise ValueError("unknown numeric data type '%s'" % arr.dtype)
+    
+    min_value = arr.min()
+    max_value = arr.max()
+    
+    if arr.dtype.kind in ('u', 'i'):
+        if min_value < 0:
+            kind = 'i'
+        else:
+            kind = 'u'
+    else:
+        kind = 'f'
+
+    for new_dtype in NUMERIC_DTYPES:
+        new_dtype = np.dtype(new_dtype)
+        if kind == new_dtype.kind:
+            value_range = max_value_range(new_dtype)
+            if min_value >= value_range[0] and max_value <= value_range[1]:
+                return new_dtype
+    return arr.dtype
+    
