@@ -34,14 +34,14 @@ def classes_to_dict(
         min_size=1,
         max_size=np.inf,
         missing_value=-1):
-    """Converts a list of class indices to an dictionary of grouped classes.
+    """Converts a list of class indices to a dictionary of grouped classes.
 
     Parameters
     ----------
     classification : array_like(shape=(n))
         Array of class indices.
     ids : optional, array_like(int, shape=(n))
-        Indices to specify a subset of `classification`. If None, the indices
+        Indices to specify a subset of `classification`. If none, the indices
         are numbered consecutively.
     min_size,max_size : optional, positive int
         Minimum and maximum desired size of a class to be kept in the result.
@@ -75,7 +75,7 @@ def classes_to_dict(
 
     """
     if not nptools.isarray(classification):
-        raise ValueError("'classification' needs to an array like object")
+        raise ValueError("'classification' needs to be an array like object")
 
     if ids is None:
         ids = range(len(classification))
@@ -105,7 +105,7 @@ def dict_to_classes(
         min_size=1,
         max_size=np.inf,
         missing_value=-1):
-    """Converts a dictionary of classes to a list of classes.
+    """Converts a dictionary of classes into a list of classes.
 
     Parameters
     ----------
@@ -172,7 +172,7 @@ def dict_to_classes(
 
 
 def split_by_breaks(values, breaks):
-    """Classifiy values by ranges.
+    """Classifies values by ranges.
 
     Parameters
     ----------
@@ -211,7 +211,7 @@ def rename_dict(d, ids=None):
     d : dict
         Dictionary to rename.
     ids : optional, array_like(shape=(len(d)))
-        Desired key names. If None, the keys are numbered consecutively.
+        Desired key names. If none, the keys are numbered consecutively.
 
     Returns
     -------
@@ -238,7 +238,7 @@ def rename_dict(d, ids=None):
 
 
 def mayority(classes, empty_value=-1):
-    """Find most frequent class or value in an array.
+    """Finds most frequent class or value in an array.
 
     Parameters
     ----------
@@ -259,7 +259,7 @@ def mayority(classes, empty_value=-1):
     Examples
     --------
 
-    Find mayority class.
+    Find majority class.
 
     >>> classes =['cat', 'dog', 'dog', 'bird', 'cat', 'dog']
     >>> print(mayority(classes))

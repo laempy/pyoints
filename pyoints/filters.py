@@ -33,15 +33,15 @@ from . import (
 
 
 def extrema(indexKD, attributes, r, inverse=False):
-    """Find local maxima or minima of given point set.
+    """Finds local maxima or minima of given point set.
 
     Parameters
     ----------
     indexKD : IndexKD
         Spatial index of `n` points to filter.
     attributes : array_like(Number, shape=(n))
-        Attributes to search for extrema. If None, the last coordinate
-        dimension is used as the attributes.
+        Attributes to search for extrema. If none, the last coordinate
+        dimension is used as the attribute.
     r : positive Number
         Maximum distance between two points to be considered as neighbours.
     inverse : optional, bool
@@ -79,7 +79,7 @@ def extrema(indexKD, attributes, r, inverse=False):
     if not isinstance(indexKD, IndexKD):
         raise TypeError("'indexKD' needs to be an instance of 'IndexKD'")
     if not (assertion.isnumeric(r) and r > 0):
-        raise ValueError("'r' needs be a number greater zero")
+        raise ValueError("'r' needs to be a number greater zero")
     attributes = assertion.ensure_numvector(attributes, length=len(indexKD))
     if not inverse:
         attributes = -attributes
@@ -106,16 +106,16 @@ def extrema(indexKD, attributes, r, inverse=False):
 
 
 def min_filter(indexKD, attributes, r, inverse=False):
-    """Find minima or maxima within a specified radius for all points. For each
-    point the neighbouring point with extreme attribute is marked.
+    """Finds minima or maxima within a specified radius for all points. For 
+    each point the neighbouring point with extreme attribute is marked.
 
     Parameters
     ----------
     indexKD : IndexKD
         Spatial index of `n` points to filter.
     attributes : array_like(Number, shape=(n))
-        Attributes to search for extrema. If None, the last coordinate
-        dimension is used as attributes.
+        Attributes to search for extrema. If none, the last coordinate
+        dimension is used as the attribute.
     r : positive Number
         Local radius to search for a minimum.
     inverse : optional, bool
@@ -131,7 +131,7 @@ def min_filter(indexKD, attributes, r, inverse=False):
     if not isinstance(indexKD, IndexKD):
         raise TypeError("'indexKD' needs to be of type 'IndexKD'")
     if not (assertion.isnumeric(r) and r > 0):
-        raise ValueError("'r' needs be a number greater zero")
+        raise ValueError("'r' needs to be a number greater zero")
 
     attributes = assertion.ensure_numvector(attributes, length=len(indexKD))
     if inverse:
@@ -147,7 +147,7 @@ def min_filter(indexKD, attributes, r, inverse=False):
 
 
 def has_neighbour(indexKD, r):
-    """Filter points which have neighbours within a specific radius.
+    """Filters points which have neighbours within a specific radius.
 
     Parameters
     ----------
@@ -160,7 +160,7 @@ def has_neighbour(indexKD, r):
     Yields
     ------
     positive int
-        Index of a point with at least a neighbouring point with radius `r`.
+        Index of a point with at least one neighbouring point with radius `r`.
 
     See also
     --------
@@ -178,7 +178,7 @@ def has_neighbour(indexKD, r):
     if not isinstance(indexKD, IndexKD):
         raise TypeError("'indexKD' needs to be of type 'IndexKD'")
     if not (assertion.isnumeric(r) and r > 0):
-        raise ValueError("'r' needs be a number greater zero")
+        raise ValueError("'r' needs to be a number greater zero")
 
     not_classified = np.ones(len(indexKD), dtype=np.bool)
     for pId, coord in enumerate(indexKD.coords):
@@ -192,7 +192,7 @@ def has_neighbour(indexKD, r):
 
 
 def is_isolated(indexKD, r):
-    """Filter points which have no neighbours within a specific radius.
+    """Filters points which have no neighbours within a specific radius.
 
     Parameters
     ----------
@@ -224,7 +224,7 @@ def is_isolated(indexKD, r):
     if not isinstance(indexKD, IndexKD):
         raise TypeError("'indexKD' needs to be of type 'IndexKD'")
     if not (assertion.isnumeric(r) and r > 0):
-        raise ValueError("'r' needs be a number greater zero")
+        raise ValueError("'r' needs to be a number greater zero")
 
     not_classified = np.ones(len(indexKD), dtype=np.bool)
     for pId, coord in enumerate(indexKD.coords):
@@ -237,8 +237,8 @@ def is_isolated(indexKD, r):
 
 
 def ball(indexKD, r, order=None, inverse=False, axis=-1, min_pts=1):
-    """Filter coordinates by radius. This algorithm is suitable to remove
-    duplicate points or get an almost uniform point density.
+    """Filters coordinates by radius. This algorithm is suitable to remove
+    duplicate points or to get an almost uniform point density.
 
     Parameters
     ----------
@@ -248,7 +248,7 @@ def ball(indexKD, r, order=None, inverse=False, axis=-1, min_pts=1):
         Ball radius or radii to select neighbouring points.
     order : optional, array_like(int, shape=(m))
         Order to proceed. If m < n, only a subset of points is investigated. If
-        None, ordered by `axis`.
+        none, ordered by `axis`.
     axis : optional, int
         Coordinate axis to use to generate the order.
     inverse : bool
@@ -297,7 +297,7 @@ def ball(indexKD, r, order=None, inverse=False, axis=-1, min_pts=1):
 
 
 def in_convex_hull(hull_coords, coords):
-    """Decide whether or not points are within a convex hull.
+    """Decides whether or not points are within a convex hull.
 
     Parameters
     ----------
@@ -332,7 +332,7 @@ def in_convex_hull(hull_coords, coords):
 
 
 def surface(indexKD, r, order=None, inverse=False, axis=-1):
-    """Filter points associated with a surface.
+    """Filters points associated with a surface.
 
     Parameters
     ----------
@@ -356,7 +356,7 @@ def surface(indexKD, r, order=None, inverse=False, axis=-1):
     if not isinstance(indexKD, IndexKD):
         raise TypeError("'indexKD' needs to be of type 'IndexKD'")
     if not (assertion.isnumeric(r) and r > 0):
-        raise ValueError("'r' needs be a number greater zero")
+        raise ValueError("'r' needs to be a number greater zero")
 
     coords = indexKD.coords
 
@@ -378,7 +378,7 @@ def surface(indexKD, r, order=None, inverse=False, axis=-1):
 
 
 def dem_filter(coords, r, max_angle=70):
-    """Select points suitable for generating a digital elevation model.
+    """Selects points suitable for generating a digital elevation model.
 
     Parameters
     ----------
@@ -442,8 +442,8 @@ def dem_filter(coords, r, max_angle=70):
 
 
 def radial_dem_filter(coords, angle_res, center=None):
-    """Filter surface points based on distance to the center. The algorithm
-    is designed to create digital elevation models of terrestial laser scans.
+    """Filters surface points based on distance to the center. The algorithm
+    is designed to create digital elevation models of terrestrial laser scans.
     Terrestrial laser scans are characterized by decreasing point densities
     with increasing distance to the scanner position. Thus, the radius to
     identify neighbouring points is adjusted to the distance to the scanner.

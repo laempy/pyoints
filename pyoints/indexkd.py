@@ -68,7 +68,7 @@ class IndexKD(object):
 
     Notes
     -----
-    Most spatial index operations are time critical. So it is usualla avoided
+    Most spatial index operations are time critical. So it is usually avoided
     to check each input parameter in detail.
 
     Examples
@@ -152,7 +152,7 @@ class IndexKD(object):
         return self.coords.shape[0]
 
     def __iter__(self):
-        """Iterate over the points of the spatial index.
+        """Iterates over the points of the spatial index.
 
         Yields
         ------
@@ -227,7 +227,7 @@ class IndexKD(object):
         return self._r_tree
 
     def ball(self, coords, r, bulk=100000, **kwargs):
-        """Find all points within distance `r` of point or points `coords`.
+        """Finds all points within distance `r` of point or points `coords`.
 
         Parameters
         ----------
@@ -236,7 +236,7 @@ class IndexKD(object):
         r : positive float
             Radius of ball.
         bulk : optional, positive int
-            Reduce required memory by performing bulk queries.
+            Reduces required memory by performing bulk queries.
         \*\*kwargs : optional
             Additional parameters passed to
             `scipy.spatial.cKDTree.query_ball_point`
@@ -244,9 +244,9 @@ class IndexKD(object):
         Returns
         -------
         nIds: list or array of lists
-            If coords is a single point, returns a list neighbours. If coords
-            is an list of points, returns a list containing lists of
-            neighbours.
+            If coords is a single point, this returns a list of neighbours. If 
+            coords is a list of points, this returns a list containing the 
+            lists of neighbours.
 
         Examples
         --------
@@ -284,7 +284,7 @@ class IndexKD(object):
 
         """
         if not isinstance(bulk, int) and bulk > 0:
-            raise ValueError("bulk size has to be a integer greater zero")
+            raise ValueError("bulk size has to be an integer greater zero")
 
         coords = iter(coords)
         while True:
@@ -327,7 +327,7 @@ class IndexKD(object):
         r : float or iterable of float
             Iterable radii to query.
         coords : optional, array_like(Number, shape=(n, k)) or iterable
-            Represents `n` points of `k` dimensions. If None it is set to
+            Represents `n` points of `k` dimensions. If nonem, it is set to
             `self.coords`.
         \*\*kwargs : optional
             Additional parameters passed to
@@ -374,7 +374,7 @@ class IndexKD(object):
         r : float or iterable of float
             Iterable radii to query.
         coords : optional, array_like(Number, shape=(n, k)) or iterable
-            Represents `n` points of `k` dimensions. If None it is set to
+            Represents `n` points of `k` dimensions. If none, it is set to
             `self.coords`.
         \*\*kwargs : optional
             Additional parameters passed to
@@ -436,7 +436,7 @@ class IndexKD(object):
             raise ValueError("r_min has to be numeric and greater zero")
 
         if not isinstance(r_max, Number) and r_max > r_min:
-            raise ValueError("r_max has to be numeric and greater 'r_max'")
+            raise ValueError("r_max has to be numeric and greater 'r_min'")
 
         inner = self.ball(coord[:self.dim], r_min, **kwargs)
         outer = self.ball(coord[:self.dim], r_max, **kwargs)
@@ -450,7 +450,7 @@ class IndexKD(object):
         coords : array_like(Number, shape=(n, k))
             Represents `n` points of `k` dimensions.
         k : optional, positive int
-            Number of nearest numbers to return.
+            Number of nearest neighbours to return.
         \*\*kwargs : optional
             Additional parameters passed to
             `scipy.spatial.cKDTree.query_ball_point`
@@ -458,9 +458,9 @@ class IndexKD(object):
         Returns
         -------
         dists : np.ndarray(Number, shape=(n, k))
-            Distances to nearest neihbours.
+            Distances to nearest neighbours.
         indices : np.ndarray(int, shape=(n, k))
-            Indices of nearest neihbours.
+            Indices of nearest neighbours.
 
         Examples
         --------
@@ -515,7 +515,7 @@ class IndexKD(object):
         dists : np.ndarray(Number, shape=(k))
             List of distances to nearest neighbours.
         indices : np.ndarray(int, shape=(k))
-            List of and corresponding point indices.
+            List of ??? and corresponding point indices.
 
         See Also
         --------
@@ -547,7 +547,7 @@ class IndexKD(object):
         dists : np.ndarray(Number, shape=(k))
             List of distances to nearest neighbours.
         indices : np.ndarray(int, shape=(k))
-            List of and corresponding point indices.
+            List of ??? and corresponding point indices.
 
         See Also
         --------
@@ -631,7 +631,7 @@ class IndexKD(object):
         return self.ball(coords, r, p=np.inf, **kwargs)
 
     def box(self, extent):
-        """Select points within a given extent.
+        """Selects points within a given extent.
 
         Parameters
         ----------
@@ -653,7 +653,7 @@ class IndexKD(object):
         return self.r_tree.intersection(extent, objects='raw')
 
     def box_count(self, extent):
-        """Count all points within a given extent.
+        """Counts all points within a given extent.
 
         Parameters
         ----------
@@ -674,13 +674,13 @@ class IndexKD(object):
         return self.r_tree.count(extent)
 
     def slice(self, min_th=-np.inf, max_th=np.inf, axis=-1):
-        """Select points with coordinate value of axis `axis` within range the
-        [`min_th`, `max_th`].
+        """Selects points with coordinate value of axis `axis` within the range 
+        of [`min_th`, `max_th`].
 
         Parameters
         ----------
         min_th,max_th : Number
-            A point `p` is returned `min_th <= p[axis] <= max_th`.
+            A point `p` is returned if `min_th <= p[axis] <= max_th`.
         axis : int
             Axis to evaluate.
 

@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
 # END OF LICENSE NOTE
-"""Handle spatial extents.
+"""Handles spatial extents.
 """
 
 import numpy as np
@@ -99,7 +99,7 @@ class Extent(np.recarray, object):
             if not dim * 2 == len(ext):
                 raise ValueError('malformed extent vector')
             if not np.all(ext[:dim] <= ext[dim:]):
-                raise ValueError('minima must not be greater then maxima')
+                raise ValueError('minima must not be greater than maxima')
 
         return ext.view(cls)
 
@@ -186,11 +186,12 @@ class Extent(np.recarray, object):
         return self[combs]
 
     def intersection(self, coords, dim=None):
-        """Test if coordinates are located within the extent.
+        """Tests if coordinates are located within the extent.
 
         Parameters
         ----------
-        coords : array_like(Number, shape=(n, k)) or array_like(Number, shape=(k))
+        coords : array_like(Number, shape=(n, k)) or 
+        array_like(Number, shape=(k))
             Represents `n` data points of `k` dimensions.
         dim : positive int
             Desired number of dimensions to consider.
@@ -198,7 +199,7 @@ class Extent(np.recarray, object):
         Returns
         -------
         indices : np.ndarray(int, shape=(n)) or np.ndarray(bool, shape=(n))
-            Indices of coordinates, which are within the extent. If just a
+            Indices of coordinates which are within the extent. If just a
             single point is given, a boolean value is returned.
 
         Examples
@@ -229,7 +230,7 @@ class Extent(np.recarray, object):
         # set desired dimension
         dim = self.dim if dim is None else dim
         if not dim > 0:
-            raise ValueError('dimension "dim" has to be greater zero')
+            raise ValueError('dimension "dim" needs to be greater zero')
 
         # check
         n, c_dim = coords.shape

@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
 # END OF LICENSE NOTE
-"""Fit shapes or functions to points.
+"""Fits shapes or functions to points.
 """
 
 import numpy as np
@@ -59,7 +59,7 @@ def fit_sphere(coords, weights=1.0):
     Examples
     --------
 
-    Draw points on a half circle with radius 5 and cener (2, 4) and try to
+    Draw points on a half circle with radius 5 and center (2, 4) and try to
     dertermine the circle parameters.
 
     >>> x = np.arange(-1, 1, 0.1)
@@ -100,7 +100,7 @@ def fit_sphere(coords, weights=1.0):
 
 
 def fit_cylinder(coords, vec=None):
-    """Fit a cylinder to points.
+    """Fits a cylinder to points.
 
     Parameters
     ----------

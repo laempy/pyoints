@@ -79,7 +79,7 @@ def find_rototranslation(A, B):
     Notes
     -----
     Implements the registration algorithm of Besl and McKay (1992) [1]. The
-    idea has been taken from Nghia Ho (2013) [2]. Code of [2] has been adapted
+    idea has been taken from Nghia Ho (2013) [2]. Code of [2] has been
     generalized to `k` dimensional space.
 
     References
@@ -100,12 +100,12 @@ def find_rototranslation(A, B):
     Examples
     --------
 
-    Create similar, but shifted and rotated point sets.
+    Creates similar, but shifted and rotated point sets.
 
     >>> A = np.array([[0, 0], [0, 1], [1, 1], [1, 0]])
     >>> B = transformation.transform(A, transformation.matrix(t=[3, 5], r=0.3))
 
-    Find roto-translation.
+    Finds roto-translation.
 
     >>> M = find_rototranslation(A, B)
 

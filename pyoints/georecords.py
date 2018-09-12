@@ -33,10 +33,10 @@ from . import (
 
 
 class GeoRecords(np.recarray, object):
-    """Abstraction class to ease handling of point sets as well as structured
+    """Abstraction class to ease handling point sets as well as structured
     matrices of point like objects. This gives the oportunity to handle
     unstructured point sets the same way like rasters or voxels. The class also
-    provides a IndexKD object on demand to speed up neigbourhod analyzes.
+    provides an IndexKD object on demand to speed up neigbourhood analyses.
 
     Parameters
     ----------
@@ -48,7 +48,7 @@ class GeoRecords(np.recarray, object):
         dimensions.
     T : optional, array_like(Number, shape=(k+1, k+1))
         Linear transformation matrix to transform the coordinates. Set to a
-        identity matrix if not given. This eases handling of structured point
+        identity matrix if not given. This eases handling structured point
         sets like rasters or voxels.
 
     Attributes
@@ -207,7 +207,7 @@ class GeoRecords(np.recarray, object):
         return np.product(self.shape)
 
     def records(self):
-        """Provides the flattened data records. Usefull if structured data
+        """Provides the flattened data records. Useful if structured data
         (like matrices) are used.
 
         Returns
@@ -249,8 +249,8 @@ class GeoRecords(np.recarray, object):
         Returns
         -------
         np.ndarray(int, shape=(self.count))
-            Array of indices. Each entry provides a index tuple e. g. to
-            recieve data elements wth `__getitem__`.
+            Array of indices. Each entry provides an index tuple e.g. to
+            receive data elements with `__getitem__`.
 
         Examples
         --------
@@ -294,7 +294,7 @@ class GeoRecords(np.recarray, object):
         return nptools.indices(self.shape, flatten=False)
 
     def transform(self, T):
-        """Transform coordinates.
+        """Transforms coordinates.
 
         Parameters
         ----------
@@ -399,7 +399,7 @@ class GeoRecords(np.recarray, object):
         Parameters
         ----------
         rec : array_like
-            Record array with same fields than self.
+            Record array with same fields as self.
 
         Returns
         -------
@@ -510,7 +510,7 @@ class LasRecords(GeoRecords):
         raise ValueError('field "%s" not found' % field_name)
 
     def grd(self):
-        """Filter by points classified as ground.
+        """Filters by points classified as ground.
 
         Returns
         -------
@@ -521,7 +521,7 @@ class LasRecords(GeoRecords):
         return self[self.class_indices(2, 11)]
 
     def veg(self):
-        """Filter by points classified as vegetation.
+        """Filters by points classified as vegetation.
 
         Returns
         -------
@@ -532,7 +532,7 @@ class LasRecords(GeoRecords):
         return self[self.class_indices(3, 4, 5, 20)]
 
     def class_indices(self, *classes):
-        """Filter by classes.
+        """Filters by classes.
 
         Parameters
         ----------

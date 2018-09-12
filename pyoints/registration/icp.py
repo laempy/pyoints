@@ -53,7 +53,7 @@ class ICP:
 
     Notes
     -----
-    An own variant of the originally ICP algorithm presented by Besl and McKay
+    A modified variant of the originally ICP algorithm presented by Besl and McKay
     (1992) [1].
 
     References
@@ -98,7 +98,7 @@ class ICP:
      [ 2.18  0.89]
      [-0.97 -1.94]]
 
-    Find matches and compare RMSE.
+    Find matches and compare RMSE (Root Mean Squared Error).
 
     >>> matcher = assign.KnnMatcher(tA, radii)
     >>> pairs = matcher(tB)
@@ -111,7 +111,7 @@ class ICP:
     >>> print(np.round(rmse, 3))
     0.09
 
-    ICP also take advantage of normals (NICP).
+    ICP also takes advantage of normals (NICP).
 
     >>> from pyoints.normals import fit_normals
     >>> normals_r = 1.5
@@ -154,7 +154,7 @@ class ICP:
         if not callable(assign_class):
             raise TypeError("'assign_class' must be a callable")
         if not (isinstance(max_iter, int) and max_iter >= 0):
-            raise ValueError("'max_iter' needs to be an integer greater zero")
+            raise ValueError("'max_iter' must be an integer greater zero")
         if not isinstance(update_normals, bool):
             raise TypeError("'update_normals' must be boolean")
         if not (isinstance(max_change_ratio, Number) and max_change_ratio > 0):
