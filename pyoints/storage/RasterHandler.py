@@ -23,6 +23,7 @@ from osgeo import (
     gdal,
     osr,
 )
+import warnings
 from .BaseGeoHandler import GeoFile
 from .dtype_converters import numpy_to_gdal_dtype
 from ..extent import Extent
@@ -67,7 +68,7 @@ class RasterReader(GeoFile):
                 self.proj = projection.Proj.from_proj4(
                     osr.SpatialReference(wkt=wkt).ExportToProj4())
             else:
-                raise ValueError("no projection found")
+                warnings.warn("no projection found")
         else:
             self.proj = proj
 
@@ -141,7 +142,7 @@ def load_gdal(filename, proj=None, extent=None):
             proj = projection.Proj.from_proj4(
                 osr.SpatialReference(wkt=wkt).ExportToProj4())
         else:
-            raise ValueError("no projection found")
+            warnings.warn("no projection found")
 
     T = transformation.matrix_from_gdal(gdalRaster.GetGeoTransform())
 
