@@ -173,7 +173,7 @@ def iscoord(coord):
             not hasattr(coord[0], '__len__'))
 
 
-def ensure_numarray(arr):
+def ensure_numarray(arr, shape=None):
     """Ensures the properties of an numeric numpy ndarray.
 
     Parameters
@@ -204,6 +204,10 @@ def ensure_numarray(arr):
     arr = np.array(arr)
     if not nptools.isnumeric(arr):
         raise ValueError("array 'arr' needs to be numeric")
+    if shape is not None:
+        if not arr.shape == shape:
+            m = "eypected shape %s, got %s" % (str(arr.shape), shape)
+            raise ValueError(m) 
     return arr
 
 
