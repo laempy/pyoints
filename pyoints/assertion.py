@@ -201,12 +201,13 @@ def ensure_numarray(arr, shape=None):
     """
     if not nptools.isarray(arr):
         raise TypeError("'arr' needs to an array like object")
-    arr = np.array(arr)
+    if not isinstance(arr, np.ndarray):
+        arr = np.array(arr)
     if not nptools.isnumeric(arr):
         raise ValueError("array 'arr' needs to be numeric")
     if shape is not None:
         if not arr.shape == shape:
-            m = "eypected shape %s, got %s" % (str(arr.shape), shape)
+            m = "expected shape %s, got %s" % (shape, str(arr.shape))
             raise ValueError(m) 
     return arr
 
