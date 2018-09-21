@@ -255,25 +255,86 @@ def zenith(v, axis=-1, deg=False):
     Examples
     --------
 
-    >>> zenith([1, 0], deg=True)
+    >>> v = [1, 0]
+    >>> print(zenith(v, deg=True))
     90.0
-    >>> zenith([1, 0], axis=0)
+    
+    >>> v = [0, 0, 1]
+    >>> print(zenith(v, deg=True))
     0.0
-    >>> round(zenith([1, 1], deg=True), 1)
-    45.0
-    >>> round(zenith([1, 0, 1], 2, deg=True), 1)
-    45.0
+    
+    >>> v = [(0, 0), (1, 0), (0, 1), (1, 1)]
+    >>> print(zenith(v, deg=True))
+    [nan 90.  0. 45.]
 
+    >>> v = [1, 0, 1]
+    >>> print(np.round(zenith([1, 0, 1], axis=2, deg=True), 1))
+    45.0
+        
     """
-    v = assertion.ensure_numvector(v)
-    if not (isinstance(axis, int) and abs(axis) < len(v)):
-        raise ValueError("'axis' neets to be an integer smaller len(v)")
-
-    length = distance.norm(v)
-    a = math.acos(v[axis] / length)
+    if not isinstance(axis, int):
+        raise TypeError("'axis' needs to be an integer")
+    
+    v = assertion.ensure_numarray(v)
+    is_vector = len(v.shape) == 1
+    
+    if is_vector:
+        v = [v]
+        
+    v = assertion.ensure_coords(v, min_dim=2)
+    if not abs(axis) < v.shape[1]:
+        raise ValueError("'axis' neets to be an smaller %i" % v.shape[1])
+        
+    zenith = np.arccos(v[:, axis] / distance.norm(v))
+    
+    if is_vector:
+        zenith = zenith[0]
+    
     if deg:
-        a = rad_to_deg(a)
-    return a
+        zenith = rad_to_deg(zenith)
+    return zenith
+
+
+def azimuth(v, deg=False):
+    """Calculate the azimuth of a vector of vectors.
+    
+    Parameters
+    ----------
+    v : array_like(Number, shape=(k)), array_like(Number, shape=(n, k))
+        Vector or vectors of `k` dimensions.
+        
+    Examples
+    --------
+    
+    >>> v = [1, 1]
+    >>> print(azimuth(v, deg=True))
+    45.0
+    
+    >>> v = [1, 1, 5]
+    >>> print(azimuth(v, deg=True))
+    45.0
+    
+    >>> v = [(0, 0), (0, 1), (1, 1), (1, 0), (2, -2), (0, -1), (-1, 1)]
+    >>> print(azimuth(v, deg=True))
+    [ nan   0.  45.  90. 135. 180. 315.]
+    
+    """
+    v = assertion.ensure_numarray(v)
+    is_vector = len(v.shape) == 1
+
+    if is_vector:
+        v = [v]
+        
+    v = assertion.ensure_coords(v, min_dim=2)
+    azimuth = np.pi - np.arctan2(v[:, 0], -v[:, 1])
+    azimuth[np.abs(v).sum(1) == 0] = np.nan
+    
+    if is_vector:
+        azimuth = azimuth[0]
+    if deg:
+        azimuth = rad_to_deg(azimuth)
+    return azimuth
+    
 
 
 def scalarproduct(v, w):
