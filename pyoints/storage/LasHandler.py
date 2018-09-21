@@ -210,7 +210,7 @@ def writeLas(geoRecords, outfile):
     field_names = records.dtype.names
 
     # Fields to omit
-    omit = ['X', 'Y', 'Z']
+    omit = []
     omit.extend(las_fields)
     omit.extend(np.dtype(LasRecords.USER_DEFINED_FIELDS).names)
 

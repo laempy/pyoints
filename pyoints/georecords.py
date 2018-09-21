@@ -162,11 +162,11 @@ class GeoRecords(np.recarray, object):
         if key is 'coords':
             self._clear_cache()
 
-    def extent(self, *args):
-        return self.coords.extent(*args)
+    def extent(self, *args, **kwargs):
+        return self.coords.extent(*args, **kwargs)
 
-    def indexKD(self, *args):
-        return self.coords.indexKD(*args)
+    def indexKD(self, *args, **kwargs):
+        return self.coords.indexKD(*args, **kwargs)
 
     def __array_finalize__(self, obj):
         if obj is None:
@@ -458,7 +458,6 @@ class LasRecords(GeoRecords):
     """
     USER_DEFINED_FIELDS = [
         ('coords', np.float, 3),
-        ('normals', np.float, 3),
         ('classification', np.uint8),
         ('num_returns', np.uint8),
         ('return_num', np.uint8),

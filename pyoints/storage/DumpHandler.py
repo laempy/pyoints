@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
 # END OF LICENSE NOTE
+import codecs
 import dill as pickle
 
 from .BaseGeoHandler import GeoFile
@@ -90,7 +91,7 @@ def writeDump(obj, filename):
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
 
-def dumpstring_to_object(string):
+def dumpstring_to_object(pickled):
     """Converts a dump string to an object.
 
     Parameters
@@ -104,9 +105,10 @@ def dumpstring_to_object(string):
         Loaded object.
 
     """
-    if string is None:
+    if pickled is None:
         return None
-    return pickle.loads(string.decode(encoding='base64', errors='strict'))
+    unpickled = pickle.loads(codecs.decode(pickled.encode(), "base64"))
+    return unpickled
 
 
 def dumpstring_from_object(data):
@@ -123,6 +125,7 @@ def dumpstring_from_object(data):
         Dump string.
 
     """
-    return "%s" % pickle.dumps(
-        data, pickle.HIGHEST_PROTOCOL).encode(
-        encoding='base64', errors='strict')
+    dump = pickle.dumps(data, pickle.HIGHEST_PROTOCOL)
+    pickled = codecs.encode(dump, "base64").decode()
+    return pickled
+
