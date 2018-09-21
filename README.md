@@ -303,14 +303,6 @@ Darsh Ranjan
 * [GPL v3.0 (or later)](https://github.com/dranjan/python-plyfile/blob/master/COPYING)
 
 
-### psycopg2-binary
-
-Federico Di Gregorio
-* [PyPI](https://pypi.org/project/psycopg2-binary/)
-* [homepage](http://initd.org/psycopg/)
-* [LGPL v3.0 (or later)](https://github.com/psycopg/psycopg2/blob/master/LICENSE)
-
-
 ### pyproj
 
 Jeff Whitaker

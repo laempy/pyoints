@@ -6,7 +6,6 @@ scikit-learn
 pyproj
 dill
 pandas
-psycopg2-binary
 opencv-python
 plyfile
 networkx
