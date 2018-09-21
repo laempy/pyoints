@@ -796,7 +796,11 @@ class Vector(object):
 
         """
         local_coords = self.t.to_local(global_coords)
-        return local_coords[:, 0] / self.length
+        if len(local_coords.shape) == 1:
+            k = local_coords[0] / self.length
+        else:
+            k = local_coords[:, 0] / self.length
+        return k
 
     def __call__(self, k):
         """Convert a relative position in vector direction to a global
