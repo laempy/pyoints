@@ -416,8 +416,8 @@ def ensure_tmatrix(T, dim=None, min_dim=2, max_dim=np.inf):
     """
     if not nptools.isarray(T):
         raise ValueError("transformation matrix is not an array")
-    if not isinstance(T, np.matrix):
-        T = np.matrix(T)
+    if not isinstance(T, np.ndarray):
+        T = np.asarray(T)
 
     if not nptools.isnumeric(T):
         raise ValueError("'T' needs to be numeric")

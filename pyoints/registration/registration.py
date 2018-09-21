@@ -56,7 +56,7 @@ def find_transformation(A, B):
         raise ValueError('dimensions do not match')
 
     x = np.linalg.lstsq(mA, b, rcond=None)[0]
-    M = np.matrix(x).T
+    M = x.T
 
     return M
 
@@ -91,11 +91,11 @@ def find_rototranslation(A, B):
     pp. 239-256.
 
     [2] Nghia Ho (2013): "Finding optimal rotation and translation between
-    corresponding 3D points", URL http://nghiaho.com/?page\_id=671.
+    corresponding 3D points", URL http:\/\/nghiaho.com/\?page\_id=671.
 
     [3] Nghia Ho (2013): "Finding optimal rotation and translation between
     corresponding 3D points", URL
-    http://nghiaho.com/uploads/code/rigid\_transform\_3D.py\_.
+    http:\/\/nghiaho.com/uploads/code/rigid\_transform\_3D.py\_.
 
     Examples
     --------
@@ -125,13 +125,13 @@ def find_rototranslation(A, B):
 
     cA = A.mean(0)
     cB = B.mean(0)
-    mA = np.matrix(transformation.homogenious(A - cA, value=0))
-    mB = np.matrix(transformation.homogenious(B - cB, value=0))
+    mA = transformation.homogenious(A - cA, value=0)
+    mB = transformation.homogenious(B - cB, value=0)
 
     # Find rotation matrix
-    H = mA.T * mB
+    H = mA.T @ mB
     U, S, V = np.linalg.svd(H)
-    R = U * V
+    R = U @ V
 
     # reflection case
     if np.linalg.det(R) < 0:
@@ -141,6 +141,6 @@ def find_rototranslation(A, B):
     # Create transformation matrix
     T1 = transformation.t_matrix(cA)
     T2 = transformation.t_matrix(-cB)
-    M = T1 * R * T2
+    M = T1 @ R @ T2
 
     return transformation.LocalSystem(M)

@@ -282,8 +282,8 @@ def _extract_transformations(M, centers, center):
     for i, key in enumerate(centers):
         R = transformation.t_matrix(t_dict[key])
         T = transformation.r_matrix(r_dict[key], order='xyz')
-        M = R * T
-        res[key] = TC * M * TC.inv
+        M = R @ T
+        res[key] = TC @ M @ TC.inv
     return res
 
 

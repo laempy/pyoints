@@ -102,6 +102,7 @@ def transform(coords, T, inverse=False, precise=False):
         # multiple points
         if precise:
             # precise, but slow
+            #tcoords = (homogenious(coords) @ T.T)[:, 0:-1]
             tcoords = np.dot(homogenious(coords), T.T)[:, 0:-1]
         else:
             # fast, but not very precise
@@ -212,7 +213,7 @@ def matrix(t=None, r=None, s=None, order='srt'):
     # create translation matrix according to order
     M = i_matrix(shape[0] - 1)
     for key in list(order):
-        M = matrices[key] * M
+        M = matrices[key] @ M
 
     return LocalSystem(M)
 
@@ -247,7 +248,7 @@ def i_matrix(dim):
     """
     if not (isinstance(dim, int) and dim >= 2):
         raise ValueError("'dim' needs to be an integer greater one")
-    I_m = np.matrix(np.identity(dim + 1))
+    I_m = np.identity(dim + 1)
     return LocalSystem(I_m)
 
 
@@ -386,7 +387,7 @@ def r_matrix(a, order='xyz'):
     R_dict = {}
     dim = len(a)
     if dim == 1:
-        R_m = np.matrix([
+        R_m = np.array([
             [np.cos(a[0]), -np.sin(a[0]), 0],
             [np.sin(a[0]), np.cos(a[0]), 0],
             [0, 0, 1]
@@ -394,19 +395,19 @@ def r_matrix(a, order='xyz'):
     elif dim == 2:
         raise ValueError('rotation in 2D requires one angle only')
     elif dim == 3:
-        Rx = np.matrix([
+        Rx = np.array([
             [1, 0, 0, 0],
             [0, np.cos(a[0]), -np.sin(a[0]), 0],
             [0, np.sin(a[0]), np.cos(a[0]), 0],
             [0, 0, 0, 1],
         ])
-        Ry = np.matrix([
+        Ry = np.array([
             [np.cos(a[1]), 0, np.sin(a[1]), 0],
             [0, 1, 0, 0],
             [-np.sin(a[1]), 0, np.cos(a[1]), 0],
             [0, 0, 0, 1],
         ])
-        Rz = np.matrix([
+        Rz = np.array([
             [np.cos(a[2]), -np.sin(a[2]), 0, 0],
             [np.sin(a[2]), np.cos(a[2]), 0, 0],
             [0, 0, 1, 0],
@@ -419,7 +420,7 @@ def r_matrix(a, order='xyz'):
 
         R_m = i_matrix(dim)
         for key in list(order):
-            R_m = R_dict[key] * R_m
+            R_m = R_dict[key] @ R_m
     else:
         raise ValueError(
             '%i-dimensional rotations are not supported yet' % dim)
@@ -437,7 +438,7 @@ def add_dim(T):
 
     Returns
     -------
-    np.matrix(float, shape=(k+2, k+2))
+    np.array(float, shape=(k+2, k+2))
         Transformation matrix with an additional dimension.
 
     Examples
@@ -577,7 +578,7 @@ def matrix_from_gdal(t):
     """
     t = ensure_numvector(t, min_length=6, max_length=6)
 
-    T = np.matrix(np.zeros((3, 3), dtype=np.float))
+    T = np.array(np.zeros((3, 3), dtype=np.float))
     T[0, 2] = t[0]
     T[0, 0] = t[1]
     T[0, 1] = t[2]
@@ -621,7 +622,7 @@ def matrix_to_gdal(T):
     return t
 
 
-class LocalSystem(np.matrix, object):
+class LocalSystem(np.ndarray, object):
     """Defines a local coordinate system based on a transformation matrix.
 
     Parameters
@@ -671,7 +672,7 @@ class LocalSystem(np.matrix, object):
 
     @property
     def origin(self):
-        return np.asarray(self[:self.dim, self.dim]).T[0]
+        return self[:self.dim, self.dim]
 
     @origin.setter
     def origin(self, origin):
@@ -746,7 +747,7 @@ class LocalSystem(np.matrix, object):
         """
         R = np.eye(self.dim + 1)
         R[axis, axis] = -1
-        self[:, :] = np.linalg.inv(np.linalg.inv(self) * R)
+        self[:, :] = np.linalg.inv(np.linalg.inv(self) @ R)
 
     def to_local(self, global_coords):
         """Transforms global coordinates into local coordinates.
@@ -976,7 +977,7 @@ class PCA(LocalSystem):
 
         T = LocalSystem(identity(dim + 1)).view(cls)
         T[:dim, :dim] = eigen_vectors.T
-        T = T * t_matrix(-center)  # don not edit!
+        T = T @ t_matrix(-center)  # don not edit!
 
         T._eigen_values = eigen_values
 
@@ -1018,5 +1019,5 @@ class PCA(LocalSystem):
         if not (k >= 1 and k <= self.dim):
             raise ValueError("%-'th principal component not available")
 
-        pc = self[k - 1, :self.dim]
-        return np.asarray(pc)[0]
+        return self[k - 1, :self.dim]
+
