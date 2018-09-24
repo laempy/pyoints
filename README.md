@@ -36,8 +36,8 @@ be performed with unified functions. Thus, each extension of `GeoRecords`
 provides a spatial index `IndexKD` to conveniently perform efficient
 neighborhood queries. The class `IndexKD` is a wrapper of different spatial
 indices, to handle *k*-dimensional spatial queries of different kinds. The
-spatial indices are always only initialized on demand for performance reasons, but
-cached for future queries. For example, an instance *geoRecords* of
+spatial indices are always only initialized on demand for performance reasons, 
+but cached for future queries. For example, an instance *geoRecords* of
 `GeoRecords` representing three dimensional points allows to create a three
 dimensional spatial index by calling `geoRecords.indexKD()`. If you are not
 interested in the third dimension, you can call `geoRecords.indexKD(2)` to
@@ -54,16 +54,16 @@ Based on the general concept of ``Pyoints`` presented above, a bunch of
 algorithms, functions and filters have been implemented, to process geo-data
 with low programming efforts.
 
-Of course, one might wonder whether Python is adequate to analyze point cloud data
-since other languages languages are much more efficient. This is obviously true,
-but in the experience of the author, Python is very useful to implement and
-test new algorithms very quickly. Algorithms for point cloud analysis and
+Of course, one might wonder whether Python is adequate to analyze point cloud 
+data since other languages languages are much more efficient. This is obviously 
+true, but in the experience of the author, Python is very useful to implement 
+and test new algorithms very quickly. Algorithms for point cloud analysis and
 processing often rely on spatial neighborhood queries. Since ``Pyoints``
 takes advantage of very efficient Python libraries, which are basically
 wrappers for binaries written in more efficient languages, the performance
 loss is limited. Additionally, ``Pyoints`` takes care of selecting and caching
-appropiate spatial indices for you, so you can focus on the core of your algorithm
-idea.
+appropiate spatial indices for you, so you can focus on the core of your 
+algorithm idea.
 
 So, if you have an algorithm idea and you want to implement it quickly and play
 around with different settings, ``Pyoints`` is made for you. After finding an
@@ -183,7 +183,8 @@ examples. You can also take a look at the source files directly.
 
 To test the software please take a look at the [tests](tests) directory.
 Currently Python docstrings are used to test the functionality of a
-majority of ``Pyoints`` classes and functions.
+majority of ``Pyoints`` classes and functions. You can run the file 
+[test_pyoints.py](tests/test_pyoints.py) to run the doctests.
 
 
 
