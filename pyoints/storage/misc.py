@@ -18,7 +18,7 @@
 # END OF LICENSE NOTE
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Some random funtions, which ease development.
+"""Some random functions, which ease development.
 """
 
 import numpy as np

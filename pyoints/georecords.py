@@ -34,8 +34,8 @@ from . import (
 
 class GeoRecords(np.recarray, object):
     """Abstraction class to ease handling point sets as well as structured
-    matrices of point like objects. This gives the oportunity to handle
-    unstructured point sets the same way like rasters or voxels. The class also
+    matrices of point like objects. This gives the opportunity to handle
+    unstructured point sets the same way as rasters or voxels. The class also
     provides an IndexKD object on demand to speed up neigbourhood analyses.
 
     Parameters

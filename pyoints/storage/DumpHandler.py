@@ -23,7 +23,7 @@ from .BaseGeoHandler import GeoFile
 
 
 class DumpReader(GeoFile):
-    """Class to read GeoRecords form python dump files.
+    """Class to read GeoRecords from python dump files.
 
     See Also
     --------
@@ -77,7 +77,7 @@ def loadDump(filename):
 
 
 def writeDump(obj, filename):
-    """Dump a object to a file.
+    """Dump an object to a file.
 
     Parameters
     ----------

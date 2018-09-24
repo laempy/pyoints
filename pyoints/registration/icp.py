@@ -39,9 +39,9 @@ class ICP:
     ----------
     radii : array_like(Number, shape=(s))
         Maximum distances in each coordinate dimension to assign corresponding
-        points of `k` dimensions. The length of `radii` is equal to `2 * k`
-        if point normals shall also be used to find point pairs, `k`
-        otherwise.
+        points of `k` dimensions. The length of `radii` is equal to `2 * k`.
+        If point normals shall also be used to find point pairs, the length of 
+        `radii` is `k`.
     assign_class : optional, callable class
         Class which assigns pairs of points.
     max_iter : optional, positive int
@@ -191,7 +191,7 @@ class ICP:
             `T_dict` will be overwritten.
         overlap_dict : optional, dict of list(str)
             Dictionary specifying which point clouds overlap.
-        weights : optional, array_like
+        weights : optional, array_like(Number)
             Weights passed to `find_rototranslations`.
 
         Returns
@@ -201,7 +201,7 @@ class ICP:
         pairs_dict : dict of array_like(int, shape=(m, 2))
             Desired dictionary of point pairs.
         report : dict
-            Report to validate the results.
+            Report to evaluate the quality of the results.
 
         See Also
         --------

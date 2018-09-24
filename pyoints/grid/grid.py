@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
 # END OF LICENSE NOTE
-"""Handling of grided data, like voxels or rasters.
+"""Handling of grided data like voxels or rasters.
 """
 
 import numpy as np
@@ -41,7 +41,7 @@ from .transformation import (
 
 
 class Grid(GeoRecords):
-    """Grid class extends GeoRecords to ease handling of matrices, like rasters
+    """Grid class extends GeoRecords to ease handling of matrices like rasters
     or voxels.
 
     Parameters
@@ -53,13 +53,16 @@ class Grid(GeoRecords):
         geo-object with `k` dimensional coordinates.
     T : array_like(Number, shape=(k+1, k+1))
         A linear transformation matrix to transform the coordinates. The
-        translation represents the origin, the rotation the orientation, and
-        the scale the pixel size of the matrix.
+        translation represents the origin, the rotation represents the orientation, and
+        the scale represents the pixel size of the matrix.
 
     Examples
     --------
 
-    >>> from pyoints import transformation, projection
+    >>> from pyoints import (
+    ...     transformation,
+    ...     projection,
+    ... )
 
     Create a raster with a projection and a transformation matrix.
 
@@ -188,9 +191,9 @@ class Grid(GeoRecords):
         Parameters
         ----------
         proj : pyoints.projection.Proj
-            Projection object provides the geograpic projection of the grid.
+            Projection object provides the geographic projection of the grid.
         corners : array_like(Number, shape=(n, k))
-            Desired `k` dimensional corners of the gird.
+            Desired `k` dimensional corners of the grid.
         scale : array_like(int, shape=(k))
             Desired scale of the pixel cells.
 
@@ -226,9 +229,9 @@ class Grid(GeoRecords):
         Parameters
         ----------
         proj : pyoints.projection.Proj
-            Projection object provides the geograpic projection of the grid.
+            Projection object provides the geographic projection of the grid.
         ext : array_like(Number, shape=(2 * k)) or array_like(Number, shape=(n, k))
-            Desired `k` dimensional extent of the gird. You can also specifiy
+            Desired `k` dimensional extent of the gird. You can also specify
             the extent by providing coordinates.
         scale : array_like(int, shape=(k))
             Desired scale of the pixel cells.
@@ -413,7 +416,10 @@ class Grid(GeoRecords):
         Examples
         --------
 
-        >>> from pyoints import transformation, projection
+        >>> from pyoints import (
+	...     transformation,
+        ...     projection,
+        ... )
 
         Create Grid.
 
@@ -485,7 +491,7 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
     Returns
     -------
     np.ndarray or np.recarray(dtype=dtype) or Grid
-        Desired `m` dimensional matrix. If `rec` is an istance of `GeoRecords`
+        Desired `m` dimensional matrix. If `rec` is an instance of `GeoRecords`
         and `dtype` has named fields, an instance of `Grid` is returned. If
         no point falls within `T`, None is returned.
 

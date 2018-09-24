@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
 # END OF LICENSE NOTE
-"""In this example we try to dectect stems in a forest using a point cloud
+"""In this example, we try to detect stems in a forest using a point cloud
 of terrestrial laser scans. A couple of .las-files will be generated, which
 should be inspected with software like CloudCompare.
 
@@ -48,7 +48,7 @@ First, we define an input and an output path.
 ...                 os.path.dirname(os.path.abspath(__file__)), 'output')
 
 
-After that, we load a input LAS point cloud.
+Thereafter, we load an input LAS point cloud.
 
 >>> infile = os.path.join(inpath, 'forest.las')
 >>> lasReader = storage.LasReader(infile)
@@ -57,7 +57,7 @@ After that, we load a input LAS point cloud.
 482981
 
 
-The algorithm idea begins with deriving a digital elevation model to calculate
+Rge basic idea of the algorithm is to first derive a digital elevation model to calculate
 the height above ground. We simply rasterize the point cloud by deriving the
 lowest z-coordinate of each cell.
 
@@ -76,12 +76,12 @@ We save the DEM as a .tif-image.
 >>> storage.writeRaster(dem_grid, outfile, field='z')
 
 
-We create a surface inerpolator.
+We create a surface interpolator.
 
 >>> dem = KnnInterpolator(dem_grid.records().coords, dem_grid.records().z)
 
 
-For the stem detection we will focus on points with height above ground greater
+For the stem detection, we will focus on points with height above ground greater
 0.5 m.
 
 >>> height = las.coords[:, 2] - dem(las.coords)
@@ -91,7 +91,7 @@ For the stem detection we will focus on points with height above ground greater
 
 
 We filter the point cloud using a small filter radius. Only a subset of points
-is kept, with a point distance of at least 10 cm.
+with a point distance of at least 10 cm is kept.
 
 >>> f_ids = list(filters.ball(las.indexKD(), 0.1, order=s_ids))
 >>> las = las[f_ids]
@@ -102,7 +102,7 @@ is kept, with a point distance of at least 10 cm.
 >>> storage.writeLas(las, outfile)
 
 
-We only keep points with a lot of neighbours to reduce noise.
+We only keep points with a lot of neighbors to reduce noise.
 
 >>> count = las.indexKD().ball_count(0.3)
 >>> mask = count > 10
@@ -115,7 +115,7 @@ We only keep points with a lot of neighbours to reduce noise.
 
 
 Now, we will filter with a radius of 1 m. This results in a point cloud
-with point distances of at least 1 m. Here points associated with stems are
+with point distances of at least 1 m. Here, points associated with stems are
 arranged in straight lines.
 
 >>> f_ids = list(filters.ball(las.indexKD(), 1.0))
@@ -126,9 +126,9 @@ arranged in straight lines.
 >>> outfile = os.path.join(outpath, 'stemfilter_ball_100.las')
 >>> storage.writeLas(las, outfile)
 
-For dense point clouds the filtering technique results in point distances
-between 1 m and 2 m. So, we can assume that linear arranged points should
-have 2 to 3 neighbouring points within a radius of 1.5 m.
+For dense point clouds, the filtering technique results in point distances
+between 1 m and 2 m. Thus, we can assume that linear arranged points should
+have 2 to 3 neighboring points within a radius of 1.5 m.
 
 >>> count = las.indexKD().ball_count(1.5)
 >>> mask = np.all((count >= 2, count <= 3), axis=0)
@@ -140,7 +140,7 @@ have 2 to 3 neighbouring points within a radius of 1.5 m.
 >>> storage.writeLas(las, outfile)
 
 
-Now the stems are clearly visible in the point cloud. So, we can detect the
+Now, the stems are clearly visible in the point cloud. Thus, we can detect the
 stems by clustering the points.
 
 >>> cluster_indices = clustering.dbscan(las.indexKD(), 2, epsilon=1.5)
@@ -151,7 +151,7 @@ stems by clustering the points.
 [-1  0  1  2  3  4  5]
 
 
-In the next step we remove small clusters and unassigned points.
+In the next step, we remove small clusters and unassigned points.
 
 >>> cluster_dict = classification.classes_to_dict(cluster_indices, min_size=5)
 >>> cluster_indices = classification.dict_to_classes(cluster_dict, len(las))
@@ -168,7 +168,7 @@ We add an additional field to the point cloud to store the tree number.
 >>> storage.writeLas(las, outfile)
 
 
-Now we can fit a vector to each stem. You should take a close look at the
+Now, we can fit a vector to each stem. You should take a close look at the
 characteristics of the `Vector` object.
 
 >>> stems = {}
@@ -178,7 +178,7 @@ characteristics of the `Vector` object.
 ...     stems[tree_id] = stem
 
 
-Finally we determinate the tree root coordinates using the previously derived
+Finally, we determinate the tree root coordinates using the previously derived
 digital elevation model.
 
 >>> roots = []

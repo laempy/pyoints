@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
 # END OF LICENSE NOTE
-"""Some random funtions, which ease development.
+"""Some random functions, which ease development.
 """
 
 import time
@@ -117,7 +117,7 @@ def print_object_size(obj):
     Parameters
     ----------
     obj : object
-        Object to deterimate size from.
+        Object to determine size from.
 
     """
     print(sizeof_fmt(get_size(obj)))

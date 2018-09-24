@@ -208,7 +208,7 @@ class LinearInterpolator(Interpolator):
 
 
 class KnnInterpolator(Interpolator):
-    """Nearest neighbour interpolation.
+    """Nearest neighbor interpolation.
 
     Parameters
     ----------
@@ -217,7 +217,7 @@ class KnnInterpolator(Interpolator):
     values : array_like(Number, shape=(n)) or array_like(Number, shape=(n, m))
         One dimensional or `m` dimensional values to interpolate.
     k : optional, positive int
-        Number of neighbours used for interpolation.
+        Number of neighbors used for interpolation.
     max_dist : optional, positive Number
         Maximum distance of a neigbouring point to be used for interpolation.
 

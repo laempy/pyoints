@@ -265,7 +265,7 @@ def ball(indexKD, r, order=None, inverse=False, axis=-1, min_pts=1):
 
     Notes
     -----
-    Within a dense point cloud the filter guarantees the distance of
+    Within a dense point cloud, the filter guarantees the distance of
     neighboured points in a range of `]r, 2*r[`.
 
     """
@@ -446,7 +446,7 @@ def radial_dem_filter(coords, angle_res, center=None):
     is designed to create digital elevation models of terrestrial laser scans.
     Terrestrial laser scans are characterized by decreasing point densities
     with increasing distance to the scanner position. Thus, the radius to
-    identify neighbouring points is adjusted to the distance to the scanner.
+    identify neighbouring points is adjusted to the distance of the scanner.
 
     Parameters
     ----------

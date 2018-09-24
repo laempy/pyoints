@@ -51,7 +51,7 @@ We get the origin of the point cloud.
 [364187.98, 5509577.71, -1.58]
 
 
-Then we get the projection of the point cloud...
+Then, we get the projection of the point cloud...
 
 >>> print(lasReader.proj.proj4)
 +proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs
@@ -69,7 +69,7 @@ We get the spatial extent in 3D.
 [364187.98, 5509577.71, -1.58, 364194.95, 5509584.71, 28.78]
 
 
-Now we actually load the point cloud data from the disc. We receive an instance
+Now, we load the point cloud data from the disc. We receive an instance
 of `GeoRecords`, which is an extension of a numpy record array.
 
 >>> las = lasReader.load()
@@ -78,7 +78,7 @@ of `GeoRecords`, which is an extension of a numpy record array.
 (482981,)
 
 
-We get some information on the fields...
+We get some information on the attributes of the points...
 
 >>> print(sorted(las.dtype.descr))
 [('classification', '|u1'), ('coords', '<f8', (3,)), ('intensity', '<u2')]
@@ -99,7 +99,7 @@ We get some information on the fields...
 
 
 Now we take a closer look at the spatial index. We begin with selecting all
-points close to the corners of the point cloud.
+points close to the corners of the point cloud's extent.
 
 >>> radius = 1.0
 >>> corners = las.extent().corners
@@ -113,7 +113,7 @@ points close to the corners of the point cloud.
  [ 364195 5509578      29]
  [ 364188 5509578      29]]
 
-But before we select the points, we count the number of neighbors within the
+But before we select the points, we count  the number of neighbors within the
 radius.
 
 >>> count = las.indexKD().ball_count(radius, coords=corners)
@@ -197,7 +197,7 @@ to scale the input coordinates beforehand.
  [ 546282 4958620      14]]
 
 
-Finally we apply the query and save the subset.
+Finally, we apply the query and save the subset.
 
 >>> n_ids = indexKD.ball(s_corners, radius)
 >>> n_ids = np.concatenate(n_ids).astype(int)

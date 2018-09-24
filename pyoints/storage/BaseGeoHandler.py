@@ -35,7 +35,7 @@ class GeoFile:
         File to be read. It should contain data to be interpreted as points of
         `k` dimensions.
     directory : bool
-        Indicates if the file is a comosite of several files stored in a
+        Indicates if the file is a composite of several files stored in a
         directory.
 
     Properties

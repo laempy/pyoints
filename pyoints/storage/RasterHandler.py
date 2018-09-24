@@ -46,7 +46,7 @@ class RasterReader(GeoFile):
         Raster file to be read.
     proj : optional, Proj
         Spatial reference system. Usually just provided, if the spatial
-        reference has not be set yet.
+        reference has not been set yet.
     date : datetime.date
         Date of capture.
 
@@ -252,13 +252,12 @@ def write_gdal(
     
 
 def writeRaster(raster, outfile, field='bands', no_data=np.nan):
-    """Writes a a Grid to disc.
+    """Writes a Grid to file system.
 
     Parameters
     ----------
     raster : Grid(shape=(cols, rows))
-        A two dimensional Grid to be stored with of `cols` columns and `rows`
-        rows.
+        A two dimensional Grid of `cols` columns and `rows` rows to be stored.
     outfile : String
         File to save the raster to.
     field : optional, str

@@ -53,7 +53,7 @@ which provides a unified API for points, voxels and rasters. Each data
 structure maintains its characteristic features, to allow for an intuitive use, 
 but all data is also considered as a two or three dimensional point cloud, 
 providing spatial indices which are required in many applications to speed up 
-spatial neighbourhood queries.
+spatial neighborhood queries.
 
 During development great emphasis was put on designing a powerful but simple 
 API while also providing solutions for most common problems. ``Pyoints`` 

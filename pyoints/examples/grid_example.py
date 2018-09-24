@@ -42,14 +42,14 @@ First, we define input and output paths.
 ...                 os.path.dirname(os.path.abspath(__file__)), 'output')
 
 
-Then we select an input LAS point cloud.
+Then, we select an input LAS point cloud.
 
 >>> infile = os.path.join(inpath, 'forest.las')
 >>> lasReader = storage.LasReader(infile)
 >>> las = lasReader.load()
 
 
-Now let's convert the point cloud to a raster. All points within a raster cell
+Now, let's convert the point cloud to a raster. All points within a raster cell
 are grouped to an individual point cloud.
 
 >>> T = transformation.matrix(t=las.t.origin[:2], s=[1.0, 2.0])
@@ -68,7 +68,7 @@ object
 [('classification', '|u1'), ('coords', '<f8', (3,)), ('intensity', '<u2')]
 
 
-We can save the points of specific cells indiviudally.
+We can save the points of specific cells individually.
 
 >>> outfile = os.path.join(outpath, 'grid_cell.las')
 >>> storage.writeLas(raster[2, 1], outfile)
@@ -105,7 +105,7 @@ We save the fields as individual raster images.
 >>> storage.writeRaster(raster, outfile, field='z')
 
 
-Now let's create a three dimensional voxel space.
+Now, let's create a three dimensional voxel space.
 
 >>> T = transformation.matrix(t=las.t.origin, s=[0.4, 0.4, 0.5])
 >>> def aggregate_function(ids):
@@ -125,7 +125,7 @@ Now let's create a three dimensional voxel space.
 [('cell_count', '<i8'), ('coords', '<f8', (3,)), ('intensity', '<i8')]
 
 
-Finally we save only the non-empty voxel cells.
+Finally, we save only the non-empty voxel cells.
 
 >>> outfile = os.path.join(outpath, 'grid_voxels.las')
 >>> storage.writeLas(voxels[voxels.cell_count > 0], outfile)

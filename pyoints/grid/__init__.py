@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
 # END OF LICENSE NOTE
-"""Handling of grid objects, like image rasters or voxels."""
+"""Handling of grid objects like image rasters or voxels."""
 
 from .grid import *
 from .transformation import *

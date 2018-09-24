@@ -237,19 +237,19 @@ def direction(v, deg=False):
 
 
 def zenith(v, axis=-1, deg=False):
-    """Angle between a vector and a specific coordinate axes.
+    """Angle between a vector or vectors in relation to a specific coordinate axes.
 
     Parameters
     ----------
-    v : array_like(Number, shape=(k))
-        Vector of `k` dimensions.
+    v : array_like(Number, shape=(k)) or array_like(Number, shape=(n, k))
+        Vector or vectors of `k` dimensions.
     axis : optional, int
         Defines which axis to compare the vector with. If not provided, the
         last dimension is used.
 
     Returns
     -------
-    float
+    Number or np.ndarray(Number, shape=(n))
         Angle between the vector and the selected coordinate axis.
 
     Examples
@@ -281,7 +281,6 @@ def zenith(v, axis=-1, deg=False):
     if is_vector:
         v = [v]
 
-        
     v = assertion.ensure_coords(v, min_dim=2)
     if not abs(axis) < v.shape[1]:
         raise ValueError("'axis' neets to be an smaller %i" % v.shape[1])
@@ -302,12 +301,17 @@ def zenith(v, axis=-1, deg=False):
 
 
 def azimuth(v, deg=False):
-    """Calculate the azimuth of a vector of vectors.
+    """Calculates the azimuth angle of a vector or vectors.
     
     Parameters
     ----------
-    v : array_like(Number, shape=(k)), array_like(Number, shape=(n, k))
+    v : array_like(Number, shape=(k)) or array_like(Number, shape=(n, k))
         Vector or vectors of `k` dimensions.
+        
+    Returns
+    -------
+    Number or np.ndarray(Number, shape=(n))
+        Azimuth angle for each vector.
         
     Examples
     --------
@@ -341,7 +345,6 @@ def azimuth(v, deg=False):
         azimuth = rad_to_deg(azimuth)
     return azimuth
     
-
 
 def scalarproduct(v, w):
     """Calculates the scalar product or dot product of two vectors.
@@ -677,7 +680,7 @@ class Vector(object):
         return self._t
 
     def transform(self, T):
-        """Transforms the vector unsing a transformation matrix.
+        """Transforms the vector using a transformation matrix.
         
         Parameters
         ----------
@@ -847,7 +850,7 @@ class Vector(object):
             return v + self.origin
 
     def angles(self, deg=False):
-        """Calculates the angles of the vector to the coordinate axes.
+        """Calculates the angles of the vector in relation to the coordinate axes.
 
         Parameters
         ----------
@@ -915,7 +918,7 @@ class Plane(object):
     \*vec : np.ndarray(Number, shape=(k))
         The `k`-1 vectors of `vec` define the orientation of the plane. The 
         missing  axis (perpenticular to the vectors) are calculated 
-        automatically using principal component analysis. So, paralell
+        automatically using principal component analysis. So, parallel
         vectors in `vec` are valid, but might result in unexpected results.
         
     Attributes
@@ -925,7 +928,7 @@ class Plane(object):
     vec : np.ndarray(Number, shape=(k-1, k))
         Vectors defining the orientation of the plane.
     target : np.ndarray(Number, shape=(k-1, k))
-        Points the vectors are pointing at.
+        Points the vectors are targeting at.
     dim : positive int
         Number of coordinate dimensions of the vector.
     t : PCA(Number, shape=(k+1, k+1))
@@ -993,7 +996,7 @@ class Plane(object):
     >>> print(plane.distance(global_coords))
     [0. 0. 2. 5. 0.]
     
-    Creation of the spectial case of a line in a two dimensional space.
+    Creation of the special case of a line in a two dimensional space.
     
     >>> plane = Plane([1, 2], [3, 4])
     >>> print(plane)
@@ -1185,7 +1188,7 @@ class Plane(object):
     
 
     def __call__(self, k):
-        """Convert a relative position in plane vectors direction to a global
+        """Convert a relative position in plane vector's direction to a global
         coordinate.
 
         Parameters
@@ -1244,7 +1247,7 @@ class Plane(object):
         return coords
 
     def transform(self, T):
-        """Transforms the vector unsing a transformation matrix.
+        """Transforms the vector using a transformation matrix.
         
         Parameters
         ----------
@@ -1295,7 +1298,7 @@ class Plane(object):
     
     
 def vector_surface_intersection(vec, surface, eps=0.001, max_iter=20):
-    """Approximates the intersection point between of a `k` dimensional vector 
+    """Approximates the intersection point between a `k` dimensional vector 
     and a `k` dimensional surface iteratively.
 
     Parameters
@@ -1303,7 +1306,7 @@ def vector_surface_intersection(vec, surface, eps=0.001, max_iter=20):
     vec : Vector
         Vector to calculate the intersection point for.
     surface : callable
-        Surface model. The model needs to recieve coordinates as an
+        Surface model. The model needs to receive coordinates as an
         argument and needs to return the distance to the surface.
 
     Returns

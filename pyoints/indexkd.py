@@ -34,7 +34,7 @@ from . import (
 
 
 class IndexKD(object):
-    """Wrapper class for serveral spatial indices to speed up spatial queries
+    """Wrapper class for several spatial indices to speed up spatial queries
     and ease the usage.
 
     Parameters
@@ -327,7 +327,7 @@ class IndexKD(object):
         r : float or iterable of float
             Iterable radii to query.
         coords : optional, array_like(Number, shape=(n, k)) or iterable
-            Represents `n` points of `k` dimensions. If nonem, it is set to
+            Represents `n` points of `k` dimensions. If none, it is set to
             `self.coords`.
         \*\*kwargs : optional
             Additional parameters passed to

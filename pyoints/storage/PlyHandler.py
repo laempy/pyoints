@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
 # END OF LICENSE NOTE
-"""Hanlding of .ply-files.
+"""Handling of .ply-files.
 """
 
 import plyfile

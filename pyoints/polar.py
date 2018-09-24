@@ -40,13 +40,13 @@ def coords_to_polar(coords):
     -------
     pcoords : array_like(Number, shape=(n, k))
         Represents `n` data points of `k` dimensions in a polar coordinate
-        system. First column represents the distance to origin of the
+        system. First column represents the distance to the origin of the
         coordinate system. All other columns represent the corresponding
         axes angles.
 
     See Also
     --------
-    ploar_to_coords
+    polar_to_coords
 
     Examples
     --------
@@ -106,8 +106,8 @@ def polar_to_coords(pcoords):
     ----------
     pcoords : array_like(Number, shape=(n, k))
         Represents `n` data points of `k` dimensions in a polar coordinate
-        system. First column represents the distance to origin of the
-        coordinate system. All other columns represent the the corresponding
+        system. First column represents the distance to the origin of the
+        coordinate system. All other columns represent the corresponding
         axes angles.
 
     Returns

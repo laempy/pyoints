@@ -38,14 +38,14 @@ def prefer_orientation(normals, preferred):
     normals : array_like(Number, shape=(n, k))
         Normals of `n` points with `k` dimensions.
     preferred : array_like(Number, shape=(k)) or array_like(Number, shape=(n, k))
-        Preffered normal orientation for each normal in `normals`.
+        Preferred normal orientation for each normal in `normals`.
 
     Returns
     -------
     np.ndarray(Number, shape=(n, k))
         Oriented normals. If the angle between a normal in `normals` and the
         corresponding normal in `preferred` is greater than 90 degree, the
-        the it is flipped.
+        it is flipped.
 
     """
     normals = assertion.ensure_coords(normals)

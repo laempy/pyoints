@@ -22,7 +22,7 @@
 >>> import numpy as np
 >>> from pyoints import storage
 
-Create an output path relative to the source file.
+Create an output path.
 
 >>> outpath = os.path.join(
 ...             os.path.dirname(os.path.abspath(__file__)), '..', 'output')

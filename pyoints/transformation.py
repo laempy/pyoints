@@ -117,7 +117,7 @@ def transform(coords, T, inverse=False, precise=False):
 
 
 def homogenious(coords, value=1):
-    """Create homogenious coordinates by adding an additional dimension.
+    """Create homogeneous coordinates by adding an additional dimension.
 
     Parameters
     ----------
@@ -129,7 +129,7 @@ def homogenious(coords, value=1):
     Returns
     -------
     hcoords : np.ndarray(Number, shape=(n, k+1))
-        Homogenious coordinates.
+        Homogeneous coordinates.
 
     """
     coords = ensure_coords(coords)
@@ -157,7 +157,7 @@ def matrix(t=None, r=None, s=None, order='srt'):
         scale `s`.
     order : optional, string
         Order to compute the matrix multiplications. For example, an `order` of
-        `trs` means first translate `t`, then rotate `r`, and finally scale
+        `trs` means to first translate `t`, then rotate `r`, and finally scale
         `s`.
 
     Returns
@@ -333,7 +333,7 @@ def r_matrix(a, order='xyz'):
         coefficients are required.
     order : optional, String
         For at least three axes, `order` specifies the order of rotations. For
-        example, an order of `zxy` means first translate according to z axis,
+        example, an order of `zxy` means first to translate according to z axis,
         then rotate according to x-axis, and finally rotate according to
         y-axis.
 
@@ -438,7 +438,7 @@ def add_dim(T):
 
     Returns
     -------
-    np.array(float, shape=(k+2, k+2))
+    np.ndarray(float, shape=(k+2, k+2))
         Transformation matrix with an additional dimension.
 
     Examples
@@ -467,7 +467,7 @@ def add_dim(T):
 
 
 def decomposition(T, ignore_warnings=False):
-    """Determinates some characteristic parameters of a transformation matrix.
+    """Determines some characteristic parameters of a transformation matrix.
 
     Parameters
     ----------
@@ -480,7 +480,7 @@ def decomposition(T, ignore_warnings=False):
         Transformation coefficients for translation `t`, rotation `r` and
         scale `s`.
     det : float
-        Derterminant `det` indicates a distorsion of `T`.
+        Determinant `det` indicates a distorsion of `T`.
 
     Examples
     --------
@@ -941,7 +941,7 @@ class PCA(LocalSystem):
     Attributes
     ----------
     eigen_values : np.ndarray(Number, shape=(k))
-        Characteristic Eigen Values of the PCA.
+        Characteristic Eigenvalues of the PCA.
 
     Notes
     -----
@@ -977,7 +977,7 @@ class PCA(LocalSystem):
 
         T = LocalSystem(identity(dim + 1)).view(cls)
         T[:dim, :dim] = eigen_vectors.T
-        T = T @ t_matrix(-center)  # don not edit!
+        T = T @ t_matrix(-center)  # do not edit!
 
         T._eigen_values = eigen_values
 

@@ -21,7 +21,7 @@
 >>> import os
 >>> from pyoints import storage
 
-Create an output path relative to the source file.
+Create output path.
 
 >>> outpath = os.path.join(
 ...             os.path.dirname(os.path.abspath(__file__)), '..', 'output')

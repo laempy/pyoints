@@ -44,7 +44,7 @@ def mean_ball(
     update_pairs : optional, bool
         Specifies weather or not point pairs are updated on each iteration.
     f : callable
-        Aggregate function used for smoothing. It recieves the original point
+        Aggregate function used for smoothing. It receives the original point
         coordinate and the coordinates of neighboured points as an argument
         and returns a smoothed coordinate.
 
@@ -55,7 +55,7 @@ def mean_ball(
     Examples
     --------
 
-    Create a three dimensional irregular suface of points.
+    Create a three dimensional irregular surface of points.
 
     >>> coords = np.ones((100, 3), dtype=float)
     >>> coords[:, 0:2] = np.vstack(np.mgrid[0:10, 0:10].T)
@@ -66,14 +66,14 @@ def mean_ball(
     >>> print(np.ptp(coords, axis=0))
     [9.  9.  0.1]
 
-    Smooth coordinates to get a more regular surface. But, the first two
+    Smooth coordinates to get a more regular surface. But the first two
     coordinate dimensions are affected, too.
 
     >>> scoords = mean_ball(coords, 1.5)
     >>> print(np.round(np.ptp(scoords, axis=0), 3))
     [8.    8.    0.033]
 
-    Modyify the aggregation function to smooth the third coordinate axis only.
+    Modify the aggregation function to smooth the third coordinate axis only.
 
     >>> def aggregate_function(coord, ncoords):
     ...     coord[2] = ncoords[:, 2].mean(0)
@@ -133,7 +133,7 @@ def mean_knn(
     update_pairs : optional, bool
         Specifies weather or not point pairs are updated on each iteration.
     f : callable
-        Aggregate function used for smoothing. It recieves the original point
+        Aggregate function used for smoothing. It receives the original point
         coordinate and the coordinates of neighboured points as an argument
         and returns a smoothed coordinate.
 
@@ -144,7 +144,7 @@ def mean_knn(
     Examples
     --------
 
-    Create a three dimensional irregular suface of points.
+    Create a three dimensional irregular surface of points.
 
     >>> coords = np.ones((100, 3), dtype=float)
     >>> coords[:, 0:2] = np.vstack(np.mgrid[0:10, 0:10].T)
@@ -155,14 +155,14 @@ def mean_knn(
     >>> print(np.ptp(coords, axis=0))
     [9.  9.  0.1]
 
-    Smooth coordinates to get a more regular surface. But, the first two
+    Smooth coordinates to get a more regular surface. But the first two
     coordinate dimensions are affected, too.
 
     >>> scoords = mean_knn(coords, 5)
     >>> print(np.round(np.ptp(scoords, axis=0), 3))
     [8.2  8.2  0.02]
 
-    Modyify the aggregation function to smooth the third coordinate axis only.
+    Modify the aggregation function to smooth the third coordinate axis only.
 
     >>> def aggregate_function(coord, ncoords):
     ...     coord[2] = ncoords[:, 2].mean(0)

@@ -31,7 +31,7 @@ by a coordinate and none to many additional attributes. Three dimensional
 voxels are accordingly represented by three dimensional record arrays.
 
 Since all objects of a voxel or raster are also interpreted as a point cloud,
-spatial neighborhood queries, like nearest neighbours or distance search, can
+spatial neighborhood queries, like nearest neighbors or distance search, can
 be performed with unified functions. Thus, each extension of `GeoRecords`
 provides a spatial index `IndexKD` to conveniently perform efficient
 neighborhood queries. The class `IndexKD` is a wrapper of different spatial

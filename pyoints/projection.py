@@ -156,7 +156,7 @@ class GeoTransform:
     Parameters
     ----------
     from_proj,to_proj : `Proj`
-        Define the coordinate transformation form the origin projection system
+        Define the coordinate transformation from the origin projection system
         `from_proj` to the target projection system `to_proj`.
 
     Examples
@@ -205,7 +205,7 @@ class GeoTransform:
         coords : array_like(Number, shape=(n, k))
             Represents `n` points of `k` dimensions to transform.
         reverse : optional, bool
-            Indicate whether or not to apply the inverse transformation.
+            Indicates whether or not to apply the inverse transformation.
 
         Returns
         -------

@@ -38,9 +38,9 @@ def loadCsv(
     infile : String
         File to be read.
     sep : optional, Character
-        Character seperating the columns.
+        Character separating the columns.
     multicol_sep : optional, Character
-        Indicates how the column index of multi-column are seperated form the
+        Indicates how the column index of multi-column are separated form the
         column name.
     dtype : np.dtype
         Desired data type of the output numpy record array.
@@ -146,7 +146,7 @@ def loadCsv(
 
 
 def writeCsv(data, outfile, sep=",", multicol_sep=".", **kwargs):
-    """Write a array to a csv-file.
+    """Write an array to a csv-file.
 
     Parameters
     ----------
@@ -155,9 +155,9 @@ def writeCsv(data, outfile, sep=",", multicol_sep=".", **kwargs):
     outfile : string
         File to write the data to.
     sep : optional, Character
-        Desired field seperator.
+        Desired field separator.
     multicol_sep : optional, Character
-        Indicates how the column index of multi-column shall be seperated form
+        Indicates how the column index of multi-column shall be separated form
         the column name. For example, the column names 'normal.1', 'normal.2'
         indicate a two dimensional attribute 'normal'.
     \*\*kwargs : optional

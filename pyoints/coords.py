@@ -155,7 +155,7 @@ class Coords(np.ndarray, object):
         Parameters
         ----------
         dim : optional, positive int
-            Desired dimension of the spatial index. If None the all coordinate
+            Desired dimension of the spatial index. If None, the all coordinate
             dimensions are used.
 
         Returns

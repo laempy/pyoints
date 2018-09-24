@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
 # END OF LICENSE NOTE
-"""Functions for convienient handling of numpy arrays.
+"""Functions for convenient handling of numpy arrays.
 """
 
 import numpy as np
@@ -78,7 +78,7 @@ def isnumeric(arr, dtypes=NUMERIC_DTYPES):
     Returns
     -------
     bool
-        Indicates weather or not the array is numeric.
+        Indicates whether or not the array is numeric.
 
     Raises
     ------
@@ -118,7 +118,7 @@ def haskeys(d):
     Returns
     -------
     bool
-        Indicates weather or not the object has accessable keys.
+        Indicates whether or not the object has accessable keys.
 
     Examples
     --------
@@ -197,7 +197,7 @@ def dtype_subset(dtype, names):
     Returns
     -------
     list
-        Desired subest of numpy data type descriptions.
+        Desired subset of numpy data type descriptions.
 
     Examples
     --------
@@ -220,7 +220,7 @@ def dtype_subset(dtype, names):
 
 def recarray(data_dict, dtype=[], dim=1):
     """Converts a dictionary of array like objects to a numpy record array.
-    This function is mostly used for convienience.
+    This function is mostly used for convenience.
 
     Parameters
     ----------
@@ -228,11 +228,11 @@ def recarray(data_dict, dtype=[], dim=1):
         Dictionary of array like objects to convert to a numpy record array.
         Each key in `data_dict` represents a field name of the output record
         array. Each item in `data_dict` represents the corresponding values.
-        Thus at least `shape[0:dim]` of all input arrays in `data_dict` have
+        Thus, at least `shape[0:dim]` of all input arrays in `data_dict` have
         to match.
     dtype : optional, numpy.dtype
-        Describes the desired data types of specific fields. If the data dype
-        of a field is not given, the data type is estimated from by numpy.
+        Describes the desired data types of specific fields. If the data type
+        of a field is not given, the data type is estimated by numpy.
     dim : positive int
         Desired dimension of the resulting numpy record array.
 
@@ -579,7 +579,7 @@ def merge(arrays, strategy=np.concatenate):
 
 
 def flatten_dtypes(np_dtypes):
-    """Exract name, datatype and shape information from a numpy data type.
+    """Extract name, datatype and shape information from a numpy data type.
 
     Parameters
     ----------
@@ -762,7 +762,7 @@ def apply_function(arr, func, dtype=None):
     [[2 2 2]
      [2 2 2]]
 
-    Aggregate a one dimensional numpy reccord array.
+    Aggregate a one dimensional numpy record array.
 
     >>> data = { 'a': [0, 1, 2, 3], 'b': [1, 2, 3, 4] }
     >>> arr = recarray(data)
@@ -828,7 +828,7 @@ def indices(shape, flatten=False):
     Returns
     -------
     np.ndarray(int, shape=(\*shape, len(shape)))
-        Array of indices with desired `shape`. Each entry provides a index
+        Array of indices with desired `shape`. Each entry provides an index
         tuple to access the array entries.
 
     Examples
@@ -1017,7 +1017,7 @@ def max_value_range(dtype):
 
 
 def minimum_numeric_dtype(arr):
-    """Determinates the minimum required data type of a numpy without loosing
+    """Determines the minimum required data type of a numpy without loosing
     accuracy.
     
     Parameters

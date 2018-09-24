@@ -124,7 +124,7 @@ class Extent(np.recarray, object):
         return (self.max_corner + self.min_corner) * 0.5
 
     def split(self):
-        """Splits the extent into the minium and maximum corners.
+        """Splits the extent into the minimum and maximum corners.
 
         Returns
         -------

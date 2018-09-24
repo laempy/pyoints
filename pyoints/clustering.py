@@ -45,9 +45,9 @@ def clustering(indexKD,
     indexKD : IndexKD
         Spatial index with `n` points.
     r : positive float
-        Radius to identify the cluster affiliation of neighboured points.
+        Radius to identify the cluster affiliation of neighbored points.
     get_class : callable
-        Function to define the cluster id (affiliation) of a point. It recieves
+        Function to define the cluster id (affiliation) of a point. It receives
         a list of cluster ids of neigboured points to define the cluster id of
         selected point. It returns -1 if the point is not associated with any
         cluster.
@@ -59,7 +59,7 @@ def clustering(indexKD,
         List of `n` integers. Each element represents the preliminary cluster
         id of a point in `indexKD`. A cluster id of `-1` represents no class.
     auto_set : optional, bool
-        Defines weather or not a cluster id is set automatically if -1
+        Defines whether or not a cluster id is set automatically if -1
         (no class) was returned by `get_class`. If True, a new cluster id is
         set to `max(clusters) + 1`.
 
@@ -98,7 +98,7 @@ def clustering(indexKD,
     nextId = out_clusters.max() + 1
     coords = indexKD.coords
 
-    # calculate spatial neighbourhood
+    # calculate spatial neighborhood
     nIdsIter = indexKD.ball_iter(coords[order, :], r)
 
     for pId, nIds in zip(order, nIdsIter):
@@ -120,7 +120,7 @@ def majority_clusters(indexKD, r, **kwargs):
     indexKD : IndexKD
         Spatial index with `n` points.
     r : positive float
-        Radius to identify the cluster affiliation of neighboured points.
+        Radius to identify the cluster affiliation of neighbored points.
     \*\*kwargs : optional
         Optional arguments of the `clustering` function.
 
@@ -148,7 +148,7 @@ def weight_clusters(indexKD, r, weights=None, **kwargs):
     indexKD : IndexKD
         Spatial index with `n` points.
     r : positive float
-        Radius to identify the cluster affiliation of neighboured points.
+        Radius to identify the cluster affiliation of neighbored points.
     weights : optional, array_like(Number, shape=(len(indexKD)))
         Weighting of each point. The class with highest weight wins. If None,
         all weights are set to 1, which results in similar results than
@@ -215,7 +215,7 @@ def dbscan(
         quantile=0.8,
         factor=3):
     """Variant of the DBSCAN algorithm [1] with automatic estimation of the
-    `epsilon` parameter using point density. Usefull for automatic outlier
+    `epsilon` parameter using point density. Useful for automatic outlier
     identification.
 
     Parameters

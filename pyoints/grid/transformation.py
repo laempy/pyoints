@@ -93,8 +93,8 @@ def coords_to_keys(T, coords):
     ----------
     T : array_like(Number, shape=(k+1,k+1))
         A linear transformation matrix to transform the coordinates.
-        The translation represents the origin, the rotation the
-        orientation and the scale the pixel size of a raster.
+        The translation represents the origin, the rotation represents the
+        orientation and the scale represents the pixel size of a raster.
     coords : array_like(Number, shape=(n, k))
         Coordinates with at least `k` dimensions to convert to indices.
 

@@ -60,7 +60,7 @@ def fit_sphere(coords, weights=1.0):
     --------
 
     Draw points on a half circle with radius 5 and center (2, 4) and try to
-    dertermine the circle parameters.
+    determine the circle parameters.
 
     >>> x = np.arange(-1, 1, 0.1)
     >>> y = np.sqrt(5**2 - x**2)
