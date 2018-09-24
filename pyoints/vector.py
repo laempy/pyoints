@@ -280,12 +280,18 @@ def zenith(v, axis=-1, deg=False):
     
     if is_vector:
         v = [v]
+
         
     v = assertion.ensure_coords(v, min_dim=2)
     if not abs(axis) < v.shape[1]:
         raise ValueError("'axis' neets to be an smaller %i" % v.shape[1])
         
-    zenith = np.arccos(v[:, axis] / distance.norm(v))
+    length = distance.norm(v)
+    mask = length > 0
+
+    zenith = np.empty(len(length), dtype=np.float)
+    zenith[~mask] = np.nan
+    zenith[mask] = np.arccos(v[mask, axis] / length[mask])
     
     if is_vector:
         zenith = zenith[0]

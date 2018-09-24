@@ -62,6 +62,7 @@ Load image again and check characteristics.
 >>> print(rasterHandler.t.origin)
 [ 332575. 5513229.]
 
+
 >>> raster = rasterHandler.load()
 
 >>> print(raster.t.origin)

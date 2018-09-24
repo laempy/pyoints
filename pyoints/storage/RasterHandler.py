@@ -276,7 +276,7 @@ def writeRaster(raster, outfile, field='bands', no_data=np.nan):
 
     """
     if not isinstance(raster, grid.Grid):
-        m = "'geoRecords' needs to be of type 'Grid', got %s" % type(raster)
+        m = "'raster' needs to be of type 'Grid', got %s" % type(raster)
         raise TypeError(m)
     if not raster.dim == 2:
         raise ValueError("'geoRecords' needs to be two dimensional")
@@ -284,7 +284,7 @@ def writeRaster(raster, outfile, field='bands', no_data=np.nan):
     if not isinstance(field, str):
         raise TypeError("'field' needs to be a string")
     if not hasattr(raster, field):
-        raise ValueError("'geoRecords' needs to have a field '%s'" % field)
+        raise ValueError("'raster' needs to have a field '%s'" % field)
     image = raster[field]
     
     write_gdal(image, outfile, T=raster.t, proj=raster.proj, no_data=no_data)

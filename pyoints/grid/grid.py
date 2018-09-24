@@ -291,7 +291,7 @@ class Grid(GeoRecords):
 
         """
         T = assertion.ensure_tmatrix(T, dim=self.dim)
-        self.t = T * self.t
+        self.t = T @ self.t
         self.coords[:] = self.keys_to_coords(self.keys)
         return self
 

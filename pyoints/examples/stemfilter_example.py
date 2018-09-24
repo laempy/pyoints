@@ -183,7 +183,8 @@ digital elevation model.
 
 >>> roots = []
 >>> for tree_id in stems:
-...     coord = stems[tree_id].surface_intersection(dem)
+...     stem = stems[tree_id]
+...     coord = vector.vector_surface_intersection(stem, dem)
 ...     roots.append((tree_id, coord))
 
 >>> dtype = [('tree_id', int), ('coords', float, 3)]
