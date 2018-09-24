@@ -54,14 +54,14 @@ class Matcher:
         Parameters
         ----------
         B : array_like(Number, shape=(n, k))
-            Represents `n` points of `k` dimensions. These points are assiged
+            Represents `n` points of `k` dimensions. These points are assigned
             to the previously defined reference coordinates.
 
         Returns
         -------
         pairs : np.ndarray(int, shape=(m, 2))
-            Indices of assiged points. For two point sets `A`, `B` and each
-            row `(a, b)` in `pairs` `A[a, :]` is assiged to `B[b, :]`
+            Indices of assigned points. For two point sets `A`, `B` and each
+            row `(a, b)` in `pairs` `A[a, :]` is assigned to `B[b, :]`
 
         """
         raise NotImplementedError()
@@ -70,7 +70,7 @@ class Matcher:
 class PairMatcher(Matcher):
     """Find unique pairs of points. A point `a` of point set `A` is assigned
     to its closest point `b` of point set `B` if `a` is also the nearest
-    neighbour to `b`. So, duplicate assignment is not possible.
+    neighbour to `b`. Thus, duplicate assignment is not possible.
 
     See Also
     --------
@@ -125,7 +125,7 @@ class PairMatcher(Matcher):
 
 class SphereMatcher(Matcher):
     """Find pairs of points. Each point is assigned to all the points
-    within a previously defined shpere. Duplicate assignments are possible.
+    within a previously defined sphere. Duplicate assignments are possible.
 
     See Also
     --------

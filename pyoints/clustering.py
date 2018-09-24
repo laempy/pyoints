@@ -112,8 +112,8 @@ def clustering(indexKD,
     return out_clusters
 
 
-def mayority_clusters(indexKD, r, **kwargs):
-    """Clustering by mayority voting.
+def majority_clusters(indexKD, r, **kwargs):
+    """Clustering by majority voting.
 
     Parameters
     ----------
@@ -132,12 +132,12 @@ def mayority_clusters(indexKD, r, **kwargs):
     --------
 
     >>> coords = [(0, 0), (1, 1), (2, 1), (3, 3), (0, 1), (2, 3), (3, 4)]
-    >>> clusters = mayority_clusters(IndexKD(coords), 2)
+    >>> clusters = majority_clusters(IndexKD(coords), 2)
     >>> print(clusters)
     [ 1  1 -1  0  1  0  0]
 
     """
-    return clustering(indexKD, r, classification.mayority, **kwargs)
+    return clustering(indexKD, r, classification.majority, **kwargs)
 
 
 def weight_clusters(indexKD, r, weights=None, **kwargs):
@@ -152,7 +152,7 @@ def weight_clusters(indexKD, r, weights=None, **kwargs):
     weights : optional, array_like(Number, shape=(len(indexKD)))
         Weighting of each point. The class with highest weight wins. If None,
         all weights are set to 1, which results in similar results than
-        `mayority_clusters`.
+        `majority_clusters`.
     \*\*kwargs : optional
         Optional arguments passed to `clustering`.
 
@@ -183,7 +183,7 @@ def weight_clusters(indexKD, r, weights=None, **kwargs):
 
     See Also
     --------
-    clustering, mayority_clusters
+    clustering, majority_clusters
 
     """
     if weights is None:

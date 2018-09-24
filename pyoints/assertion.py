@@ -33,7 +33,7 @@ def ensure_dim(value, dim=None, min_dim=2, max_dim=np.inf):
     value : int
         Value representing a dimension.
     dim, min_dim, max_dim : optional, positive int
-        Minimum and maximum allowed dimensions. If `dim` is provided the
+        Minimum and maximum allowed dimensions. If `dim` is provided, the
         `check_dim` has to be exactly `dim`. If not, the `check_dim` must be in
         range `[min_dim, max_dim]`.
 
@@ -105,7 +105,7 @@ def ensure_length(value, length=None, min_length=0, max_length=np.inf):
     value : int
         Length value to check.
     length,min_length,max_length : optional, positive int
-        Minimum and maximum allowed length. If `length` is provided
+        Minimum and maximum allowed length. If `length` is provided,
         `check_length` has to be exactly `length`. If not, the `check_length`
         must be in range `[min_length, max_length]`.
 
@@ -263,7 +263,7 @@ def ensure_indices(v, min_value=0, max_value=np.inf):
     Parameters
     ----------
     v : array_like(int, shape=(n))
-        Arrray of indices to check.
+        Array of indices to check.
     min_value, max_value : optional, int
         Minimum and maximum allowed value of `v`.
 
@@ -359,7 +359,7 @@ def ensure_polar(pcoords, by_col=False, dim=None, min_dim=2, max_dim=np.inf):
         Represents `n` data points of `k` dimensions in a polar coordinate
         system.
     by_col : optional, bool
-        Defines weather or not the coordinates are provided column by column
+        Defines whether or not the coordinates are provided column by column
         instead of row by row.
     dim,min_dim,max_dim : optional, positive int
         See `ensure_dim`.

@@ -8,13 +8,13 @@ the development of advanced algorithms for geo-data processing.
 
 ## General concept
 
-The key idea of ``Pyoints`` is to provide unified data structure to handle
-points, voxels and rasters in the same manner. It is always assumed that the
+The key idea of ``Pyoints`` is to provide unified data structures to handle
+points, voxels and rasters in the same manner. It is assumed that the
 data can be interpreted as a two or three dimensional point cloud. Thus we have
-a collection of geo-objects (here called `GeoRecords`), which are characterized
+a collection of geo-objects, here called `GeoRecords`, which are characterized
 by two or three dimensional coordinates *coords*, a spatial reference *proj*
 and a transformation matrix *t*. The spatial reference and transformation
-matrix are required to define the location of the geo-objects on globe. Next to
+matrix are required to define the global location of the geo-objects. Next to
 the origin, the transformation matrix also stores the scale and rotation of the
 local coordinate system.
 
@@ -24,15 +24,15 @@ ease the processing and analysis, each point, voxel or raster cell are stored
 in the commonly used numpy record array according to its natural structure. For
 example, a three dimensional point cloud represents a set of points, each
 characterized by a coordinate and none to many additional attributes. So the
-points are stored in a one dimensional record array. On the other hand raster
+points are stored in a one dimensional record array. Conversely raster
 images are stored in a two dimensional record array, which allows for the
-commonly used index access of raster cells. Still each cell is characterized
+commonly used index access of raster cells. Still, each cell is characterized
 by a coordinate and none to many additional attributes. Three dimensional
 voxels are accordingly represented by three dimensional record arrays.
 
 Since all objects of a voxel or raster are also interpreted as a point cloud,
 spatial neighborhood queries, like nearest neighbours or distance search, can
-be performed with unified functions. So, each extension of `GeoRecords`
+be performed with unified functions. Thus, each extension of `GeoRecords`
 provides a spatial index `IndexKD` to conveniently perform efficient
 neighborhood queries. The class `IndexKD` is a wrapper of different spatial
 indices, to handle *k*-dimensional spatial queries of different kinds. The
@@ -45,7 +45,7 @@ perform two dimensional spatial queries.
 
 If you just want to handle coordinates without additional attributes, the class
 `Coords` might interest you. This class also provides the `IndexKD` feature,
-but waives the use of a projection and transformation matrix.
+but waives to use of a projection and transformation matrix.
 
 
 ## When is Pyoints suitable for me?
@@ -54,8 +54,8 @@ Based on the general concept of ``Pyoints`` presented above, a bunch of
 algorithms, functions and filters have been implemented, to process geo-data
 with low programming efforts.
 
-Of course, you might think: "Why should I use Python for point cloud
-processing? Other languages are much more efficient." This is obviously true,
+Of course, one might wonder whether Python is adequate to analyze point cloud data
+since other languages languages are much more efficient. This is obviously true,
 but in the experience of the author, Python is very useful to implement and
 test new algorithms very quickly. Algorithms for point cloud analysis and
 processing often rely on spatial neighborhood queries. Since ``Pyoints``
@@ -108,7 +108,7 @@ apt install liblas-c3
 
 ## Install Pyoints (Ubuntu)
 
-Unfortunately the gdal version is not detected automatically by ``pgdal``.
+Unfortunately, the gdal version is not detected automatically by ``pgdal``.
 Thus, installation with ``setup.py`` might fail.
 
 ### Installation with installation script (currently recommended)
@@ -216,7 +216,7 @@ and raster processing.", URL TODO, [Online; accessed date].
 
 # Contact
 
-In case of questions, suggestions for improvement or software issues please
+In case of questions, suggestions for improvement or software issues, please
 use the issue board or contact Sebastian Lamprecht, lamprecht@uni-trier.de.
 Contribution to the software is always welcome.
 

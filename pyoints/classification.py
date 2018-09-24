@@ -237,7 +237,7 @@ def rename_dict(d, ids=None):
     return dict(zip(ids, d.values()))
 
 
-def mayority(classes, empty_value=-1):
+def majority(classes, empty_value=-1):
     """Finds most frequent class or value in an array.
 
     Parameters
@@ -262,17 +262,17 @@ def mayority(classes, empty_value=-1):
     Find majority class.
 
     >>> classes =['cat', 'dog', 'dog', 'bird', 'cat', 'dog']
-    >>> print(mayority(classes))
+    >>> print(majority(classes))
     dog
 
     >>> classes =[1, 8, 9, 0, 0, 2, 4, 2, 4, 3, 2, 3, 5, 6]
-    >>> print(mayority(classes))
+    >>> print(majority(classes))
     2
 
     No decision possible.
 
     >>> classes =[1, 2, 3, 4, 4, 3]
-    >>> print(mayority(classes))
+    >>> print(majority(classes))
     -1
 
     """
