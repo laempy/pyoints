@@ -34,20 +34,21 @@
   <h1>Source code for pyoints.assertion</h1><div class="highlight"><pre>
 <span></span><span class="c1"># BEGIN OF LICENSE NOTE</span>
 <span class="c1"># This file is part of Pyoints.</span>
-<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University, </span>
+<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University,</span>
 <span class="c1"># lamprecht@uni-trier.de</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is free software: you can redistribute it and/or modify</span>
 <span class="c1"># it under the terms of the GNU General Public License as published by</span>
 <span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
 <span class="c1"># (at your option) any later version.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is distributed in the hope that it will be useful,</span>
 <span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
 <span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
 <span class="c1"># GNU General Public License for more details.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with Pyoints. If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
 <span class="c1"># END OF LICENSE NOTE</span>
 <span class="sd">&quot;&quot;&quot;Functions to ensure the properties of frequently used data structures.</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -66,7 +67,7 @@
 <span class="sd">    value : int</span>
 <span class="sd">        Value representing a dimension.</span>
 <span class="sd">    dim, min_dim, max_dim : optional, positive int</span>
-<span class="sd">        Minimum and maximum allowed dimensions. If `dim` is provided the</span>
+<span class="sd">        Minimum and maximum allowed dimensions. If `dim` is provided, the</span>
 <span class="sd">        `check_dim` has to be exactly `dim`. If not, the `check_dim` must be in</span>
 <span class="sd">        range `[min_dim, max_dim]`.</span>
 
@@ -138,7 +139,7 @@
 <span class="sd">    value : int</span>
 <span class="sd">        Length value to check.</span>
 <span class="sd">    length,min_length,max_length : optional, positive int</span>
-<span class="sd">        Minimum and maximum allowed length. If `length` is provided</span>
+<span class="sd">        Minimum and maximum allowed length. If `length` is provided,</span>
 <span class="sd">        `check_length` has to be exactly `length`. If not, the `check_length`</span>
 <span class="sd">        must be in range `[min_length, max_length]`.</span>
 
@@ -206,7 +207,7 @@
             <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;__len__&#39;</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="ensure_numarray"><a class="viewcode-back" href="../../pyoints.html#pyoints.assertion.ensure_numarray">[docs]</a><span class="k">def</span> <span class="nf">ensure_numarray</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+<div class="viewcode-block" id="ensure_numarray"><a class="viewcode-back" href="../../pyoints.html#pyoints.assertion.ensure_numarray">[docs]</a><span class="k">def</span> <span class="nf">ensure_numarray</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Ensures the properties of an numeric numpy ndarray.</span>
 
 <span class="sd">    Parameters</span>
@@ -234,9 +235,14 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">nptools</span><span class="o">.</span><span class="n">isarray</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;arr&#39; needs to an array like object&quot;</span><span class="p">)</span>
-    <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">nptools</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;array &#39;arr&#39; needs to be numeric&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">shape</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="s2">&quot;expected shape </span><span class="si">%s</span><span class="s2">, got </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">arr</span></div>
 
 
@@ -291,7 +297,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    v : array_like(int, shape=(n))</span>
-<span class="sd">        Arrray of indices to check.</span>
+<span class="sd">        Array of indices to check.</span>
 <span class="sd">    min_value, max_value : optional, int</span>
 <span class="sd">        Minimum and maximum allowed value of `v`.</span>
 
@@ -387,7 +393,7 @@
 <span class="sd">        Represents `n` data points of `k` dimensions in a polar coordinate</span>
 <span class="sd">        system.</span>
 <span class="sd">    by_col : optional, bool</span>
-<span class="sd">        Defines weather or not the coordinates are provided column by column</span>
+<span class="sd">        Defines whether or not the coordinates are provided column by column</span>
 <span class="sd">        instead of row by row.</span>
 <span class="sd">    dim,min_dim,max_dim : optional, positive int</span>
 <span class="sd">        See `ensure_dim`.</span>
@@ -444,8 +450,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">nptools</span><span class="o">.</span><span class="n">isarray</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;transformation matrix is not an array&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">):</span>
-        <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">nptools</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;T&#39; needs to be numeric&quot;</span><span class="p">)</span>

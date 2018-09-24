@@ -49,7 +49,7 @@ class Proj:
     wkt : str
         Projection in Well Known Text format.
     pyproj : `pyproj.Proj`
-        Projection as `pyproj.Proj` object.
+        Projection as `pyproj.Proj` instance.
 
     Examples
     --------

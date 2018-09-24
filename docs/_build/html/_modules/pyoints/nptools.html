@@ -34,25 +34,42 @@
   <h1>Source code for pyoints.nptools</h1><div class="highlight"><pre>
 <span></span><span class="c1"># BEGIN OF LICENSE NOTE</span>
 <span class="c1"># This file is part of Pyoints.</span>
-<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University, </span>
+<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University,</span>
 <span class="c1"># lamprecht@uni-trier.de</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is free software: you can redistribute it and/or modify</span>
 <span class="c1"># it under the terms of the GNU General Public License as published by</span>
 <span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
 <span class="c1"># (at your option) any later version.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is distributed in the hope that it will be useful,</span>
 <span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
 <span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
 <span class="c1"># GNU General Public License for more details.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with Pyoints. If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
 <span class="c1"># END OF LICENSE NOTE</span>
-<span class="sd">&quot;&quot;&quot;Functions for convienient handling of numpy arrays.</span>
+<span class="sd">&quot;&quot;&quot;Functions for convenient handling of numpy arrays.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="k">import</span> <span class="n">Number</span>
+
+
+<span class="n">NUMERIC_DTYPES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">,</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">,</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+<span class="p">]</span>
 
 
 <div class="viewcode-block" id="isarray"><a class="viewcode-back" href="../../pyoints.html#pyoints.nptools.isarray">[docs]</a><span class="k">def</span> <span class="nf">isarray</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
@@ -82,7 +99,7 @@
             <span class="nb">hasattr</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="isnumeric"><a class="viewcode-back" href="../../pyoints.html#pyoints.nptools.isnumeric">[docs]</a><span class="k">def</span> <span class="nf">isnumeric</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">dtypes</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]):</span>
+<div class="viewcode-block" id="isnumeric"><a class="viewcode-back" href="../../pyoints.html#pyoints.nptools.isnumeric">[docs]</a><span class="k">def</span> <span class="nf">isnumeric</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">dtypes</span><span class="o">=</span><span class="n">NUMERIC_DTYPES</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Checks if the data type of an array is numeric.</span>
 
 <span class="sd">    Parameters</span>
@@ -95,7 +112,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    bool</span>
-<span class="sd">        Indicates weather or not the array is numeric.</span>
+<span class="sd">        Indicates whether or not the array is numeric.</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
@@ -135,7 +152,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    bool</span>
-<span class="sd">        Indicates weather or not the object has accessable keys.</span>
+<span class="sd">        Indicates whether or not the object has accessable keys.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -214,7 +231,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    list</span>
-<span class="sd">        Desired subest of numpy data type descriptions.</span>
+<span class="sd">        Desired subset of numpy data type descriptions.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -237,7 +254,7 @@
 
 <div class="viewcode-block" id="recarray"><a class="viewcode-back" href="../../pyoints.html#pyoints.nptools.recarray">[docs]</a><span class="k">def</span> <span class="nf">recarray</span><span class="p">(</span><span class="n">data_dict</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="p">[],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Converts a dictionary of array like objects to a numpy record array.</span>
-<span class="sd">    This function is mostly used for convienience.</span>
+<span class="sd">    This function is mostly used for convenience.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -245,11 +262,11 @@
 <span class="sd">        Dictionary of array like objects to convert to a numpy record array.</span>
 <span class="sd">        Each key in `data_dict` represents a field name of the output record</span>
 <span class="sd">        array. Each item in `data_dict` represents the corresponding values.</span>
-<span class="sd">        Thus at least `shape[0:dim]` of all input arrays in `data_dict` have</span>
+<span class="sd">        Thus, at least `shape[0:dim]` of all input arrays in `data_dict` have</span>
 <span class="sd">        to match.</span>
 <span class="sd">    dtype : optional, numpy.dtype</span>
-<span class="sd">        Describes the desired data types of specific fields. If the data dype</span>
-<span class="sd">        of a field is not given, the data type is estimated from by numpy.</span>
+<span class="sd">        Describes the desired data types of specific fields. If the data type</span>
+<span class="sd">        of a field is not given, the data type is estimated by numpy.</span>
 <span class="sd">    dim : positive int</span>
 <span class="sd">        Desired dimension of the resulting numpy record array.</span>
 
@@ -450,6 +467,9 @@
 <span class="sd">    ...     }, dim = 2)</span>
 
 <span class="sd">    &gt;&gt;&gt; D = fuse(A, B, C)</span>
+
+<span class="sd">    &gt;&gt;&gt; print(sorted(D.dtype.names))</span>
+<span class="sd">    [&#39;a&#39;, &#39;b&#39;, &#39;c1&#39;, &#39;c2&#39;]</span>
 <span class="sd">    &gt;&gt;&gt; print(D.shape)</span>
 <span class="sd">    (2, 2)</span>
 <span class="sd">    &gt;&gt;&gt; print(D.a)</span>
@@ -458,11 +478,9 @@
 <span class="sd">    &gt;&gt;&gt; print(D.c1)</span>
 <span class="sd">    [[&#39;c1&#39; &#39;c2&#39;]</span>
 <span class="sd">     [&#39;c3&#39; &#39;c4&#39;]]</span>
-<span class="sd">    &gt;&gt;&gt; print(sorted(D.dtype.descr))</span>
-<span class="sd">    [(&#39;a&#39;, &#39;&lt;i8&#39;), (&#39;b&#39;, &#39;&lt;i8&#39;), (&#39;c1&#39;, &#39;&lt;U2&#39;), (&#39;c2&#39;, &#39;&lt;f8&#39;)]</span>
-<span class="sd">    &gt;&gt;&gt; print(D.c1)</span>
-<span class="sd">    [[&#39;c1&#39; &#39;c2&#39;]</span>
-<span class="sd">     [&#39;c3&#39; &#39;c4&#39;]]</span>
+<span class="sd">    &gt;&gt;&gt; print(D.c2)</span>
+<span class="sd">    [[0.1 0.2]</span>
+<span class="sd">     [0.3 0.3]]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">shape</span> <span class="o">=</span> <span class="kc">None</span>
@@ -595,7 +613,7 @@
 
 
 <div class="viewcode-block" id="flatten_dtypes"><a class="viewcode-back" href="../../pyoints.html#pyoints.nptools.flatten_dtypes">[docs]</a><span class="k">def</span> <span class="nf">flatten_dtypes</span><span class="p">(</span><span class="n">np_dtypes</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Exract name, datatype and shape information from a numpy data type.</span>
+    <span class="sd">&quot;&quot;&quot;Extract name, datatype and shape information from a numpy data type.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -778,7 +796,7 @@
 <span class="sd">    [[2 2 2]</span>
 <span class="sd">     [2 2 2]]</span>
 
-<span class="sd">    Aggregate a one dimensional numpy reccord array.</span>
+<span class="sd">    Aggregate a one dimensional numpy record array.</span>
 
 <span class="sd">    &gt;&gt;&gt; data = { &#39;a&#39;: [0, 1, 2, 3], &#39;b&#39;: [1, 2, 3, 4] }</span>
 <span class="sd">    &gt;&gt;&gt; arr = recarray(data)</span>
@@ -801,14 +819,14 @@
 <span class="sd">    &gt;&gt;&gt; print(apply_function(arr, func, dtype=[(&#39;c&#39;, float), (&#39;d&#39;, int)]))</span>
 <span class="sd">    [[(1.,  0) (3.,  1)]</span>
 <span class="sd">     [(5.,  8) (7., 81)]]</span>
-<span class="sd">    </span>
+
 <span class="sd">    Specify a multi-dimensional output data type.</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; func = lambda record: (record.a + 2, [record.a ** 2, record.b * 3])</span>
 <span class="sd">    &gt;&gt;&gt; print(apply_function(arr, func, dtype=[(&#39;c&#39;, float), (&#39;d&#39;, int, 2)]))</span>
 <span class="sd">    [[(2., [ 0,  3]) (3., [ 1,  6])]</span>
 <span class="sd">     [(4., [ 4,  9]) (5., [ 9, 12])]]</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; func = lambda record: ([record.a ** 2, record.b * 3],)</span>
 <span class="sd">    &gt;&gt;&gt; print(apply_function(arr, func, dtype=[(&#39;d&#39;, int, 2)]))</span>
 <span class="sd">    [[([ 0,  3],) ([ 1,  6],)]</span>
@@ -829,9 +847,9 @@
         <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                <span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">recarray</span><span class="p">)</span>
+            <span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">recarray</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">res</span></div>
-       
+
 
 <div class="viewcode-block" id="indices"><a class="viewcode-back" href="../../pyoints.html#pyoints.nptools.indices">[docs]</a><span class="k">def</span> <span class="nf">indices</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">flatten</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Create keys or indices of a numpy ndarray.</span>
@@ -844,7 +862,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    np.ndarray(int, shape=(\*shape, len(shape)))</span>
-<span class="sd">        Array of indices with desired `shape`. Each entry provides a index</span>
+<span class="sd">        Array of indices with desired `shape`. Each entry provides an index</span>
 <span class="sd">        tuple to access the array entries.</span>
 
 <span class="sd">    Examples</span>
@@ -907,6 +925,206 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">keys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">keys</span></div>
+
+
+<div class="viewcode-block" id="range_filter"><a class="viewcode-back" href="../../pyoints.html#pyoints.nptools.range_filter">[docs]</a><span class="k">def</span> <span class="nf">range_filter</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">min_value</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Filter values by range.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    arr : array_like(Number)</span>
+<span class="sd">        Numeric array to filter.</span>
+<span class="sd">    min_value,max_value : Number</span>
+<span class="sd">        Minimum and maximum values to define the desired value range</span>
+<span class="sd">        `[min_value, max_value]` of `arr`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray(int)</span>
+<span class="sd">        Indices of all values of `arr` in the desired range.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    Filter a one dimensional array.</span>
+
+<span class="sd">    &gt;&gt;&gt; a = [0, 2, 1, -1, 5, 7, 9, 4, 3, 2, -2, -11]</span>
+
+<span class="sd">    &gt;&gt;&gt; indices = range_filter(a, min_value=0)</span>
+<span class="sd">    &gt;&gt;&gt; print(indices)</span>
+<span class="sd">    [0 1 2 4 5 6 7 8 9]</span>
+
+<span class="sd">    &gt;&gt;&gt; indices = range_filter(a, max_value=5)</span>
+<span class="sd">    &gt;&gt;&gt; print(indices)</span>
+<span class="sd">    [ 0  1  2  3  4  7  8  9 10 11]</span>
+
+<span class="sd">    &gt;&gt;&gt; idx = range_filter(a, min_value=0, max_value=5)</span>
+<span class="sd">    &gt;&gt;&gt; print(idx)</span>
+<span class="sd">    [0 1 2 4 7 8 9]</span>
+<span class="sd">    &gt;&gt;&gt; print(np.array(a)[idx])</span>
+<span class="sd">    [0 2 1 5 4 3 2]</span>
+
+<span class="sd">    Filter a multi-dimensional array.</span>
+
+<span class="sd">    &gt;&gt;&gt; a = [(1, 0), (-2, -1), (3, -5), (4, 2), (-7, 9), (0.5, 2)]</span>
+
+<span class="sd">    &gt;&gt;&gt; idx = range_filter(a, min_value=2)</span>
+<span class="sd">    &gt;&gt;&gt; print(idx)</span>
+<span class="sd">    ((2, 3, 3, 4, 5), (0, 0, 1, 1, 1))</span>
+<span class="sd">    &gt;&gt;&gt; print(np.array(a)[idx])</span>
+<span class="sd">    [3. 4. 2. 9. 2.]</span>
+
+<span class="sd">    &gt;&gt;&gt; idx = range_filter(a, min_value=2, max_value=5)</span>
+<span class="sd">    &gt;&gt;&gt; print(idx)</span>
+<span class="sd">    ((2, 3, 3, 5), (0, 0, 1, 1))</span>
+<span class="sd">    &gt;&gt;&gt; print(np.array(a)[idx])</span>
+<span class="sd">    [3. 4. 2. 2.]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">isnumeric</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;arr&#39; needs to be an numeric array&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">min_value</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;min_value&#39; needs to a number&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">max_value</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;max_value&#39; needs to a number&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">max_value</span> <span class="o">&gt;=</span> <span class="n">min_value</span><span class="p">:</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="s2">&quot;&#39;max_value&#39; needs to be greater or equal &#39;min_value&#39;&quot;</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+    <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">((</span><span class="n">arr</span> <span class="o">&gt;=</span> <span class="n">min_value</span><span class="p">,</span> <span class="n">arr</span> <span class="o">&lt;=</span> <span class="n">max_value</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask</span><span class="p">))))</span>
+
+    <span class="k">return</span> <span class="n">ids</span></div>
+
+
+<div class="viewcode-block" id="max_value_range"><a class="viewcode-back" href="../../pyoints.html#pyoints.nptools.max_value_range">[docs]</a><span class="k">def</span> <span class="nf">max_value_range</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the maximum value range of a numeric numpy data type.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dtype : np.dtype</span>
+<span class="sd">        Numeric data type to check</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    min_value,max_value : int</span>
+<span class="sd">        Minimum and maximum value</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; value_range = max_value_range(np.dtype(np.uint8))</span>
+<span class="sd">    &gt;&gt;&gt; print(value_range)</span>
+<span class="sd">    (0, 255)</span>
+
+<span class="sd">    &gt;&gt;&gt; value_range = max_value_range(np.dtype(np.uint16))</span>
+<span class="sd">    &gt;&gt;&gt; print(value_range)</span>
+<span class="sd">    (0, 65535)</span>
+
+<span class="sd">    &gt;&gt;&gt; value_range = max_value_range(np.dtype(np.int8))</span>
+<span class="sd">    &gt;&gt;&gt; print(value_range)</span>
+<span class="sd">    (-128, 127)</span>
+
+<span class="sd">    &gt;&gt;&gt; value_range = max_value_range(np.dtype(np.int16))</span>
+<span class="sd">    &gt;&gt;&gt; print(value_range)</span>
+<span class="sd">    (-32768, 32767)</span>
+
+<span class="sd">    &gt;&gt;&gt; value_range = max_value_range(np.dtype(np.float16))</span>
+<span class="sd">    &gt;&gt;&gt; print(value_range)</span>
+<span class="sd">    (-65500.0, 65500.0)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">):</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">):</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;unknown numeric data type &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">dtype</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">info</span><span class="o">.</span><span class="n">min</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">max</span></div>
+
+
+<div class="viewcode-block" id="minimum_numeric_dtype"><a class="viewcode-back" href="../../pyoints.html#pyoints.nptools.minimum_numeric_dtype">[docs]</a><span class="k">def</span> <span class="nf">minimum_numeric_dtype</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determines the minimum required data type of a numpy without loosing</span>
+<span class="sd">    accuracy.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    arr : np.ndarray(Number)</span>
+<span class="sd">        Numeric array to find minimum data type for.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.dtype</span>
+<span class="sd">        Minimum required data type.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    Find minimum data type for integer arrays.</span>
+
+<span class="sd">    &gt;&gt;&gt; arr = np.array([0, 255])</span>
+<span class="sd">    &gt;&gt;&gt; print(arr.dtype)</span>
+<span class="sd">    int64</span>
+<span class="sd">    &gt;&gt;&gt; print(minimum_numeric_dtype(arr))</span>
+<span class="sd">    uint8</span>
+
+<span class="sd">    &gt;&gt;&gt; arr = np.array([0, 256])</span>
+<span class="sd">    &gt;&gt;&gt; print(minimum_numeric_dtype(arr))</span>
+<span class="sd">    uint16</span>
+
+<span class="sd">    &gt;&gt;&gt; arr = np.array([-5, 127])</span>
+<span class="sd">    &gt;&gt;&gt; print(minimum_numeric_dtype(arr))</span>
+<span class="sd">    int8</span>
+
+<span class="sd">    &gt;&gt;&gt; arr = np.array([-5, 128])</span>
+<span class="sd">    &gt;&gt;&gt; print(minimum_numeric_dtype(arr))</span>
+<span class="sd">    int16</span>
+
+<span class="sd">    &gt;&gt;&gt; arr = np.array([-5, 214748364])</span>
+<span class="sd">    &gt;&gt;&gt; print(minimum_numeric_dtype(arr))</span>
+<span class="sd">    int32</span>
+
+<span class="sd">    Find minimum data type for floating point arrays.</span>
+
+<span class="sd">    &gt;&gt;&gt; arr = np.array([-5.2, 100.3])</span>
+<span class="sd">    &gt;&gt;&gt; print(arr.dtype)</span>
+<span class="sd">    float64</span>
+<span class="sd">    &gt;&gt;&gt; print(minimum_numeric_dtype(arr))</span>
+<span class="sd">    float16</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;arr&#39; needs to be an instance of &#39;np.ndarray&#39;&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;unknown numeric data type &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+    <span class="n">min_value</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+    <span class="n">max_value</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">min_value</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">kind</span> <span class="o">=</span> <span class="s1">&#39;i&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">kind</span> <span class="o">=</span> <span class="s1">&#39;u&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">kind</span> <span class="o">=</span> <span class="s1">&#39;f&#39;</span>
+
+    <span class="k">for</span> <span class="n">new_dtype</span> <span class="ow">in</span> <span class="n">NUMERIC_DTYPES</span><span class="p">:</span>
+        <span class="n">new_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">new_dtype</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="n">new_dtype</span><span class="o">.</span><span class="n">kind</span><span class="p">:</span>
+            <span class="n">value_range</span> <span class="o">=</span> <span class="n">max_value_range</span><span class="p">(</span><span class="n">new_dtype</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">min_value</span> <span class="o">&gt;=</span> <span class="n">value_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">max_value</span> <span class="o">&lt;=</span> <span class="n">value_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="n">new_dtype</span>
+    <span class="k">return</span> <span class="n">arr</span><span class="o">.</span><span class="n">dtype</span></div>
 </pre></div>
 
           </div>

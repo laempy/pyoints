@@ -34,20 +34,21 @@
   <h1>Source code for pyoints.georecords</h1><div class="highlight"><pre>
 <span></span><span class="c1"># BEGIN OF LICENSE NOTE</span>
 <span class="c1"># This file is part of Pyoints.</span>
-<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University, </span>
+<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University,</span>
 <span class="c1"># lamprecht@uni-trier.de</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is free software: you can redistribute it and/or modify</span>
 <span class="c1"># it under the terms of the GNU General Public License as published by</span>
 <span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
 <span class="c1"># (at your option) any later version.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is distributed in the hope that it will be useful,</span>
 <span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
 <span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
 <span class="c1"># GNU General Public License for more details.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with Pyoints. If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
 <span class="c1"># END OF LICENSE NOTE</span>
 <span class="sd">&quot;&quot;&quot;Generic data structure to handle point data.</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -66,10 +67,10 @@
 
 
 <div class="viewcode-block" id="GeoRecords"><a class="viewcode-back" href="../../pyoints.html#pyoints.georecords.GeoRecords">[docs]</a><span class="k">class</span> <span class="nc">GeoRecords</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">recarray</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Abstraction class to ease handling of point sets as well as structured</span>
-<span class="sd">    matrices of point like objects. This gives the oportunity to handle</span>
-<span class="sd">    unstructured point sets the same way like rasters or voxels. The class also</span>
-<span class="sd">    provides a IndexKD object on demand to speed up neigbourhod analyzes.</span>
+    <span class="sd">&quot;&quot;&quot;Abstraction class to ease handling point sets as well as structured</span>
+<span class="sd">    matrices of point like objects. This gives the opportunity to handle</span>
+<span class="sd">    unstructured point sets the same way as rasters or voxels. The class also</span>
+<span class="sd">    provides an IndexKD object on demand to speed up neigbourhood analyses.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -81,14 +82,14 @@
 <span class="sd">        dimensions.</span>
 <span class="sd">    T : optional, array_like(Number, shape=(k+1, k+1))</span>
 <span class="sd">        Linear transformation matrix to transform the coordinates. Set to a</span>
-<span class="sd">        identity matrix if not given. This eases handling of structured point</span>
+<span class="sd">        identity matrix if not given. This eases handling structured point</span>
 <span class="sd">        sets like rasters or voxels.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    proj : projection.Proj</span>
 <span class="sd">        Projection of the coordinates.</span>
-<span class="sd">    t : np.matrix(Number, shape=(k+1, k+1))</span>
+<span class="sd">    t : np.ndarray(Number, shape=(k+1, k+1))</span>
 <span class="sd">        Linear transformation matrix to transform the coordinates.</span>
 <span class="sd">    dim : positive int</span>
 <span class="sd">        Number of coordinate dimensions of the `coords` field.</span>
@@ -178,7 +179,7 @@
     <span class="k">def</span> <span class="nf">coords</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_coords&#39;</span><span class="p">):</span>
             <span class="c1"># copy required for garbadge collection</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;coords&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">Coords</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;coords&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">Coords</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span>
 
     <span class="k">def</span> <span class="nf">_clear_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -195,11 +196,11 @@
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="s1">&#39;coords&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_clear_cache</span><span class="p">()</span>
 
-<div class="viewcode-block" id="GeoRecords.extent"><a class="viewcode-back" href="../../pyoints.html#pyoints.georecords.GeoRecords.extent">[docs]</a>    <span class="k">def</span> <span class="nf">extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">coords</span><span class="o">.</span><span class="n">extent</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
+<div class="viewcode-block" id="GeoRecords.extent"><a class="viewcode-back" href="../../pyoints.html#pyoints.georecords.GeoRecords.extent">[docs]</a>    <span class="k">def</span> <span class="nf">extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">coords</span><span class="o">.</span><span class="n">extent</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="GeoRecords.indexKD"><a class="viewcode-back" href="../../pyoints.html#pyoints.georecords.GeoRecords.indexKD">[docs]</a>    <span class="k">def</span> <span class="nf">indexKD</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">coords</span><span class="o">.</span><span class="n">indexKD</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
+<div class="viewcode-block" id="GeoRecords.indexKD"><a class="viewcode-back" href="../../pyoints.html#pyoints.georecords.GeoRecords.indexKD">[docs]</a>    <span class="k">def</span> <span class="nf">indexKD</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">coords</span><span class="o">.</span><span class="n">indexKD</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">__array_finalize__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -232,7 +233,7 @@
             <span class="n">proj</span> <span class="o">=</span> <span class="n">projection</span><span class="o">.</span><span class="n">Proj</span><span class="p">()</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;&#39;proj&#39; not set, so I assume &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">proj</span><span class="o">.</span><span class="n">proj4</span><span class="p">)</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">proj</span><span class="p">,</span> <span class="n">projection</span><span class="o">.</span><span class="n">Proj</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;proj&#39; needs to be of type &#39;projection.Proj&#39;&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;proj&#39; needs to be of type &#39;projection.Proj&#39;&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_proj</span> <span class="o">=</span> <span class="n">proj</span>
 
     <span class="nd">@property</span>
@@ -240,7 +241,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GeoRecords.records"><a class="viewcode-back" href="../../pyoints.html#pyoints.georecords.GeoRecords.records">[docs]</a>    <span class="k">def</span> <span class="nf">records</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Provides the flattened data records. Usefull if structured data</span>
+        <span class="sd">&quot;&quot;&quot;Provides the flattened data records. Useful if structured data</span>
 <span class="sd">        (like matrices) are used.</span>
 
 <span class="sd">        Returns</span>
@@ -282,8 +283,8 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        np.ndarray(int, shape=(self.count))</span>
-<span class="sd">            Array of indices. Each entry provides a index tuple e. g. to</span>
-<span class="sd">            recieve data elements wth `__getitem__`.</span>
+<span class="sd">            Array of indices. Each entry provides an index tuple e.g. to</span>
+<span class="sd">            receive data elements with `__getitem__`.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -327,12 +328,16 @@
         <span class="k">return</span> <span class="n">nptools</span><span class="o">.</span><span class="n">indices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">flatten</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GeoRecords.transform"><a class="viewcode-back" href="../../pyoints.html#pyoints.georecords.GeoRecords.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Transform coordinates.</span>
+        <span class="sd">&quot;&quot;&quot;Transforms coordinates.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        T : array_like(Number, shape=(self.dim+1, self.dim+1))</span>
 <span class="sd">            Transformation matrix to apply.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
@@ -348,7 +353,7 @@
 <span class="sd">        &gt;&gt;&gt; geo = GeoRecords(None, data)</span>
 
 <span class="sd">        &gt;&gt;&gt; T = transformation.matrix(t=[10, 20], s=[0.5, 1])</span>
-<span class="sd">        &gt;&gt;&gt; geo.transform(T)</span>
+<span class="sd">        &gt;&gt;&gt; _ = geo.transform(T)</span>
 <span class="sd">        &gt;&gt;&gt; print(geo.coords)</span>
 <span class="sd">        [[11 23]</span>
 <span class="sd">         [11 22]</span>
@@ -357,7 +362,8 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coords</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">T</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="GeoRecords.project"><a class="viewcode-back" href="../../pyoints.html#pyoints.georecords.GeoRecords.project">[docs]</a>    <span class="k">def</span> <span class="nf">project</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Projects the coordinates to a different coordinate system.</span>
@@ -427,7 +433,7 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        rec : array_like</span>
-<span class="sd">            Record array with same fields than self.</span>
+<span class="sd">            Record array with same fields as self.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -464,6 +470,115 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">nptools</span><span class="o">.</span><span class="n">apply_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">dtypes</span><span class="o">=</span><span class="n">dtypes</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proj</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="LasRecords"><a class="viewcode-back" href="../../pyoints.html#pyoints.georecords.LasRecords">[docs]</a><span class="k">class</span> <span class="nc">LasRecords</span><span class="p">(</span><span class="n">GeoRecords</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Data structure extending GeoRecords to provide an optimized API for LAS</span>
+<span class="sd">    data.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    last_return : np.ndarray(bool)</span>
+<span class="sd">        Array indicating if a point is a last return point.</span>
+<span class="sd">    first_return : np.ndarray(bool)</span>
+<span class="sd">        Array indicating if a point is a first return point.</span>
+<span class="sd">    only_return : np.ndarray(bool)</span>
+<span class="sd">        Array indicating if a point is the only returned point.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    GeoRecords</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">USER_DEFINED_FIELDS</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">&#39;coords&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;classification&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;num_returns&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;return_num&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
+    <span class="p">]</span>
+    <span class="n">STANDARD_FIELDS</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">&#39;user_data&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;intensity&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;pt_src_id&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;gps_time&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;nir&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">last_return</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_num</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_returns</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">first_return</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_num</span> <span class="o">==</span> <span class="mi">1</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">only_return</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_returns</span> <span class="o">==</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="LasRecords.activate"><a class="viewcode-back" href="../../pyoints.html#pyoints.georecords.LasRecords.activate">[docs]</a>    <span class="k">def</span> <span class="nf">activate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Activates a desired field on demand.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        field_name : String</span>
+<span class="sd">            Name of the field to activate.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;field_name&#39; needs to be a string&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
+
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">USER_DEFINED_FIELDS</span><span class="p">)</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">STANDARD_FIELDS</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">field</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">field_name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_fields</span><span class="p">([</span><span class="n">field</span><span class="p">])</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;field &quot;</span><span class="si">%s</span><span class="s1">&quot; not found&#39;</span> <span class="o">%</span> <span class="n">field_name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LasRecords.grd"><a class="viewcode-back" href="../../pyoints.html#pyoints.georecords.LasRecords.grd">[docs]</a>    <span class="k">def</span> <span class="nf">grd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filters by points classified as ground.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        LasRecords</span>
+<span class="sd">            Filtered records.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">class_indices</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">11</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="LasRecords.veg"><a class="viewcode-back" href="../../pyoints.html#pyoints.georecords.LasRecords.veg">[docs]</a>    <span class="k">def</span> <span class="nf">veg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filters by points classified as vegetation.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        LasRecords</span>
+<span class="sd">            Filtered records.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">class_indices</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="LasRecords.class_indices"><a class="viewcode-back" href="../../pyoints.html#pyoints.georecords.LasRecords.class_indices">[docs]</a>    <span class="k">def</span> <span class="nf">class_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">classes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filters by classes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        *classes : int</span>
+<span class="sd">            Classes to filter by.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray(int)</span>
+<span class="sd">            Filtered record indices.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classification</span><span class="p">,</span> <span class="n">classes</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span></div></div>
 </pre></div>
 
           </div>

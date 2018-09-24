@@ -70,40 +70,40 @@
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Define input and output path.</p>
+<p>Then we define input and output paths.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">inpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
 <span class="gp">... </span>                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">outpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
 <span class="gp">... </span>                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s1">&#39;output&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Select a input LAS point cloud.</p>
+<p>We select an input LAS point cloud.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">infile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inpath</span><span class="p">,</span> <span class="s1">&#39;forest.las&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">lasReader</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">LasReader</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Get the origin of the point cloud.</p>
+<p>We get the origin of the point cloud.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">lasReader</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
 <span class="go">[364187.98, 5509577.71, -1.58]</span>
 </pre></div>
 </div>
-<p>Get the projection of the point cloud.</p>
+<p>Then, we get the projection of the point cloud…</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">lasReader</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">proj4</span><span class="p">)</span>
 <span class="go">+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</span>
 </pre></div>
 </div>
-<p>Get the number of points.</p>
+<p>… and the number of points.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lasReader</span><span class="p">))</span>
 <span class="go">482981</span>
 </pre></div>
 </div>
-<p>Get the spatial extent in 3D.</p>
+<p>We get the spatial extent in 3D.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">lasReader</span><span class="o">.</span><span class="n">extent</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
 <span class="go">[364187.98, 5509577.71, -1.58, 364194.95, 5509584.71, 28.78]</span>
 </pre></div>
 </div>
-<p>Now we actually load the point cloud data from disc. We recieve an instance of
-<cite>GeoRecords</cite>, which is an extension of a numpy record array.</p>
+<p>Now, we load the point cloud data from the disc. We receive an instance
+of <cite>GeoRecords</cite>, which is an extension of a numpy record array.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">las</span> <span class="o">=</span> <span class="n">lasReader</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -111,7 +111,7 @@
 <span class="go">(482981,)</span>
 </pre></div>
 </div>
-<p>Get some information on the fields.</p>
+<p>We get some information on the attributes of the points…</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">las</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">descr</span><span class="p">))</span>
 <span class="go">[(&#39;classification&#39;, &#39;|u1&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;&lt;u2&#39;)]</span>
 </pre></div>
@@ -124,7 +124,7 @@
 <span class="go">[2 5]</span>
 </pre></div>
 </div>
-<p>Take a look at the extent in 2D and 3D</p>
+<p>… and take a look at the extent in 2D and 3D.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">las</span><span class="o">.</span><span class="n">extent</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
 <span class="go">[364187.98, 5509577.71, 364194.95, 5509584.71]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">las</span><span class="o">.</span><span class="n">extent</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
@@ -132,7 +132,7 @@
 </pre></div>
 </div>
 <p>Now we take a closer look at the spatial index. We begin with selecting all
-points close to the corners of the point cloud.</p>
+points close to the corners of the point cloud’s extent.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">radius</span> <span class="o">=</span> <span class="mf">1.0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">corners</span> <span class="o">=</span> <span class="n">las</span><span class="o">.</span><span class="n">extent</span><span class="p">()</span><span class="o">.</span><span class="n">corners</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">corners</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
@@ -146,7 +146,7 @@ points close to the corners of the point cloud.</p>
 <span class="go"> [ 364188 5509578      29]]</span>
 </pre></div>
 </div>
-<p>But, before we select the points, we count the number of neighbours within the
+<p>But before we select the points, we count  the number of neighbors within the
 radius.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">count</span> <span class="o">=</span> <span class="n">las</span><span class="o">.</span><span class="n">indexKD</span><span class="p">()</span><span class="o">.</span><span class="n">ball_count</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="n">corners</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
@@ -159,7 +159,7 @@ radius.</p>
 <span class="go">8</span>
 </pre></div>
 </div>
-<p>For each point we recieve a list of indices. So we concatenate them to save
+<p>For each point we receive a list of indices. So we concatenate them to save
 the resulting subset as a point cloud.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">n_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">n_ids</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">n_ids</span><span class="p">))</span>
@@ -170,11 +170,11 @@ the resulting subset as a point cloud.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">writeLas</span><span class="p">(</span><span class="n">las</span><span class="p">[</span><span class="n">n_ids</span><span class="p">],</span> <span class="n">outfile</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>We also can select the <cite>k</cite> nearest neighbours.</p>
+<p>We can also select the <cite>k</cite> nearest neighbors.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dists</span><span class="p">,</span> <span class="n">n_ids</span> <span class="o">=</span> <span class="n">las</span><span class="o">.</span><span class="n">indexKD</span><span class="p">()</span><span class="o">.</span><span class="n">knn</span><span class="p">(</span><span class="n">corners</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>We recieve a matrix of distances and a matrix of indices.</p>
+<p>We receive a matrix of distances and a matrix of indices.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">dists</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
 <span class="go">[[0.3  0.3 ]</span>
 <span class="go"> [0.02 0.04]</span>
@@ -205,14 +205,14 @@ the resulting subset as a point cloud.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">writeLas</span><span class="p">(</span><span class="n">las</span><span class="p">[</span><span class="n">n_ids</span><span class="p">],</span> <span class="n">outfile</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>If we need to select points in the shape of an ellipsoid, we also can create a
+<p>If we need to select points in the shape of an ellipsoid, we can also create a
 scaled spatial index. Doing so, each coordinate axis is scaled individually.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">s_matrix</span><span class="p">([</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">indexKD</span> <span class="o">=</span> <span class="n">IndexKD</span><span class="p">(</span><span class="n">las</span><span class="o">.</span><span class="n">coords</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="n">T</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Again, we select neighbouring points using the <cite>ball</cite> query. But here, we need
-to scale the input coordinates before.</p>
+<p>Again, we select neighboring points using the <cite>ball</cite> query. But here, we need
+to scale the input coordinates beforehand.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s_corners</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">corners</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">s_corners</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
 <span class="go">[[ 546282 4958620      -1]</span>
@@ -225,7 +225,7 @@ to scale the input coordinates before.</p>
 <span class="go"> [ 546282 4958620      14]]</span>
 </pre></div>
 </div>
-<p>Finally we apply the query and save the subset.</p>
+<p>Finally, we apply the query and save the subset.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">n_ids</span> <span class="o">=</span> <span class="n">indexKD</span><span class="o">.</span><span class="n">ball</span><span class="p">(</span><span class="n">s_corners</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">n_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">n_ids</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">n_ids</span><span class="p">))</span>
@@ -255,20 +255,20 @@ to scale the input coordinates before.</p>
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Define input and output path.</p>
+<p>First, we define input and output paths.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">inpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
 <span class="gp">... </span>                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">outpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
 <span class="gp">... </span>                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s1">&#39;output&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Select a input LAS point cloud.</p>
+<p>Then, we select an input LAS point cloud.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">infile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inpath</span><span class="p">,</span> <span class="s1">&#39;forest.las&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">lasReader</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">LasReader</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">las</span> <span class="o">=</span> <span class="n">lasReader</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Now let’s convert the point cloud to a raster. All points within a raster cell
+<p>Now, let’s convert the point cloud to a raster. All points within a raster cell
 are grouped to an individual point cloud.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">las</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">origin</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">raster</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">voxelize</span><span class="p">(</span><span class="n">las</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
@@ -285,7 +285,7 @@ are grouped to an individual point cloud.</p>
 <span class="go">[(&#39;classification&#39;, &#39;|u1&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;&lt;u2&#39;)]</span>
 </pre></div>
 </div>
-<p>We can save the points of specific cells indiviudally.</p>
+<p>We can save the points of specific cells individually.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">outfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outpath</span><span class="p">,</span> <span class="s1">&#39;grid_cell.las&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">writeLas</span><span class="p">(</span><span class="n">raster</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">outfile</span><span class="p">)</span>
 </pre></div>
@@ -313,7 +313,7 @@ manner.</p>
 <span class="go">[(&#39;cell_count&#39;, &#39;&lt;i8&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (2,)), (&#39;z&#39;, &#39;&lt;f8&#39;, (3,))]</span>
 </pre></div>
 </div>
-<p>Save the fields as individual raster images.</p>
+<p>We save the fields as individual raster images.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">outfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outpath</span><span class="p">,</span> <span class="s1">&#39;grid_count.tif&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">writeRaster</span><span class="p">(</span><span class="n">raster</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;cell_count&#39;</span><span class="p">)</span>
 </pre></div>
@@ -322,7 +322,7 @@ manner.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">writeRaster</span><span class="p">(</span><span class="n">raster</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Now let’s create a three dimensional voxel space.</p>
+<p>Now, let’s create a three dimensional voxel space.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">las</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">aggregate_function</span><span class="p">(</span><span class="n">ids</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">intensity</span> <span class="o">=</span> <span class="n">las</span><span class="o">.</span><span class="n">intensity</span><span class="p">[</span><span class="n">ids</span><span class="p">]</span>
@@ -344,7 +344,7 @@ manner.</p>
 <span class="go">[(&#39;cell_count&#39;, &#39;&lt;i8&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;&lt;i8&#39;)]</span>
 </pre></div>
 </div>
-<p>Finally save only the non empty voxel cells.</p>
+<p>Finally, we save only the non-empty voxel cells.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">outfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outpath</span><span class="p">,</span> <span class="s1">&#39;grid_voxels.las&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">writeLas</span><span class="p">(</span><span class="n">voxels</span><span class="p">[</span><span class="n">voxels</span><span class="o">.</span><span class="n">cell_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">],</span> <span class="n">outfile</span><span class="p">)</span>
 </pre></div>
@@ -352,7 +352,7 @@ manner.</p>
 </div>
 <div class="section" id="module-pyoints.examples.stemfilter_example">
 <span id="pyoints-examples-stemfilter-example-module"></span><h2>pyoints.examples.stemfilter_example module<a class="headerlink" href="#module-pyoints.examples.stemfilter_example" title="Permalink to this headline">¶</a></h2>
-<p>In this example we try to dectect stems in a forest using a point cloud
+<p>In this example, we try to detect stems in a forest using a point cloud
 of terrestrial laser scans. A couple of .las-files will be generated, which
 should be inspected with software like CloudCompare.</p>
 <p>Let’s begin with loading the required modules.</p>
@@ -381,7 +381,7 @@ should be inspected with software like CloudCompare.</p>
 <span class="gp">... </span>                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s1">&#39;output&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>After that, we load a input LAS point cloud.</p>
+<p>Thereafter, we load an input LAS point cloud.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">infile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inpath</span><span class="p">,</span> <span class="s1">&#39;forest.las&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">lasReader</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">LasReader</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">las</span> <span class="o">=</span> <span class="n">lasReader</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
@@ -389,7 +389,7 @@ should be inspected with software like CloudCompare.</p>
 <span class="go">482981</span>
 </pre></div>
 </div>
-<p>The algorithm idea begins with deriving a digital elevation model to calculate
+<p>Rge basic idea of the algorithm is to first derive a digital elevation model to calculate
 the height above ground. We simply rasterize the point cloud by deriving the
 lowest z-coordinate of each cell.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">las</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">origin</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">])</span>
@@ -406,12 +406,12 @@ lowest z-coordinate of each cell.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">writeRaster</span><span class="p">(</span><span class="n">dem_grid</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>We create a surface inerpolator.</p>
+<p>We create a surface interpolator.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dem</span> <span class="o">=</span> <span class="n">KnnInterpolator</span><span class="p">(</span><span class="n">dem_grid</span><span class="o">.</span><span class="n">records</span><span class="p">()</span><span class="o">.</span><span class="n">coords</span><span class="p">,</span> <span class="n">dem_grid</span><span class="o">.</span><span class="n">records</span><span class="p">()</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>For the stem detection we will focus on points with height above ground greater
-0.5 m.</p>
+<p>For the stem detection, we will focus on points with height above ground
+greater 0.5 m.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">height</span> <span class="o">=</span> <span class="n">las</span><span class="o">.</span><span class="n">coords</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">dem</span><span class="p">(</span><span class="n">las</span><span class="o">.</span><span class="n">coords</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">s_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">height</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s_ids</span><span class="p">))</span>
@@ -419,7 +419,7 @@ lowest z-coordinate of each cell.</p>
 </pre></div>
 </div>
 <p>We filter the point cloud using a small filter radius. Only a subset of points
-is kept, with a point distance of at least 10 cm.</p>
+with a point distance of at least 10 cm is kept.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">ball</span><span class="p">(</span><span class="n">las</span><span class="o">.</span><span class="n">indexKD</span><span class="p">(),</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">s_ids</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">las</span> <span class="o">=</span> <span class="n">las</span><span class="p">[</span><span class="n">f_ids</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">las</span><span class="p">))</span>
@@ -430,7 +430,7 @@ is kept, with a point distance of at least 10 cm.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">writeLas</span><span class="p">(</span><span class="n">las</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>We only keep points with a lot of neighbours to reduce noise.</p>
+<p>We only keep points with a lot of neighbors to reduce noise.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">count</span> <span class="o">=</span> <span class="n">las</span><span class="o">.</span><span class="n">indexKD</span><span class="p">()</span><span class="o">.</span><span class="n">ball_count</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mask</span> <span class="o">=</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">10</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">las</span> <span class="o">=</span> <span class="n">las</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
@@ -443,7 +443,7 @@ is kept, with a point distance of at least 10 cm.</p>
 </pre></div>
 </div>
 <p>Now, we will filter with a radius of 1 m. This results in a point cloud
-with point distances of at least 1 m. Here points associated with stems are
+with point distances of at least 1 m. Here, points associated with stems are
 arranged in straight lines.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">ball</span><span class="p">(</span><span class="n">las</span><span class="o">.</span><span class="n">indexKD</span><span class="p">(),</span> <span class="mf">1.0</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">las</span> <span class="o">=</span> <span class="n">las</span><span class="p">[</span><span class="n">f_ids</span><span class="p">]</span>
@@ -455,9 +455,9 @@ arranged in straight lines.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">writeLas</span><span class="p">(</span><span class="n">las</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>For dense point clouds the filtering technique results in point distances
-between 1 m and 2 m. So, we can assume that linear arranged points should
-have 2 to 3 neighbouring points within a radius of 1.5 m.</p>
+<p>For dense point clouds, the filtering technique results in point distances
+between 1 m and 2 m. Thus, we can assume that linear arranged points should
+have 2 to 3 neighboring points within a radius of 1.5 m.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">count</span> <span class="o">=</span> <span class="n">las</span><span class="o">.</span><span class="n">indexKD</span><span class="p">()</span><span class="o">.</span><span class="n">ball_count</span><span class="p">(</span><span class="mf">1.5</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">((</span><span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">count</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">las</span> <span class="o">=</span> <span class="n">las</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
@@ -469,7 +469,7 @@ have 2 to 3 neighbouring points within a radius of 1.5 m.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">writeLas</span><span class="p">(</span><span class="n">las</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Now the stems are clearly visible in the point cloud. So, we can detect the
+<p>Now, the stems are clearly visible in the point cloud. Thus, we can detect the
 stems by clustering the points.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cluster_indices</span> <span class="o">=</span> <span class="n">clustering</span><span class="o">.</span><span class="n">dbscan</span><span class="p">(</span><span class="n">las</span><span class="o">.</span><span class="n">indexKD</span><span class="p">(),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
 </pre></div>
@@ -480,7 +480,7 @@ stems by clustering the points.</p>
 <span class="go">[-1  0  1  2  3  4  5]</span>
 </pre></div>
 </div>
-<p>In the next step we remove small clusters and unassigned points.</p>
+<p>In the next step, we remove small clusters and unassigned points.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cluster_dict</span> <span class="o">=</span> <span class="n">classification</span><span class="o">.</span><span class="n">classes_to_dict</span><span class="p">(</span><span class="n">cluster_indices</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cluster_indices</span> <span class="o">=</span> <span class="n">classification</span><span class="o">.</span><span class="n">dict_to_classes</span><span class="p">(</span><span class="n">cluster_dict</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">las</span><span class="p">))</span>
 </pre></div>
@@ -497,7 +497,7 @@ stems by clustering the points.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">writeLas</span><span class="p">(</span><span class="n">las</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Now we can fit a vector to each stem. You should take a close look at the
+<p>Now, we can fit a vector to each stem. You should take a close look at the
 characteristics of the <cite>Vector</cite> object.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">stems</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">tree_id</span> <span class="ow">in</span> <span class="n">cluster_dict</span><span class="p">:</span>
@@ -506,11 +506,12 @@ characteristics of the <cite>Vector</cite> object.</p>
 <span class="gp">... </span>    <span class="n">stems</span><span class="p">[</span><span class="n">tree_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">stem</span>
 </pre></div>
 </div>
-<p>Finally we determinate the tree root coordinates using the previously derived
+<p>Finally, we determinate the tree root coordinates using the previously derived
 digital elevation model.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">roots</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">tree_id</span> <span class="ow">in</span> <span class="n">stems</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">coord</span> <span class="o">=</span> <span class="n">stems</span><span class="p">[</span><span class="n">tree_id</span><span class="p">]</span><span class="o">.</span><span class="n">surface_intersection</span><span class="p">(</span><span class="n">dem</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">stem</span> <span class="o">=</span> <span class="n">stems</span><span class="p">[</span><span class="n">tree_id</span><span class="p">]</span>
+<span class="gp">... </span>    <span class="n">coord</span> <span class="o">=</span> <span class="n">vector</span><span class="o">.</span><span class="n">vector_surface_intersection</span><span class="p">(</span><span class="n">stem</span><span class="p">,</span> <span class="n">dem</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="n">roots</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">tree_id</span><span class="p">,</span> <span class="n">coord</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -526,7 +527,7 @@ digital elevation model.</p>
 </div>
 <div class="section" id="module-pyoints.examples">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyoints.examples" title="Permalink to this headline">¶</a></h2>
-<p>Learn how to use Pyoints as a powerfull tool.</p>
+<p>Learn how to use Pyoints as a powerful tool.</p>
 </div>
 </div>
 
@@ -578,6 +579,7 @@ digital elevation model.</p>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.indexkd">pyoints.indexkd module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.interpolate">pyoints.interpolate module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.misc">pyoints.misc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.normals">pyoints.normals module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.nptools">pyoints.nptools module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.polar">pyoints.polar module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.projection">pyoints.projection module</a></li>

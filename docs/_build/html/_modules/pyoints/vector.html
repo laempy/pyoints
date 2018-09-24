@@ -34,20 +34,21 @@
   <h1>Source code for pyoints.vector</h1><div class="highlight"><pre>
 <span></span><span class="c1"># BEGIN OF LICENSE NOTE</span>
 <span class="c1"># This file is part of Pyoints.</span>
-<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University, </span>
+<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University,</span>
 <span class="c1"># lamprecht@uni-trier.de</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is free software: you can redistribute it and/or modify</span>
 <span class="c1"># it under the terms of the GNU General Public License as published by</span>
 <span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
 <span class="c1"># (at your option) any later version.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is distributed in the hope that it will be useful,</span>
 <span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
 <span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
 <span class="c1"># GNU General Public License for more details.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with Pyoints. If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
 <span class="c1"># END OF LICENSE NOTE</span>
 <span class="sd">&quot;&quot;&quot;Various vector operations.</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -270,43 +271,113 @@
 
 
 <div class="viewcode-block" id="zenith"><a class="viewcode-back" href="../../pyoints.html#pyoints.vector.zenith">[docs]</a><span class="k">def</span> <span class="nf">zenith</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Angle between a vector and a specific coordinate axes.</span>
+    <span class="sd">&quot;&quot;&quot;Angle between a vector or vectors in relation to a specific coordinate axes.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    v : array_like(Number, shape=(k))</span>
-<span class="sd">        Vector of `k` dimensions.</span>
+<span class="sd">    v : array_like(Number, shape=(k)) or array_like(Number, shape=(n, k))</span>
+<span class="sd">        Vector or vectors of `k` dimensions.</span>
 <span class="sd">    axis : optional, int</span>
 <span class="sd">        Defines which axis to compare the vector with. If not provided, the</span>
 <span class="sd">        last dimension is used.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    float</span>
+<span class="sd">    Number or np.ndarray(Number, shape=(n))</span>
 <span class="sd">        Angle between the vector and the selected coordinate axis.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 
-<span class="sd">    &gt;&gt;&gt; zenith([1, 0], deg=True)</span>
+<span class="sd">    &gt;&gt;&gt; v = [1, 0]</span>
+<span class="sd">    &gt;&gt;&gt; print(zenith(v, deg=True))</span>
 <span class="sd">    90.0</span>
-<span class="sd">    &gt;&gt;&gt; zenith([1, 0], axis=0)</span>
+
+<span class="sd">    &gt;&gt;&gt; v = [0, 0, 1]</span>
+<span class="sd">    &gt;&gt;&gt; print(zenith(v, deg=True))</span>
 <span class="sd">    0.0</span>
-<span class="sd">    &gt;&gt;&gt; round(zenith([1, 1], deg=True), 1)</span>
-<span class="sd">    45.0</span>
-<span class="sd">    &gt;&gt;&gt; round(zenith([1, 0, 1], 2, deg=True), 1)</span>
+
+<span class="sd">    &gt;&gt;&gt; v = [(0, 0), (1, 0), (0, 1), (1, 1)]</span>
+<span class="sd">    &gt;&gt;&gt; print(zenith(v, deg=True))</span>
+<span class="sd">    [nan 90.  0. 45.]</span>
+
+<span class="sd">    &gt;&gt;&gt; v = [1, 0, 1]</span>
+<span class="sd">    &gt;&gt;&gt; print(np.round(zenith([1, 0, 1], axis=2, deg=True), 1))</span>
 <span class="sd">    45.0</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">v</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numvector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;axis&#39; neets to be an integer smaller len(v)&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;axis&#39; needs to be an integer&quot;</span><span class="p">)</span>
+
+    <span class="n">v</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numarray</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">is_vector</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">is_vector</span><span class="p">:</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span><span class="p">]</span>
+
+    <span class="n">v</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_coords</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">min_dim</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">abs</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;axis&#39; neets to be an smaller </span><span class="si">%i</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="n">length</span> <span class="o">=</span> <span class="n">distance</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">/</span> <span class="n">length</span><span class="p">)</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">length</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+    <span class="n">zenith</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">length</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+    <span class="n">zenith</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">zenith</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="n">axis</span><span class="p">]</span> <span class="o">/</span> <span class="n">length</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">is_vector</span><span class="p">:</span>
+        <span class="n">zenith</span> <span class="o">=</span> <span class="n">zenith</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
     <span class="k">if</span> <span class="n">deg</span><span class="p">:</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="n">rad_to_deg</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">a</span></div>
+        <span class="n">zenith</span> <span class="o">=</span> <span class="n">rad_to_deg</span><span class="p">(</span><span class="n">zenith</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">zenith</span></div>
+
+
+<div class="viewcode-block" id="azimuth"><a class="viewcode-back" href="../../pyoints.html#pyoints.vector.azimuth">[docs]</a><span class="k">def</span> <span class="nf">azimuth</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculates the azimuth angle of a vector or vectors.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    v : array_like(Number, shape=(k)) or array_like(Number, shape=(n, k))</span>
+<span class="sd">        Vector or vectors of `k` dimensions.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Number or np.ndarray(Number, shape=(n))</span>
+<span class="sd">        Azimuth angle for each vector.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; v = [1, 1]</span>
+<span class="sd">    &gt;&gt;&gt; print(azimuth(v, deg=True))</span>
+<span class="sd">    45.0</span>
+
+<span class="sd">    &gt;&gt;&gt; v = [1, 1, 5]</span>
+<span class="sd">    &gt;&gt;&gt; print(azimuth(v, deg=True))</span>
+<span class="sd">    45.0</span>
+
+<span class="sd">    &gt;&gt;&gt; v = [(0, 0), (0, 1), (1, 1), (1, 0), (2, -2), (0, -1), (-1, 1)]</span>
+<span class="sd">    &gt;&gt;&gt; print(azimuth(v, deg=True))</span>
+<span class="sd">    [ nan   0.  45.  90. 135. 180. 315.]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numarray</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">is_vector</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">is_vector</span><span class="p">:</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span><span class="p">]</span>
+
+    <span class="n">v</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_coords</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">min_dim</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">azimuth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">v</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="n">v</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">azimuth</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="k">if</span> <span class="n">is_vector</span><span class="p">:</span>
+        <span class="n">azimuth</span> <span class="o">=</span> <span class="n">azimuth</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">deg</span><span class="p">:</span>
+        <span class="n">azimuth</span> <span class="o">=</span> <span class="n">rad_to_deg</span><span class="p">(</span><span class="n">azimuth</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">azimuth</span></div>
 
 
 <div class="viewcode-block" id="scalarproduct"><a class="viewcode-back" href="../../pyoints.html#pyoints.vector.scalarproduct">[docs]</a><span class="k">def</span> <span class="nf">scalarproduct</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
@@ -463,7 +534,7 @@
 
 
 <div class="viewcode-block" id="Vector"><a class="viewcode-back" href="../../pyoints.html#pyoints.vector.Vector">[docs]</a><span class="k">class</span> <span class="nc">Vector</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Handle vectors conveniently.</span>
+    <span class="sd">&quot;&quot;&quot;Class to represent vectors and handle them conveniently.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -479,8 +550,8 @@
 <span class="sd">        Length of the vector `vec`.</span>
 <span class="sd">    dim : positive int</span>
 <span class="sd">        Number of coordinate dimensions of the vector.</span>
-<span class="sd">    base : PCA(Number, shape=(k+1, k+1))</span>
-<span class="sd">        Transformation matrix representation of the local coordinate system</span>
+<span class="sd">    t : PCA(Number, shape=(k+1, k+1))</span>
+<span class="sd">        Roto-translation matrix representation of the local coordinate system</span>
 <span class="sd">        defined by the vector.</span>
 
 <span class="sd">    Examples</span>
@@ -526,7 +597,6 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">vec</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">origin</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vec</span> <span class="o">=</span> <span class="n">vec</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">t</span>
 
 <div class="viewcode-block" id="Vector.from_anges"><a class="viewcode-back" href="../../pyoints.html#pyoints.vector.Vector.from_anges">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_anges</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">rot</span><span class="p">):</span>
@@ -594,7 +664,7 @@
 
     <span class="nd">@vec</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">vec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vec</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_vec</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numvector</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vec</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numvector</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_clear_cache</span><span class="p">()</span>
 
     <span class="nd">@property</span>
@@ -642,6 +712,47 @@
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t</span>
+
+<div class="viewcode-block" id="Vector.transform"><a class="viewcode-back" href="../../pyoints.html#pyoints.vector.Vector.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transforms the vector using a transformation matrix.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        T : array_like(Number, shape=(self.dim+1, self.dim+1))</span>
+<span class="sd">            Transformation matrix to apply.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        Create a vector and a transformation matix.</span>
+
+<span class="sd">        &gt;&gt;&gt; vec = Vector([1, 1], [1, 0])</span>
+
+<span class="sd">        &gt;&gt;&gt; r = 45 * np.pi / 180.0</span>
+<span class="sd">        &gt;&gt;&gt; t = [1, 2]</span>
+<span class="sd">        &gt;&gt;&gt; T = transformation.matrix(t=t, r=r, order=&#39;rts&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; print(np.round(T, 2))</span>
+<span class="sd">        [[ 0.71 -0.71  1.  ]</span>
+<span class="sd">         [ 0.71  0.71  2.  ]</span>
+<span class="sd">         [ 0.    0.    1.  ]]</span>
+
+<span class="sd">        &gt;&gt;&gt; vec = vec.transform(T)</span>
+<span class="sd">        &gt;&gt;&gt; print(np.round(vec.origin, 2))</span>
+<span class="sd">        [1.   3.41]</span>
+<span class="sd">        &gt;&gt;&gt; print(np.round(vec.vec, 2))</span>
+<span class="sd">        [0.71 0.71]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_tmatrix</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+        <span class="n">origin</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">origin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vec</span> <span class="o">=</span> <span class="n">target</span> <span class="o">-</span> <span class="n">origin</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
 
     <span class="k">def</span> <span class="nf">_clear_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_t&#39;</span><span class="p">):</span>
@@ -728,7 +839,11 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">local_coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">global_coords</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">local_coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span></div>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">local_coords</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">local_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">local_coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span>
+        <span class="k">return</span> <span class="n">k</span></div>
 
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convert a relative position in vector direction to a global</span>
@@ -769,7 +884,7 @@
             <span class="k">return</span> <span class="n">v</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span>
 
 <div class="viewcode-block" id="Vector.angles"><a class="viewcode-back" href="../../pyoints.html#pyoints.vector.Vector.angles">[docs]</a>    <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calculates the angles of the vector to the coordinate axes.</span>
+        <span class="sd">&quot;&quot;&quot;Calculates the angles of the vector in relation to the coordinate axes.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -822,61 +937,527 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">local_coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">global_coords</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">distance</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">local_coords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">])</span></div>
+        <span class="k">return</span> <span class="n">distance</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">local_coords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">])</span></div></div>
 
-<div class="viewcode-block" id="Vector.surface_intersection"><a class="viewcode-back" href="../../pyoints.html#pyoints.vector.Vector.surface_intersection">[docs]</a>    <span class="k">def</span> <span class="nf">surface_intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">surface</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Approximates the intersection point between of the vector and a</span>
-<span class="sd">        surface iteratively.</span>
+
+<div class="viewcode-block" id="Plane"><a class="viewcode-back" href="../../pyoints.html#pyoints.vector.Plane">[docs]</a><span class="k">class</span> <span class="nc">Plane</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class to represent two hyperplanes and handle them conveniently.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    origin : np.ndarray(Number, shape=(k))</span>
+<span class="sd">        Defines the origin of the planes `k` dimensional local coordinate</span>
+<span class="sd">        system.</span>
+<span class="sd">    \*vec : np.ndarray(Number, shape=(k))</span>
+<span class="sd">        The `k`-1 vectors of `vec` define the orientation of the plane. The</span>
+<span class="sd">        missing  axis (perpenticular to the vectors) are calculated</span>
+<span class="sd">        automatically using principal component analysis. So, parallel</span>
+<span class="sd">        vectors in `vec` are valid, but might result in unexpected results.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    origin : np.ndarray(Number, shape=(k))</span>
+<span class="sd">        Origin of the plane.</span>
+<span class="sd">    vec : np.ndarray(Number, shape=(k-1, k))</span>
+<span class="sd">        Vectors defining the orientation of the plane.</span>
+<span class="sd">    target : np.ndarray(Number, shape=(k-1, k))</span>
+<span class="sd">        Points the vectors are targeting at.</span>
+<span class="sd">    dim : positive int</span>
+<span class="sd">        Number of coordinate dimensions of the vector.</span>
+<span class="sd">    t : PCA(Number, shape=(k+1, k+1))</span>
+<span class="sd">        Roto-translation matrix representation of the local coordinate system</span>
+<span class="sd">        defined by the plane.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    Creation of a plane object using an origin and two vectors defining the</span>
+<span class="sd">    plane.</span>
+
+<span class="sd">    &gt;&gt;&gt; origin = [1, 2, 3]</span>
+<span class="sd">    &gt;&gt;&gt; v = [0, 0, 2]</span>
+<span class="sd">    &gt;&gt;&gt; w = [1, 0, 0]</span>
+
+<span class="sd">    &gt;&gt;&gt; plane = Plane(origin, v, w)</span>
+<span class="sd">    &gt;&gt;&gt; print(plane)</span>
+<span class="sd">    origin: [1 2 3]; vec: [0 0 2], [1 0 0]</span>
+
+<span class="sd">    Get some properties.</span>
+
+<span class="sd">    &gt;&gt;&gt; print(plane.dim)</span>
+<span class="sd">    3</span>
+<span class="sd">    &gt;&gt;&gt; print(plane.t.inv)</span>
+<span class="sd">    [[0. 1. 0. 1.]</span>
+<span class="sd">     [0. 0. 1. 2.]</span>
+<span class="sd">     [1. 0. 0. 3.]</span>
+<span class="sd">     [0. 0. 0. 1.]]</span>
+<span class="sd">    &gt;&gt;&gt; print(plane.t.eigen_values)</span>
+<span class="sd">    [8. 2. 0.]</span>
+
+<span class="sd">    Transformation of global coordinates to the plane coordinate system.</span>
+
+<span class="sd">    &gt;&gt;&gt; global_coords = [</span>
+<span class="sd">    ...     plane.origin,</span>
+<span class="sd">    ...     plane.origin + plane.vec[0, :],</span>
+<span class="sd">    ...     -plane.vec[1, :],</span>
+<span class="sd">    ...     plane.vec[0, :] - 3,</span>
+<span class="sd">    ...     plane.origin + 2 * plane.vec[0, :] + 3 * plane.vec[1, :]</span>
+<span class="sd">    ... ]</span>
+<span class="sd">    &gt;&gt;&gt; print(np.array(global_coords))</span>
+<span class="sd">    [[ 1  2  3]</span>
+<span class="sd">     [ 1  2  5]</span>
+<span class="sd">     [-1  0  0]</span>
+<span class="sd">     [-3 -3 -1]</span>
+<span class="sd">     [ 4  2  7]]</span>
+
+<span class="sd">    &gt;&gt;&gt; local_coords = plane.t.to_local(global_coords)</span>
+<span class="sd">    &gt;&gt;&gt; print(local_coords)</span>
+<span class="sd">    [[ 0.  0.  0.]</span>
+<span class="sd">     [ 2.  0.  0.]</span>
+<span class="sd">     [-3. -2. -2.]</span>
+<span class="sd">     [-4. -4. -5.]</span>
+<span class="sd">     [ 4.  3.  0.]]</span>
+<span class="sd">    &gt;&gt;&gt; print(plane.t.to_global(local_coords))</span>
+<span class="sd">    [[ 1.  2.  3.]</span>
+<span class="sd">     [ 1.  2.  5.]</span>
+<span class="sd">     [-1.  0.  0.]</span>
+<span class="sd">     [-3. -3. -1.]</span>
+<span class="sd">     [ 4.  2.  7.]]</span>
+
+<span class="sd">    Calculation of the distance of the global points to the plane.</span>
+
+<span class="sd">    &gt;&gt;&gt; print(plane.distance(global_coords))</span>
+<span class="sd">    [0. 0. 2. 5. 0.]</span>
+
+<span class="sd">    Creation of the special case of a line in a two dimensional space.</span>
+
+<span class="sd">    &gt;&gt;&gt; plane = Plane([1, 2], [3, 4])</span>
+<span class="sd">    &gt;&gt;&gt; print(plane)</span>
+<span class="sd">    origin: [1 2]; vec: [3 4]</span>
+
+<span class="sd">    &gt;&gt;&gt; print(plane.t.inv)</span>
+<span class="sd">    [[ 0.6 -0.8  1. ]</span>
+<span class="sd">     [ 0.8  0.6  2. ]</span>
+<span class="sd">     [ 0.   0.   1. ]]</span>
+<span class="sd">    &gt;&gt;&gt; print(plane.t.eigen_values)</span>
+<span class="sd">    [50.  0.]</span>
+<span class="sd">    &gt;&gt;&gt; print(plane.dim)</span>
+<span class="sd">    2</span>
+
+<span class="sd">    Transformation of global coordinates to the plane coordinate system.</span>
+
+<span class="sd">    &gt;&gt;&gt; global_coords = [</span>
+<span class="sd">    ...     plane.origin,</span>
+<span class="sd">    ...     plane.origin + plane.vec[0, :],</span>
+<span class="sd">    ...     plane.vec[0, :] - 3,</span>
+<span class="sd">    ...     plane.origin + 2 * plane.vec[0, :]</span>
+<span class="sd">    ... ]</span>
+<span class="sd">    &gt;&gt;&gt; print(np.array(global_coords))</span>
+<span class="sd">    [[ 1  2]</span>
+<span class="sd">     [ 4  6]</span>
+<span class="sd">     [ 0  1]</span>
+<span class="sd">     [ 7 10]]</span>
+
+<span class="sd">    &gt;&gt;&gt; local_coords = plane.t.to_local(global_coords)</span>
+<span class="sd">    &gt;&gt;&gt; print(local_coords)</span>
+<span class="sd">    [[ 0.   0. ]</span>
+<span class="sd">     [ 5.   0. ]</span>
+<span class="sd">     [-1.4  0.2]</span>
+<span class="sd">     [10.   0. ]]</span>
+<span class="sd">    &gt;&gt;&gt; print(plane.t.to_global(local_coords))</span>
+<span class="sd">    [[ 1.  2.]</span>
+<span class="sd">     [ 4.  6.]</span>
+<span class="sd">     [ 0.  1.]</span>
+<span class="sd">     [ 7. 10.]]</span>
+
+<span class="sd">    Calculation of the distance of the global points to the plane.</span>
+
+<span class="sd">    &gt;&gt;&gt; print(plane.distance(global_coords))</span>
+<span class="sd">    [0.  0.  0.2 0. ]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="o">*</span><span class="n">vec</span><span class="p">):</span>
+        <span class="c1"># validated by setter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">origin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vec</span> <span class="o">=</span> <span class="n">vec</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">origin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_origin</span>
+
+    <span class="nd">@origin</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_origin</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numvector</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clear_cache</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">vec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vec</span>
+
+    <span class="nd">@vec</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">vec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vecs</span><span class="p">):</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">vecs</span><span class="p">)</span> <span class="o">==</span> <span class="n">k</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%i</span><span class="s2"> vectors required, got </span><span class="si">%i</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">vecs</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vec</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numarray</span><span class="p">(</span><span class="n">vecs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clear_cache</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">vec</span>
+
+    <span class="nd">@target</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_coords</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vec</span> <span class="o">=</span> <span class="n">target</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span>
+
+    <span class="k">def</span> <span class="nf">_clear_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_t&#39;</span><span class="p">):</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">t</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_t&#39;</span><span class="p">):</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">vec</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">vec</span><span class="p">))</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_t</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">PCA</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t</span>
+
+    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Scale the plane vectors by multiplication.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        surface : callable</span>
-<span class="sd">            Surface model. The model needs to recieve coordinates as an</span>
-<span class="sd">            argument and needs to return the distance to the surface.</span>
+<span class="sd">        s : array_like(Number, shape=(2))</span>
+<span class="sd">            Scale factors.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        coord:</span>
-<span class="sd">            Approximate intersection point between the vector and a surface.</span>
+<span class="sd">        Plane</span>
+<span class="sd">            Scaled plane.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 
-<span class="sd">        &gt;&gt;&gt; from pyoints import surface, interpolate</span>
+<span class="sd">        Three dimensional case.</span>
 
-<span class="sd">        &gt;&gt;&gt; method = interpolate.LinearInterpolator</span>
-<span class="sd">        &gt;&gt;&gt; surface = surface.Surface(</span>
-<span class="sd">        ...         [(0, 0, 0), (0, 2, 0), (2, 1, 4)],</span>
-<span class="sd">        ...         method=method</span>
-<span class="sd">        ...     )</span>
-<span class="sd">        &gt;&gt;&gt; vec = Vector((1, 1, -1), (0, 0, 1))</span>
-<span class="sd">        &gt;&gt;&gt; print(vec.surface_intersection(surface))</span>
-<span class="sd">        [1. 1. 2.]</span>
+<span class="sd">        &gt;&gt;&gt; plane = Plane((1, 2, 3), (5, 9, 2), (2, 3, 4))</span>
+<span class="sd">        &gt;&gt;&gt; print(plane * [2, 5])</span>
+<span class="sd">        origin: [1 2 3]; vec: [10 18  4], [10 15 20]</span>
+
+<span class="sd">        Two dimensional case (line).</span>
+
+<span class="sd">        &gt;&gt;&gt; plane = Plane((1, 2), (5, 9))</span>
+<span class="sd">        &gt;&gt;&gt; print(plane * 2)</span>
+<span class="sd">        origin: [1 2]; vec: [10 18]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span> <span class="s1">&#39;__call__&#39;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;surface&#39; is not callable&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">assertion</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">(</span><span class="n">eps</span><span class="p">)</span> <span class="ow">and</span> <span class="n">eps</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;eps&#39; needs to be a number greater zero&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">max_iter</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">max_iter</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;max_iter&#39; needs to be an integer greater zero&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">]</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numvector</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">vec</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vec</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">return</span> <span class="n">Plane</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="o">*</span><span class="n">vec</span><span class="p">)</span>
 
-        <span class="n">coord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__div__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Scale a plane by division.</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        s : array_like(Number, shape=(2))</span>
+<span class="sd">            Scale factors.</span>
 
-            <span class="n">h0</span> <span class="o">=</span> <span class="n">surface</span><span class="p">([</span><span class="n">coord</span><span class="p">])</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Plane</span>
+<span class="sd">            Scaled plane.</span>
 
-            <span class="c1"># check residual</span>
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">h0</span> <span class="o">-</span> <span class="n">coord</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">eps</span><span class="p">:</span>
-                <span class="k">break</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
 
-            <span class="c1"># set new coordinate</span>
-            <span class="n">coord</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">h0</span>
-            <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">([</span><span class="n">coord</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">coord</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+<span class="sd">        Three dimensional case.</span>
 
-        <span class="k">return</span> <span class="n">coord</span></div></div>
+<span class="sd">        &gt;&gt;&gt; plane = Plane((1, 2, 3), (5, 9, 2), (2, 3, 4))</span>
+<span class="sd">        &gt;&gt;&gt; print(plane / [5, 2])</span>
+<span class="sd">        origin: [1 2 3]; vec: [1.  1.8 0.4], [1.  1.5 2. ]</span>
+
+<span class="sd">        Two dimensional case (line).</span>
+
+<span class="sd">        &gt;&gt;&gt; plane = Plane((1, 2), (5, 9))</span>
+<span class="sd">        &gt;&gt;&gt; print(plane / 2)</span>
+<span class="sd">        origin: [1 2]; vec: [2.5 4.5]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__truediv__</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">]</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numvector</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">vec</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vec</span><span class="o">.</span><span class="n">T</span> <span class="o">/</span> <span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">return</span> <span class="n">Plane</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="o">*</span><span class="n">vec</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Plane.distance"><a class="viewcode-back" href="../../pyoints.html#pyoints.vector.Plane.distance">[docs]</a>    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">global_coords</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate the distance between points and the plane.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        global_coords : array_like(Number, shape=(n, self))</span>
+<span class="sd">            Represents `n` data points.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray(Number, shape=(n))</span>
+<span class="sd">            Distances of the points to the plane.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">local_coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">global_coords</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">distance</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">local_coords</span><span class="p">[:,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">])</span></div>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert a relative position in plane vector&#39;s direction to a global</span>
+<span class="sd">        coordinate.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k : array_like(Number, shape=(2)) or array_like(Number, shape=(n, 2))</span>
+<span class="sd">            Relative location of a point or points in plane vector direction.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray(Number, shape=(n, self.dim))</span>
+<span class="sd">            Global coordinates.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        Plane.k</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        Three dimensional case.</span>
+
+<span class="sd">        &gt;&gt;&gt; plane = Plane((1, 2, 3), (1, 0, 2), (0, 3, 0))</span>
+<span class="sd">        &gt;&gt;&gt; print(plane([1, 2]))</span>
+<span class="sd">        [2 8 5]</span>
+<span class="sd">        &gt;&gt;&gt; print(plane([(0, 0), (1, 0), (0, 1), (-2, 3)]))</span>
+<span class="sd">        [[ 1  2  3]</span>
+<span class="sd">         [ 2  2  5]</span>
+<span class="sd">         [ 1  5  3]</span>
+<span class="sd">         [-1 11 -1]]</span>
+
+<span class="sd">        Two dimensional case (line).</span>
+
+<span class="sd">        &gt;&gt;&gt; plane = Plane((1, 2), (5, 9))</span>
+<span class="sd">        &gt;&gt;&gt; print(plane(0.5))</span>
+<span class="sd">        [3.5 6.5]</span>
+<span class="sd">        &gt;&gt;&gt; print(plane([1, 2]))</span>
+<span class="sd">        [[ 6 11]</span>
+<span class="sd">         [11 20]]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numarray</span><span class="p">([</span><span class="n">k</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numarray</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="s2">&quot;&#39;k&#39; needs to have </span><span class="si">%i</span><span class="s2"> values, got </span><span class="si">%i</span><span class="s2">&quot;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">m</span> <span class="o">%</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">k</span><span class="p">)))</span>
+            <span class="n">vec</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vec</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="bp">self</span><span class="o">.</span><span class="n">vec</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">l</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">k</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;k&#39; needs to have a shape of (2) or (n, 2)&quot;</span><span class="p">)</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">+</span> <span class="n">vec</span>
+        <span class="k">return</span> <span class="n">coords</span>
+
+<div class="viewcode-block" id="Plane.transform"><a class="viewcode-back" href="../../pyoints.html#pyoints.vector.Plane.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transforms the vector using a transformation matrix.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        T : array_like(Number, shape=(self.dim+1, self.dim+1))</span>
+<span class="sd">            Transformation matrix to apply.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        Create a plane and a tranformation matrix.</span>
+
+<span class="sd">        &gt;&gt;&gt; plane = Plane([1, 1], [1, 0])</span>
+<span class="sd">        &gt;&gt;&gt; print(plane.origin)</span>
+<span class="sd">        [1 1]</span>
+<span class="sd">        &gt;&gt;&gt; print(plane.vec)</span>
+<span class="sd">        [[1 0]]</span>
+
+<span class="sd">        &gt;&gt;&gt; r = 45 * np.pi / 180.0</span>
+<span class="sd">        &gt;&gt;&gt; t = [1, 2]</span>
+<span class="sd">        &gt;&gt;&gt; T = transformation.matrix(t=t, r=r, order=&#39;rts&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; print(np.round(T, 2))</span>
+<span class="sd">        [[ 0.71 -0.71  1.  ]</span>
+<span class="sd">         [ 0.71  0.71  2.  ]</span>
+<span class="sd">         [ 0.    0.    1.  ]]</span>
+
+<span class="sd">        &gt;&gt;&gt; plane = plane.transform(T)</span>
+<span class="sd">        &gt;&gt;&gt; print(np.round(plane.origin, 2))</span>
+<span class="sd">        [1.   3.41]</span>
+<span class="sd">        &gt;&gt;&gt; print(np.round(plane.vec, 2))</span>
+<span class="sd">        [[0.71 0.71]]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_tmatrix</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+        <span class="n">origin</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">origin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vec</span> <span class="o">=</span> <span class="n">target</span> <span class="o">-</span> <span class="n">origin</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">vec_str</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span> <span class="k">for</span> <span class="n">vec</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vec</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;origin: </span><span class="si">%s</span><span class="s2">; vec: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">),</span> <span class="n">vec_str</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="vector_surface_intersection"><a class="viewcode-back" href="../../pyoints.html#pyoints.vector.vector_surface_intersection">[docs]</a><span class="k">def</span> <span class="nf">vector_surface_intersection</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">surface</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Approximates the intersection point between a `k` dimensional vector</span>
+<span class="sd">    and a `k` dimensional surface iteratively.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vec : Vector</span>
+<span class="sd">        Vector to calculate the intersection point for.</span>
+<span class="sd">    surface : callable</span>
+<span class="sd">        Surface model. The model needs to receive coordinates as an</span>
+<span class="sd">        argument and needs to return the distance to the surface.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    coord : np.array_like(Number, shape=(k))</span>
+<span class="sd">        Approximate intersection point between the vector and the surface.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; from pyoints import surface, interpolate</span>
+
+<span class="sd">    Create a callable surface object and a vector.</span>
+
+<span class="sd">    &gt;&gt;&gt; surface = surface.Surface(</span>
+<span class="sd">    ...         [(0, 0, 0), (0, 2, 0), (2, 1, 4)],</span>
+<span class="sd">    ...         method=interpolate.LinearInterpolator</span>
+<span class="sd">    ...     )</span>
+<span class="sd">    &gt;&gt;&gt; vec = Vector((1, 1, -1), (0, 0, 1))</span>
+
+<span class="sd">    Calculate the intersection point.</span>
+
+<span class="sd">    &gt;&gt;&gt; print(vector_surface_intersection(vec, surface))</span>
+<span class="sd">    [1. 1. 2.]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">Vector</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;vec&#39; needs to be an instance of Vector&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span> <span class="s1">&#39;__call__&#39;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;surface&#39; is not callable&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">assertion</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">(</span><span class="n">eps</span><span class="p">)</span> <span class="ow">and</span> <span class="n">eps</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;eps&#39; needs to be a number greater zero&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">max_iter</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">max_iter</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;max_iter&#39; needs to be an integer greater zero&quot;</span><span class="p">)</span>
+
+    <span class="n">coord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">vec</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
+
+        <span class="n">h0</span> <span class="o">=</span> <span class="n">surface</span><span class="p">([</span><span class="n">coord</span><span class="p">])</span>
+
+        <span class="c1"># check residual</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">h0</span> <span class="o">-</span> <span class="n">coord</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">eps</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="c1"># set new coordinate</span>
+        <span class="n">coord</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">h0</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">k</span><span class="p">([</span><span class="n">coord</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">coord</span> <span class="o">=</span> <span class="n">vec</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">coord</span></div>
+
+
+<div class="viewcode-block" id="vector_plane_intersection"><a class="viewcode-back" href="../../pyoints.html#pyoints.vector.vector_plane_intersection">[docs]</a><span class="k">def</span> <span class="nf">vector_plane_intersection</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">plane</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculates the intersection point of a `k` dimensional vector and a</span>
+<span class="sd">    `k` dimensional plane.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vec : Vector</span>
+<span class="sd">        Vector to calculate the intersection point for.</span>
+<span class="sd">    plane : Plane</span>
+<span class="sd">        Plane to calculate the intersection point for.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    coord : np.array_like(Number, shape=(k))</span>
+<span class="sd">        Intersection point of the vector and the plane.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The algorithm solves the linear equation system:</span>
+<span class="sd">    `plane.origin - vec.origin | k \* vec.vec - s \* plane.vec`</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    Create a plane and a vector in three dimensional space and calculate the</span>
+<span class="sd">    intersection point.</span>
+
+<span class="sd">    &gt;&gt;&gt; vec = Vector((1, 1, -1), (0, 0, 3))</span>
+<span class="sd">    &gt;&gt;&gt; plane = Plane((-1, 2, 5), (0, 2, 0), (1, 2, 2))</span>
+
+<span class="sd">    &gt;&gt;&gt; intersection = vector_plane_intersection(vec, plane)</span>
+<span class="sd">    &gt;&gt;&gt; print(intersection)</span>
+<span class="sd">    [1. 1. 9.]</span>
+<span class="sd">    &gt;&gt;&gt; print(vec.distance([intersection]))</span>
+<span class="sd">    [0.]</span>
+
+<span class="sd">    Create a plane and a vector in two dimensional space and calculate the</span>
+<span class="sd">    intersection point.</span>
+
+<span class="sd">    &gt;&gt;&gt; vec = Vector((1, 1), (1, 2))</span>
+<span class="sd">    &gt;&gt;&gt; plane = Plane((-1, 5), (0, 1))</span>
+
+<span class="sd">    &gt;&gt;&gt; intersection = vector_plane_intersection(vec, plane)</span>
+<span class="sd">    &gt;&gt;&gt; print(intersection)</span>
+<span class="sd">    [-1. -3.]</span>
+<span class="sd">    &gt;&gt;&gt; print(vec.distance([intersection]))</span>
+<span class="sd">    [0.]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">Vector</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;vec&#39; needs to be an instance of Vector&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">plane</span><span class="p">,</span> <span class="n">Plane</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;plane&#39; needs to be an instance of Plane&quot;</span><span class="p">)</span>
+
+    <span class="c1"># plane.origin + s * plane.vec ==  vec.origin + k * vec.vec</span>
+    <span class="c1"># plane.origin - vec.origin == k * vec.vec - s * plane.vec</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">plane</span><span class="o">.</span><span class="n">origin</span> <span class="o">-</span> <span class="n">vec</span><span class="o">.</span><span class="n">origin</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">vec</span><span class="o">.</span><span class="n">vec</span><span class="p">,</span> <span class="o">-</span><span class="n">plane</span><span class="o">.</span><span class="n">vec</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rcond</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">p1</span> <span class="o">=</span> <span class="n">vec</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">p2</span> <span class="o">=</span> <span class="n">plane</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:])</span>
+
+    <span class="c1"># check solution</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">p1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
 </pre></div>
 
           </div>

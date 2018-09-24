@@ -34,44 +34,48 @@
   <h1>Source code for pyoints.filters</h1><div class="highlight"><pre>
 <span></span><span class="c1"># BEGIN OF LICENSE NOTE</span>
 <span class="c1"># This file is part of Pyoints.</span>
-<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University, </span>
+<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University,</span>
 <span class="c1"># lamprecht@uni-trier.de</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is free software: you can redistribute it and/or modify</span>
 <span class="c1"># it under the terms of the GNU General Public License as published by</span>
 <span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
 <span class="c1"># (at your option) any later version.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is distributed in the hope that it will be useful,</span>
 <span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
 <span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
 <span class="c1"># GNU General Public License for more details.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with Pyoints. If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
 <span class="c1"># END OF LICENSE NOTE</span>
 <span class="sd">&quot;&quot;&quot;Point filters.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="k">import</span> <span class="n">Number</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="p">(</span>
     <span class="n">assertion</span><span class="p">,</span>
     <span class="n">distance</span><span class="p">,</span>
     <span class="n">interpolate</span><span class="p">,</span>
     <span class="n">IndexKD</span><span class="p">,</span>
+    <span class="n">transformation</span><span class="p">,</span>
+    <span class="n">vector</span><span class="p">,</span>
 <span class="p">)</span>
 
 
 <div class="viewcode-block" id="extrema"><a class="viewcode-back" href="../../pyoints.html#pyoints.filters.extrema">[docs]</a><span class="k">def</span> <span class="nf">extrema</span><span class="p">(</span><span class="n">indexKD</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Find local maxima or minima of given point set.</span>
+    <span class="sd">&quot;&quot;&quot;Finds local maxima or minima of given point set.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    indexKD : IndexKD</span>
 <span class="sd">        Spatial index of `n` points to filter.</span>
 <span class="sd">    attributes : array_like(Number, shape=(n))</span>
-<span class="sd">        Attributes to search for extrema. If None, the last coordinate</span>
-<span class="sd">        dimension is used as the attributes.</span>
+<span class="sd">        Attributes to search for extrema. If none, the last coordinate</span>
+<span class="sd">        dimension is used as the attribute.</span>
 <span class="sd">    r : positive Number</span>
 <span class="sd">        Maximum distance between two points to be considered as neighbours.</span>
 <span class="sd">    inverse : optional, bool</span>
@@ -109,7 +113,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">indexKD</span><span class="p">,</span> <span class="n">IndexKD</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;indexKD&#39; needs to be an instance of &#39;IndexKD&#39;&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">assertion</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="ow">and</span> <span class="n">r</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;r&#39; needs be a number greater zero&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;r&#39; needs to be a number greater zero&quot;</span><span class="p">)</span>
     <span class="n">attributes</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numvector</span><span class="p">(</span><span class="n">attributes</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">indexKD</span><span class="p">))</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">inverse</span><span class="p">:</span>
         <span class="n">attributes</span> <span class="o">=</span> <span class="o">-</span><span class="n">attributes</span>
@@ -136,16 +140,16 @@
 
 
 <div class="viewcode-block" id="min_filter"><a class="viewcode-back" href="../../pyoints.html#pyoints.filters.min_filter">[docs]</a><span class="k">def</span> <span class="nf">min_filter</span><span class="p">(</span><span class="n">indexKD</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Find minima or maxima within a specified radius for all points. For each</span>
-<span class="sd">    point the neighbouring point with extreme attribute is marked.</span>
+    <span class="sd">&quot;&quot;&quot;Finds minima or maxima within a specified radius for all points. For</span>
+<span class="sd">    each point the neighbouring point with extreme attribute is marked.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    indexKD : IndexKD</span>
 <span class="sd">        Spatial index of `n` points to filter.</span>
 <span class="sd">    attributes : array_like(Number, shape=(n))</span>
-<span class="sd">        Attributes to search for extrema. If None, the last coordinate</span>
-<span class="sd">        dimension is used as attributes.</span>
+<span class="sd">        Attributes to search for extrema. If none, the last coordinate</span>
+<span class="sd">        dimension is used as the attribute.</span>
 <span class="sd">    r : positive Number</span>
 <span class="sd">        Local radius to search for a minimum.</span>
 <span class="sd">    inverse : optional, bool</span>
@@ -161,7 +165,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">indexKD</span><span class="p">,</span> <span class="n">IndexKD</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;indexKD&#39; needs to be of type &#39;IndexKD&#39;&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">assertion</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="ow">and</span> <span class="n">r</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;r&#39; needs be a number greater zero&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;r&#39; needs to be a number greater zero&quot;</span><span class="p">)</span>
 
     <span class="n">attributes</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numvector</span><span class="p">(</span><span class="n">attributes</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">indexKD</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">inverse</span><span class="p">:</span>
@@ -177,7 +181,7 @@
 
 
 <div class="viewcode-block" id="has_neighbour"><a class="viewcode-back" href="../../pyoints.html#pyoints.filters.has_neighbour">[docs]</a><span class="k">def</span> <span class="nf">has_neighbour</span><span class="p">(</span><span class="n">indexKD</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Filter points which have neighbours within a specific radius.</span>
+    <span class="sd">&quot;&quot;&quot;Filters points which have neighbours within a specific radius.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -190,7 +194,7 @@
 <span class="sd">    Yields</span>
 <span class="sd">    ------</span>
 <span class="sd">    positive int</span>
-<span class="sd">        Index of a point with at least a neighbouring point with radius `r`.</span>
+<span class="sd">        Index of a point with at least one neighbouring point with radius `r`.</span>
 
 <span class="sd">    See also</span>
 <span class="sd">    --------</span>
@@ -208,7 +212,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">indexKD</span><span class="p">,</span> <span class="n">IndexKD</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;indexKD&#39; needs to be of type &#39;IndexKD&#39;&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">assertion</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="ow">and</span> <span class="n">r</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;r&#39; needs be a number greater zero&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;r&#39; needs to be a number greater zero&quot;</span><span class="p">)</span>
 
     <span class="n">not_classified</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">indexKD</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">pId</span><span class="p">,</span> <span class="n">coord</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">indexKD</span><span class="o">.</span><span class="n">coords</span><span class="p">):</span>
@@ -222,7 +226,7 @@
 
 
 <div class="viewcode-block" id="is_isolated"><a class="viewcode-back" href="../../pyoints.html#pyoints.filters.is_isolated">[docs]</a><span class="k">def</span> <span class="nf">is_isolated</span><span class="p">(</span><span class="n">indexKD</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Filter points which have no neighbours within a specific radius.</span>
+    <span class="sd">&quot;&quot;&quot;Filters points which have no neighbours within a specific radius.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -254,7 +258,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">indexKD</span><span class="p">,</span> <span class="n">IndexKD</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;indexKD&#39; needs to be of type &#39;IndexKD&#39;&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">assertion</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="ow">and</span> <span class="n">r</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;r&#39; needs be a number greater zero&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;r&#39; needs to be a number greater zero&quot;</span><span class="p">)</span>
 
     <span class="n">not_classified</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">indexKD</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">pId</span><span class="p">,</span> <span class="n">coord</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">indexKD</span><span class="o">.</span><span class="n">coords</span><span class="p">):</span>
@@ -267,18 +271,18 @@
 
 
 <div class="viewcode-block" id="ball"><a class="viewcode-back" href="../../pyoints.html#pyoints.filters.ball">[docs]</a><span class="k">def</span> <span class="nf">ball</span><span class="p">(</span><span class="n">indexKD</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_pts</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Filter coordinates by radius. This algorithm is suitable to remove</span>
-<span class="sd">    duplicate points or get an almost uniform point density.</span>
+    <span class="sd">&quot;&quot;&quot;Filters coordinates by radius. This algorithm is suitable to remove</span>
+<span class="sd">    duplicate points or to get an almost uniform point density.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    indexKD : IndexKD</span>
 <span class="sd">        IndexKD containing `n` points to filter.</span>
 <span class="sd">    r : positive float or array_like(float, shape=(n))</span>
-<span class="sd">        Ball radius or radii to apply.</span>
+<span class="sd">        Ball radius or radii to select neighbouring points.</span>
 <span class="sd">    order : optional, array_like(int, shape=(m))</span>
 <span class="sd">        Order to proceed. If m &lt; n, only a subset of points is investigated. If</span>
-<span class="sd">        None, ordered by `axis`.</span>
+<span class="sd">        none, ordered by `axis`.</span>
 <span class="sd">    axis : optional, int</span>
 <span class="sd">        Coordinate axis to use to generate the order.</span>
 <span class="sd">    inverse : bool</span>
@@ -295,7 +299,7 @@
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    Within a dense point cloud the filter guarantees the distance of</span>
+<span class="sd">    Within a dense point cloud, the filter guarantees the distance of</span>
 <span class="sd">    neighboured points in a range of `]r, 2*r[`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -320,14 +324,14 @@
     <span class="n">not_classified</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">indexKD</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">pId</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">not_classified</span><span class="p">[</span><span class="n">pId</span><span class="p">]:</span>
-            <span class="n">nIds</span> <span class="o">=</span> <span class="n">indexKD</span><span class="o">.</span><span class="n">ball</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="n">pId</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="n">pId</span><span class="p">])</span>
+            <span class="n">nIds</span> <span class="o">=</span> <span class="n">indexKD</span><span class="o">.</span><span class="n">ball</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="n">pId</span><span class="p">,</span> <span class="p">:],</span> <span class="n">r</span><span class="p">[</span><span class="n">pId</span><span class="p">])</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nIds</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">min_pts</span><span class="p">:</span>
                 <span class="n">not_classified</span><span class="p">[</span><span class="n">nIds</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="k">yield</span> <span class="n">pId</span></div>
 
 
 <div class="viewcode-block" id="in_convex_hull"><a class="viewcode-back" href="../../pyoints.html#pyoints.filters.in_convex_hull">[docs]</a><span class="k">def</span> <span class="nf">in_convex_hull</span><span class="p">(</span><span class="n">hull_coords</span><span class="p">,</span> <span class="n">coords</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Decide whether or not points are within a convex hull.</span>
+    <span class="sd">&quot;&quot;&quot;Decides whether or not points are within a convex hull.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -362,7 +366,7 @@
 
 
 <div class="viewcode-block" id="surface"><a class="viewcode-back" href="../../pyoints.html#pyoints.filters.surface">[docs]</a><span class="k">def</span> <span class="nf">surface</span><span class="p">(</span><span class="n">indexKD</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Filter points associated with a surface.</span>
+    <span class="sd">&quot;&quot;&quot;Filters points associated with a surface.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -386,7 +390,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">indexKD</span><span class="p">,</span> <span class="n">IndexKD</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;indexKD&#39; needs to be of type &#39;IndexKD&#39;&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">assertion</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="ow">and</span> <span class="n">r</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;r&#39; needs be a number greater zero&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;r&#39; needs to be a number greater zero&quot;</span><span class="p">)</span>
 
     <span class="n">coords</span> <span class="o">=</span> <span class="n">indexKD</span><span class="o">.</span><span class="n">coords</span>
 
@@ -407,8 +411,8 @@
             <span class="k">yield</span> <span class="n">nIds</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">inverseOrder</span><span class="p">[</span><span class="n">nIds</span><span class="p">])]</span></div>
 
 
-<div class="viewcode-block" id="dem_filter"><a class="viewcode-back" href="../../pyoints.html#pyoints.filters.dem_filter">[docs]</a><span class="k">def</span> <span class="nf">dem_filter</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Select points suitable for generating a digital elevation model.</span>
+<div class="viewcode-block" id="dem_filter"><a class="viewcode-back" href="../../pyoints.html#pyoints.filters.dem_filter">[docs]</a><span class="k">def</span> <span class="nf">dem_filter</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">max_angle</span><span class="o">=</span><span class="mi">70</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Selects points suitable for generating a digital elevation model.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -416,6 +420,8 @@
 <span class="sd">        Represents `n` points of `k` dimensions to filter.</span>
 <span class="sd">    r : Number or array_like(Number, shape=(n))</span>
 <span class="sd">        Radius or radii to apply.</span>
+<span class="sd">    max_angle : Number</span>
+<span class="sd">        Maximum allowed angle of a simplex.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -434,6 +440,9 @@
         <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">order</span><span class="p">))</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numvector</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">max_angle</span><span class="p">,</span> <span class="n">Number</span><span class="p">)</span> <span class="ow">and</span> <span class="n">max_angle</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;max_angle&#39; needs to be a number greater zero&quot;</span><span class="p">)</span>
+
     <span class="c1"># filter</span>
     <span class="n">ball_gen</span> <span class="o">=</span> <span class="n">ball</span><span class="p">(</span><span class="n">IndexKD</span><span class="p">(</span><span class="n">coords</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">r</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span>
     <span class="n">fIds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ball_gen</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
@@ -442,23 +451,36 @@
     <span class="n">count</span> <span class="o">=</span> <span class="n">IndexKD</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="n">fIds</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">ball_count</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">r</span><span class="p">[</span><span class="n">fIds</span><span class="p">])</span>
     <span class="n">fIds</span> <span class="o">=</span> <span class="n">fIds</span><span class="p">[</span><span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">6</span><span class="p">]</span>
 
-    <span class="c1"># subsequent filter</span>
+    <span class="c1"># subsequent filtering of the simplices</span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fIds</span><span class="p">)</span>
-        <span class="n">count</span> <span class="o">=</span> <span class="n">IndexKD</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="n">fIds</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">ball_count</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">r</span><span class="p">[</span><span class="n">fIds</span><span class="p">])</span>
-        <span class="n">fIds</span> <span class="o">=</span> <span class="n">fIds</span><span class="p">[</span><span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">m</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">fIds</span><span class="p">):</span>
+        <span class="n">old_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fIds</span><span class="p">)</span>
+
+        <span class="n">fcoords</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="n">fIds</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">dem</span> <span class="o">=</span> <span class="n">interpolate</span><span class="o">.</span><span class="n">LinearInterpolator</span><span class="p">(</span><span class="n">fcoords</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">fcoords</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="c1"># check principal component of the simplices</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fIds</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">simplex_indices</span> <span class="ow">in</span> <span class="n">dem</span><span class="o">.</span><span class="n">delaunay</span><span class="o">.</span><span class="n">simplices</span><span class="p">:</span>
+            <span class="n">simplex</span> <span class="o">=</span> <span class="n">fcoords</span><span class="p">[</span><span class="n">simplex_indices</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">eig_vec</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">eigen</span><span class="p">(</span><span class="n">simplex</span><span class="p">)[</span><span class="mi">0</span><span class="p">][:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">angle</span> <span class="o">=</span> <span class="n">vector</span><span class="o">.</span><span class="n">zenith</span><span class="p">(</span><span class="n">eig_vec</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">angle</span> <span class="o">&gt;</span> <span class="n">max_angle</span><span class="p">:</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">simplex_indices</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">simplex</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])]</span>
+                <span class="n">mask</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">fIds</span> <span class="o">=</span> <span class="n">fIds</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">old_len</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">fIds</span><span class="p">):</span>
             <span class="k">break</span>
 
     <span class="k">return</span> <span class="n">fIds</span></div>
 
 
 <div class="viewcode-block" id="radial_dem_filter"><a class="viewcode-back" href="../../pyoints.html#pyoints.filters.radial_dem_filter">[docs]</a><span class="k">def</span> <span class="nf">radial_dem_filter</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">angle_res</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Filter surface points based on distance to the center. The algorithm</span>
-<span class="sd">    is designed to create digital elevation models of terrestial laser scans.</span>
+    <span class="sd">&quot;&quot;&quot;Filters surface points based on distance to the center. The algorithm</span>
+<span class="sd">    is designed to create digital elevation models of terrestrial laser scans.</span>
 <span class="sd">    Terrestrial laser scans are characterized by decreasing point densities</span>
 <span class="sd">    with increasing distance to the scanner position. Thus, the radius to</span>
-<span class="sd">    identify neighbouring points is adjusted to the distance to the scanner.</span>
+<span class="sd">    identify neighbouring points is adjusted to the distance of the scanner.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>

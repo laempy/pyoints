@@ -34,26 +34,29 @@
   <h1>Source code for pyoints.misc</h1><div class="highlight"><pre>
 <span></span><span class="c1"># BEGIN OF LICENSE NOTE</span>
 <span class="c1"># This file is part of Pyoints.</span>
-<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University, </span>
+<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University,</span>
 <span class="c1"># lamprecht@uni-trier.de</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is free software: you can redistribute it and/or modify</span>
 <span class="c1"># it under the terms of the GNU General Public License as published by</span>
 <span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
 <span class="c1"># (at your option) any later version.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is distributed in the hope that it will be useful,</span>
 <span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
 <span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
 <span class="c1"># GNU General Public License for more details.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with Pyoints. If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
 <span class="c1"># END OF LICENSE NOTE</span>
-<span class="sd">&quot;&quot;&quot;Some random funtions, which ease development.</span>
+<span class="sd">&quot;&quot;&quot;Some random functions, which ease development.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">pkg_resources</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
 <div class="viewcode-block" id="tic"><a class="viewcode-back" href="../../pyoints.html#pyoints.misc.tic">[docs]</a><span class="k">def</span> <span class="nf">tic</span><span class="p">():</span>
@@ -91,6 +94,67 @@
             <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;License:&#39;</span><span class="p">):</span>
                 <span class="n">m</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pkg</span><span class="p">),</span> <span class="n">line</span><span class="p">[</span><span class="mi">9</span><span class="p">:])</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">m</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="sizeof_fmt"><a class="viewcode-back" href="../../pyoints.html#pyoints.misc.sizeof_fmt">[docs]</a><span class="k">def</span> <span class="nf">sizeof_fmt</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;B&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Taken form [1]. Originally posted by [2].</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    [1] jan-glx (2018), https://stackoverflow.com/questions/24455615/python-how-to-display-size-of-all-variables,</span>
+<span class="sd">    (acessed: 2018-08-16)</span>
+<span class="sd">    [2] Fred Cirera, https://stackoverflow.com/a/1094933/1870254</span>
+<span class="sd">    (acessed: 2018-08-16)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;Ki&#39;</span><span class="p">,</span> <span class="s1">&#39;Mi&#39;</span><span class="p">,</span> <span class="s1">&#39;Gi&#39;</span><span class="p">,</span> <span class="s1">&#39;Ti&#39;</span><span class="p">,</span> <span class="s1">&#39;Pi&#39;</span><span class="p">,</span> <span class="s1">&#39;Ei&#39;</span><span class="p">,</span> <span class="s1">&#39;Zi&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1024.0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%3.1f</span><span class="s2"> </span><span class="si">%s%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span>
+        <span class="n">num</span> <span class="o">/=</span> <span class="mf">1024.0</span>
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%.1f</span><span class="s2"> </span><span class="si">%s%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="s1">&#39;Yi&#39;</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_size"><a class="viewcode-back" href="../../pyoints.html#pyoints.misc.get_size">[docs]</a><span class="k">def</span> <span class="nf">get_size</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">seen</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Recursively finds size of objects&quot;&quot;&quot;</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">seen</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">seen</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">obj_id</span> <span class="o">=</span> <span class="nb">id</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="c1"># Important mark as seen *before* entering recursion to gracefully handle</span>
+    <span class="c1"># self-referential objects</span>
+    <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">obj_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">size</span> <span class="o">+=</span> <span class="n">obj</span><span class="o">.</span><span class="n">nbytes</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">size</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">get_size</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">seen</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
+        <span class="n">size</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">get_size</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">seen</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">keys</span><span class="p">()])</span>
+    <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;__dict__&#39;</span><span class="p">):</span>
+        <span class="n">size</span> <span class="o">+=</span> <span class="n">get_size</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">,</span> <span class="n">seen</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="nb">bytearray</span><span class="p">)):</span>
+        <span class="n">size</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">get_size</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">seen</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">size</span></div>
+
+
+<div class="viewcode-block" id="print_object_size"><a class="viewcode-back" href="../../pyoints.html#pyoints.misc.print_object_size">[docs]</a><span class="k">def</span> <span class="nf">print_object_size</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get the size of cached objects.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj : object</span>
+<span class="sd">        Object to determine size from.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">sizeof_fmt</span><span class="p">(</span><span class="n">get_size</span><span class="p">(</span><span class="n">obj</span><span class="p">)))</span></div>
 </pre></div>
 
           </div>

@@ -118,6 +118,14 @@ pyoints.misc module
     :undoc-members:
     :show-inheritance:
 
+pyoints.normals module
+----------------------
+
+.. automodule:: pyoints.normals
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pyoints.nptools module
 ----------------------
 

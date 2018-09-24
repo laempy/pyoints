@@ -34,22 +34,23 @@
   <h1>Source code for pyoints.fit</h1><div class="highlight"><pre>
 <span></span><span class="c1"># BEGIN OF LICENSE NOTE</span>
 <span class="c1"># This file is part of Pyoints.</span>
-<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University, </span>
+<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University,</span>
 <span class="c1"># lamprecht@uni-trier.de</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is free software: you can redistribute it and/or modify</span>
 <span class="c1"># it under the terms of the GNU General Public License as published by</span>
 <span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
 <span class="c1"># (at your option) any later version.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is distributed in the hope that it will be useful,</span>
 <span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
 <span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
 <span class="c1"># GNU General Public License for more details.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with Pyoints. If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
 <span class="c1"># END OF LICENSE NOTE</span>
-<span class="sd">&quot;&quot;&quot;Fit shapes or functions to points.</span>
+<span class="sd">&quot;&quot;&quot;Fits shapes or functions to points.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -59,8 +60,6 @@
     <span class="n">transformation</span><span class="p">,</span>
     <span class="n">assertion</span><span class="p">,</span>
     <span class="n">vector</span><span class="p">,</span>
-    <span class="n">distance</span><span class="p">,</span>
-    <span class="n">Coords</span><span class="p">,</span>
 <span class="p">)</span>
 
 
@@ -94,8 +93,8 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 
-<span class="sd">    Draw points on a half circle with radius 5 and cener (2, 4) and try to</span>
-<span class="sd">    dertermine the circle parameters.</span>
+<span class="sd">    Draw points on a half circle with radius 5 and center (2, 4) and try to</span>
+<span class="sd">    determine the circle parameters.</span>
 
 <span class="sd">    &gt;&gt;&gt; x = np.arange(-1, 1, 0.1)</span>
 <span class="sd">    &gt;&gt;&gt; y = np.sqrt(5**2 - x**2)</span>
@@ -135,7 +134,7 @@
 
 
 <div class="viewcode-block" id="fit_cylinder"><a class="viewcode-back" href="../../pyoints.html#pyoints.fit.fit_cylinder">[docs]</a><span class="k">def</span> <span class="nf">fit_cylinder</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Fit a cylinder to points.</span>
+    <span class="sd">&quot;&quot;&quot;Fits a cylinder to points.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -201,146 +200,6 @@
     <span class="n">v</span> <span class="o">=</span> <span class="n">vector</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="n">vec</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">v</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">residuals</span></div>
-
-
-<span class="k">def</span> <span class="nf">_orient_normals</span><span class="p">(</span><span class="n">normals</span><span class="p">,</span> <span class="n">p_normals</span><span class="p">):</span>
-    <span class="c1"># helper function</span>
-
-    <span class="n">shape</span> <span class="o">=</span> <span class="n">normals</span><span class="o">.</span><span class="n">shape</span>
-
-    <span class="k">if</span> <span class="n">p_normals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">p_normals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">p_normals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">p_normals</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numarray</span><span class="p">(</span><span class="n">p_normals</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p_normals</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">p_normals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">p_normals</span><span class="p">,</span> <span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
-    <span class="n">p_normals</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_coords</span><span class="p">(</span><span class="n">p_normals</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-    <span class="n">p_normals</span> <span class="o">=</span> <span class="p">(</span><span class="n">p_normals</span><span class="o">.</span><span class="n">T</span> <span class="o">/</span> <span class="n">distance</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">p_normals</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
-
-    <span class="c1"># orient normals</span>
-    <span class="n">dist</span> <span class="o">=</span> <span class="n">distance</span><span class="o">.</span><span class="n">sdist</span><span class="p">(</span><span class="n">normals</span><span class="p">,</span> <span class="n">p_normals</span><span class="p">)</span>
-    <span class="n">normals</span><span class="p">[</span><span class="n">dist</span> <span class="o">&gt;</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">:]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
-
-    <span class="k">return</span> <span class="n">normals</span>
-
-
-<div class="viewcode-block" id="fit_normals"><a class="viewcode-back" href="../../pyoints.html#pyoints.fit.fit_normals">[docs]</a><span class="k">def</span> <span class="nf">fit_normals</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preferred_normals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Fit normals to points points.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    coords : array_like(Number, shape=(n, k))</span>
-<span class="sd">        Represents `n` points of `k` dimensions.</span>
-<span class="sd">    r : positive Number or array_like(Number, shape=(n))</span>
-<span class="sd">        Radius or radii to select neighbouring points.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    array_like(Number, shape=(n, k))</span>
-<span class="sd">        Desired normals of coordinates `coords`.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-
-<span class="sd">    Two dimensional normals.</span>
-
-<span class="sd">    &gt;&gt;&gt; coords = [(0, 0), (1, 1), (2, 3), (3, 3), (4, 2), (5, 1), (5, 0)]</span>
-<span class="sd">    &gt;&gt;&gt; normals = fit_normals(coords, 1.5)</span>
-<span class="sd">    &gt;&gt;&gt; print(np.round(normals, 2))</span>
-<span class="sd">    [[-0.71  0.71]</span>
-<span class="sd">     [-0.71  0.71]</span>
-<span class="sd">     [ 0.    1.  ]</span>
-<span class="sd">     [ 0.47  0.88]</span>
-<span class="sd">     [ 0.71  0.71]</span>
-<span class="sd">     [ 0.88  0.47]</span>
-<span class="sd">     [ 1.    0.  ]]</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">coords</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
-    <span class="n">dim</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">dim</span>
-
-    <span class="c1"># subset</span>
-    <span class="k">if</span> <span class="n">indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">))</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">indices</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numvector</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">))</span>
-
-    <span class="n">indexKD</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">indexKD</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">assertion</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
-        <span class="n">ball_gen</span> <span class="o">=</span> <span class="n">indexKD</span><span class="o">.</span><span class="n">ball_iter</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="n">indices</span><span class="p">,</span> <span class="p">:],</span> <span class="n">r</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numvector</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">))</span>
-        <span class="n">ball_gen</span> <span class="o">=</span> <span class="n">indexKD</span><span class="o">.</span><span class="n">balls_iter</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="n">indices</span><span class="p">,</span> <span class="p">:],</span> <span class="n">r</span><span class="p">)</span>
-
-    <span class="c1"># generate normals</span>
-    <span class="n">normals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">),</span> <span class="n">dim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">pId</span><span class="p">,</span> <span class="n">nIds</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ball_gen</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nIds</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">dim</span><span class="p">:</span>
-            <span class="n">eig_vec</span><span class="p">,</span> <span class="n">eig_val</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">eigen</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="n">nIds</span><span class="p">,</span> <span class="p">:])</span>
-            <span class="n">normals</span><span class="p">[</span><span class="n">pId</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">eig_vec</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-    <span class="c1"># flip normals if required</span>
-    <span class="n">normals</span> <span class="o">=</span> <span class="n">_orient_normals</span><span class="p">(</span><span class="n">normals</span><span class="p">,</span> <span class="n">preferred_normals</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">normals</span></div>
-
-
-<div class="viewcode-block" id="approximate_normals"><a class="viewcode-back" href="../../pyoints.html#pyoints.fit.approximate_normals">[docs]</a><span class="k">def</span> <span class="nf">approximate_normals</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">preferred_normals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Calculate approximate normals of points.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    coords : array_like(Number, shape=(n, k))</span>
-<span class="sd">        Represents `n` points of `k` dimensions.</span>
-<span class="sd">    r : positive Number or array_like(Number, shape=(n))</span>
-<span class="sd">        Radius or radii to select neighbouring points.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    array_like(Number, shape=(n, k))</span>
-<span class="sd">        Desired normals of coordinates `coords`.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-
-<span class="sd">    Two dimensional normals.</span>
-
-<span class="sd">    &gt;&gt;&gt; coords = [(0, 0), (1, 1), (2, 3), (3, 3), (4, 2), (5, 1), (5, 0)]</span>
-<span class="sd">    &gt;&gt;&gt; normals = approximate_normals(coords, 1.5)</span>
-<span class="sd">    &gt;&gt;&gt; print(np.round(normals, 2))</span>
-<span class="sd">    [[-0.71  0.71]</span>
-<span class="sd">     [-0.71  0.71]</span>
-<span class="sd">     [ 0.    1.  ]</span>
-<span class="sd">     [ 0.71  0.71]</span>
-<span class="sd">     [ 0.71  0.71]</span>
-<span class="sd">     [ 1.    0.  ]</span>
-<span class="sd">     [ 1.    0.  ]]</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">coords</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
-    <span class="n">indexKD</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">indexKD</span><span class="p">()</span>
-    <span class="n">dim</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">dim</span>
-
-    <span class="c1"># check radii</span>
-    <span class="k">if</span> <span class="n">assertion</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">))</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numvector</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">))</span>
-
-    <span class="c1"># generate normals</span>
-    <span class="n">normals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-    <span class="n">not_visited</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">pId</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)):</span>
-        <span class="k">if</span> <span class="n">not_visited</span><span class="p">[</span><span class="n">pId</span><span class="p">]:</span>
-            <span class="n">nIds</span> <span class="o">=</span> <span class="n">indexKD</span><span class="o">.</span><span class="n">ball</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="n">pId</span><span class="p">,</span> <span class="p">:],</span> <span class="n">r</span><span class="p">[</span><span class="n">pId</span><span class="p">])</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nIds</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">dim</span><span class="p">:</span>
-                <span class="n">eig_vec</span><span class="p">,</span> <span class="n">eig_val</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">eigen</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="n">nIds</span><span class="p">,</span> <span class="p">:])</span>
-                <span class="n">normals</span><span class="p">[</span><span class="n">nIds</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">eig_vec</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">not_visited</span><span class="p">[</span><span class="n">nIds</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-
-    <span class="n">normals</span> <span class="o">=</span> <span class="n">_orient_normals</span><span class="p">(</span><span class="n">normals</span><span class="p">,</span> <span class="n">preferred_normals</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">normals</span></div>
 </pre></div>
 
           </div>

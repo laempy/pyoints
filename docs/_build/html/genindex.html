@@ -63,7 +63,7 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyoints.storage.html#pyoints.storage.LasHandler.LasRecords.activate">activate() (pyoints.storage.LasHandler.LasRecords method)</a>
+      <li><a href="pyoints.html#pyoints.georecords.LasRecords.activate">activate() (pyoints.georecords.LasRecords method)</a>
 </li>
       <li><a href="pyoints.html#pyoints.transformation.add_dim">add_dim() (in module pyoints.transformation)</a>
 </li>
@@ -85,9 +85,11 @@
         <li><a href="pyoints.html#pyoints.georecords.GeoRecords.apply_function">(pyoints.georecords.GeoRecords method)</a>
 </li>
       </ul></li>
-      <li><a href="pyoints.html#pyoints.fit.approximate_normals">approximate_normals() (in module pyoints.fit)</a>
+      <li><a href="pyoints.html#pyoints.normals.approximate_normals">approximate_normals() (in module pyoints.normals)</a>
 </li>
       <li><a href="pyoints.html#pyoints.vector.axes_angles">axes_angles() (in module pyoints.vector)</a>
+</li>
+      <li><a href="pyoints.html#pyoints.vector.azimuth">azimuth() (in module pyoints.vector)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -105,13 +107,11 @@
 </li>
       <li><a href="pyoints.html#pyoints.indexkd.IndexKD.ball_count_iter">ball_count_iter() (pyoints.indexkd.IndexKD method)</a>
 </li>
-      <li><a href="pyoints.html#pyoints.indexkd.IndexKD.ball_iter">ball_iter() (pyoints.indexkd.IndexKD method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyoints.html#pyoints.indexkd.IndexKD.balls_iter">balls_iter() (pyoints.indexkd.IndexKD method)</a>
+      <li><a href="pyoints.html#pyoints.indexkd.IndexKD.ball_iter">ball_iter() (pyoints.indexkd.IndexKD method)</a>
 </li>
-      <li><a href="pyoints.html#pyoints.vector.Vector.base">base (pyoints.vector.Vector attribute)</a>
+      <li><a href="pyoints.html#pyoints.indexkd.IndexKD.balls_iter">balls_iter() (pyoints.indexkd.IndexKD method)</a>
 </li>
       <li><a href="pyoints.html#pyoints.vector.basis">basis() (in module pyoints.vector)</a>
 </li>
@@ -127,7 +127,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyoints.html#pyoints.extent.Extent.center">center (pyoints.extent.Extent attribute)</a>, <a href="pyoints.html#pyoints.extent.Extent.center">[1]</a>
 </li>
-      <li><a href="pyoints.storage.html#pyoints.storage.LasHandler.LasRecords.class_indices">class_indices() (pyoints.storage.LasHandler.LasRecords method)</a>
+      <li><a href="pyoints.html#pyoints.georecords.LasRecords.class_indices">class_indices() (pyoints.georecords.LasRecords method)</a>
 </li>
       <li><a href="pyoints.html#pyoints.classification.classes_to_dict">classes_to_dict() (in module pyoints.classification)</a>
 </li>
@@ -209,6 +209,8 @@
       </ul></li>
       <li><a href="pyoints.html#pyoints.vector.deg_to_rad">deg_to_rad() (in module pyoints.vector)</a>
 </li>
+      <li><a href="pyoints.html#pyoints.interpolate.LinearInterpolator.delaunay">delaunay (pyoints.interpolate.LinearInterpolator attribute)</a>
+</li>
       <li><a href="pyoints.html#pyoints.filters.dem_filter">dem_filter() (in module pyoints.filters)</a>
 </li>
       <li><a href="pyoints.html#pyoints.transformation.LocalSystem.det">det (pyoints.transformation.LocalSystem attribute)</a>
@@ -228,6 +230,8 @@
 </li>
         <li><a href="pyoints.html#pyoints.transformation.LocalSystem.dim">(pyoints.transformation.LocalSystem attribute)</a>, <a href="pyoints.html#pyoints.transformation.LocalSystem.dim">[1]</a>
 </li>
+        <li><a href="pyoints.html#pyoints.vector.Plane.dim">(pyoints.vector.Plane attribute)</a>, <a href="pyoints.html#pyoints.vector.Plane.dim">[1]</a>
+</li>
         <li><a href="pyoints.html#pyoints.vector.Vector.dim">(pyoints.vector.Vector attribute)</a>, <a href="pyoints.html#pyoints.vector.Vector.dim">[1]</a>
 </li>
       </ul></li>
@@ -237,8 +241,12 @@
 </li>
       <li><a href="pyoints.html#pyoints.distance.dist">dist() (in module pyoints.distance)</a>
 </li>
-      <li><a href="pyoints.html#pyoints.vector.Vector.distance">distance() (pyoints.vector.Vector method)</a>
+      <li><a href="pyoints.html#pyoints.vector.Plane.distance">distance() (pyoints.vector.Plane method)</a>
+
+      <ul>
+        <li><a href="pyoints.html#pyoints.vector.Vector.distance">(pyoints.vector.Vector method)</a>
 </li>
+      </ul></li>
       <li><a href="pyoints.html#pyoints.nptools.dtype_subset">dtype_subset() (in module pyoints.nptools)</a>
 </li>
       <li><a href="pyoints.storage.html#pyoints.storage.DumpHandler.DumpReader">DumpReader (class in pyoints.storage.DumpHandler)</a>
@@ -315,25 +323,29 @@
 </li>
       <li><a href="pyoints.registration.html#pyoints.registration.registration.find_transformation">find_transformation() (in module pyoints.registration.registration)</a>
 </li>
-      <li><a href="pyoints.storage.html#pyoints.storage.LasHandler.LasRecords.first_return">first_return (pyoints.storage.LasHandler.LasRecords attribute)</a>, <a href="pyoints.storage.html#pyoints.storage.LasHandler.LasRecords.first_return">[1]</a>
+      <li><a href="pyoints.html#pyoints.georecords.LasRecords.first_return">first_return (pyoints.georecords.LasRecords attribute)</a>, <a href="pyoints.html#pyoints.georecords.LasRecords.first_return">[1]</a>
 </li>
       <li><a href="pyoints.html#pyoints.fit.fit_cylinder">fit_cylinder() (in module pyoints.fit)</a>
 </li>
-      <li><a href="pyoints.html#pyoints.fit.fit_normals">fit_normals() (in module pyoints.fit)</a>
+      <li><a href="pyoints.html#pyoints.normals.fit_normals">fit_normals() (in module pyoints.normals)</a>
 </li>
       <li><a href="pyoints.html#pyoints.fit.fit_sphere">fit_sphere() (in module pyoints.fit)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyoints.html#pyoints.nptools.flatten_dtypes">flatten_dtypes() (in module pyoints.nptools)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyoints.html#pyoints.coords.Coords.flattened">flattened (pyoints.coords.Coords attribute)</a>, <a href="pyoints.html#pyoints.coords.Coords.flattened">[1]</a>
 </li>
       <li><a href="pyoints.html#pyoints.vector.Vector.from_anges">from_anges() (pyoints.vector.Vector class method)</a>
 </li>
       <li><a href="pyoints.html#pyoints.vector.Vector.from_coords">from_coords() (pyoints.vector.Vector class method)</a>
 </li>
+      <li><a href="pyoints.grid.html#pyoints.grid.grid.Grid.from_corners">from_corners() (pyoints.grid.grid.Grid class method)</a>
+</li>
       <li><a href="pyoints.html#pyoints.projection.Proj.from_epsg">from_epsg() (pyoints.projection.Proj class method)</a>
+</li>
+      <li><a href="pyoints.grid.html#pyoints.grid.grid.Grid.from_extent">from_extent() (pyoints.grid.grid.Grid class method)</a>
 </li>
       <li><a href="pyoints.html#pyoints.projection.Proj.from_proj4">from_proj4() (pyoints.projection.Proj class method)</a>
 </li>
@@ -351,11 +363,13 @@
 </li>
       <li><a href="pyoints.html#pyoints.georecords.GeoRecords">GeoRecords (class in pyoints.georecords)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyoints.html#pyoints.projection.GeoTransform">GeoTransform (class in pyoints.projection)</a>
 </li>
-      <li><a href="pyoints.storage.html#pyoints.storage.LasHandler.LasRecords.grd">grd() (pyoints.storage.LasHandler.LasRecords method)</a>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyoints.html#pyoints.misc.get_size">get_size() (in module pyoints.misc)</a>
+</li>
+      <li><a href="pyoints.html#pyoints.georecords.LasRecords.grd">grd() (pyoints.georecords.LasRecords method)</a>
 </li>
       <li><a href="pyoints.grid.html#pyoints.grid.grid.Grid">Grid (class in pyoints.grid.grid)</a>
 </li>
@@ -467,9 +481,9 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyoints.storage.html#pyoints.storage.LasHandler.LasReader">LasReader (class in pyoints.storage.LasHandler)</a>
 </li>
-      <li><a href="pyoints.storage.html#pyoints.storage.LasHandler.LasRecords">LasRecords (class in pyoints.storage.LasHandler)</a>
+      <li><a href="pyoints.html#pyoints.georecords.LasRecords">LasRecords (class in pyoints.georecords)</a>
 </li>
-      <li><a href="pyoints.storage.html#pyoints.storage.LasHandler.LasRecords.last_return">last_return (pyoints.storage.LasHandler.LasRecords attribute)</a>, <a href="pyoints.storage.html#pyoints.storage.LasHandler.LasRecords.last_return">[1]</a>
+      <li><a href="pyoints.html#pyoints.georecords.LasRecords.last_return">last_return (pyoints.georecords.LasRecords attribute)</a>, <a href="pyoints.html#pyoints.georecords.LasRecords.last_return">[1]</a>
 </li>
       <li><a href="pyoints.html#pyoints.vector.Vector.length">length (pyoints.vector.Vector attribute)</a>, <a href="pyoints.html#pyoints.vector.Vector.length">[1]</a>
 </li>
@@ -489,6 +503,8 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyoints.storage.html#pyoints.storage.RasterHandler.load_gdal">load_gdal() (in module pyoints.storage.RasterHandler)</a>
+</li>
       <li><a href="pyoints.storage.html#pyoints.storage.CsvHandler.loadCsv">loadCsv() (in module pyoints.storage.CsvHandler)</a>
 </li>
       <li><a href="pyoints.storage.html#pyoints.storage.DumpHandler.loadDump">loadDump() (in module pyoints.storage.DumpHandler)</a>
@@ -503,6 +519,10 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyoints.html#pyoints.classification.majority">majority() (in module pyoints.classification)</a>
+</li>
+      <li><a href="pyoints.html#pyoints.clustering.majority_clusters">majority_clusters() (in module pyoints.clustering)</a>
+</li>
       <li><a href="pyoints.html#pyoints.assign.Matcher">Matcher (class in pyoints.assign)</a>
 </li>
       <li><a href="pyoints.html#pyoints.transformation.matrix">matrix() (in module pyoints.transformation)</a>
@@ -513,9 +533,7 @@
 </li>
       <li><a href="pyoints.html#pyoints.extent.Extent.max_corner">max_corner (pyoints.extent.Extent attribute)</a>
 </li>
-      <li><a href="pyoints.html#pyoints.classification.mayority">mayority() (in module pyoints.classification)</a>
-</li>
-      <li><a href="pyoints.html#pyoints.clustering.mayority_clusters">mayority_clusters() (in module pyoints.clustering)</a>
+      <li><a href="pyoints.html#pyoints.nptools.max_value_range">max_value_range() (in module pyoints.nptools)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -533,6 +551,8 @@
 </li>
       <li><a href="pyoints.html#pyoints.filters.min_filter">min_filter() (in module pyoints.filters)</a>
 </li>
+      <li><a href="pyoints.html#pyoints.nptools.minimum_numeric_dtype">minimum_numeric_dtype() (in module pyoints.nptools)</a>
+</li>
       <li><a href="pyoints.html#pyoints.nptools.missing">missing() (in module pyoints.nptools)</a>
 </li>
   </ul></td>
@@ -543,11 +563,17 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyoints.html#pyoints.indexkd.IndexKD.nn">nn (pyoints.indexkd.IndexKD attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyoints.html#pyoints.distance.norm">norm() (in module pyoints.distance)</a>
 </li>
+      <li><a href="pyoints.html#pyoints.normals.normalize">normalize() (in module pyoints.normals)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyoints.storage.html#pyoints.storage.RasterHandler.RasterReader.num_bands">num_bands (pyoints.storage.RasterHandler.RasterReader attribute)</a>
+</li>
+      <li><a href="pyoints.storage.html#pyoints.storage.dtype_converters.numpy_to_gdal_dtype">numpy_to_gdal_dtype() (in module pyoints.storage.dtype_converters)</a>
+</li>
+      <li><a href="pyoints.storage.html#pyoints.storage.dtype_converters.numpy_to_laspy_dtype">numpy_to_laspy_dtype() (in module pyoints.storage.dtype_converters)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -555,11 +581,13 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyoints.storage.html#pyoints.storage.LasHandler.LasRecords.only_return">only_return (pyoints.storage.LasHandler.LasRecords attribute)</a>, <a href="pyoints.storage.html#pyoints.storage.LasHandler.LasRecords.only_return">[1]</a>
+      <li><a href="pyoints.html#pyoints.georecords.LasRecords.only_return">only_return (pyoints.georecords.LasRecords attribute)</a>, <a href="pyoints.html#pyoints.georecords.LasRecords.only_return">[1]</a>
 </li>
       <li><a href="pyoints.html#pyoints.transformation.LocalSystem.origin">origin (pyoints.transformation.LocalSystem attribute)</a>, <a href="pyoints.html#pyoints.transformation.LocalSystem.origin">[1]</a>
 
       <ul>
+        <li><a href="pyoints.html#pyoints.vector.Plane.origin">(pyoints.vector.Plane attribute)</a>, <a href="pyoints.html#pyoints.vector.Plane.origin">[1]</a>
+</li>
         <li><a href="pyoints.html#pyoints.vector.Vector.origin">(pyoints.vector.Vector attribute)</a>
 </li>
       </ul></li>
@@ -579,9 +607,15 @@
 </li>
       <li><a href="pyoints.html#pyoints.transformation.PCA">PCA (class in pyoints.transformation)</a>
 </li>
+      <li><a href="pyoints.html#pyoints.vector.Plane">Plane (class in pyoints.vector)</a>
+</li>
       <li><a href="pyoints.html#pyoints.polar.polar_to_coords">polar_to_coords() (in module pyoints.polar)</a>
 </li>
       <li><a href="pyoints.html#pyoints.interpolate.PolynomInterpolator">PolynomInterpolator (class in pyoints.interpolate)</a>
+</li>
+      <li><a href="pyoints.html#pyoints.normals.prefer_orientation">prefer_orientation() (in module pyoints.normals)</a>
+</li>
+      <li><a href="pyoints.html#pyoints.misc.print_object_size">print_object_size() (in module pyoints.misc)</a>
 </li>
       <li><a href="pyoints.html#pyoints.projection.Proj">Proj (class in pyoints.projection)</a>
 </li>
@@ -631,10 +665,10 @@
 </li>
       <li><a href="pyoints.examples.html#module-pyoints.examples.stemfilter_example">pyoints.examples.stemfilter_example (module)</a>
 </li>
-      <li><a href="pyoints.html#module-pyoints.extent">pyoints.extent (module)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyoints.html#module-pyoints.extent">pyoints.extent (module)</a>
+</li>
       <li><a href="pyoints.html#module-pyoints.filters">pyoints.filters (module)</a>
 </li>
       <li><a href="pyoints.html#module-pyoints.fit">pyoints.fit (module)</a>
@@ -652,6 +686,8 @@
       <li><a href="pyoints.html#module-pyoints.interpolate">pyoints.interpolate (module)</a>
 </li>
       <li><a href="pyoints.html#module-pyoints.misc">pyoints.misc (module)</a>
+</li>
+      <li><a href="pyoints.html#module-pyoints.normals">pyoints.normals (module)</a>
 </li>
       <li><a href="pyoints.html#module-pyoints.nptools">pyoints.nptools (module)</a>
 </li>
@@ -674,6 +710,8 @@
       <li><a href="pyoints.storage.html#module-pyoints.storage.BaseGeoHandler">pyoints.storage.BaseGeoHandler (module)</a>
 </li>
       <li><a href="pyoints.storage.html#module-pyoints.storage.CsvHandler">pyoints.storage.CsvHandler (module)</a>
+</li>
+      <li><a href="pyoints.storage.html#module-pyoints.storage.dtype_converters">pyoints.storage.dtype_converters (module)</a>
 </li>
       <li><a href="pyoints.storage.html#module-pyoints.storage.DumpHandler">pyoints.storage.DumpHandler (module)</a>
 </li>
@@ -707,6 +745,8 @@
 </li>
       <li><a href="pyoints.html#pyoints.filters.radial_dem_filter">radial_dem_filter() (in module pyoints.filters)</a>
 </li>
+      <li><a href="pyoints.html#pyoints.nptools.range_filter">range_filter() (in module pyoints.nptools)</a>
+</li>
       <li><a href="pyoints.html#pyoints.extent.Extent.ranges">ranges (pyoints.extent.Extent attribute)</a>, <a href="pyoints.html#pyoints.extent.Extent.ranges">[1]</a>
 </li>
   </ul></td>
@@ -735,25 +775,29 @@
 </li>
       <li><a href="pyoints.html#pyoints.distance.sdist">sdist() (in module pyoints.distance)</a>
 </li>
+      <li><a href="pyoints.html#pyoints.interpolate.LinearInterpolator.simplex">simplex() (pyoints.interpolate.LinearInterpolator method)</a>
+</li>
+      <li><a href="pyoints.html#pyoints.misc.sizeof_fmt">sizeof_fmt() (in module pyoints.misc)</a>
+</li>
       <li><a href="pyoints.html#pyoints.indexkd.IndexKD.slice">slice() (pyoints.indexkd.IndexKD method)</a>
 </li>
       <li><a href="pyoints.html#pyoints.distance.snorm">snorm() (in module pyoints.distance)</a>
 </li>
-      <li><a href="pyoints.html#pyoints.indexkd.IndexKD.sphere">sphere() (pyoints.indexkd.IndexKD method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyoints.html#pyoints.indexkd.IndexKD.sphere">sphere() (pyoints.indexkd.IndexKD method)</a>
+</li>
       <li><a href="pyoints.html#pyoints.assign.SphereMatcher">SphereMatcher (class in pyoints.assign)</a>
 </li>
       <li><a href="pyoints.html#pyoints.extent.Extent.split">split() (pyoints.extent.Extent method)</a>
 </li>
       <li><a href="pyoints.html#pyoints.classification.split_by_breaks">split_by_breaks() (in module pyoints.classification)</a>
 </li>
+      <li><a href="pyoints.html#pyoints.georecords.LasRecords.STANDARD_FIELDS">STANDARD_FIELDS (pyoints.georecords.LasRecords attribute)</a>
+</li>
       <li><a href="pyoints.html#pyoints.surface.Surface">Surface (class in pyoints.surface)</a>
 </li>
       <li><a href="pyoints.html#pyoints.filters.surface">surface() (in module pyoints.filters)</a>
-</li>
-      <li><a href="pyoints.html#pyoints.vector.Vector.surface_intersection">surface_intersection() (pyoints.vector.Vector method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -770,13 +814,19 @@
 </li>
         <li><a href="pyoints.storage.html#pyoints.storage.DumpHandler.DumpReader.t">(pyoints.storage.DumpHandler.DumpReader attribute)</a>
 </li>
-        <li><a href="pyoints.html#pyoints.vector.Vector.t">(pyoints.vector.Vector attribute)</a>
+        <li><a href="pyoints.html#pyoints.vector.Plane.t">(pyoints.vector.Plane attribute)</a>, <a href="pyoints.html#pyoints.vector.Plane.t">[1]</a>
+</li>
+        <li><a href="pyoints.html#pyoints.vector.Vector.t">(pyoints.vector.Vector attribute)</a>, <a href="pyoints.html#pyoints.vector.Vector.t">[1]</a>
 </li>
       </ul></li>
       <li><a href="pyoints.html#pyoints.transformation.t_matrix">t_matrix() (in module pyoints.transformation)</a>
 </li>
-      <li><a href="pyoints.html#pyoints.vector.Vector.target">target (pyoints.vector.Vector attribute)</a>
+      <li><a href="pyoints.html#pyoints.vector.Plane.target">target (pyoints.vector.Plane attribute)</a>, <a href="pyoints.html#pyoints.vector.Plane.target">[1]</a>
+
+      <ul>
+        <li><a href="pyoints.html#pyoints.vector.Vector.target">(pyoints.vector.Vector attribute)</a>
 </li>
+      </ul></li>
       <li><a href="pyoints.html#pyoints.misc.tic">tic() (in module pyoints.misc)</a>
 </li>
   </ul></td>
@@ -796,6 +846,10 @@
 </li>
         <li><a href="pyoints.grid.html#pyoints.grid.grid.Grid.transform">(pyoints.grid.grid.Grid method)</a>
 </li>
+        <li><a href="pyoints.html#pyoints.vector.Plane.transform">(pyoints.vector.Plane method)</a>
+</li>
+        <li><a href="pyoints.html#pyoints.vector.Vector.transform">(pyoints.vector.Vector method)</a>
+</li>
       </ul></li>
       <li><a href="pyoints.grid.html#pyoints.grid.transformation.transform_to_corners">transform_to_corners() (in module pyoints.grid.transformation)</a>
 </li>
@@ -809,7 +863,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyoints.storage.html#pyoints.storage.LasHandler.LasRecords.USER_DEFINED_FIELDS">USER_DEFINED_FIELDS (pyoints.storage.LasHandler.LasRecords attribute)</a>
+      <li><a href="pyoints.html#pyoints.georecords.LasRecords.USER_DEFINED_FIELDS">USER_DEFINED_FIELDS (pyoints.georecords.LasRecords attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -817,13 +871,21 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyoints.html#pyoints.vector.Vector.vec">vec (pyoints.vector.Vector attribute)</a>
+      <li><a href="pyoints.html#pyoints.vector.Plane.vec">vec (pyoints.vector.Plane attribute)</a>, <a href="pyoints.html#pyoints.vector.Plane.vec">[1]</a>
+
+      <ul>
+        <li><a href="pyoints.html#pyoints.vector.Vector.vec">(pyoints.vector.Vector attribute)</a>
 </li>
+      </ul></li>
       <li><a href="pyoints.html#pyoints.vector.Vector">Vector (class in pyoints.vector)</a>
+</li>
+      <li><a href="pyoints.html#pyoints.vector.vector_plane_intersection">vector_plane_intersection() (in module pyoints.vector)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyoints.storage.html#pyoints.storage.LasHandler.LasRecords.veg">veg() (pyoints.storage.LasHandler.LasRecords method)</a>
+      <li><a href="pyoints.html#pyoints.vector.vector_surface_intersection">vector_surface_intersection() (in module pyoints.vector)</a>
+</li>
+      <li><a href="pyoints.html#pyoints.georecords.LasRecords.veg">veg() (pyoints.georecords.LasRecords method)</a>
 </li>
       <li><a href="pyoints.grid.html#pyoints.grid.grid.voxelize">voxelize() (in module pyoints.grid.grid)</a>
 
@@ -843,10 +905,12 @@
 </li>
       <li><a href="pyoints.html#pyoints.projection.Proj.wkt">wkt (pyoints.projection.Proj attribute)</a>, <a href="pyoints.html#pyoints.projection.Proj.wkt">[1]</a>
 </li>
-      <li><a href="pyoints.storage.html#pyoints.storage.CsvHandler.writeCsv">writeCsv() (in module pyoints.storage.CsvHandler)</a>
+      <li><a href="pyoints.storage.html#pyoints.storage.RasterHandler.write_gdal">write_gdal() (in module pyoints.storage.RasterHandler)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyoints.storage.html#pyoints.storage.CsvHandler.writeCsv">writeCsv() (in module pyoints.storage.CsvHandler)</a>
+</li>
       <li><a href="pyoints.storage.html#pyoints.storage.DumpHandler.writeDump">writeDump() (in module pyoints.storage.DumpHandler)</a>
 </li>
       <li><a href="pyoints.storage.html#pyoints.storage.LasHandler.writeLas">writeLas() (in module pyoints.storage.LasHandler)</a>

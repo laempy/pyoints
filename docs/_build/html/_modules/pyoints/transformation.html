@@ -34,20 +34,21 @@
   <h1>Source code for pyoints.transformation</h1><div class="highlight"><pre>
 <span></span><span class="c1"># BEGIN OF LICENSE NOTE</span>
 <span class="c1"># This file is part of Pyoints.</span>
-<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University, </span>
+<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University,</span>
 <span class="c1"># lamprecht@uni-trier.de</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is free software: you can redistribute it and/or modify</span>
 <span class="c1"># it under the terms of the GNU General Public License as published by</span>
 <span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
 <span class="c1"># (at your option) any later version.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is distributed in the hope that it will be useful,</span>
 <span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
 <span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
 <span class="c1"># GNU General Public License for more details.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with Pyoints. If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
 <span class="c1"># END OF LICENSE NOTE</span>
 <span class="sd">&quot;&quot;&quot;Multidimensional transformation matrices and coordinate transformations.</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -128,27 +129,29 @@
     <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;can not transform empty array&quot;</span><span class="p">)</span>
-
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
         <span class="c1"># single point</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">T</span><span class="o">.</span><span class="n">T</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">tcoords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">T</span><span class="o">.</span><span class="n">T</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
         <span class="c1"># multiple points</span>
         <span class="k">if</span> <span class="n">precise</span><span class="p">:</span>
             <span class="c1"># precise, but slow</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">homogenious</span><span class="p">(</span><span class="n">coords</span><span class="p">),</span> <span class="n">T</span><span class="o">.</span><span class="n">T</span><span class="p">)[:,</span> <span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="c1">#tcoords = (homogenious(coords) @ T.T)[:, 0:-1]</span>
+            <span class="n">tcoords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">homogenious</span><span class="p">(</span><span class="n">coords</span><span class="p">),</span> <span class="n">T</span><span class="o">.</span><span class="n">T</span><span class="p">)[:,</span> <span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># fast, but not very precise</span>
-            <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
+            <span class="n">tcoords</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
                 <span class="n">T</span>
             <span class="p">)[</span><span class="mi">0</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;dimensions do not match&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;dimensions do not match&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">tcoords</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="homogenious"><a class="viewcode-back" href="../../pyoints.html#pyoints.transformation.homogenious">[docs]</a><span class="k">def</span> <span class="nf">homogenious</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Create homogenious coordinates by adding an additional dimension.</span>
+    <span class="sd">&quot;&quot;&quot;Create homogeneous coordinates by adding an additional dimension.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -160,7 +163,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    hcoords : np.ndarray(Number, shape=(n, k+1))</span>
-<span class="sd">        Homogenious coordinates.</span>
+<span class="sd">        Homogeneous coordinates.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">coords</span> <span class="o">=</span> <span class="n">ensure_coords</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
@@ -188,7 +191,7 @@
 <span class="sd">        scale `s`.</span>
 <span class="sd">    order : optional, string</span>
 <span class="sd">        Order to compute the matrix multiplications. For example, an `order` of</span>
-<span class="sd">        `trs` means first translate `t`, then rotate `r`, and finally scale</span>
+<span class="sd">        `trs` means to first translate `t`, then rotate `r`, and finally scale</span>
 <span class="sd">        `s`.</span>
 
 <span class="sd">    Returns</span>
@@ -244,7 +247,7 @@
     <span class="c1"># create translation matrix according to order</span>
     <span class="n">M</span> <span class="o">=</span> <span class="n">i_matrix</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">order</span><span class="p">):</span>
-        <span class="n">M</span> <span class="o">=</span> <span class="n">matrices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">*</span> <span class="n">M</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">matrices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">@</span> <span class="n">M</span>
 
     <span class="k">return</span> <span class="n">LocalSystem</span><span class="p">(</span><span class="n">M</span><span class="p">)</span></div>
 
@@ -279,7 +282,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">dim</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;dim&#39; needs to be an integer greater one&quot;</span><span class="p">)</span>
-    <span class="n">I_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">I_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">LocalSystem</span><span class="p">(</span><span class="n">I_m</span><span class="p">)</span></div>
 
 
@@ -364,7 +367,7 @@
 <span class="sd">        coefficients are required.</span>
 <span class="sd">    order : optional, String</span>
 <span class="sd">        For at least three axes, `order` specifies the order of rotations. For</span>
-<span class="sd">        example, an order of `zxy` means first translate according to z axis,</span>
+<span class="sd">        example, an order of `zxy` means first to translate according to z axis,</span>
 <span class="sd">        then rotate according to x-axis, and finally rotate according to</span>
 <span class="sd">        y-axis.</span>
 
@@ -418,7 +421,7 @@
     <span class="n">R_dict</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">dim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">R_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">([</span>
+        <span class="n">R_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
             <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="mi">0</span><span class="p">],</span>
             <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="mi">0</span><span class="p">],</span>
             <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
@@ -426,19 +429,19 @@
     <span class="k">elif</span> <span class="n">dim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;rotation in 2D requires one angle only&#39;</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">dim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-        <span class="n">Rx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">([</span>
+        <span class="n">Rx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
             <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
             <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="mi">0</span><span class="p">],</span>
             <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="mi">0</span><span class="p">],</span>
             <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
         <span class="p">])</span>
-        <span class="n">Ry</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">([</span>
+        <span class="n">Ry</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
             <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="mi">0</span><span class="p">],</span>
             <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
             <span class="p">[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="mi">0</span><span class="p">],</span>
             <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
         <span class="p">])</span>
-        <span class="n">Rz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">([</span>
+        <span class="n">Rz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
             <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
             <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
             <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
@@ -451,7 +454,7 @@
 
         <span class="n">R_m</span> <span class="o">=</span> <span class="n">i_matrix</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">order</span><span class="p">):</span>
-            <span class="n">R_m</span> <span class="o">=</span> <span class="n">R_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">*</span> <span class="n">R_m</span>
+            <span class="n">R_m</span> <span class="o">=</span> <span class="n">R_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">@</span> <span class="n">R_m</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="s1">&#39;</span><span class="si">%i</span><span class="s1">-dimensional rotations are not supported yet&#39;</span> <span class="o">%</span> <span class="n">dim</span><span class="p">)</span>
@@ -469,7 +472,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    np.matrix(float, shape=(k+2, k+2))</span>
+<span class="sd">    np.ndarray(float, shape=(k+2, k+2))</span>
 <span class="sd">        Transformation matrix with an additional dimension.</span>
 
 <span class="sd">    Examples</span>
@@ -498,7 +501,7 @@
 
 
 <div class="viewcode-block" id="decomposition"><a class="viewcode-back" href="../../pyoints.html#pyoints.transformation.decomposition">[docs]</a><span class="k">def</span> <span class="nf">decomposition</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">ignore_warnings</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Determinates some characteristic parameters of a transformation matrix.</span>
+    <span class="sd">&quot;&quot;&quot;Determines some characteristic parameters of a transformation matrix.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -511,7 +514,7 @@
 <span class="sd">        Transformation coefficients for translation `t`, rotation `r` and</span>
 <span class="sd">        scale `s`.</span>
 <span class="sd">    det : float</span>
-<span class="sd">        Derterminant `det` indicates a distorsion of `T`.</span>
+<span class="sd">        Determinant `det` indicates a distorsion of `T`.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -600,24 +603,23 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 
-<span class="sd">    &gt;&gt;&gt; T = matrix_from_gdal([-28493, 2, 0.0, 4255884, 0.0, -2.0])</span>
+<span class="sd">    &gt;&gt;&gt; T = matrix_from_gdal([-28493, 9, 2, 4255884, -2, -9.0])</span>
 <span class="sd">    &gt;&gt;&gt; print(T.astype(int))</span>
-<span class="sd">    [[      2       0  -28493]</span>
-<span class="sd">     [      0      -2 4255884]</span>
+<span class="sd">    [[      9       2  -28493]</span>
+<span class="sd">     [     -2      -9 4255884]</span>
 <span class="sd">     [      0       0       1]]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">t</span> <span class="o">=</span> <span class="n">ensure_numvector</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 
-    <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">))</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">))</span>
     <span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
     <span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
-    <span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+    <span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
     <span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
     <span class="n">T</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-
     <span class="k">return</span> <span class="n">LocalSystem</span><span class="p">(</span><span class="n">T</span><span class="p">)</span></div>
 
 
@@ -641,19 +643,20 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 
-<span class="sd">    &gt;&gt;&gt; T = np.array([(2, 0, -28493), (0, -2, 4255884), (0, 0, 1)])</span>
+<span class="sd">    &gt;&gt;&gt; T = np.array([(9, -2, -28493), (2, -9, 4255884), (0, 0, 1)])</span>
 <span class="sd">    &gt;&gt;&gt; t = matrix_to_gdal(T)</span>
 <span class="sd">    &gt;&gt;&gt; print(t)</span>
-<span class="sd">    (-28493, 2, 0, 4255884, 0, -2)</span>
+<span class="sd">    (-28493.0, 9.0, -2.0, 4255884.0, 2.0, -9.0)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">T</span> <span class="o">=</span> <span class="n">ensure_tmatrix</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">ensure_tmatrix</span><span class="p">(</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;transformation matrix of shape (3, 3) required&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span></div>
+    <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">t</span></div>
 
 
-<div class="viewcode-block" id="LocalSystem"><a class="viewcode-back" href="../../pyoints.html#pyoints.transformation.LocalSystem">[docs]</a><span class="k">class</span> <span class="nc">LocalSystem</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="LocalSystem"><a class="viewcode-back" href="../../pyoints.html#pyoints.transformation.LocalSystem">[docs]</a><span class="k">class</span> <span class="nc">LocalSystem</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Defines a local coordinate system based on a transformation matrix.</span>
 
 <span class="sd">    Parameters</span>
@@ -703,7 +706,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">origin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">]</span>
 
     <span class="nd">@origin</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">):</span>
@@ -778,7 +781,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">R</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="bp">self</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">*</span> <span class="n">R</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">@</span> <span class="n">R</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="LocalSystem.to_local"><a class="viewcode-back" href="../../pyoints.html#pyoints.transformation.LocalSystem.to_local">[docs]</a>    <span class="k">def</span> <span class="nf">to_local</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">global_coords</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Transforms global coordinates into local coordinates.</span>
@@ -951,7 +954,6 @@
     <span class="n">cCoords</span> <span class="o">=</span> <span class="n">coords</span> <span class="o">-</span> <span class="n">coords</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="c1"># calculate Eigenvectors and Eigenvalues</span>
-    <span class="c1"># cov_matrix = np.cov(cCoords, rowvar=False)  # a bit slower</span>
     <span class="n">cov_matrix</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">cCoords</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cCoords</span><span class="p">)</span>
     <span class="c1"># cov_matrix = cCoords.T @ cCoords  # fastest solution found</span>
     <span class="c1"># cov_matrix is a Hermitian matrix</span>
@@ -973,7 +975,7 @@
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    eigen_values : np.ndarray(Number, shape=(k))</span>
-<span class="sd">        Characteristic Eigen Values of the PCA.</span>
+<span class="sd">        Characteristic Eigenvalues of the PCA.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -1009,7 +1011,7 @@
 
         <span class="n">T</span> <span class="o">=</span> <span class="n">LocalSystem</span><span class="p">(</span><span class="n">identity</span><span class="p">(</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
         <span class="n">T</span><span class="p">[:</span><span class="n">dim</span><span class="p">,</span> <span class="p">:</span><span class="n">dim</span><span class="p">]</span> <span class="o">=</span> <span class="n">eigen_vectors</span><span class="o">.</span><span class="n">T</span>
-        <span class="n">T</span> <span class="o">=</span> <span class="n">T</span> <span class="o">*</span> <span class="n">t_matrix</span><span class="p">(</span><span class="o">-</span><span class="n">center</span><span class="p">)</span>  <span class="c1"># don not edit!</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">t_matrix</span><span class="p">(</span><span class="o">-</span><span class="n">center</span><span class="p">)</span>  <span class="c1"># do not edit!</span>
 
         <span class="n">T</span><span class="o">.</span><span class="n">_eigen_values</span> <span class="o">=</span> <span class="n">eigen_values</span>
 
@@ -1051,8 +1053,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">k</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;%-&#39;th principal component not available&quot;</span><span class="p">)</span>
 
-        <span class="n">pc</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pc</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">]</span></div></div>
 </pre></div>
 
           </div>

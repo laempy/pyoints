@@ -34,20 +34,21 @@
   <h1>Source code for pyoints.storage.CsvHandler</h1><div class="highlight"><pre>
 <span></span><span class="c1"># BEGIN OF LICENSE NOTE</span>
 <span class="c1"># This file is part of Pyoints.</span>
-<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University, </span>
+<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University,</span>
 <span class="c1"># lamprecht@uni-trier.de</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is free software: you can redistribute it and/or modify</span>
 <span class="c1"># it under the terms of the GNU General Public License as published by</span>
 <span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
 <span class="c1"># (at your option) any later version.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is distributed in the hope that it will be useful,</span>
 <span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
 <span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
 <span class="c1"># GNU General Public License for more details.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with Pyoints. If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
 <span class="c1"># END OF LICENSE NOTE</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pandas</span>
@@ -71,9 +72,9 @@
 <span class="sd">    infile : String</span>
 <span class="sd">        File to be read.</span>
 <span class="sd">    sep : optional, Character</span>
-<span class="sd">        Character seperating the columns.</span>
+<span class="sd">        Character separating the columns.</span>
 <span class="sd">    multicol_sep : optional, Character</span>
-<span class="sd">        Indicates how the column index of multi-column are seperated form the</span>
+<span class="sd">        Indicates how the column index of multi-column are separated form the</span>
 <span class="sd">        column name.</span>
 <span class="sd">    dtype : np.dtype</span>
 <span class="sd">        Desired data type of the output numpy record array.</span>
@@ -179,7 +180,7 @@
 
 
 <div class="viewcode-block" id="writeCsv"><a class="viewcode-back" href="../../../pyoints.storage.html#pyoints.storage.CsvHandler.writeCsv">[docs]</a><span class="k">def</span> <span class="nf">writeCsv</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">multicol_sep</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Write a array to a csv-file.</span>
+    <span class="sd">&quot;&quot;&quot;Write an array to a csv-file.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -188,9 +189,9 @@
 <span class="sd">    outfile : string</span>
 <span class="sd">        File to write the data to.</span>
 <span class="sd">    sep : optional, Character</span>
-<span class="sd">        Desired field seperator.</span>
+<span class="sd">        Desired field separator.</span>
 <span class="sd">    multicol_sep : optional, Character</span>
-<span class="sd">        Indicates how the column index of multi-column shall be seperated form</span>
+<span class="sd">        Indicates how the column index of multi-column shall be separated form</span>
 <span class="sd">        the column name. For example, the column names &#39;normal.1&#39;, &#39;normal.2&#39;</span>
 <span class="sd">        indicate a two dimensional attribute &#39;normal&#39;.</span>
 <span class="sd">    \*\*kwargs : optional</span>

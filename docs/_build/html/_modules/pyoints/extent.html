@@ -34,22 +34,23 @@
   <h1>Source code for pyoints.extent</h1><div class="highlight"><pre>
 <span></span><span class="c1"># BEGIN OF LICENSE NOTE</span>
 <span class="c1"># This file is part of Pyoints.</span>
-<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University, </span>
+<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University,</span>
 <span class="c1"># lamprecht@uni-trier.de</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is free software: you can redistribute it and/or modify</span>
 <span class="c1"># it under the terms of the GNU General Public License as published by</span>
 <span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
 <span class="c1"># (at your option) any later version.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is distributed in the hope that it will be useful,</span>
 <span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
 <span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
 <span class="c1"># GNU General Public License for more details.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with Pyoints. If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
 <span class="c1"># END OF LICENSE NOTE</span>
-<span class="sd">&quot;&quot;&quot;Handle spatial extents.</span>
+<span class="sd">&quot;&quot;&quot;Handles spatial extents.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -132,7 +133,7 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">dim</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">ext</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;malformed extent vector&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">ext</span><span class="p">[:</span><span class="n">dim</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">ext</span><span class="p">[</span><span class="n">dim</span><span class="p">:]):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;minima must not be greater then maxima&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;minima must not be greater than maxima&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">ext</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
 
@@ -157,7 +158,7 @@
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_corner</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_corner</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
 
 <div class="viewcode-block" id="Extent.split"><a class="viewcode-back" href="../../pyoints.html#pyoints.extent.Extent.split">[docs]</a>    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Splits the extent into the minium and maximum corners.</span>
+        <span class="sd">&quot;&quot;&quot;Splits the extent into the minimum and maximum corners.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -219,11 +220,12 @@
         <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">combs</span><span class="p">]</span>
 
 <div class="viewcode-block" id="Extent.intersection"><a class="viewcode-back" href="../../pyoints.html#pyoints.extent.Extent.intersection">[docs]</a>    <span class="k">def</span> <span class="nf">intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Test if coordinates are located within the extent.</span>
+        <span class="sd">&quot;&quot;&quot;Tests if coordinates are located within the extent.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        coords : array_like(Number, shape=(n, k)) or array_like(Number, shape=(k))</span>
+<span class="sd">        coords : array_like(Number, shape=(n, k)) or</span>
+<span class="sd">        array_like(Number, shape=(k))</span>
 <span class="sd">            Represents `n` data points of `k` dimensions.</span>
 <span class="sd">        dim : positive int</span>
 <span class="sd">            Desired number of dimensions to consider.</span>
@@ -231,7 +233,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        indices : np.ndarray(int, shape=(n)) or np.ndarray(bool, shape=(n))</span>
-<span class="sd">            Indices of coordinates, which are within the extent. If just a</span>
+<span class="sd">            Indices of coordinates which are within the extent. If just a</span>
 <span class="sd">            single point is given, a boolean value is returned.</span>
 
 <span class="sd">        Examples</span>
@@ -262,7 +264,7 @@
         <span class="c1"># set desired dimension</span>
         <span class="n">dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="k">if</span> <span class="n">dim</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">dim</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">dim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;dimension &quot;dim&quot; has to be greater zero&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;dimension &quot;dim&quot; needs to be greater zero&#39;</span><span class="p">)</span>
 
         <span class="c1"># check</span>
         <span class="n">n</span><span class="p">,</span> <span class="n">c_dim</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">shape</span>

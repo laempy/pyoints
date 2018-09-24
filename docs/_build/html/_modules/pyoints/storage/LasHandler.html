@@ -34,30 +34,34 @@
   <h1>Source code for pyoints.storage.LasHandler</h1><div class="highlight"><pre>
 <span></span><span class="c1"># BEGIN OF LICENSE NOTE</span>
 <span class="c1"># This file is part of Pyoints.</span>
-<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University, </span>
+<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University,</span>
 <span class="c1"># lamprecht@uni-trier.de</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is free software: you can redistribute it and/or modify</span>
 <span class="c1"># it under the terms of the GNU General Public License as published by</span>
 <span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
 <span class="c1"># (at your option) any later version.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is distributed in the hope that it will be useful,</span>
 <span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
 <span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
 <span class="c1"># GNU General Public License for more details.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with Pyoints. If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
 <span class="c1"># END OF LICENSE NOTE</span>
-<span class="sd">&quot;&quot;&quot;Hanlding of .las-files.</span>
+<span class="sd">&quot;&quot;&quot;Handling of .las-files.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">laspy</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="n">georecords</span> <span class="kn">import</span> <span class="nn">GeoRecords</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="n">extent</span> <span class="kn">import</span> <span class="nn">Extent</span>
+<span class="kn">from</span> <span class="nn">..extent</span> <span class="k">import</span> <span class="n">Extent</span>
+<span class="kn">from</span> <span class="nn">..georecords</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">GeoRecords</span><span class="p">,</span>
+    <span class="n">LasRecords</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="p">(</span>
     <span class="n">transformation</span><span class="p">,</span>
     <span class="n">projection</span><span class="p">,</span>
@@ -66,87 +70,7 @@
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">.BaseGeoHandler</span> <span class="k">import</span> <span class="n">GeoFile</span>
-
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd"># see https://pythonhosted.org/laspy/tut_part_3.html</span>
-<span class="sd">0 	Raw Extra Bytes 	Value of &quot;options&quot;</span>
-<span class="sd">1 	unsigned char 	1 byte</span>
-<span class="sd">2 	Char 	1 byte</span>
-<span class="sd">3 	unsigned short 	2 bytes</span>
-<span class="sd">4 	Short 	2 bytes</span>
-<span class="sd">5 	unsigned long 	4 bytes</span>
-<span class="sd">6 	Long 	4 bytes</span>
-<span class="sd">7 	unsigned long long 	8 bytes</span>
-<span class="sd">8 	long long 	8 bytes</span>
-<span class="sd">9 	Float 	4 bytes</span>
-<span class="sd">10 	Double 	8 bytes</span>
-<span class="sd">11 	unsigned char[2] 	2 byte</span>
-<span class="sd">12 	char[2] 	2 byte</span>
-<span class="sd">13 	unsigned short[2] 	4 bytes</span>
-<span class="sd">14 	short[2] 	4 bytes</span>
-<span class="sd">15 	unsigned long[2] 	8 bytes</span>
-<span class="sd">16 	long[2] 	8 bytes</span>
-<span class="sd">17 	unsigned long long[2] 	16 bytes</span>
-<span class="sd">18 	long long[2] 	16 bytes</span>
-<span class="sd">19 	float[2] 	8 bytes</span>
-<span class="sd">20 	double[2] 	16 bytes</span>
-<span class="sd">21 	unsigned char[3] 	3 byte</span>
-<span class="sd">22 	char[3] 	3 byte</span>
-<span class="sd">23 	unsigned short[3] 	6 bytes</span>
-<span class="sd">24 	short[3] 	6 bytes</span>
-<span class="sd">25 	unsigned long[3] 	12 bytes</span>
-<span class="sd">26 	long[3] 	12 bytes</span>
-<span class="sd">27 	unsigned long long[3] 	24 bytes</span>
-<span class="sd">28 	long long[3] 	24 bytes</span>
-<span class="sd">29 	float[3] 	12 bytes</span>
-<span class="sd">30 	double[3] 	24 bytes</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="c1"># Type conversion</span>
-<span class="n">LASPY_TYPE_MAP</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;|u1&#39;</span><span class="p">]),</span>
-    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;|S1&#39;</span><span class="p">]),</span>
-    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;&lt;u2&#39;</span><span class="p">]),</span>
-    <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;&lt;i2&#39;</span><span class="p">]),</span>
-    <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;&lt;u4&#39;</span><span class="p">]),</span>
-    <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;&lt;i4&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;i8&#39;</span><span class="p">]),</span>
-    <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;&lt;u8&#39;</span><span class="p">]),</span>
-    <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="p">[]),</span>  <span class="c1"># error occurs</span>
-    <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;&lt;f4&#39;</span><span class="p">]),</span>
-    <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;&lt;f8&#39;</span><span class="p">]),</span>
-<span class="p">]</span>
-
-<span class="n">LASPY_TO_NUMPY_TYPE</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">LASPY_TYPE_MAP</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">type_id</span> <span class="o">=</span> <span class="n">key</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">LASPY_TYPE_MAP</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">dim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="n">LASPY_TO_NUMPY_TYPE</span><span class="p">[</span><span class="n">type_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dim</span><span class="p">)</span>
-
-<span class="n">NUMPY_TO_LASPY_TYPE</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
-    <span class="n">NUMPY_TO_LASPY_TYPE</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">LASPY_TYPE_MAP</span><span class="p">:</span>
-        <span class="n">type_id</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">LASPY_TYPE_MAP</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">dim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">p</span><span class="p">:</span>
-            <span class="n">NUMPY_TO_LASPY_TYPE</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">type_id</span>
-
-
-<span class="k">def</span> <span class="nf">_dtype_to_laspy_type_id</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
-    <span class="c1"># convert numpy type to laspy type id</span>
-    <span class="k">if</span> <span class="n">dtype</span><span class="o">.</span><span class="n">subdtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">dt</span> <span class="o">=</span> <span class="n">dtype</span>
-        <span class="n">type_name</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">str</span>
-        <span class="n">type_dim</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">dt</span> <span class="o">=</span> <span class="n">dtype</span><span class="o">.</span><span class="n">subdtype</span>
-        <span class="n">type_name</span> <span class="o">=</span> <span class="n">dt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">str</span>
-        <span class="n">type_dim</span> <span class="o">=</span> <span class="n">dt</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dt</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span>
-    <span class="k">if</span> <span class="n">type_dim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">NUMPY_TO_LASPY_TYPE</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="k">return</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="n">type_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">NUMPY_TO_LASPY_TYPE</span><span class="p">[</span><span class="n">type_dim</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="k">return</span> <span class="kc">None</span>
-    <span class="k">return</span> <span class="n">NUMPY_TO_LASPY_TYPE</span><span class="p">[</span><span class="n">type_dim</span><span class="p">][</span><span class="n">type_name</span><span class="p">]</span>
+<span class="kn">from</span> <span class="nn">.dtype_converters</span> <span class="k">import</span> <span class="n">numpy_to_laspy_dtype</span>
 
 
 <div class="viewcode-block" id="LasReader"><a class="viewcode-back" href="../../../pyoints.storage.html#pyoints.storage.LasHandler.LasReader">[docs]</a><span class="k">class</span> <span class="nc">LasReader</span><span class="p">(</span><span class="n">GeoFile</span><span class="p">):</span>
@@ -208,7 +132,7 @@
             <span class="nb">str</span><span class="p">(</span><span class="n">dim</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span> <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">lasFile</span><span class="o">.</span><span class="n">point_format</span>
         <span class="p">]</span>  <span class="c1"># ugly workaround to get actual strings</span>
 
-        <span class="n">points</span> <span class="o">=</span> <span class="n">lasFile</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">recarray</span><span class="p">)</span><span class="o">.</span><span class="n">point</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">lasFile</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="s1">&#39;point&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">recarray</span><span class="p">)</span>
 
         <span class="c1"># Close File</span>
         <span class="n">lasFile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -308,8 +232,9 @@
     <span class="n">offset</span><span class="p">[:</span><span class="n">dim</span><span class="p">]</span> <span class="o">=</span> <span class="n">geoRecords</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">origin</span>
 
     <span class="n">max_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">records</span><span class="o">.</span><span class="n">extent</span><span class="p">()</span><span class="o">.</span><span class="n">corners</span> <span class="o">-</span> <span class="n">offset</span><span class="p">[:</span><span class="n">dim</span><span class="p">])</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">max_digits</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="mi">30</span>  <span class="c1"># long</span>
+    <span class="n">max_digits</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="mi">30</span>  <span class="c1"># long int</span>
     <span class="n">scale</span><span class="p">[:</span><span class="n">dim</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_values</span> <span class="o">/</span> <span class="n">max_digits</span>
+    <span class="n">scale</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">max_digits</span>
 
     <span class="n">lasFile</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">scale</span>
     <span class="n">lasFile</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="n">offset</span>
@@ -319,7 +244,7 @@
     <span class="n">field_names</span> <span class="o">=</span> <span class="n">records</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span>
 
     <span class="c1"># Fields to omit</span>
-    <span class="n">omit</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">]</span>
+    <span class="n">omit</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">omit</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">las_fields</span><span class="p">)</span>
     <span class="n">omit</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">LasRecords</span><span class="o">.</span><span class="n">USER_DEFINED_FIELDS</span><span class="p">)</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
 
@@ -327,7 +252,7 @@
     <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">field_names</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">omit</span><span class="p">:</span>
             <span class="n">dtype</span> <span class="o">=</span> <span class="n">records</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
-            <span class="n">type_id</span> <span class="o">=</span> <span class="n">_dtype_to_laspy_type_id</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">type_id</span> <span class="o">=</span> <span class="n">numpy_to_laspy_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">type_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">omit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -352,6 +277,20 @@
             <span class="n">lasFile</span><span class="o">.</span><span class="n">flag_byte</span> <span class="o">=</span> <span class="n">lasFile</span><span class="o">.</span><span class="n">flag_byte</span> <span class="o">+</span> <span class="n">records</span><span class="o">.</span><span class="n">num_returns</span> <span class="o">*</span> <span class="mi">8</span>
         <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;intensity&#39;</span><span class="p">:</span>
             <span class="n">lasFile</span><span class="o">.</span><span class="n">set_intensity</span><span class="p">(</span><span class="n">records</span><span class="o">.</span><span class="n">intensity</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;user_data&#39;</span><span class="p">:</span>
+            <span class="n">lasFile</span><span class="o">.</span><span class="n">set_user_data</span><span class="p">(</span><span class="n">records</span><span class="o">.</span><span class="n">user_data</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;red&#39;</span><span class="p">:</span>
+            <span class="n">lasFile</span><span class="o">.</span><span class="n">set_red</span><span class="p">(</span><span class="n">records</span><span class="o">.</span><span class="n">red</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;green&#39;</span><span class="p">:</span>
+            <span class="n">lasFile</span><span class="o">.</span><span class="n">set_green</span><span class="p">(</span><span class="n">records</span><span class="o">.</span><span class="n">green</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;blue&#39;</span><span class="p">:</span>
+            <span class="n">lasFile</span><span class="o">.</span><span class="n">set_blue</span><span class="p">(</span><span class="n">records</span><span class="o">.</span><span class="n">blue</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;nir&#39;</span><span class="p">:</span>
+            <span class="n">lasFile</span><span class="o">.</span><span class="n">set_blue</span><span class="p">(</span><span class="n">records</span><span class="o">.</span><span class="n">nir</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;pt_src_id&#39;</span><span class="p">:</span>
+            <span class="n">lasFile</span><span class="o">.</span><span class="n">set_pt_src_id</span><span class="p">(</span><span class="n">records</span><span class="o">.</span><span class="n">pt_src_id</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;gps_time&#39;</span><span class="p">:</span>
+            <span class="n">lasFile</span><span class="o">.</span><span class="n">set_gps_time</span><span class="p">(</span><span class="n">records</span><span class="o">.</span><span class="n">gps_time</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">omit</span><span class="p">:</span>
             <span class="n">lasFile</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">set_dimension</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">records</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
 
@@ -359,96 +298,6 @@
     <span class="n">lasFile</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">update_min_max</span><span class="p">()</span>
     <span class="n">lasFile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="k">del</span> <span class="n">lasFile</span></div>
-
-
-<div class="viewcode-block" id="LasRecords"><a class="viewcode-back" href="../../../pyoints.storage.html#pyoints.storage.LasHandler.LasRecords">[docs]</a><span class="k">class</span> <span class="nc">LasRecords</span><span class="p">(</span><span class="n">GeoRecords</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Data structure extending GeoRecords to provide an optimized API for LAS</span>
-<span class="sd">    data.</span>
-
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    last_return : np.ndarray(bool)</span>
-<span class="sd">        Array indicating if a point is a last return point.</span>
-<span class="sd">    first_return : np.ndarray(bool)</span>
-<span class="sd">        Array indicating if a point is a first return point.</span>
-<span class="sd">    only_return : np.ndarray(bool)</span>
-<span class="sd">        Array indicating if a point is the only returned point.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    GeoRecords</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">USER_DEFINED_FIELDS</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">(</span><span class="s1">&#39;coords&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;classification&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;num_returns&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;return_num&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
-    <span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">last_return</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_num</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_returns</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">first_return</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_num</span> <span class="o">==</span> <span class="mi">1</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">only_return</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_returns</span> <span class="o">==</span> <span class="mi">1</span>
-
-<div class="viewcode-block" id="LasRecords.activate"><a class="viewcode-back" href="../../../pyoints.storage.html#pyoints.storage.LasHandler.LasRecords.activate">[docs]</a>    <span class="k">def</span> <span class="nf">activate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Activates a desired field on demand.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        field_name : String</span>
-<span class="sd">            Name of the field to activate.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">USER_DEFINED_FIELDS</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">field</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">field_name</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_fields</span><span class="p">([</span><span class="n">field</span><span class="p">])</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;field &quot;</span><span class="si">%s</span><span class="s1">&quot; not found&#39;</span> <span class="o">%</span> <span class="n">field_name</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="LasRecords.grd"><a class="viewcode-back" href="../../../pyoints.storage.html#pyoints.storage.LasHandler.LasRecords.grd">[docs]</a>    <span class="k">def</span> <span class="nf">grd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Filter by points classified as ground.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        LasRecords</span>
-<span class="sd">            Filtered records.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">class_indices</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">11</span><span class="p">)]</span></div>
-
-<div class="viewcode-block" id="LasRecords.veg"><a class="viewcode-back" href="../../../pyoints.storage.html#pyoints.storage.LasHandler.LasRecords.veg">[docs]</a>    <span class="k">def</span> <span class="nf">veg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Filter by points classified as vegetation.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        LasRecords</span>
-<span class="sd">            Filtered records.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">class_indices</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">)]</span></div>
-
-<div class="viewcode-block" id="LasRecords.class_indices"><a class="viewcode-back" href="../../../pyoints.storage.html#pyoints.storage.LasHandler.LasRecords.class_indices">[docs]</a>    <span class="k">def</span> <span class="nf">class_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">classes</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Filter by classes.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        *classes : int</span>
-<span class="sd">            Classes to filter by.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        np.ndarray(int)</span>
-<span class="sd">            Filtered record indices.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classification</span><span class="p">,</span> <span class="n">classes</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span></div></div>
 
 
 <span class="k">def</span> <span class="nf">_updateLasHeader</span><span class="p">(</span><span class="n">las_file</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">translate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

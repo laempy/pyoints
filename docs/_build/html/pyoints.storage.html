@@ -52,7 +52,7 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>infile</strong> (<em>String</em>) – File to be read. It should contain data to be interpreted as points of
 <cite>k</cite> dimensions.</li>
-<li><strong>directory</strong> (<em>bool</em>) – Indicates if the file is a comosite of several files stored in a
+<li><strong>directory</strong> (<em>bool</em>) – Indicates if the file is a composite of several files stored in a
 directory.</li>
 <li><strong>Properties</strong> – </li>
 <li><strong>----------</strong> – </li>
@@ -135,8 +135,8 @@ this matrix defines the origin of a local coordinate system.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>infile</strong> (<em>String</em>) – File to be read.</li>
-<li><strong>sep</strong> (<em>optional</em><em>, </em><em>Character</em>) – Character seperating the columns.</li>
-<li><strong>multicol_sep</strong> (<em>optional</em><em>, </em><em>Character</em>) – Indicates how the column index of multi-column are seperated form the
+<li><strong>sep</strong> (<em>optional</em><em>, </em><em>Character</em>) – Character separating the columns.</li>
+<li><strong>multicol_sep</strong> (<em>optional</em><em>, </em><em>Character</em>) – Indicates how the column index of multi-column are separated form the
 column name.</li>
 <li><strong>dtype</strong> (<em>np.dtype</em>) – Desired data type of the output numpy record array.</li>
 <li><strong>header</strong> (<em>bool</em>) – Indicates</li>
@@ -161,7 +161,7 @@ column name.</li>
 <dl class="function">
 <dt id="pyoints.storage.CsvHandler.writeCsv">
 <code class="descclassname">pyoints.storage.CsvHandler.</code><code class="descname">writeCsv</code><span class="sig-paren">(</span><em>data</em>, <em>outfile</em>, <em>sep='</em>, <em>'</em>, <em>multicol_sep='.'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/CsvHandler.html#writeCsv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.CsvHandler.writeCsv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write a array to a csv-file.</p>
+<dd><p>Write an array to a csv-file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -169,8 +169,8 @@ column name.</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>data</strong> (<em>array_like</em>) – Data to store.</li>
 <li><strong>outfile</strong> (<em>string</em>) – File to write the data to.</li>
-<li><strong>sep</strong> (<em>optional</em><em>, </em><em>Character</em>) – Desired field seperator.</li>
-<li><strong>multicol_sep</strong> (<em>optional</em><em>, </em><em>Character</em>) – Indicates how the column index of multi-column shall be seperated form
+<li><strong>sep</strong> (<em>optional</em><em>, </em><em>Character</em>) – Desired field separator.</li>
+<li><strong>multicol_sep</strong> (<em>optional</em><em>, </em><em>Character</em>) – Indicates how the column index of multi-column shall be separated form
 the column name. For example, the column names ‘normal.1’, ‘normal.2’
 indicate a two dimensional attribute ‘normal’.</li>
 <li><strong>**kwargs</strong> (<em>optional</em>) – Arguments passed to np.save_txt`</li>
@@ -194,7 +194,7 @@ indicate a two dimensional attribute ‘normal’.</li>
 <dt id="pyoints.storage.DumpHandler.DumpReader">
 <em class="property">class </em><code class="descclassname">pyoints.storage.DumpHandler.</code><code class="descname">DumpReader</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/DumpHandler.html#DumpReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.DumpHandler.DumpReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyoints.storage.BaseGeoHandler.GeoFile" title="pyoints.storage.BaseGeoHandler.GeoFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyoints.storage.BaseGeoHandler.GeoFile</span></code></a></p>
-<p>Class to read GeoRecords form python dump files.</p>
+<p>Class to read GeoRecords from python dump files.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><code class="xref py py-class docutils literal notranslate"><span class="pre">GeoFile</span></code></p>
@@ -265,7 +265,7 @@ indicate a two dimensional attribute ‘normal’.</li>
 
 <dl class="function">
 <dt id="pyoints.storage.DumpHandler.dumpstring_to_object">
-<code class="descclassname">pyoints.storage.DumpHandler.</code><code class="descname">dumpstring_to_object</code><span class="sig-paren">(</span><em>string</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/DumpHandler.html#dumpstring_to_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.DumpHandler.dumpstring_to_object" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyoints.storage.DumpHandler.</code><code class="descname">dumpstring_to_object</code><span class="sig-paren">(</span><em>pickled</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/DumpHandler.html#dumpstring_to_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.DumpHandler.dumpstring_to_object" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a dump string to an object.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -302,7 +302,7 @@ indicate a two dimensional attribute ‘normal’.</li>
 <dl class="function">
 <dt id="pyoints.storage.DumpHandler.writeDump">
 <code class="descclassname">pyoints.storage.DumpHandler.</code><code class="descname">writeDump</code><span class="sig-paren">(</span><em>obj</em>, <em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/DumpHandler.html#writeDump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.DumpHandler.writeDump" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dump a object to a file.</p>
+<dd><p>Dump an object to a file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -320,7 +320,7 @@ indicate a two dimensional attribute ‘normal’.</li>
 </div>
 <div class="section" id="module-pyoints.storage.LasHandler">
 <span id="pyoints-storage-lashandler-module"></span><h2>pyoints.storage.LasHandler module<a class="headerlink" href="#module-pyoints.storage.LasHandler" title="Permalink to this headline">¶</a></h2>
-<p>Hanlding of .las-files.</p>
+<p>Handling of .las-files.</p>
 <dl class="class">
 <dt id="pyoints.storage.LasHandler.LasReader">
 <em class="property">class </em><code class="descclassname">pyoints.storage.LasHandler.</code><code class="descname">LasReader</code><span class="sig-paren">(</span><em>infile</em>, <em>proj=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/LasHandler.html#LasReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.LasHandler.LasReader" title="Permalink to this definition">¶</a></dt>
@@ -373,120 +373,6 @@ reference of the file has not be set yet.</li>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="pyoints.storage.LasHandler.LasRecords">
-<em class="property">class </em><code class="descclassname">pyoints.storage.LasHandler.</code><code class="descname">LasRecords</code><span class="sig-paren">(</span><em>proj</em>, <em>rec</em>, <em>T=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/LasHandler.html#LasRecords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.LasHandler.LasRecords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="pyoints.html#pyoints.georecords.GeoRecords" title="pyoints.georecords.GeoRecords"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyoints.georecords.GeoRecords</span></code></a></p>
-<p>Data structure extending GeoRecords to provide an optimized API for LAS
-data.</p>
-<dl class="attribute">
-<dt id="pyoints.storage.LasHandler.LasRecords.last_return">
-<code class="descname">last_return</code><a class="headerlink" href="#pyoints.storage.LasHandler.LasRecords.last_return" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>np.ndarray(bool)</em> – Array indicating if a point is a last return point.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="pyoints.storage.LasHandler.LasRecords.first_return">
-<code class="descname">first_return</code><a class="headerlink" href="#pyoints.storage.LasHandler.LasRecords.first_return" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>np.ndarray(bool)</em> – Array indicating if a point is a first return point.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="pyoints.storage.LasHandler.LasRecords.only_return">
-<code class="descname">only_return</code><a class="headerlink" href="#pyoints.storage.LasHandler.LasRecords.only_return" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>np.ndarray(bool)</em> – Array indicating if a point is the only returned point.</p>
-</dd></dl>
-
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><code class="xref py py-class docutils literal notranslate"><span class="pre">GeoRecords</span></code></p>
-</div>
-<dl class="attribute">
-<dt id="pyoints.storage.LasHandler.LasRecords.USER_DEFINED_FIELDS">
-<code class="descname">USER_DEFINED_FIELDS</code><em class="property"> = [('coords', &lt;class 'float'&gt;, 3), ('classification', &lt;class 'numpy.uint8'&gt;), ('num_returns', &lt;class 'numpy.uint8'&gt;), ('return_num', &lt;class 'numpy.uint8'&gt;)]</em><a class="headerlink" href="#pyoints.storage.LasHandler.LasRecords.USER_DEFINED_FIELDS" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyoints.storage.LasHandler.LasRecords.activate">
-<code class="descname">activate</code><span class="sig-paren">(</span><em>field_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/LasHandler.html#LasRecords.activate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.LasHandler.LasRecords.activate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Activates a desired field on demand.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>field_name</strong> (<em>String</em>) – Name of the field to activate.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyoints.storage.LasHandler.LasRecords.class_indices">
-<code class="descname">class_indices</code><span class="sig-paren">(</span><em>*classes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/LasHandler.html#LasRecords.class_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.LasHandler.LasRecords.class_indices" title="Permalink to this definition">¶</a></dt>
-<dd><p>Filter by classes.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>*classes</strong> (<em>int</em>) – Classes to filter by.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Filtered record indices.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.ndarray(int)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descname">first_return</code></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyoints.storage.LasHandler.LasRecords.grd">
-<code class="descname">grd</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/LasHandler.html#LasRecords.grd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.LasHandler.LasRecords.grd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Filter by points classified as ground.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Filtered records.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#pyoints.storage.LasHandler.LasRecords" title="pyoints.storage.LasHandler.LasRecords">LasRecords</a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descname">last_return</code></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descname">only_return</code></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyoints.storage.LasHandler.LasRecords.veg">
-<code class="descname">veg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/LasHandler.html#LasRecords.veg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.LasHandler.LasRecords.veg" title="Permalink to this definition">¶</a></dt>
-<dd><p>Filter by points classified as vegetation.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Filtered records.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#pyoints.storage.LasHandler.LasRecords" title="pyoints.storage.LasHandler.LasRecords">LasRecords</a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
 <dl class="function">
 <dt id="pyoints.storage.LasHandler.writeLas">
 <code class="descclassname">pyoints.storage.LasHandler.</code><code class="descname">writeLas</code><span class="sig-paren">(</span><em>geoRecords</em>, <em>outfile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/LasHandler.html#writeLas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.LasHandler.writeLas" title="Permalink to this definition">¶</a></dt>
@@ -508,7 +394,7 @@ data.</p>
 </div>
 <div class="section" id="module-pyoints.storage.PlyHandler">
 <span id="pyoints-storage-plyhandler-module"></span><h2>pyoints.storage.PlyHandler module<a class="headerlink" href="#module-pyoints.storage.PlyHandler" title="Permalink to this headline">¶</a></h2>
-<p>Hanlding of .ply-files.</p>
+<p>Handling of .ply-files.</p>
 <dl class="function">
 <dt id="pyoints.storage.PlyHandler.loadPly">
 <code class="descclassname">pyoints.storage.PlyHandler.</code><code class="descname">loadPly</code><span class="sig-paren">(</span><em>infile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/PlyHandler.html#loadPly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.PlyHandler.loadPly" title="Permalink to this definition">¶</a></dt>
@@ -568,7 +454,7 @@ data.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>infile</strong> (<em>String</em>) – Raster file to be read.</li>
 <li><strong>proj</strong> (<em>optional</em><em>, </em><a class="reference internal" href="pyoints.html#pyoints.projection.Proj" title="pyoints.projection.Proj"><em>Proj</em></a>) – Spatial reference system. Usually just provided, if the spatial
-reference has not be set yet.</li>
+reference has not been set yet.</li>
 <li><strong>date</strong> (<em>datetime.date</em>) – Date of capture.</li>
 </ul>
 </td>
@@ -615,18 +501,44 @@ reference has not be set yet.</li>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyoints.storage.RasterHandler.writeRaster">
-<code class="descclassname">pyoints.storage.RasterHandler.</code><code class="descname">writeRaster</code><span class="sig-paren">(</span><em>raster</em>, <em>outfile</em>, <em>field='bands'</em>, <em>noData=nan</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/RasterHandler.html#writeRaster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.RasterHandler.writeRaster" title="Permalink to this definition">¶</a></dt>
-<dd><p>Writes a a Grid to disc.</p>
+<dt id="pyoints.storage.RasterHandler.load_gdal">
+<code class="descclassname">pyoints.storage.RasterHandler.</code><code class="descname">load_gdal</code><span class="sig-paren">(</span><em>filename</em>, <em>proj=None</em>, <em>extent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/RasterHandler.html#load_gdal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.RasterHandler.load_gdal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads an image from disc using gdal.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>raster</strong> (<a class="reference internal" href="pyoints.grid.html#pyoints.grid.grid.Grid" title="pyoints.grid.grid.Grid"><em>Grid</em></a><em>(</em><em>shape=</em><em>(</em><em>cols</em><em>, </em><em>rows</em><em>)</em><em>)</em>) – A two dimensional Grid to be stored with of <cite>cols</cite> columns and <cite>rows</cite>
-rows.</li>
+<li><strong>filename</strong> (<em>str</em>) – Path to file.</li>
+<li><strong>proj</strong> (<em>optional</em><em>, </em><a class="reference internal" href="pyoints.html#pyoints.projection.Proj" title="pyoints.projection.Proj"><em>Proj</em></a>) – Desired projection.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>bands</strong> (<em>np.array(Number, (rows, cols, bands))</em>) – Image data.</li>
+<li><strong>rotation</strong> (<em>Number</em>) – Image orientation.</li>
+<li><strong>proj</strong> (<em>Proj</em>) – Projection.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyoints.storage.RasterHandler.writeRaster">
+<code class="descclassname">pyoints.storage.RasterHandler.</code><code class="descname">writeRaster</code><span class="sig-paren">(</span><em>raster</em>, <em>outfile</em>, <em>field='bands'</em>, <em>no_data=nan</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/RasterHandler.html#writeRaster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.RasterHandler.writeRaster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes a Grid to file system.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>raster</strong> (<a class="reference internal" href="pyoints.grid.html#pyoints.grid.grid.Grid" title="pyoints.grid.grid.Grid"><em>Grid</em></a><em>(</em><em>shape=</em><em>(</em><em>cols</em><em>, </em><em>rows</em><em>)</em><em>)</em>) – A two dimensional Grid of <cite>cols</cite> columns and <cite>rows</cite> rows to be stored.</li>
 <li><strong>outfile</strong> (<em>String</em>) – File to save the raster to.</li>
 <li><strong>field</strong> (<em>optional</em><em>, </em><em>str</em>) – Field considered as raster bands.</li>
+<li><strong>no_data</strong> (<em>optional</em><em>, </em><em>object</em>) – Desired no data value.</li>
 </ul>
 </td>
 </tr>
@@ -635,12 +547,98 @@ rows.</li>
 </tr>
 </tbody>
 </table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-func docutils literal notranslate"><span class="pre">writeTif()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyoints.storage.RasterHandler.write_gdal">
+<code class="descclassname">pyoints.storage.RasterHandler.</code><code class="descname">write_gdal</code><span class="sig-paren">(</span><em>image</em>, <em>outfile</em>, <em>T=None</em>, <em>proj=None</em>, <em>no_data=nan</em>, <em>driver='GTiff'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/RasterHandler.html#write_gdal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.RasterHandler.write_gdal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes an image to disc.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>image</strong> (<em>np.ndarray</em><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>rows</em><em>, </em><em>cols</em><em>, </em><em>k</em><em>)</em><em>)</em>) – Image to save</li>
+<li><strong>outfile</strong> (<em>String</em>) – File to save the raster to.</li>
+<li><strong>no_data</strong> (<em>optional</em><em>, </em><em>object</em>) – No data value to be used.</li>
+<li><strong>T</strong> (<em>optional</em><em>, </em><em>array_like</em><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>3</em><em>, </em><em>3</em><em>)</em><em>)</em>) – Projection matrix to be used.</li>
+<li><strong>proj</strong> (<a class="reference internal" href="pyoints.html#pyoints.projection.Proj" title="pyoints.projection.Proj"><em>Proj</em></a>) – Projection to be used.</li>
+<li><strong>no_data</strong> – Desired no data value.</li>
+<li><strong>driver</strong> (<em>optional</em><em>, </em><em>str</em>) – Gdal driver.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#pyoints.storage.RasterHandler.writeRaster" title="pyoints.storage.RasterHandler.writeRaster"><code class="xref py py-func docutils literal notranslate"><span class="pre">writeRaster()</span></code></a></p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyoints.storage.dtype_converters">
+<span id="pyoints-storage-dtype-converters-module"></span><h2>pyoints.storage.dtype_converters module<a class="headerlink" href="#module-pyoints.storage.dtype_converters" title="Permalink to this headline">¶</a></h2>
+<p>Helper functions for data type conersion.</p>
+<dl class="function">
+<dt id="pyoints.storage.dtype_converters.numpy_to_gdal_dtype">
+<code class="descclassname">pyoints.storage.dtype_converters.</code><code class="descname">numpy_to_gdal_dtype</code><span class="sig-paren">(</span><em>dtype</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/dtype_converters.html#numpy_to_gdal_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.dtype_converters.numpy_to_gdal_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a numpy data type to a gdal data type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dtype</strong> (<em>np.dtype</em>) – Numpy data type to convert.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Gdal data type id.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numpy_to_gdal_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
+<span class="go">5</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyoints.storage.dtype_converters.numpy_to_laspy_dtype">
+<code class="descclassname">pyoints.storage.dtype_converters.</code><code class="descname">numpy_to_laspy_dtype</code><span class="sig-paren">(</span><em>dtype</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/dtype_converters.html#numpy_to_laspy_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.dtype_converters.numpy_to_laspy_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a numpy data type to a laspy data type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dtype</strong> (<em>np.dtype</em>) – Numpy data type to convert.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Laspy data type id.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numpy_to_laspy_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
+<span class="go">6</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
 <div class="section" id="module-pyoints.storage.misc">
 <span id="pyoints-storage-misc-module"></span><h2>pyoints.storage.misc module<a class="headerlink" href="#module-pyoints.storage.misc" title="Permalink to this headline">¶</a></h2>
-<p>Some random funtions, which ease development.</p>
+<p>Some random functions, which ease development.</p>
 <dl class="function">
 <dt id="pyoints.storage.misc.create_random_GeoRecords">
 <code class="descclassname">pyoints.storage.misc.</code><code class="descname">create_random_GeoRecords</code><span class="sig-paren">(</span><em>center=None</em>, <em>epsg=25832</em>, <em>dim=3</em>, <em>n=1000</em>, <em>scale=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/misc.html#create_random_GeoRecords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.misc.create_random_GeoRecords" title="Permalink to this definition">¶</a></dt>
@@ -684,6 +682,7 @@ rows.</li>
 <li class="toctree-l4"><a class="reference internal" href="#module-pyoints.storage.LasHandler">pyoints.storage.LasHandler module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-pyoints.storage.PlyHandler">pyoints.storage.PlyHandler module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-pyoints.storage.RasterHandler">pyoints.storage.RasterHandler module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyoints.storage.dtype_converters">pyoints.storage.dtype_converters module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-pyoints.storage.misc">pyoints.storage.misc module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-pyoints.storage">Module contents</a></li>
 </ul>
@@ -704,6 +703,7 @@ rows.</li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.indexkd">pyoints.indexkd module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.interpolate">pyoints.interpolate module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.misc">pyoints.misc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.normals">pyoints.normals module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.nptools">pyoints.nptools module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.polar">pyoints.polar module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.projection">pyoints.projection module</a></li>

@@ -34,20 +34,21 @@
   <h1>Source code for pyoints.smoothing</h1><div class="highlight"><pre>
 <span></span><span class="c1"># BEGIN OF LICENSE NOTE</span>
 <span class="c1"># This file is part of Pyoints.</span>
-<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University, </span>
+<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University,</span>
 <span class="c1"># lamprecht@uni-trier.de</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is free software: you can redistribute it and/or modify</span>
 <span class="c1"># it under the terms of the GNU General Public License as published by</span>
 <span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
 <span class="c1"># (at your option) any later version.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Pyoints is distributed in the hope that it will be useful,</span>
 <span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
 <span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
 <span class="c1"># GNU General Public License for more details.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with Pyoints. If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
 <span class="c1"># END OF LICENSE NOTE</span>
 <span class="sd">&quot;&quot;&quot;Collection of algorithms to smooth point clouds.</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -59,10 +60,10 @@
 
 
 <div class="viewcode-block" id="mean_ball"><a class="viewcode-back" href="../../pyoints.html#pyoints.smoothing.mean_ball">[docs]</a><span class="k">def</span> <span class="nf">mean_ball</span><span class="p">(</span>
-    <span class="n">coords</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span>
-    <span class="n">num_iter</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-    <span class="n">update_pairs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">f</span><span class="o">=</span><span class="k">lambda</span> <span class="n">coord</span><span class="p">,</span> <span class="n">ncoords</span><span class="p">:</span> <span class="n">ncoords</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+        <span class="n">coords</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span>
+        <span class="n">num_iter</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">update_pairs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">f</span><span class="o">=</span><span class="k">lambda</span> <span class="n">coord</span><span class="p">,</span> <span class="n">ncoords</span><span class="p">:</span> <span class="n">ncoords</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
     <span class="sd">&quot;&quot;&quot;Smoothing of spatial structures by iterative averaging the coordinates</span>
 <span class="sd">    of neighboured points.</span>
 
@@ -77,7 +78,7 @@
 <span class="sd">    update_pairs : optional, bool</span>
 <span class="sd">        Specifies weather or not point pairs are updated on each iteration.</span>
 <span class="sd">    f : callable</span>
-<span class="sd">        Aggregate function used for smoothing. It recieves the original point</span>
+<span class="sd">        Aggregate function used for smoothing. It receives the original point</span>
 <span class="sd">        coordinate and the coordinates of neighboured points as an argument</span>
 <span class="sd">        and returns a smoothed coordinate.</span>
 
@@ -88,7 +89,7 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 
-<span class="sd">    Create a three dimensional irregular suface of points.</span>
+<span class="sd">    Create a three dimensional irregular surface of points.</span>
 
 <span class="sd">    &gt;&gt;&gt; coords = np.ones((100, 3), dtype=float)</span>
 <span class="sd">    &gt;&gt;&gt; coords[:, 0:2] = np.vstack(np.mgrid[0:10, 0:10].T)</span>
@@ -99,14 +100,14 @@
 <span class="sd">    &gt;&gt;&gt; print(np.ptp(coords, axis=0))</span>
 <span class="sd">    [9.  9.  0.1]</span>
 
-<span class="sd">    Smooth coordinates to get a more regular surface. But, the first two</span>
+<span class="sd">    Smooth coordinates to get a more regular surface. But the first two</span>
 <span class="sd">    coordinate dimensions are affected, too.</span>
 
 <span class="sd">    &gt;&gt;&gt; scoords = mean_ball(coords, 1.5)</span>
 <span class="sd">    &gt;&gt;&gt; print(np.round(np.ptp(scoords, axis=0), 3))</span>
 <span class="sd">    [8.    8.    0.033]</span>
 
-<span class="sd">    Modyify the aggregation function to smooth the third coordinate axis only.</span>
+<span class="sd">    Modify the aggregation function to smooth the third coordinate axis only.</span>
 
 <span class="sd">    &gt;&gt;&gt; def aggregate_function(coord, ncoords):</span>
 <span class="sd">    ...     coord[2] = ncoords[:, 2].mean(0)</span>
@@ -147,11 +148,11 @@
 
 
 <div class="viewcode-block" id="mean_knn"><a class="viewcode-back" href="../../pyoints.html#pyoints.smoothing.mean_knn">[docs]</a><span class="k">def</span> <span class="nf">mean_knn</span><span class="p">(</span>
-    <span class="n">coords</span><span class="p">,</span>
-    <span class="n">k</span><span class="p">,</span>
-    <span class="n">num_iter</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-    <span class="n">update_pairs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">f</span><span class="o">=</span><span class="k">lambda</span> <span class="n">coord</span><span class="p">,</span> <span class="n">ncoords</span><span class="p">:</span> <span class="n">ncoords</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+        <span class="n">coords</span><span class="p">,</span>
+        <span class="n">k</span><span class="p">,</span>
+        <span class="n">num_iter</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">update_pairs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">f</span><span class="o">=</span><span class="k">lambda</span> <span class="n">coord</span><span class="p">,</span> <span class="n">ncoords</span><span class="p">:</span> <span class="n">ncoords</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
     <span class="sd">&quot;&quot;&quot;Smoothing of spatial structures by averaging neighboured point</span>
 <span class="sd">    coordinates.</span>
 
@@ -166,7 +167,7 @@
 <span class="sd">    update_pairs : optional, bool</span>
 <span class="sd">        Specifies weather or not point pairs are updated on each iteration.</span>
 <span class="sd">    f : callable</span>
-<span class="sd">        Aggregate function used for smoothing. It recieves the original point</span>
+<span class="sd">        Aggregate function used for smoothing. It receives the original point</span>
 <span class="sd">        coordinate and the coordinates of neighboured points as an argument</span>
 <span class="sd">        and returns a smoothed coordinate.</span>
 
@@ -177,7 +178,7 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 
-<span class="sd">    Create a three dimensional irregular suface of points.</span>
+<span class="sd">    Create a three dimensional irregular surface of points.</span>
 
 <span class="sd">    &gt;&gt;&gt; coords = np.ones((100, 3), dtype=float)</span>
 <span class="sd">    &gt;&gt;&gt; coords[:, 0:2] = np.vstack(np.mgrid[0:10, 0:10].T)</span>
@@ -188,14 +189,14 @@
 <span class="sd">    &gt;&gt;&gt; print(np.ptp(coords, axis=0))</span>
 <span class="sd">    [9.  9.  0.1]</span>
 
-<span class="sd">    Smooth coordinates to get a more regular surface. But, the first two</span>
+<span class="sd">    Smooth coordinates to get a more regular surface. But the first two</span>
 <span class="sd">    coordinate dimensions are affected, too.</span>
 
 <span class="sd">    &gt;&gt;&gt; scoords = mean_knn(coords, 5)</span>
 <span class="sd">    &gt;&gt;&gt; print(np.round(np.ptp(scoords, axis=0), 3))</span>
 <span class="sd">    [8.2  8.2  0.02]</span>
 
-<span class="sd">    Modyify the aggregation function to smooth the third coordinate axis only.</span>
+<span class="sd">    Modify the aggregation function to smooth the third coordinate axis only.</span>
 
 <span class="sd">    &gt;&gt;&gt; def aggregate_function(coord, ncoords):</span>
 <span class="sd">    ...     coord[2] = ncoords[:, 2].mean(0)</span>

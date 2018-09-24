@@ -52,6 +52,14 @@ pyoints.storage.RasterHandler module
     :undoc-members:
     :show-inheritance:
 
+pyoints.storage.dtype\_converters module
+----------------------------------------
+
+.. automodule:: pyoints.storage.dtype_converters
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pyoints.storage.misc module
 ---------------------------
 

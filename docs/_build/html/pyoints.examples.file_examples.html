@@ -45,7 +45,7 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyoints</span> <span class="k">import</span> <span class="n">storage</span>
 </pre></div>
 </div>
-<p>Create an output path relative to the source file.</p>
+<p>Create output path.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">outpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
 <span class="gp">... </span>            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">)</span>
 </pre></div>
@@ -61,12 +61,12 @@
 <span class="go">[(&#39;classification&#39;, &#39;&lt;i8&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;&lt;i8&#39;), (&#39;values&#39;, &#39;&lt;f8&#39;)]</span>
 </pre></div>
 </div>
-<p>Save as .csv-file.</p>
+<p>Save as a .csv-file.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">outfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outpath</span><span class="p">,</span> <span class="s1">&#39;test.csv&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">writeCsv</span><span class="p">(</span><span class="n">geoRecords</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Load .csv-file again and check the characteristics.</p>
+<p>Load the .csv-file again and check the characteristics.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">geoRecords</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">loadCsv</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="go">(1000,)</span>
@@ -83,7 +83,7 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyoints</span> <span class="k">import</span> <span class="n">storage</span>
 </pre></div>
 </div>
-<p>Create an output path relative to the source file.</p>
+<p>Create an output path.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">outpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
 <span class="gp">... </span>            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">)</span>
 </pre></div>
@@ -97,12 +97,12 @@
 <span class="go">[(&#39;classification&#39;, &#39;&lt;i8&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;&lt;i8&#39;), (&#39;values&#39;, &#39;&lt;f8&#39;)]</span>
 </pre></div>
 </div>
-<p>Save as DUMP-file.</p>
+<p>Save as a DUMP-file.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">outfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outpath</span><span class="p">,</span> <span class="s1">&#39;test.pydump&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">writeDump</span><span class="p">(</span><span class="n">geoRecords</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Load DUMP-file again and check the characteristics.</p>
+<p>Load the DUMP-file again and check the characteristics.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dumpReader</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">DumpReader</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">geoRecords</span> <span class="o">=</span> <span class="n">dumpReader</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
 </pre></div>
@@ -122,11 +122,12 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyoints</span> <span class="k">import</span> <span class="n">storage</span>
 </pre></div>
 </div>
+<p>Create an output path.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">outpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
 <span class="gp">... </span>            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Create GeoRecords from scratch</p>
+<p>Create GeoRecords from scratch.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">geoRecords</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">misc</span><span class="o">.</span><span class="n">create_random_GeoRecords</span><span class="p">(</span>
 <span class="gp">... </span>                    <span class="n">center</span><span class="o">=</span><span class="p">[</span><span class="mf">332592.88</span><span class="p">,</span> <span class="mf">5513244.80</span><span class="p">,</span> <span class="mi">120</span><span class="p">],</span> <span class="n">epsg</span><span class="o">=</span><span class="mi">25832</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
@@ -161,11 +162,12 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyoints</span> <span class="k">import</span> <span class="n">storage</span>
 </pre></div>
 </div>
+<p>Create an output path.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">outpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
 <span class="gp">... </span>            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Create GeoRecords from scratch</p>
+<p>Create GeoRecords from scratch.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">geoRecords</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">misc</span><span class="o">.</span><span class="n">create_random_GeoRecords</span><span class="p">(</span>
 <span class="gp">... </span>                    <span class="n">center</span><span class="o">=</span><span class="p">[</span><span class="mf">332592.88</span><span class="p">,</span> <span class="mf">5513244.80</span><span class="p">,</span> <span class="mi">120</span><span class="p">],</span> <span class="n">epsg</span><span class="o">=</span><span class="mi">25832</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
@@ -222,10 +224,10 @@
 <p>Apply a transformation to the matrix to get a propper spatial reference.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span>
 <span class="gp">... </span>        <span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="mi">332575</span><span class="p">,</span> <span class="mi">5513229</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">],</span> <span class="n">r</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;srt&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">raster</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">raster</span> <span class="o">=</span> <span class="n">raster</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Save the image as an tif-file. You might like to check the spatial reference of
+<p>Save the image as a tif-file. You might like to check the spatial reference of
 the output image using a Geographic Information System (GIS).</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">outfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outpath</span><span class="p">,</span> <span class="s1">&#39;test.tif&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">writeRaster</span><span class="p">(</span><span class="n">raster</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
@@ -238,18 +240,20 @@ the output image using a Geographic Information System (GIS).</p>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">raster</span> <span class="o">=</span> <span class="n">rasterHandler</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">raster</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">raster</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
 <span class="go">[ 332575. 5513229.]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">raster</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="go"> (96, 250)</span>
-<span class="go"> &gt;&gt;&gt; print(sorted(raster.dtype.descr))</span>
+<span class="go">(96, 250)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">raster</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">descr</span><span class="p">))</span>
 <span class="go">[(&#39;bands&#39;, &#39;&lt;i8&#39;, (3,)), (&#39;coords&#39;, &#39;&lt;f8&#39;, (2,))]</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="module-pyoints.examples.file_examples">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyoints.examples.file_examples" title="Permalink to this headline">¶</a></h2>
-<p>Examples to explain, how files can be saved and loaded.</p>
+<p>Examples to explain how files can be saved and loaded.</p>
 </div>
 </div>
 
@@ -301,6 +305,7 @@ the output image using a Geographic Information System (GIS).</p>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.indexkd">pyoints.indexkd module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.interpolate">pyoints.interpolate module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.misc">pyoints.misc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.normals">pyoints.normals module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.nptools">pyoints.nptools module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.polar">pyoints.polar module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.projection">pyoints.projection module</a></li>

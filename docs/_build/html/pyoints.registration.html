@@ -43,7 +43,7 @@
 <p>Implementation of the Iterative Closest Point Algorithm.</p>
 <dl class="class">
 <dt id="pyoints.registration.icp.ICP">
-<em class="property">class </em><code class="descclassname">pyoints.registration.icp.</code><code class="descname">ICP</code><span class="sig-paren">(</span><em>radii</em>, <em>max_iter=10</em>, <em>assign_class=&lt;class 'pyoints.assign.KnnMatcher'&gt;</em>, <em>**assign_parameters</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/registration/icp.html#ICP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.registration.icp.ICP" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pyoints.registration.icp.</code><code class="descname">ICP</code><span class="sig-paren">(</span><em>radii</em>, <em>max_iter=50</em>, <em>max_change_ratio=0.01</em>, <em>assign_class=&lt;class 'pyoints.assign.KnnMatcher'&gt;</em>, <em>update_normals=False</em>, <em>**assign_parameters</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/registration/icp.html#ICP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.registration.icp.ICP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Implementation of a variant of the Iterative Closest Point algorithm [1]
 with support of multiple point sets and point normals.</p>
@@ -53,19 +53,21 @@ with support of multiple point sets and point normals.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>radii</strong> (<em>array_like</em><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>s</em><em>)</em><em>)</em>) – Maximum distances in each coordinate dimension to assign corresponding
-points of <cite>k</cite> dimensions. The length of <cite>radii</cite> is equal to <cite>2 * k</cite>
-if point normals shall also be used to find point pairs, <cite>k</cite>
-otherwise.</li>
+points of <cite>k</cite> dimensions. The length of <cite>radii</cite> is equal to <cite>2 * k</cite>.
+If point normals shall also be used to find point pairs, the length of
+<cite>radii</cite> is <cite>k</cite>.</li>
 <li><strong>assign_class</strong> (<em>optional</em><em>, </em><em>callable class</em>) – Class which assigns pairs of points.</li>
 <li><strong>max_iter</strong> (<em>optional</em><em>, </em><em>positive int</em>) – Maximum number of iterations.</li>
+<li><strong>update_normals</strong> (<em>bool</em>) – Indicates whether or not to also transform the normals.</li>
+<li><strong>**assign_parameters</strong> – Parameters passed to <cite>assign_class</cite>.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Notes</p>
-<p>An own variant of the originally ICP algorithm presented by Besl and McKay
-(1992) [1].</p>
+<p>A modified variant of the originally ICP algorithm presented by Besl and
+McKay (1992) [1].</p>
 <p class="rubric">References</p>
 <p>[1] P.J. Besl and N.D. McKay (1992): “A Method for Registration of 3-D
 Shapes”, IEEE Transactions on Pattern Analysis and Machine Intelligence,
@@ -83,7 +85,7 @@ vol. 14 (2): 239-256.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">radii</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">weights</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">icp</span> <span class="o">=</span> <span class="n">ICP</span><span class="p">(</span><span class="n">radii</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span><span class="p">,</span> <span class="n">pairs</span> <span class="o">=</span> <span class="n">icp</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span><span class="p">,</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">report</span> <span class="o">=</span> <span class="n">icp</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tA</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
@@ -105,7 +107,7 @@ vol. 14 (2): 239-256.</p>
 <span class="go"> [-0.97 -1.94]]</span>
 </pre></div>
 </div>
-<p>Find matches and compare RMSE.</p>
+<p>Find matches and compare RMSE (Root Mean Squared Error).</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">matcher</span> <span class="o">=</span> <span class="n">assign</span><span class="o">.</span><span class="n">KnnMatcher</span><span class="p">(</span><span class="n">tA</span><span class="p">,</span> <span class="n">radii</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pairs</span> <span class="o">=</span> <span class="n">matcher</span><span class="p">(</span><span class="n">tB</span><span class="p">)</span>
 </pre></div>
@@ -120,18 +122,18 @@ vol. 14 (2): 239-256.</p>
 <span class="go">0.09</span>
 </pre></div>
 </div>
-<p>ICP also take advantage of normals (NICP).</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyoints</span> <span class="k">import</span> <span class="n">fit</span>
+<p>ICP also takes advantage of normals (NICP).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyoints.normals</span> <span class="k">import</span> <span class="n">fit_normals</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">normals_r</span> <span class="o">=</span> <span class="mf">1.5</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">normals_dict</span> <span class="o">=</span> <span class="p">{</span>
-<span class="gp">... </span>    <span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="n">fit</span><span class="o">.</span><span class="n">fit_normals</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">normals_r</span><span class="p">),</span>
-<span class="gp">... </span>    <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="n">fit</span><span class="o">.</span><span class="n">fit_normals</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">normals_r</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="n">fit_normals</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">normals_r</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="n">fit_normals</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">normals_r</span><span class="p">)</span>
 <span class="gp">... </span><span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">radii</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nicp</span> <span class="o">=</span> <span class="n">ICP</span><span class="p">(</span><span class="n">radii</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span><span class="p">,</span> <span class="n">pairs</span> <span class="o">=</span> <span class="n">nicp</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">,</span> <span class="n">normals_dict</span><span class="o">=</span><span class="n">normals_dict</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span><span class="p">,</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">report</span> <span class="o">=</span> <span class="n">nicp</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">,</span> <span class="n">normals_dict</span><span class="o">=</span><span class="n">normals_dict</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tA</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
@@ -179,7 +181,7 @@ set <cite>B</cite>.</p>
 </table>
 <p class="rubric">Notes</p>
 <p>Implements the registration algorithm of Besl and McKay (1992) [1]. The
-idea has been taken from Nghia Ho (2013) [2]. Code of [2] has been adapted
+idea has been taken from Nghia Ho (2013) [2]. Code of [2] has been
 generalized to <cite>k</cite> dimensional space.</p>
 <p class="rubric">References</p>
 <p>[1] P. J. Besl and N. D. McKay (1992): “A Method for Registration of 3-D
@@ -187,17 +189,17 @@ Shapes”, IEEE Transactions on Pattern Analysis and Machine Intelligence,
 Institute of Electrical and Electronics Engineers (IEEE), vol. 14,
 pp. 239-256.</p>
 <p>[2] Nghia Ho (2013): “Finding optimal rotation and translation between
-corresponding 3D points”, URL <a class="reference external" href="http://nghiaho.com/?page_id=671">http://nghiaho.com/?page_id=671</a>.</p>
+corresponding 3D points”, URL <a class="reference external" href="http://nghiaho.com/">http://nghiaho.com/</a>?page_id=671.</p>
 <p>[3] Nghia Ho (2013): “Finding optimal rotation and translation between
 corresponding 3D points”, URL
 <a class="reference external" href="http://nghiaho.com/uploads/code/rigid_transform_3D.py_">http://nghiaho.com/uploads/code/rigid_transform_3D.py_</a>.</p>
 <p class="rubric">Examples</p>
-<p>Create similar, but shifted and rotated point sets.</p>
+<p>Creates similar, but shifted and rotated point sets.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">B</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">transformation</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">r</span><span class="o">=</span><span class="mf">0.3</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>Find roto-translation.</p>
+<p>Finds roto-translation.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">M</span> <span class="o">=</span> <span class="n">find_rototranslation</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -244,12 +246,12 @@ point in point set <cite>B</cite>.</p>
 </div>
 <div class="section" id="module-pyoints.registration.rototranslations">
 <span id="pyoints-registration-rototranslations-module"></span><h2>pyoints.registration.rototranslations module<a class="headerlink" href="#module-pyoints.registration.rototranslations" title="Permalink to this headline">¶</a></h2>
-<p>Find roto-translation matrices of multiple point sets.</p>
+<p>Finds roto-translation matrices of multiple point sets.</p>
 <dl class="function">
 <dt id="pyoints.registration.rototranslations.find_rototranslations">
 <code class="descclassname">pyoints.registration.rototranslations.</code><code class="descname">find_rototranslations</code><span class="sig-paren">(</span><em>coords_dict</em>, <em>pairs_dict</em>, <em>weights=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/registration/rototranslations.html#find_rototranslations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.registration.rototranslations.find_rototranslations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find the optimal roto-translation matrices between multiple
-point sets using pairs of points. The algorithm assumes infinitissimal
+<dd><p>Finds the optimal roto-translation matrices between multiple
+point sets using pairs of points. The algorithm assumes infinitesimal
 rotations between the point sets.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -258,9 +260,9 @@ rotations between the point sets.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>coords_dict</strong> (<em>dict of array_like</em><em>(</em><em>int</em><em>, </em><em>shape=</em><em>(</em><em>n</em><em>, </em><em>k</em><em>)</em><em>)</em>) – Dictionary of point sets with <cite>k</cite> dimensions.</li>
 <li><strong>pairs_dict</strong> (<em>dict of array_like</em><em>(</em><em>int</em><em>, </em><em>shape=</em><em>(</em><em>m</em><em>, </em><em>2</em><em>)</em><em>)</em>) – Dictionary of point pairs.</li>
-<li><strong>weights</strong> (<em>optional</em><em>, </em><em>dict</em><em> or </em><em>list</em><em> or </em><em>int.</em>) – Try to keep the original location and orientation by weighting. Each
-point set can be weighted by a list of values. The first <cite>k</cite> values r
-epresent the weighting factors for location. The last values
+<li><strong>weights</strong> (<em>optional</em><em>, </em><em>dict</em><em> or </em><em>list</em><em> or </em><em>int.</em>) – Tries to keep the original location and orientation by weighting. Each
+point set can be weighted by a list of values. The first <cite>k</cite> values
+represent the weighting factors for location. The last values
 represent the weighting factors for orientation (angles).
 The weights can be provided for each point set individially in form
 of a dictionary. If not provided, weights are set to zero.</li>
@@ -416,6 +418,7 @@ URL <a class="reference external" href="http://geomatica.como.polimi.it/corsi/de
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.indexkd">pyoints.indexkd module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.interpolate">pyoints.interpolate module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.misc">pyoints.misc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.normals">pyoints.normals module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.nptools">pyoints.nptools module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.polar">pyoints.polar module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.projection">pyoints.projection module</a></li>
