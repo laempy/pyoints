@@ -55,7 +55,7 @@ class GeoRecords(np.recarray, object):
     ----------
     proj : projection.Proj
         Projection of the coordinates.
-    t : np.matrix(Number, shape=(k+1, k+1))
+    t : np.ndarray(Number, shape=(k+1, k+1))
         Linear transformation matrix to transform the coordinates.
     dim : positive int
         Number of coordinate dimensions of the `coords` field.
@@ -328,7 +328,7 @@ class GeoRecords(np.recarray, object):
 
         """
         self.coords = self.coords.transform(T)
-        self.t = T * self.t
+        self.t = T @ self.t
         return self
 
     def project(self, proj):

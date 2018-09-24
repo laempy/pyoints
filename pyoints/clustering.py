@@ -159,7 +159,7 @@ def weight_clusters(indexKD, r, weights=None, **kwargs):
     Examples
     --------
 
-    Equal weights.
+    Clustering with equal weights.
 
     >>> coords = [(0, 0), (0, 1), (1, 1), (0, 0.5), (2, 2), (2, 2.5), (2.5, 2)]
     >>> indexKD = IndexKD(coords)
@@ -169,7 +169,7 @@ def weight_clusters(indexKD, r, weights=None, **kwargs):
     >>> print(clusters)
     [0 0 4 3 6 5 5]
 
-    Differing weights.
+    Clustering with differing weights.
 
     >>> weights = np.arange(len(coords))
     >>> clusters = weight_clusters(
@@ -179,7 +179,7 @@ def weight_clusters(indexKD, r, weights=None, **kwargs):
     ...     clusters=initial_clusters
     ... )
     >>> print(clusters)
-    [3 1 4 3 6 5 5]
+    [3 6 6 3 5 5 5]
 
     See Also
     --------

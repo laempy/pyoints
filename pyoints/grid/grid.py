@@ -37,7 +37,6 @@ from .transformation import (
     keys_to_indices,
     indices_to_keys,
     corners_to_transform,
-    extentinfo,
 )
 
 
@@ -392,7 +391,8 @@ class Grid(GeoRecords):
         min_idx = coords.min(0)
         max_idx = coords.max(0)
         slices = [slice(min_idx[i], max_idx[i], 1) for i in range(self.dim)]
-        return self[slices]
+
+        return self[tuple(slices)]
 
     def voxelize(self, rec, **kwargs):
         """Converts a point cloud to a voxel or raster.
