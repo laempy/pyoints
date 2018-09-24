@@ -585,7 +585,7 @@ def matrix_from_gdal(t):
     T[1, 2] = t[3]
     T[1, 0] = t[4]
     T[1, 1] = t[5]
-    T[2, 2] = 1    
+    T[2, 2] = 1
     return LocalSystem(T)
 
 
@@ -1020,4 +1020,3 @@ class PCA(LocalSystem):
             raise ValueError("%-'th principal component not available")
 
         return self[k - 1, :self.dim]
-

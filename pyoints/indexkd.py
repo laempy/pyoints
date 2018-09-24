@@ -244,8 +244,8 @@ class IndexKD(object):
         Returns
         -------
         nIds: list or array of lists
-            If coords is a single point, this returns a list of neighbours. If 
-            coords is a list of points, this returns a list containing the 
+            If coords is a single point, this returns a list of neighbours. If
+            coords is a list of points, this returns a list containing the
             lists of neighbours.
 
         Examples
@@ -674,7 +674,7 @@ class IndexKD(object):
         return self.r_tree.count(extent)
 
     def slice(self, min_th=-np.inf, max_th=np.inf, axis=-1):
-        """Selects points with coordinate value of axis `axis` within the range 
+        """Selects points with coordinate value of axis `axis` within the range
         of [`min_th`, `max_th`].
 
         Parameters

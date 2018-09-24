@@ -256,7 +256,7 @@ def writeLas(geoRecords, outfile):
         elif name == 'pt_src_id':
             lasFile.set_pt_src_id(records.pt_src_id)
         elif name == 'gps_time':
-            lasFile.set_gps_time(records.gps_time) 
+            lasFile.set_gps_time(records.gps_time)
         elif name not in omit:
             lasFile._writer.set_dimension(name, records[name])
 

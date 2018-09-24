@@ -53,8 +53,8 @@ class Grid(GeoRecords):
         geo-object with `k` dimensional coordinates.
     T : array_like(Number, shape=(k+1, k+1))
         A linear transformation matrix to transform the coordinates. The
-        translation represents the origin, the rotation represents the orientation, and
-        the scale represents the pixel size of the matrix.
+        translation represents the origin, the rotation represents the
+        orientation, and the scale represents the pixel size of the matrix.
 
     Examples
     --------
@@ -279,7 +279,7 @@ class Grid(GeoRecords):
         ----------
         T : array_like(Number, shape=(self.dim+1, self.dim+1))
             Transformation matrix to apply.
-            
+
         Returns
         -------
         self
@@ -417,7 +417,7 @@ class Grid(GeoRecords):
         --------
 
         >>> from pyoints import (
-	...     transformation,
+        ...     transformation,
         ...     projection,
         ... )
 

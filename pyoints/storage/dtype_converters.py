@@ -73,24 +73,24 @@ for dim in range(1, 4):
 
 def numpy_to_laspy_dtype(dtype):
     """Converts a numpy data type to a laspy data type.
-    
+
     Parameters
     ----------
     dtype : np.dtype
         Numpy data type to convert.
-        
+
     Returns
     -------
     int
         Laspy data type id.
-    
+
     Examples
     --------
-    
+
     >>> dtype = np.dtype(np.int32)
     >>> print(numpy_to_laspy_dtype(dtype))
     6
-    
+
     """
     dtype = np.dtype(dtype)
     if dtype.subdtype is None:
@@ -112,41 +112,42 @@ def numpy_to_laspy_dtype(dtype):
 #######
 
 NUMPY_TO_GDAL_TYPE = {
-    '|u1' : gdal.GDT_Byte,
-    '|i1' : gdal.GDT_Byte,
-    '<u2' : gdal.GDT_UInt16,
-    '<i2' : gdal.GDT_Int16,
-    '<u4' : gdal.GDT_UInt32,
-    '<i4' : gdal.GDT_Int32,
-    '<u8' : gdal.GDT_Float32,
-    '<i8' : gdal.GDT_Float32,
-    '<f2' : gdal.GDT_Float32,
-    '<f4' : gdal.GDT_Float32,
-    '<f8' : gdal.GDT_Float64,
-    '<c8' : gdal.GDT_CFloat32,
-    '<c16' : gdal.GDT_CFloat64,
+    '|u1': gdal.GDT_Byte,
+    '|i1': gdal.GDT_Byte,
+    '<u2': gdal.GDT_UInt16,
+    '<i2': gdal.GDT_Int16,
+    '<u4': gdal.GDT_UInt32,
+    '<i4': gdal.GDT_Int32,
+    '<u8': gdal.GDT_Float32,
+    '<i8': gdal.GDT_Float32,
+    '<f2': gdal.GDT_Float32,
+    '<f4': gdal.GDT_Float32,
+    '<f8': gdal.GDT_Float64,
+    '<c8': gdal.GDT_CFloat32,
+    '<c16': gdal.GDT_CFloat64,
 }
+
 
 def numpy_to_gdal_dtype(dtype):
     """Converts a numpy data type to a gdal data type.
-    
+
     Parameters
     ----------
     dtype : np.dtype
         Numpy data type to convert.
-        
+
     Returns
     -------
     int
         Gdal data type id.
-    
+
     Examples
     --------
-    
+
     >>> dtype = np.dtype(np.int32)
     >>> print(numpy_to_gdal_dtype(dtype))
     5
-    
+
     """
     dtype = np.dtype(dtype)
     key = dtype.str

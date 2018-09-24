@@ -36,7 +36,6 @@ from .. import (
 )
 
 
-
 class RasterReader(GeoFile):
     """Reads image files.
 
@@ -107,23 +106,23 @@ class RasterReader(GeoFile):
 
     def load(self, extent=None):
         bands, T, proj = load_gdal(self.file, proj=self.proj)
-        
+
         shape = (bands.shape[0], bands.shape[1])
         attr = np.recarray(shape, dtype=[('bands', int, bands.shape[2])])
-        
+
         return grid.Grid(proj, attr, T)
-       
+
 
 def load_gdal(filename, proj=None, extent=None):
     """Loads an image from disc using gdal.
-    
+
     Parameters
     ----------
     filename : str
         Path to file.
     proj : optional, Proj
         Desired projection.
-    
+
     Returns
     -------
     bands : np.array(Number, (rows, cols, bands))
@@ -132,7 +131,7 @@ def load_gdal(filename, proj=None, extent=None):
         Image orientation.
     proj : Proj
         Projection.
-    
+
     """
     gdalRaster = gdal.Open(filename, gdal.GA_ReadOnly)
 
@@ -190,7 +189,7 @@ def write_gdal(
     Raises
     ------
     IOError
-    
+
     See Also
     --------
     writeRaster
@@ -200,16 +199,16 @@ def write_gdal(
     if not os.access(os.path.dirname(outfile), os.W_OK):
         raise IOError('File %s is not writable' % outfile)
     if not isinstance(image, np.ndarray):
-        m = "'image' needs to be an instance of 'np.ndarray', got %s" 
-        raise TypeError(m % type(image))     
+        m = "'image' needs to be an instance of 'np.ndarray', got %s"
+        raise TypeError(m % type(image))
     if not len(image.shape) in (2, 3):
-        raise ValueError("'image' has an unexpected shape for a raster" )
+        raise ValueError("'image' has an unexpected shape for a raster")
     if not nptools.isnumeric(image):
         raise ValueError("'image' needs to be numeric")
-        
+
     bands = image.astype(nptools.minimum_numeric_dtype(image))
     num_bands = 1 if len(bands.shape) == 2 else bands.shape[2]
-        
+
     driver = gdal.GetDriverByName(driver)
     gdalRaster = driver.Create(
         outfile,
@@ -218,19 +217,19 @@ def write_gdal(
         num_bands,
         numpy_to_gdal_dtype(bands.dtype)
     )
-    
+
     # SetProjection
     if proj is not None:
         if not isinstance(proj, projection.Proj):
             raise ValueError("'proj' needs to be an instance of Proj")
         gdalRaster.SetProjection(proj.wkt)
-    
+
     # SetGeoTransform
     if T is not None:
         T = assertion.ensure_tmatrix(T, dim=2)
-        t = transformation.matrix_to_gdal(T)      
+        t = transformation.matrix_to_gdal(T)
         gdalRaster.SetGeoTransform(t)
-    
+
     # set bands
     if num_bands == 1:
         band = gdalRaster.GetRasterBand(1)
@@ -249,7 +248,7 @@ def write_gdal(
     gdalRaster.FlushCache()
     gdalRaster = None
     del gdalRaster
-    
+
 
 def writeRaster(raster, outfile, field='bands', no_data=np.nan):
     """Writes a Grid to file system.
@@ -268,7 +267,7 @@ def writeRaster(raster, outfile, field='bands', no_data=np.nan):
     Raises
     ------
     IOError
-    
+
     See Also
     --------
     writeTif
@@ -279,11 +278,11 @@ def writeRaster(raster, outfile, field='bands', no_data=np.nan):
         raise TypeError(m)
     if not raster.dim == 2:
         raise ValueError("'geoRecords' needs to be two dimensional")
-    
+
     if not isinstance(field, str):
         raise TypeError("'field' needs to be a string")
     if not hasattr(raster, field):
         raise ValueError("'raster' needs to have a field '%s'" % field)
     image = raster[field]
-    
+
     write_gdal(image, outfile, T=raster.t, proj=raster.proj, no_data=no_data)

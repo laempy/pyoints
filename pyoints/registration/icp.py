@@ -40,7 +40,7 @@ class ICP:
     radii : array_like(Number, shape=(s))
         Maximum distances in each coordinate dimension to assign corresponding
         points of `k` dimensions. The length of `radii` is equal to `2 * k`.
-        If point normals shall also be used to find point pairs, the length of 
+        If point normals shall also be used to find point pairs, the length of
         `radii` is `k`.
     assign_class : optional, callable class
         Class which assigns pairs of points.
@@ -53,8 +53,8 @@ class ICP:
 
     Notes
     -----
-    A modified variant of the originally ICP algorithm presented by Besl and McKay
-    (1992) [1].
+    A modified variant of the originally ICP algorithm presented by Besl and 
+    McKay (1992) [1].
 
     References
     ----------
@@ -227,7 +227,6 @@ class ICP:
 
         max_change = distance.norm(self._radii[:dim]) * self._max_change_ratio
 
-
         # ICP algorithm
         report = {'RMSE': []}
         for num_iter in range(self._max_iter):
@@ -278,7 +277,6 @@ class ICP:
             T_dict = T_dict_new
 
         return T_dict, pairs_dict, report
-
 
 
 def _get_change_rmse(coords_dict, T_dict_old, T_dict_new):

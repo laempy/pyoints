@@ -128,4 +128,3 @@ def dumpstring_from_object(data):
     dump = pickle.dumps(data, pickle.HIGHEST_PROTOCOL)
     pickled = codecs.encode(dump, "base64").decode()
     return pickled
-

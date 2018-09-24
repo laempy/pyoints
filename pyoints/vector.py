@@ -258,11 +258,11 @@ def zenith(v, axis=-1, deg=False):
     >>> v = [1, 0]
     >>> print(zenith(v, deg=True))
     90.0
-    
+
     >>> v = [0, 0, 1]
     >>> print(zenith(v, deg=True))
     0.0
-    
+
     >>> v = [(0, 0), (1, 0), (0, 1), (1, 1)]
     >>> print(zenith(v, deg=True))
     [nan 90.  0. 45.]
@@ -270,31 +270,31 @@ def zenith(v, axis=-1, deg=False):
     >>> v = [1, 0, 1]
     >>> print(np.round(zenith([1, 0, 1], axis=2, deg=True), 1))
     45.0
-        
+
     """
     if not isinstance(axis, int):
         raise TypeError("'axis' needs to be an integer")
-    
+
     v = assertion.ensure_numarray(v)
     is_vector = len(v.shape) == 1
-    
+
     if is_vector:
         v = [v]
 
     v = assertion.ensure_coords(v, min_dim=2)
     if not abs(axis) < v.shape[1]:
         raise ValueError("'axis' neets to be an smaller %i" % v.shape[1])
-        
+
     length = distance.norm(v)
     mask = length > 0
 
     zenith = np.empty(len(length), dtype=np.float)
     zenith[~mask] = np.nan
     zenith[mask] = np.arccos(v[mask, axis] / length[mask])
-    
+
     if is_vector:
         zenith = zenith[0]
-    
+
     if deg:
         zenith = rad_to_deg(zenith)
     return zenith
@@ -302,49 +302,49 @@ def zenith(v, axis=-1, deg=False):
 
 def azimuth(v, deg=False):
     """Calculates the azimuth angle of a vector or vectors.
-    
+
     Parameters
     ----------
     v : array_like(Number, shape=(k)) or array_like(Number, shape=(n, k))
         Vector or vectors of `k` dimensions.
-        
+
     Returns
     -------
     Number or np.ndarray(Number, shape=(n))
         Azimuth angle for each vector.
-        
+
     Examples
     --------
-    
+
     >>> v = [1, 1]
     >>> print(azimuth(v, deg=True))
     45.0
-    
+
     >>> v = [1, 1, 5]
     >>> print(azimuth(v, deg=True))
     45.0
-    
+
     >>> v = [(0, 0), (0, 1), (1, 1), (1, 0), (2, -2), (0, -1), (-1, 1)]
     >>> print(azimuth(v, deg=True))
     [ nan   0.  45.  90. 135. 180. 315.]
-    
+
     """
     v = assertion.ensure_numarray(v)
     is_vector = len(v.shape) == 1
 
     if is_vector:
         v = [v]
-        
+
     v = assertion.ensure_coords(v, min_dim=2)
     azimuth = np.pi - np.arctan2(v[:, 0], -v[:, 1])
     azimuth[np.abs(v).sum(1) == 0] = np.nan
-    
+
     if is_vector:
         azimuth = azimuth[0]
     if deg:
         azimuth = rad_to_deg(azimuth)
     return azimuth
-    
+
 
 def scalarproduct(v, w):
     """Calculates the scalar product or dot product of two vectors.
@@ -681,23 +681,23 @@ class Vector(object):
 
     def transform(self, T):
         """Transforms the vector using a transformation matrix.
-        
+
         Parameters
         ----------
         T : array_like(Number, shape=(self.dim+1, self.dim+1))
             Transformation matrix to apply.
-        
+
         Returns
         -------
         self
-        
+
         Examples
         --------
-        
+
         Create a vector and a transformation matix.
-        
+
         >>> vec = Vector([1, 1], [1, 0])
-        
+
         >>> r = 45 * np.pi / 180.0
         >>> t = [1, 2]
         >>> T = transformation.matrix(t=t, r=r, order='rts')
@@ -705,13 +705,13 @@ class Vector(object):
         [[ 0.71 -0.71  1.  ]
          [ 0.71  0.71  2.  ]
          [ 0.    0.    1.  ]]
-                    
+
         >>> vec = vec.transform(T)
         >>> print(np.round(vec.origin, 2))
         [1.   3.41]
         >>> print(np.round(vec.vec, 2))
         [0.71 0.71]
-        
+
         """
         T = assertion.ensure_tmatrix(T, self.dim)
         target = transformation.transform(self.target, T)
@@ -906,21 +906,20 @@ class Vector(object):
         return distance.norm(local_coords[:, 1:self.dim])
 
 
-
 class Plane(object):
     """Class to represent two hyperplanes and handle them conveniently.
-    
+
     Parameters
     ----------
     origin : np.ndarray(Number, shape=(k))
-        Defines the origin of the planes `k` dimensional local coordinate 
+        Defines the origin of the planes `k` dimensional local coordinate
         system.
     \*vec : np.ndarray(Number, shape=(k))
-        The `k`-1 vectors of `vec` define the orientation of the plane. The 
-        missing  axis (perpenticular to the vectors) are calculated 
+        The `k`-1 vectors of `vec` define the orientation of the plane. The
+        missing  axis (perpenticular to the vectors) are calculated
         automatically using principal component analysis. So, parallel
         vectors in `vec` are valid, but might result in unexpected results.
-        
+
     Attributes
     ----------
     origin : np.ndarray(Number, shape=(k))
@@ -933,24 +932,24 @@ class Plane(object):
         Number of coordinate dimensions of the vector.
     t : PCA(Number, shape=(k+1, k+1))
         Roto-translation matrix representation of the local coordinate system
-        defined by the plane. 
-    
+        defined by the plane.
+
     Examples
     --------
-    
-    Creation of a plane object using an origin and two vectors defining the 
+
+    Creation of a plane object using an origin and two vectors defining the
     plane.
-    
+
     >>> origin = [1, 2, 3]
     >>> v = [0, 0, 2]
     >>> w = [1, 0, 0]
-    
+
     >>> plane = Plane(origin, v, w)
     >>> print(plane)
     origin: [1 2 3]; vec: [0 0 2], [1 0 0]
-    
+
     Get some properties.
-    
+
     >>> print(plane.dim)
     3
     >>> print(plane.t.inv)
@@ -976,7 +975,7 @@ class Plane(object):
      [-1  0  0]
      [-3 -3 -1]
      [ 4  2  7]]
-    
+
     >>> local_coords = plane.t.to_local(global_coords)
     >>> print(local_coords)
     [[ 0.  0.  0.]
@@ -990,18 +989,18 @@ class Plane(object):
      [-1.  0.  0.]
      [-3. -3. -1.]
      [ 4.  2.  7.]]
-    
+
     Calculation of the distance of the global points to the plane.
 
     >>> print(plane.distance(global_coords))
     [0. 0. 2. 5. 0.]
-    
+
     Creation of the special case of a line in a two dimensional space.
-    
+
     >>> plane = Plane([1, 2], [3, 4])
     >>> print(plane)
     origin: [1 2]; vec: [3 4]
-    
+
     >>> print(plane.t.inv)
     [[ 0.6 -0.8  1. ]
      [ 0.8  0.6  2. ]
@@ -1010,9 +1009,9 @@ class Plane(object):
     [50.  0.]
     >>> print(plane.dim)
     2
-    
+
     Transformation of global coordinates to the plane coordinate system.
-    
+
     >>> global_coords = [
     ...     plane.origin,
     ...     plane.origin + plane.vec[0, :],
@@ -1024,7 +1023,7 @@ class Plane(object):
      [ 4  6]
      [ 0  1]
      [ 7 10]]
-    
+
     >>> local_coords = plane.t.to_local(global_coords)
     >>> print(local_coords)
     [[ 0.   0. ]
@@ -1036,19 +1035,19 @@ class Plane(object):
      [ 4.  6.]
      [ 0.  1.]
      [ 7. 10.]]
-    
+
     Calculation of the distance of the global points to the plane.
 
     >>> print(plane.distance(global_coords))
     [0.  0.  0.2 0. ]
-    
+
     """
-    
+
     def __init__(self, origin, *vec):
         # validated by setter
         self.origin = origin
         self.vec = vec
-        
+
     @property
     def dim(self):
         return len(self.origin)
@@ -1056,7 +1055,7 @@ class Plane(object):
     @property
     def origin(self):
         return self._origin
-    
+
     @origin.setter
     def origin(self, origin):
         self._origin = assertion.ensure_numvector(origin, min_length=2)
@@ -1082,18 +1081,17 @@ class Plane(object):
     def target(self, target):
         target = assertion.ensure_coords(target, self.dim)
         self.vec = target - self.origin
-        
+
     def _clear_cache(self):
         if hasattr(self, '_t'):
             del self._t
-        
+
     @property
     def t(self):
         if not hasattr(self, '_t'):
             coords = np.vstack((self.vec, -self.vec)) + self.origin
             self._t = transformation.PCA(coords)
         return self._t
-
 
     def __mul__(self, s):
         """Scale the plane vectors by multiplication.
@@ -1116,17 +1114,17 @@ class Plane(object):
         >>> plane = Plane((1, 2, 3), (5, 9, 2), (2, 3, 4))
         >>> print(plane * [2, 5])
         origin: [1 2 3]; vec: [10 18  4], [10 15 20]
-        
+
         Two dimensional case (line).
-        
+
         >>> plane = Plane((1, 2), (5, 9))
         >>> print(plane * 2)
         origin: [1 2]; vec: [10 18]
-        
+
         """
         if self.dim == 2:
             s = [s]
-        s = assertion.ensure_numvector(s, length=self.dim-1)
+        s = assertion.ensure_numvector(s, length=self.dim - 1)
         vec = (self.vec.T * s).T
         return Plane(self.origin, *vec)
 
@@ -1164,10 +1162,9 @@ class Plane(object):
     def __truediv__(self, s):
         if self.dim == 2:
             s = [s]
-        s = assertion.ensure_numvector(s, length=self.dim-1)
+        s = assertion.ensure_numvector(s, length=self.dim - 1)
         vec = (self.vec.T / s).T
         return Plane(self.origin, *vec)
-            
 
     def distance(self, global_coords):
         """Calculate the distance between points and the plane.
@@ -1184,8 +1181,7 @@ class Plane(object):
 
         """
         local_coords = self.t.to_local(global_coords)
-        return distance.norm(local_coords[:, (self.dim-1):self.dim])
-    
+        return distance.norm(local_coords[:, (self.dim - 1):self.dim])
 
     def __call__(self, k):
         """Convert a relative position in plane vector's direction to a global
@@ -1207,7 +1203,7 @@ class Plane(object):
 
         Examples
         --------
-        
+
         Three dimensional case.
 
         >>> plane = Plane((1, 2, 3), (1, 0, 2), (0, 3, 0))
@@ -1218,7 +1214,7 @@ class Plane(object):
          [ 2  2  5]
          [ 1  5  3]
          [-1 11 -1]]
-        
+
         Two dimensional case (line).
 
         >>> plane = Plane((1, 2), (5, 9))
@@ -1233,7 +1229,7 @@ class Plane(object):
             k = assertion.ensure_numarray([k]).T
         else:
             k = assertion.ensure_numarray(k)
-            
+
         if len(k.shape) == 1:
             if not len(k) == (self.dim - 1):
                 m = "'k' needs to have %i values, got %i"
@@ -1248,27 +1244,27 @@ class Plane(object):
 
     def transform(self, T):
         """Transforms the vector using a transformation matrix.
-        
+
         Parameters
         ----------
         T : array_like(Number, shape=(self.dim+1, self.dim+1))
             Transformation matrix to apply.
-        
+
         Returns
         -------
         self
-        
+
         Examples
         --------
-        
+
         Create a plane and a tranformation matrix.
-        
+
         >>> plane = Plane([1, 1], [1, 0])
         >>> print(plane.origin)
         [1 1]
         >>> print(plane.vec)
         [[1 0]]
-        
+
         >>> r = 45 * np.pi / 180.0
         >>> t = [1, 2]
         >>> T = transformation.matrix(t=t, r=r, order='rts')
@@ -1276,13 +1272,13 @@ class Plane(object):
         [[ 0.71 -0.71  1.  ]
          [ 0.71  0.71  2.  ]
          [ 0.    0.    1.  ]]
-        
+
         >>> plane = plane.transform(T)
         >>> print(np.round(plane.origin, 2))
         [1.   3.41]
         >>> print(np.round(plane.vec, 2))
         [[0.71 0.71]]
-        
+
         """
         T = assertion.ensure_tmatrix(T, self.dim)
         target = transformation.transform(self.target, T)
@@ -1291,14 +1287,13 @@ class Plane(object):
         self.vec = target - origin
         return self
 
-
     def __str__(self):
         vec_str = ', '.join(str(vec) for vec in self.vec)
         return "origin: %s; vec: %s" % (str(self.origin), vec_str)
-    
-    
+
+
 def vector_surface_intersection(vec, surface, eps=0.001, max_iter=20):
-    """Approximates the intersection point between a `k` dimensional vector 
+    """Approximates the intersection point between a `k` dimensional vector
     and a `k` dimensional surface iteratively.
 
     Parameters
@@ -1326,9 +1321,9 @@ def vector_surface_intersection(vec, surface, eps=0.001, max_iter=20):
     ...         method=interpolate.LinearInterpolator
     ...     )
     >>> vec = Vector((1, 1, -1), (0, 0, 1))
-    
+
     Calculate the intersection point.
-    
+
     >>> print(vector_surface_intersection(vec, surface))
     [1. 1. 2.]
 
@@ -1361,7 +1356,7 @@ def vector_surface_intersection(vec, surface, eps=0.001, max_iter=20):
 
 
 def vector_plane_intersection(vec, plane):
-    """Calculates the intersection point of a `k` dimensional vector and a 
+    """Calculates the intersection point of a `k` dimensional vector and a
     `k` dimensional plane.
 
     Parameters
@@ -1384,24 +1379,24 @@ def vector_plane_intersection(vec, plane):
     Examples
     --------
 
-    Create a plane and a vector in three dimensional space and calculate the 
+    Create a plane and a vector in three dimensional space and calculate the
     intersection point.
 
     >>> vec = Vector((1, 1, -1), (0, 0, 3))
     >>> plane = Plane((-1, 2, 5), (0, 2, 0), (1, 2, 2))
-        
+
     >>> intersection = vector_plane_intersection(vec, plane)
     >>> print(intersection)
     [1. 1. 9.]
     >>> print(vec.distance([intersection]))
     [0.]
-    
-    Create a plane and a vector in two dimensional space and calculate the 
+
+    Create a plane and a vector in two dimensional space and calculate the
     intersection point.
 
     >>> vec = Vector((1, 1), (1, 2))
     >>> plane = Plane((-1, 5), (0, 1))
-        
+
     >>> intersection = vector_plane_intersection(vec, plane)
     >>> print(intersection)
     [-1. -3.]
@@ -1429,4 +1424,3 @@ def vector_plane_intersection(vec, plane):
         return p1
     else:
         return None
-

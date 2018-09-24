@@ -970,40 +970,40 @@ def range_filter(arr, min_value=-np.inf, max_value=np.inf):
 
 def max_value_range(dtype):
     """Returns the maximum value range of a numeric numpy data type.
-    
+
     Parameters
     ----------
     dtype : np.dtype
         Numeric data type to check
-        
+
     Returns
     -------
     min_value,max_value : int
         Minimum and maximum value
-        
+
     Examples
     --------
-    
+
     >>> value_range = max_value_range(np.dtype(np.uint8))
     >>> print(value_range)
     (0, 255)
-    
+
     >>> value_range = max_value_range(np.dtype(np.uint16))
     >>> print(value_range)
     (0, 65535)
-    
+
     >>> value_range = max_value_range(np.dtype(np.int8))
     >>> print(value_range)
     (-128, 127)
-    
+
     >>> value_range = max_value_range(np.dtype(np.int16))
     >>> print(value_range)
     (-32768, 32767)
-            
+
     >>> value_range = max_value_range(np.dtype(np.float16))
     >>> print(value_range)
     (-65500.0, 65500.0)
-    
+
     """
     dtype = np.dtype(dtype)
     if dtype.kind in ('i', 'u'):
@@ -1012,19 +1012,19 @@ def max_value_range(dtype):
         info = np.finfo(dtype)
     else:
         raise ValueError("unknown numeric data type '%s'" % dtype)
-    
+
     return info.min, info.max
 
 
 def minimum_numeric_dtype(arr):
     """Determines the minimum required data type of a numpy without loosing
     accuracy.
-    
+
     Parameters
     ----------
     arr : np.ndarray(Number)
         Numeric array to find minimum data type for.
-        
+
     Returns
     -------
     np.dtype
@@ -1032,50 +1032,50 @@ def minimum_numeric_dtype(arr):
 
     Examples
     --------
-    
+
     Find minimum data type for integer arrays.
-    
+
     >>> arr = np.array([0, 255])
     >>> print(arr.dtype)
     int64
     >>> print(minimum_numeric_dtype(arr))
     uint8
-    
+
     >>> arr = np.array([0, 256])
     >>> print(minimum_numeric_dtype(arr))
     uint16
-    
+
     >>> arr = np.array([-5, 127])
     >>> print(minimum_numeric_dtype(arr))
     int8
-   
+
     >>> arr = np.array([-5, 128])
     >>> print(minimum_numeric_dtype(arr))
     int16
-    
+
     >>> arr = np.array([-5, 214748364])
     >>> print(minimum_numeric_dtype(arr))
     int32
-    
+
     Find minimum data type for floating point arrays.
-    
+
     >>> arr = np.array([-5.2, 100.3])
     >>> print(arr.dtype)
     float64
     >>> print(minimum_numeric_dtype(arr))
     float16
-    
-    
+
+
     """
     if not isinstance(arr, np.ndarray):
         raise TypeError("'arr' needs to be an instance of 'np.ndarray'")
-    
-    if not arr.dtype.kind in ('u', 'i', 'f'):
+
+    if arr.dtype.kind not in ('u', 'i', 'f'):
         raise ValueError("unknown numeric data type '%s'" % arr.dtype)
-    
+
     min_value = arr.min()
     max_value = arr.max()
-    
+
     if arr.dtype.kind in ('u', 'i'):
         if min_value < 0:
             kind = 'i'
@@ -1091,4 +1091,3 @@ def minimum_numeric_dtype(arr):
             if min_value >= value_range[0] and max_value <= value_range[1]:
                 return new_dtype
     return arr.dtype
-    

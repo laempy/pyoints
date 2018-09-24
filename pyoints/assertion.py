@@ -208,7 +208,7 @@ def ensure_numarray(arr, shape=None):
     if shape is not None:
         if not arr.shape == shape:
             m = "expected shape %s, got %s" % (shape, str(arr.shape))
-            raise ValueError(m) 
+            raise ValueError(m)
     return arr
 
 

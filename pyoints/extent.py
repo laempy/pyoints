@@ -190,7 +190,7 @@ class Extent(np.recarray, object):
 
         Parameters
         ----------
-        coords : array_like(Number, shape=(n, k)) or 
+        coords : array_like(Number, shape=(n, k)) or
         array_like(Number, shape=(k))
             Represents `n` data points of `k` dimensions.
         dim : positive int

@@ -300,7 +300,7 @@ class GeoRecords(np.recarray, object):
         ----------
         T : array_like(Number, shape=(self.dim+1, self.dim+1))
             Transformation matrix to apply.
-            
+
         Returns
         -------
         self

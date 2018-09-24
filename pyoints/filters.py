@@ -106,7 +106,7 @@ def extrema(indexKD, attributes, r, inverse=False):
 
 
 def min_filter(indexKD, attributes, r, inverse=False):
-    """Finds minima or maxima within a specified radius for all points. For 
+    """Finds minima or maxima within a specified radius for all points. For
     each point the neighbouring point with extreme attribute is marked.
 
     Parameters
