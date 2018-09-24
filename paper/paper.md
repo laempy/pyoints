@@ -9,10 +9,12 @@ authors:
   - name: Sebastian Lamprecht
     orcid: 0000-0002-8963-2762
     affiliation: 1 # (Multiple affiliations must be quoted)
+  - name: Thomas Udelhoven
+    affiliation: 1
 affiliations:
  - name: Trier University
    index: 1
-date: 10 August 2018
+date: 24 September 2018
 bibliography: paper.bib
 ---
 
