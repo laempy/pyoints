@@ -28,10 +28,10 @@ combined with sensor networks to monitor a research object all-embracingly.
 
 The analysis of such big data is based on techniques of geoinformatics and 
 remote sensing. Next to physically driven approaches, today machine learning 
-techniques are used to extract relevant thematical information from such data
-sets. The data analysis requires a fusion of the data sets, which is hardened
-conceptually and technically by different data dimensions, data structures and
-various spatial, spectral and temporal resolutions.
+techniques are used to extract relevant thematical information the data sets.
+The analysis requires a fusion of the data sets, which is hardened conceptually
+and technically by different data dimensions, data structures and various 
+spatial, spectral and temporal resolutions.
 
 Today various software to deal with these different data sources is available.
 Software like [@GDAL] and [@opencv_library] is intended for image processing. 
@@ -72,10 +72,5 @@ monitor hazelnut orchards.
 
 The source code for ``Pyoints`` has been archived to [@GitHub].
 
-
-# Acknowledgements
-
-We acknowledge contributions from Brigitta Sipocz, Syrtis Major, and Semyeong
-Oh, and support from Kathryn Johnston during the genesis of this project.
 
 # References
