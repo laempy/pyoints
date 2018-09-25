@@ -1,11 +1,15 @@
+import os
 import setuptools
 
+# get path of script
+script_path = os.path.dirname(os.path.abspath(__file__))
+
 # get long description from README
-with open("README.md", "r") as fh:
+with open(os.path.join(script_path, "README.md"), "r") as fh:
     long_description = fh.read()
     
 # get requirements
-with open('requirements.txt') as f:
+with open(os.path.join(script_path, 'requirements.txt'), "r") as f:
     install_requires = []
     for line in f:
         pkgname = line.partition('#')[0].rstrip()
@@ -20,7 +24,7 @@ setuptools.setup (
     description="A Python package for point cloud, voxel and raster processing.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="TODO",
+    url="https://github.com/laempy/pyoints.git",
     packages=setuptools.find_packages(),
     install_requires=install_requires,
     classifiers=(
