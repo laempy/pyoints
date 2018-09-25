@@ -6,7 +6,8 @@ SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 SPHINXPROJ    = PoYnts
 SOURCEDIR     = .
-BUILDDIR      = _build
+BUILDDIR      = .
+html_static_path = []
 
 # Put it first so that "make" without argument is like "make help".
 help:
