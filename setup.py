@@ -18,7 +18,7 @@ with open(os.path.join(script_path, 'requirements.txt'), "r") as f:
 
 setuptools.setup (
     name="Pyoints",
-    version="0.1",
+    version="0.1.1",
     author="Sebastian Lamprecht",
     author_email="lamprecht@uni-trier.de",
     description="A Python package for point cloud, voxel and raster processing.",
