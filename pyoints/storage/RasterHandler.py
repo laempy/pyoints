@@ -135,13 +135,11 @@ def load_gdal(filename, proj=None, extent=None):
         Projection.
 
     """
-    if not isinstance(filename, str):
-        raise TypeError("'filename' needs to be a string")
-    if not os.path.isfile(filename):
-        raise ValueError("file '%s' not found" % filename)
         
     gdalRaster = gdal.Open(filename, gdal.GA_ReadOnly)
-
+    if gdalRaster is None:
+        raise IOError("raster file '%s' could not be loaded" % filename)
+        
     if proj is None:
         wkt = gdalRaster.GetProjection()
         if wkt is not '':
