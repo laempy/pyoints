@@ -105,7 +105,7 @@ class RasterReader(GeoFile):
         return self._extent
 
     def load(self, extent=None):
-        bands, T, proj = load_gdal(self.file, proj=self.proj)
+        bands, T, proj = load_gdal(self.file, proj=self.proj, extent=extent)
 
         shape = (bands.shape[0], bands.shape[1])
         attr = np.recarray(shape, dtype=[('bands', int, bands.shape[2])])
@@ -122,6 +122,8 @@ def load_gdal(filename, proj=None, extent=None):
         Path to file.
     proj : optional, Proj
         Desired projection.
+    extent : optional, array_like(Number, shape=(4))
+        Desired extent to load.
 
     Returns
     -------
@@ -133,6 +135,11 @@ def load_gdal(filename, proj=None, extent=None):
         Projection.
 
     """
+    if not isinstance(filename, str):
+        raise TypeError("'filename' needs to be a string")
+    if not os.path.isfile(filename):
+        raise ValueError("file '%s' not found" % filename)
+        
     gdalRaster = gdal.Open(filename, gdal.GA_ReadOnly)
 
     if proj is None:
