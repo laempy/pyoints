@@ -69,7 +69,8 @@ the software have been used for [@Lamprecht_2017a] and some pre-studies at
 Trier University. ``Pyoints`` is also used in the [@PANTHEON] project to 
 monitor hazelnut orchards.
 
-The source code for ``Pyoints`` has been archived to [@GitHub].
+The source code for ``Pyoints`` has been archived to [@GitHub] at 
+[@Pyoints_GitHub].
 
 
 # References
