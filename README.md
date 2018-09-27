@@ -1,6 +1,6 @@
 # Pyoints
 
-![logo](https://github.com/laempy/pyoints/tree/master/figures/logo_pyoints.png)
+![logo](./figures/logo_pyoints.png)
 
 *Pyoints* is a python package to conveniently process and analyze point
 cloud data, voxels and raster images. It is intended to be used to support
