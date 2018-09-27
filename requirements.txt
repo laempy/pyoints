@@ -1,3 +1,4 @@
+pygdal
 numpy
 rtree
 laspy

@@ -107,10 +107,24 @@ apt install liblas-c3
 
 ## Install Pyoints (Ubuntu)
 
-Unfortunately, the gdal version is not detected automatically by ``pgdal``.
-Thus, installation with ``setup.py`` might fail.
+Unfortunately, the gdal version is not detected automatically by `pgdal`.
+Thus, installation with `setup.py` might fail.
 
-### Installation with installation script (currently recommended)
+
+### Installation via pip (recommended)
+
+```
+pip install pygdal==$(gdal-config --version).* pyoints
+```
+
+## Installation with from source
+
+```
+pip install pygdal==$(gdal-config --version).* -r requirements.txt --upgrade
+```
+
+
+### Installation with installation script
 
 The installation script asks you to provide a virtual Python environment
 (virtualenv). You need to initialize it first.
@@ -118,24 +132,6 @@ The installation script asks you to provide a virtual Python environment
 ./scripts/pip_install.sh -v path/to/virtualenv
 ```
 
-## Installation with pip
-
-```
-pip install pygdal==$(gdal-config --version).* -r requirements.txt --upgrade
-```
-
-### Installation from source
-
-```
-python setup.py build
-python setup.py install
-```
-
-### Installation via pip (hopefully in future)
-
-```
-pip install pyoints
-```
 
 
 # Development
