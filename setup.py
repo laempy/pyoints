@@ -24,7 +24,7 @@ setuptools.setup (
     description="A Python package for point cloud, voxel and raster processing.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/laempy/pyoints.git",
+    url="https://laempy.github.io/pyoints/modules.html",
     packages=setuptools.find_packages(),
     install_requires=install_requires,
     classifiers=(

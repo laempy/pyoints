@@ -1,19 +1,19 @@
 # Pyoints
 
-![logo](figures/logo_pyoints.png)
+![logo](https://github.com/laempy/pyoints/tree/master/figures/logo_pyoints.png)
 
-``Pyoints`` is a python package to conveniently process and analyze point
+*Pyoints* is a python package to conveniently process and analyze point
 cloud data, voxels and raster images. It is intended to be used to support
 the development of advanced algorithms for geo-data processing.
 
 ## General concept
 
-The key idea of ``Pyoints`` is to provide unified data structures to handle
+The key idea of *Pyoints* is to provide unified data structures to handle
 points, voxels and rasters in the same manner. It is assumed that the
 data can be interpreted as a two or three dimensional point cloud. Thus we have
 a collection of geo-objects, here called `GeoRecords`, which are characterized
-by two or three dimensional coordinates *coords*, a spatial reference *proj*
-and a transformation matrix *t*. The spatial reference and transformation
+by two or three dimensional coordinates `coords`, a spatial reference `proj`
+and a transformation matrix `t`. The spatial reference and transformation
 matrix are required to define the global location of the geo-objects. Next to
 the origin, the transformation matrix also stores the scale and rotation of the
 local coordinate system.
@@ -37,7 +37,7 @@ provides a spatial index `IndexKD` to conveniently perform efficient
 neighborhood queries. The class `IndexKD` is a wrapper of different spatial
 indices, to handle *k*-dimensional spatial queries of different kinds. The
 spatial indices are always only initialized on demand for performance reasons, 
-but cached for future queries. For example, an instance *geoRecords* of
+but cached for future queries. For example, an instance `geoRecords` of
 `GeoRecords` representing three dimensional points allows to create a three
 dimensional spatial index by calling `geoRecords.indexKD()`. If you are not
 interested in the third dimension, you can call `geoRecords.indexKD(2)` to
@@ -50,7 +50,7 @@ but waives to use of a projection and transformation matrix.
 
 ## When is Pyoints suitable for me?
 
-Based on the general concept of ``Pyoints`` presented above, a bunch of
+Based on the general concept of *Pyoints* presented above, a bunch of
 algorithms, functions and filters have been implemented, to process geo-data
 with low programming efforts.
 
@@ -58,17 +58,17 @@ Of course, one might wonder whether Python is adequate to analyze point cloud
 data since other languages languages are much more efficient. This is obviously 
 true, but in the experience of the author, Python is very useful to implement 
 and test new algorithms very quickly. Algorithms for point cloud analysis and
-processing often rely on spatial neighborhood queries. Since ``Pyoints``
+processing often rely on spatial neighborhood queries. Since *Pyoints*
 takes advantage of very efficient Python libraries, which are basically
 wrappers for binaries written in more efficient languages, the performance
-loss is limited. Additionally, ``Pyoints`` takes care of selecting and caching
+loss is limited. Additionally, *Pyoints* takes care of selecting and caching
 appropiate spatial indices for you, so you can focus on the core of your 
 algorithm idea.
 
 So, if you have an algorithm idea and you want to implement it quickly and play
-around with different settings, ``Pyoints`` is made for you. After finding an
+around with different settings, *Pyoints* is made for you. After finding an
 approiate algorithm it can be implemented in a more efficient language
-if you like. Thus ``Pyoints`` is particulary designed for scientists and
+if you like. Thus *Pyoints* is particulary designed for scientists and
 developers of new geo-spatial algorithms.
 
 
@@ -82,7 +82,7 @@ required by the pip packages.
 
 ### Python
 
-The ``Pyoints`` targets Python3 >= 3.5.
+The *Pyoints* targets Python3 >= 3.5.
 
 
 ### Gdal
@@ -173,7 +173,8 @@ venv\Scripts\activate.bat
 # Documentation
 
 You can find the documentation at 
-[docs](https://laempy.github.io/pyoints/modules.html). Here you can find 
+[https://laempy.github.io/pyoints/modules.html]
+(https://laempy.github.io/pyoints/modules.html). Here you can find 
 docstrings with examples for each module and some comprehensive examples. You
 can also take a look at the source files directly.
 
@@ -183,8 +184,8 @@ can also take a look at the source files directly.
 
 To test the software please take a look at the [tests](tests) directory.
 Currently Python docstrings are used to test the functionality of a
-majority of ``Pyoints`` classes and functions. You can run the file 
-[test_pyoints.py](tests/test_pyoints.py) to run the doctests.
+majority of *Pyoints* classes and functions. You can run the file 
+``tests/test_pyoints.py`` to run the doctests.
 
 
 
@@ -193,7 +194,7 @@ majority of ``Pyoints`` classes and functions. You can run the file
 Copyright (c) 2018, Sebastian Lamprecht, Trier University,
 lamprecht@uni-trier.de
 
-``Pyoints`` is free software made available under the GNU General Public
+*Pyoints* is free software made available under the GNU General Public
 License v3 or later (GPLv3+). See [LICENSE](LICENSE) for details.
 
 
@@ -202,7 +203,8 @@ License v3 or later (GPLv3+). See [LICENSE](LICENSE) for details.
 Please cite `Pyoints` as:
 
 Sebastian Lamprecht (2018): "Pyoints: A Python package for point cloud, voxel
-and raster processing.", URL TODO, [Online; accessed date].
+and raster processing.", URL https://github.com/laempy/pyoints, 
+[Online; accessed date].
 
 ```
 @Misc{,

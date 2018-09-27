@@ -42,11 +42,11 @@ programming languages of these software packages become a drawback. To support
 fast  algorithm development and a short familiarization, a unified API would be 
 desirable.
 
-``Pyoints`` is a python package to conveniently process and analyze point
+*Pyoints* is a python package to conveniently process and analyze point
 cloud data, voxels and raster images. It is intended to be used to support
 the development of advanced algorithms for geo-data processing.
 
-The fundamental idea of ``Pyoints`` is to overcome the conceptual distinction 
+The fundamental idea of *Pyoints* is to overcome the conceptual distinction 
 between point clouds, voxel spaces and rasters to simplify data analysis 
 and data fusion of variously structured data. Based on the assumption that any 
 geo-object can be represented by a point, a data structure has been designed 
@@ -57,19 +57,19 @@ providing spatial indices which are required in many applications to speed up
 spatial neighborhood queries.
 
 During development great emphasis was put on designing a powerful but simple 
-API while also providing solutions for most common problems. ``Pyoints`` 
+API while also providing solutions for most common problems. *Pyoints* 
 implements fundamental functions and some advanced algorithms for point cloud, 
 voxel and raster data processing, like coordinate transformation, vector
-algebra, point filters, or interpolation. ``Pyoints`` also provides a unified 
+algebra, point filters, or interpolation. *Pyoints* also provides a unified 
 API for loading and saving commonly used geo-data formats.
 
-``Pyoints`` was designed to support research activities and algorithm
+*Pyoints* was designed to support research activities and algorithm
 development in the field of geoinformatis and remote sensing. Early versions of 
 the software have been used for [@Lamprecht_2017a] and some pre-studies at 
-Trier University. ``Pyoints`` is also used in the [@PANTHEON] project to 
+Trier University. *Pyoints* is also used in the [@PANTHEON] project to 
 monitor hazelnut orchards.
 
-The source code for ``Pyoints`` has been archived to [@GitHub] at 
+The source code for *Pyoints* has been archived to [@GitHub] at 
 [@Pyoints_GitHub].
 
 
