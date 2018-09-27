@@ -209,7 +209,7 @@ and raster processing.", URL TODO, [Online; accessed date].
   organization = {Trier University}
   title = {{Pyoints}: A Python package for point cloud, voxel and raster processing.},
   year = {2018--},
-  url = "TODO",
+  url = "https://github.com/laempy/pyoints",
   note = {[Online; accessed <today>]}
 }
 ```

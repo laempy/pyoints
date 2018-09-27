@@ -1,6 +1,7 @@
 pip
 setuptools
 wheel
+twine
 autopep8
 pycodestyle
 matplotlib

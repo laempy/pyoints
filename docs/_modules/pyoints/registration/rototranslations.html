@@ -1,0 +1,467 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyoints.registration.rototranslations &#8212; Pyoints verson 0.2 alpha documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for pyoints.registration.rototranslations</h1><div class="highlight"><pre>
+<span></span><span class="c1"># BEGIN OF LICENSE NOTE</span>
+<span class="c1"># This file is part of Pyoints.</span>
+<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University,</span>
+<span class="c1"># lamprecht@uni-trier.de</span>
+<span class="c1">#</span>
+<span class="c1"># Pyoints is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># Pyoints is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with Pyoints. If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
+<span class="c1"># END OF LICENSE NOTE</span>
+<span class="sd">&quot;&quot;&quot;Finds roto-translation matrices of multiple point sets.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">assertion</span><span class="p">,</span>
+    <span class="n">transformation</span><span class="p">,</span>
+    <span class="n">nptools</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="find_rototranslations"><a class="viewcode-back" href="../../../pyoints.registration.html#pyoints.registration.rototranslations.find_rototranslations">[docs]</a><span class="k">def</span> <span class="nf">find_rototranslations</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">,</span> <span class="n">pairs_dict</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Finds the optimal roto-translation matrices between multiple</span>
+<span class="sd">    point sets using pairs of points. The algorithm assumes infinitesimal</span>
+<span class="sd">    rotations between the point sets.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coords_dict: dict of array_like(int, shape=(n, k))</span>
+<span class="sd">        Dictionary of point sets with `k` dimensions.</span>
+<span class="sd">    pairs_dict : dict of array_like(int, shape=(m, 2))</span>
+<span class="sd">        Dictionary of point pairs.</span>
+<span class="sd">    weights : optional, dict or list or int.</span>
+<span class="sd">        Tries to keep the original location and orientation by weighting. Each</span>
+<span class="sd">        point set can be weighted by a list of values. The first `k` values</span>
+<span class="sd">        represent the weighting factors for location. The last values</span>
+<span class="sd">        represent the weighting factors for orientation (angles).</span>
+<span class="sd">        The weights can be provided for each point set individially in form</span>
+<span class="sd">        of a dictionary. If not provided, weights are set to zero.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    T_dict : dict of np.ndarray(Number, shape=(k+1, k+1))</span>
+<span class="sd">        Dictionary of desired roto-translation matrices.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Algorithm idea taken from [1].</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    [1]  University of Genoa (2017):</span>
+<span class="sd">    URL http://geomatica.como.polimi.it/corsi/def\_monitoring/roto-translationsb.pdf.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    2D coordinates.</span>
+
+<span class="sd">    &gt;&gt;&gt; coordsA = [(-1, -2), (-1, 2), (1, 2), (1, -2), (5, 10)]</span>
+<span class="sd">    &gt;&gt;&gt; T = transformation.matrix(</span>
+<span class="sd">    ...     t=[10, 4],</span>
+<span class="sd">    ...     r=0.03,</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; coordsB = transformation.transform(coordsA, T)</span>
+
+<span class="sd">    &gt;&gt;&gt; coords_dict = {&#39;A&#39;: coordsA, &#39;B&#39;: coordsB}</span>
+<span class="sd">    &gt;&gt;&gt; pairs_dict = { &#39;A&#39;: { &#39;B&#39;: [(0, 0), (1, 1), (2, 2)] } }</span>
+<span class="sd">    &gt;&gt;&gt; weights = {&#39;A&#39;: [1, 1, 1], &#39;B&#39;: [0, 0, 0]}</span>
+<span class="sd">    &gt;&gt;&gt; res = find_rototranslations(coords_dict, pairs_dict, weights=weights)</span>
+
+<span class="sd">    &gt;&gt;&gt; print(sorted(res.keys()))</span>
+<span class="sd">    [&#39;A&#39;, &#39;B&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; tA = res[&#39;A&#39;].to_local(coords_dict[&#39;A&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; print(np.round(tA, 1))</span>
+<span class="sd">    [[-1. -2.]</span>
+<span class="sd">     [-1.  2.]</span>
+<span class="sd">     [ 1.  2.]</span>
+<span class="sd">     [ 1. -2.]</span>
+<span class="sd">     [ 5. 10.]]</span>
+<span class="sd">    &gt;&gt;&gt; tB = res[&#39;B&#39;].to_local(coords_dict[&#39;B&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; print(np.round(tB, 1))</span>
+<span class="sd">    [[-1. -2.]</span>
+<span class="sd">     [-1.  2.]</span>
+<span class="sd">     [ 1.  2.]</span>
+<span class="sd">     [ 1. -2.]</span>
+<span class="sd">     [ 5. 10.]]</span>
+
+<span class="sd">    3D coordinates.</span>
+
+<span class="sd">    &gt;&gt;&gt; coordsA = [(-10, -20, 3), (-1, 2, 4), (1, 10, 5), (1, -2, 60)]</span>
+
+<span class="sd">    &gt;&gt;&gt; TB = transformation.matrix(</span>
+<span class="sd">    ...     t=[2, 5, 10], r=[-0.01, 0.02, 0.03], order=&#39;trs&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; coordsB = transformation.transform(coordsA, TB)</span>
+
+<span class="sd">    &gt;&gt;&gt; TC= transformation.matrix(</span>
+<span class="sd">    ...     t=[-2, 3, -6], r=[-0.03, 0.01, -0.02], order=&#39;trs&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; coordsC = transformation.transform(coordsA, TC)</span>
+
+<span class="sd">    &gt;&gt;&gt; coords_dict = {&#39;A&#39;: coordsA, &#39;B&#39;: coordsB, &#39;C&#39;: coordsC}</span>
+<span class="sd">    &gt;&gt;&gt; pairs_dict = {</span>
+<span class="sd">    ...     &#39;A&#39;: { &#39;B&#39;: [(0, 0), (1, 1), (3, 3)], &#39;C&#39;: [(0, 0), (3, 3)]  },</span>
+<span class="sd">    ...     &#39;B&#39;: { &#39;A&#39;: [(0, 0), (1, 1), (3, 3)], &#39;C&#39;: [(1, 1), (2, 2)] },</span>
+<span class="sd">    ...     &#39;C&#39;: { &#39;A&#39;: [(0, 0), (1, 1), (3, 3)], &#39;B&#39;: [(1, 1), (2, 2)] },</span>
+<span class="sd">    ... }</span>
+<span class="sd">    &gt;&gt;&gt; weights = {&#39;A&#39;: [1, 1, 1, 1, 1, 1], &#39;B&#39;: [0, 0, 0, 0, 0, 0]}</span>
+<span class="sd">    &gt;&gt;&gt; res = find_rototranslations(coords_dict, pairs_dict, weights=weights)</span>
+
+<span class="sd">    &gt;&gt;&gt; print(sorted(res.keys()))</span>
+<span class="sd">    [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; tA = res[&#39;A&#39;].to_local(coords_dict[&#39;A&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; print(np.round(tA, 1))</span>
+<span class="sd">    [[-10. -20.   3.]</span>
+<span class="sd">     [ -1.   2.   4.]</span>
+<span class="sd">     [  1.  10.   5.]</span>
+<span class="sd">     [  1.  -2.  60.]]</span>
+<span class="sd">    &gt;&gt;&gt; tB = res[&#39;B&#39;].to_local(coords_dict[&#39;B&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; print(np.round(tB, 1))</span>
+<span class="sd">    [[-10. -20.   3.]</span>
+<span class="sd">     [ -1.   2.   4.]</span>
+<span class="sd">     [  1.  10.   5.]</span>
+<span class="sd">     [  1.  -2.  60.]]</span>
+<span class="sd">    &gt;&gt;&gt; tC = res[&#39;C&#39;].to_local(coords_dict[&#39;C&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; print(np.round(tC, 1))</span>
+<span class="sd">    [[-10. -20.   3.]</span>
+<span class="sd">     [ -1.   2.   4.]</span>
+<span class="sd">     [  1.  10.   5.]</span>
+<span class="sd">     [  1.  -2.  60.]]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># prepare input</span>
+    <span class="n">dim</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">ccoords</span><span class="p">,</span> <span class="n">centers</span><span class="p">,</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">_prepare_input</span><span class="p">(</span>
+        <span class="n">coords_dict</span><span class="p">,</span>
+        <span class="n">pairs_dict</span><span class="p">,</span>
+        <span class="n">weights</span>
+    <span class="p">)</span>
+
+    <span class="c1"># get equations</span>
+    <span class="n">rA</span><span class="p">,</span> <span class="n">rB</span> <span class="o">=</span> <span class="n">_build_rototranslation_equations</span><span class="p">(</span><span class="n">ccoords</span><span class="p">,</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+    <span class="n">oA</span><span class="p">,</span> <span class="n">oB</span> <span class="o">=</span> <span class="n">_build_location_orientation_equations</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">centers</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">rA</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">rB</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">oB</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;At least one equation is needed&quot;</span><span class="p">)</span>
+
+    <span class="c1"># solve linear equation system</span>
+    <span class="n">mA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">rA</span> <span class="o">+</span> <span class="n">oA</span><span class="p">)</span>
+    <span class="n">mB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">rB</span> <span class="o">+</span> <span class="n">oB</span><span class="p">)</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="n">mA</span><span class="p">,</span> <span class="n">mB</span><span class="p">,</span> <span class="n">rcond</span><span class="o">=</span><span class="kc">None</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Extract roto-transformation matrices</span>
+    <span class="n">T_dict</span> <span class="o">=</span> <span class="n">_extract_transformations</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">centers</span><span class="p">,</span> <span class="n">center</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">T_dict</span></div>
+
+
+<span class="k">def</span> <span class="nf">_unknowns</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">dim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">3</span>
+    <span class="k">elif</span> <span class="n">dim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">6</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%i</span><span class="s2"> dimensions not supported&quot;</span> <span class="o">%</span> <span class="n">dim</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_equations</span><span class="p">(</span><span class="n">coords</span><span class="p">):</span>
+    <span class="n">N</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="n">_unknowns</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+
+        <span class="n">Mx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">cols</span><span class="p">))</span>
+        <span class="n">Mx</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># t_x</span>
+        <span class="n">Mx</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># r</span>
+
+        <span class="n">My</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">cols</span><span class="p">))</span>
+        <span class="n">My</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># t_y</span>
+        <span class="n">My</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># -r</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">Mx</span><span class="p">,</span> <span class="n">My</span><span class="p">))</span>
+
+    <span class="k">elif</span> <span class="n">dim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+
+        <span class="n">Mx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">cols</span><span class="p">))</span>
+        <span class="n">Mx</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># t_x</span>
+        <span class="n">Mx</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">coords</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>  <span class="c1"># -z</span>
+        <span class="n">Mx</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># y</span>
+
+        <span class="n">My</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">cols</span><span class="p">))</span>
+        <span class="n">My</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># t_y</span>
+        <span class="n">My</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>  <span class="c1"># z</span>
+        <span class="n">My</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># -x</span>
+
+        <span class="n">Mz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">cols</span><span class="p">))</span>
+        <span class="n">Mz</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># t_z</span>
+        <span class="n">Mz</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">coords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># -y</span>
+        <span class="n">Mz</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># x</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">Mx</span><span class="p">,</span> <span class="n">My</span><span class="p">,</span> <span class="n">Mz</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%i</span><span class="s2"> dimensions are not supported yet&quot;</span> <span class="o">%</span> <span class="n">dim</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_build_rototranslation_equations</span><span class="p">(</span><span class="n">ccoords</span><span class="p">,</span> <span class="n">wpairs</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
+    <span class="c1"># build linear equation system mA = mB * M</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="n">ccoords</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">ccoords</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">unknowns</span> <span class="o">=</span> <span class="n">_unknowns</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ccoords</span><span class="p">)</span>
+    <span class="n">mA</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">mB</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">iA</span><span class="p">,</span> <span class="n">keyA</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ccoords</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">keyA</span> <span class="ow">in</span> <span class="n">wpairs</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">iB</span><span class="p">,</span> <span class="n">keyB</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ccoords</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">keyB</span> <span class="ow">in</span> <span class="n">wpairs</span><span class="p">[</span><span class="n">keyA</span><span class="p">]:</span>
+
+                    <span class="c1"># get pairs of points</span>
+                    <span class="n">p</span><span class="p">,</span> <span class="n">pw</span> <span class="o">=</span> <span class="n">wpairs</span><span class="p">[</span><span class="n">keyA</span><span class="p">][</span><span class="n">keyB</span><span class="p">]</span>
+
+                    <span class="n">A</span> <span class="o">=</span> <span class="n">ccoords</span><span class="p">[</span><span class="n">keyA</span><span class="p">][</span><span class="n">p</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">:]</span>
+                    <span class="n">B</span> <span class="o">=</span> <span class="n">ccoords</span><span class="p">[</span><span class="n">keyB</span><span class="p">][</span><span class="n">p</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">:]</span>
+
+                    <span class="c1"># set equations</span>
+                    <span class="n">equations_A</span> <span class="o">=</span> <span class="n">_equations</span><span class="p">(</span><span class="o">-</span><span class="n">A</span><span class="p">)</span>
+                    <span class="n">equations_B</span> <span class="o">=</span> <span class="n">_equations</span><span class="p">(</span><span class="o">-</span><span class="n">B</span><span class="p">)</span>
+                    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">dim</span><span class="p">,</span> <span class="n">k</span> <span class="o">*</span> <span class="n">unknowns</span><span class="p">))</span>
+
+                    <span class="n">a</span><span class="p">[:,</span> <span class="n">iA</span> <span class="o">*</span> <span class="n">unknowns</span><span class="p">:(</span><span class="n">iA</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">unknowns</span><span class="p">]</span> <span class="o">=</span> <span class="n">equations_A</span>
+                    <span class="n">a</span><span class="p">[:,</span> <span class="n">iB</span> <span class="o">*</span> <span class="n">unknowns</span><span class="p">:(</span><span class="n">iB</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">unknowns</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">equations_B</span>
+                    <span class="n">b</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="o">-</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+                    <span class="c1"># weighting</span>
+                    <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">pw</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>
+                    <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">w</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+                    <span class="n">b</span> <span class="o">=</span> <span class="n">b</span> <span class="o">*</span> <span class="n">w</span>
+
+                    <span class="n">mA</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+                    <span class="n">mB</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mA</span><span class="p">,</span> <span class="n">mB</span>
+
+
+<span class="k">def</span> <span class="nf">_build_location_orientation_equations</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">centers</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="c1"># try to keep the original locations and orientations</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">centers</span><span class="p">)</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">center</span><span class="p">)</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="n">_unknowns</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+    <span class="n">mA</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">mB</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">centers</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">weights</span><span class="p">:</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span> <span class="n">k</span> <span class="o">*</span> <span class="n">cols</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">i</span> <span class="o">*</span> <span class="n">cols</span><span class="p">)</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span>
+
+            <span class="n">w</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>  <span class="c1"># **2# * 1000</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">w</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">b</span> <span class="o">*</span> <span class="n">w</span>
+
+            <span class="n">mA</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+            <span class="n">mB</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mA</span><span class="p">,</span> <span class="n">mB</span>
+
+
+<span class="k">def</span> <span class="nf">_extract_transformations</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">centers</span><span class="p">,</span> <span class="n">center</span><span class="p">):</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">center</span><span class="p">)</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="n">_unknowns</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">t_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">M</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">cols</span><span class="p">:</span> <span class="n">i</span> <span class="o">*</span> <span class="n">cols</span> <span class="o">+</span> <span class="n">dim</span><span class="p">]</span>
+              <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">centers</span><span class="p">)}</span>
+    <span class="n">r_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">M</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">cols</span> <span class="o">+</span> <span class="n">dim</span><span class="p">:</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">cols</span><span class="p">]</span>
+              <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">centers</span><span class="p">)}</span>
+
+    <span class="n">TC</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">t_matrix</span><span class="p">(</span><span class="n">center</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">centers</span><span class="p">):</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">t_matrix</span><span class="p">(</span><span class="n">t_dict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">r_matrix</span><span class="p">(</span><span class="n">r_dict</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">R</span> <span class="o">@</span> <span class="n">T</span>
+        <span class="n">res</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">TC</span> <span class="o">@</span> <span class="n">M</span> <span class="o">@</span> <span class="n">TC</span><span class="o">.</span><span class="n">inv</span>
+    <span class="k">return</span> <span class="n">res</span>
+
+
+<span class="k">def</span> <span class="nf">_prepare_input</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">,</span> <span class="n">pairs_dict</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
+
+    <span class="c1"># type validation</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;coords_dict&#39; of type &#39;dict&#39; required&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pairs_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;pairs_dict&#39; of type &#39;dict&#39; required&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">pairs_dict</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">coords_dict</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="s2">&quot;key &#39;</span><span class="si">%s</span><span class="s2">&#39; of &#39;pairs_dict&#39; not found in &#39;coords_dict&#39;&quot;</span> <span class="o">%</span> <span class="n">key</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+    <span class="c1"># number of point clouds</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;at least 2 point sets required&quot;</span><span class="p">)</span>
+
+    <span class="c1"># derive centered coordinates</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">centers_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">ccoords_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">coords_dict</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">dim</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_coords</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+            <span class="n">dim</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_coords</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">)</span>
+        <span class="n">centers_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">coords_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span>
+    <span class="n">unknowns</span> <span class="o">=</span> <span class="n">_unknowns</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+
+    <span class="c1"># common mean centering</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">centers_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">ccoords_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">coords_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">-</span> <span class="n">center</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">coords_dict</span><span class="p">}</span>
+
+    <span class="c1"># pairs</span>
+    <span class="n">wpairs_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">keyA</span> <span class="ow">in</span> <span class="n">pairs_dict</span><span class="p">:</span>
+        <span class="n">wpairs_dict</span><span class="p">[</span><span class="n">keyA</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">keyB</span> <span class="ow">in</span> <span class="n">pairs_dict</span><span class="p">[</span><span class="n">keyA</span><span class="p">]:</span>
+            <span class="n">pairs</span> <span class="o">=</span> <span class="n">pairs_dict</span><span class="p">[</span><span class="n">keyA</span><span class="p">][</span><span class="n">keyB</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pairs</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="n">pairs</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">pairs</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pairs</span><span class="p">))</span>
+
+            <span class="n">pairs</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numarray</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">nptools</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">(</span><span class="n">pairs</span><span class="p">,</span> <span class="n">dtypes</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;pairs&#39; needs to have integer values&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pairs</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">pairs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
+                    <span class="n">m</span> <span class="o">=</span> <span class="s2">&quot;malformed shape of &#39;pairs&#39; (got &#39;</span><span class="si">%s</span><span class="s2">&#39;)&quot;</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">m</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">pairs</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+                <span class="n">w</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numvector</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">pairs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">wpairs_dict</span><span class="p">[</span><span class="n">keyA</span><span class="p">][</span><span class="n">keyB</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">pairs</span><span class="p">,</span> <span class="n">w</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">))</span>
+
+    <span class="c1"># try to keep the original location and orientation</span>
+    <span class="n">weights_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">coords_dict</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">weights</span><span class="p">:</span>
+                <span class="n">weights_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numvector</span><span class="p">(</span>
+                    <span class="n">weights</span><span class="p">[</span><span class="n">key</span><span class="p">],</span>
+                    <span class="n">length</span><span class="o">=</span><span class="n">unknowns</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">weights_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">unknowns</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">assertion</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">(</span><span class="n">weights</span><span class="p">):</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">unknowns</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">nptools</span><span class="o">.</span><span class="n">isarray</span><span class="p">(</span><span class="n">weights</span><span class="p">):</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numvector</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">unknowns</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ccoords_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">weights_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">weights</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="s2">&quot;type &#39;%&#39; of &#39;weights&#39; not supported&quot;</span> <span class="o">%</span> <span class="nb">type</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">dim</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">ccoords_dict</span><span class="p">,</span> <span class="n">centers_dict</span><span class="p">,</span> <span class="n">wpairs_dict</span><span class="p">,</span> <span class="n">weights_dict</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../modules.html">Pyoints</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyoints.html">pyoints package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../modules.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Sebastian Lamprecht.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

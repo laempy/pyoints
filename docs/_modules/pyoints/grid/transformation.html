@@ -1,0 +1,440 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyoints.grid.transformation &#8212; Pyoints verson 0.2 alpha documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for pyoints.grid.transformation</h1><div class="highlight"><pre>
+<span></span><span class="c1"># BEGIN OF LICENSE NOTE</span>
+<span class="c1"># This file is part of Pyoints.</span>
+<span class="c1"># Copyright (c) 2018, Sebastian Lamprecht, Trier University,</span>
+<span class="c1"># lamprecht@uni-trier.de</span>
+<span class="c1">#</span>
+<span class="c1"># Pyoints is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># Pyoints is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with Pyoints. If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
+<span class="c1"># END OF LICENSE NOTE</span>
+<span class="sd">&quot;&quot;&quot;Conversion of coordinates to cell indices and reverse by applying</span>
+<span class="sd">transformations.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">assertion</span><span class="p">,</span>
+    <span class="n">transformation</span><span class="p">,</span>
+    <span class="n">registration</span><span class="p">,</span>
+    <span class="n">Extent</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="keys_to_indices"><a class="viewcode-back" href="../../../pyoints.grid.html#pyoints.grid.transformation.keys_to_indices">[docs]</a><span class="k">def</span> <span class="nf">keys_to_indices</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts matrix keys to indices.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    keys : array_like(int)</span>
+<span class="sd">        Keys of matrix.</span>
+<span class="sd">    shape : array_like(int, shape=(k))</span>
+<span class="sd">        Shape of the input matrix.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray(int)</span>
+<span class="sd">        Desired indices vector associated with the requested keys.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">:])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">))])[</span><span class="mi">1</span><span class="p">:],</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="p">))</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">keys</span> <span class="o">*</span> <span class="n">w</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="indices_to_keys"><a class="viewcode-back" href="../../../pyoints.grid.html#pyoints.grid.transformation.indices_to_keys">[docs]</a><span class="k">def</span> <span class="nf">indices_to_keys</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts indices vector to keys of a matrix.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    indices : array_like(int, shape=(n))</span>
+<span class="sd">        Index vector to convert to matrix keys. Each element `i` specifies the</span>
+<span class="sd">        `i`-th`element in the matrix.</span>
+<span class="sd">    shape : array_like(int, shape=(k))</span>
+<span class="sd">        Shape of output matrix.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray(int, shape=shape)</span>
+<span class="sd">        Desired matrix keys associated with requested indices.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numvector</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numvector</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="n">keys</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">:])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">))])[</span><span class="mi">1</span><span class="p">:],</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="p">))</span>
+    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">w</span><span class="p">:</span>
+        <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indices</span> <span class="o">/</span> <span class="n">d</span><span class="p">)</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">indices</span> <span class="o">%</span> <span class="n">d</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="k">return</span> <span class="n">keys</span></div>
+
+
+<div class="viewcode-block" id="coords_to_keys"><a class="viewcode-back" href="../../../pyoints.grid.html#pyoints.grid.transformation.coords_to_keys">[docs]</a><span class="k">def</span> <span class="nf">coords_to_keys</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">coords</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Transforms coordinates to matrix indices.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    T : array_like(Number, shape=(k+1,k+1))</span>
+<span class="sd">        A linear transformation matrix to transform the coordinates.</span>
+<span class="sd">        The translation represents the origin, the rotation represents the</span>
+<span class="sd">        orientation and the scale represents the pixel size of a raster.</span>
+<span class="sd">    coords : array_like(Number, shape=(n, k))</span>
+<span class="sd">        Coordinates with at least `k` dimensions to convert to indices.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    keys : np.ndarray(int, shape=(n, k))</span>
+<span class="sd">        Indices of the coordinates within the grid.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    keys_to_coords, coords_to_coords</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numarray</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">LocalSystem</span><span class="p">(</span><span class="n">assertion</span><span class="o">.</span><span class="n">ensure_tmatrix</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">))</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">//</span> <span class="n">dim</span>
+
+    <span class="n">flat_coords</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">s</span><span class="p">,</span> <span class="n">dim</span><span class="p">))</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">to_global</span><span class="p">(</span><span class="n">flat_coords</span><span class="p">)</span>
+
+    <span class="n">keys</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">keys</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="keys_to_coords"><a class="viewcode-back" href="../../../pyoints.grid.html#pyoints.grid.transformation.keys_to_coords">[docs]</a><span class="k">def</span> <span class="nf">keys_to_coords</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts indices of raster cells to coordinates.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    T : array_like(Number, shape=(k+1,k+1))</span>
+<span class="sd">        The transformation matrix of a `k` dimensional raster.</span>
+<span class="sd">    keys : array_like(int, shape=(n, k))</span>
+<span class="sd">        Indices of `n` raster cells.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    coords : array_like(Number, shape=(n, k))</span>
+<span class="sd">        Desired coordinates of the raster cells.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    coords_to_keys, coords_to_coords</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numarray</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">LocalSystem</span><span class="p">(</span><span class="n">assertion</span><span class="o">.</span><span class="n">ensure_tmatrix</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">))</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">keys</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">//</span> <span class="n">dim</span>
+    <span class="n">flat_keys</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">s</span><span class="p">,</span> <span class="n">dim</span><span class="p">))[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">flat_keys</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">coords</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">keys</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="coords_to_coords"><a class="viewcode-back" href="../../../pyoints.grid.html#pyoints.grid.transformation.coords_to_coords">[docs]</a><span class="k">def</span> <span class="nf">coords_to_coords</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">coords</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Aligns coordinates with a raster grid.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    T : array_like(Number, shape=(k+1, k+1))</span>
+<span class="sd">        The transformation matrix of a `k` dimensional raster.</span>
+<span class="sd">    coords : array_like(Number, shape=(n, k))</span>
+<span class="sd">        Coordinates to align with a raster grid.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    coords : array_like(Number, shape=(n, k))</span>
+<span class="sd">        Desired coordinates aligned with the grid.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    coords_to_keys, keys_to_coords</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">keys_to_coords</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">coords_to_keys</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">coords</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="corners_to_transform"><a class="viewcode-back" href="../../../pyoints.grid.html#pyoints.grid.transformation.corners_to_transform">[docs]</a><span class="k">def</span> <span class="nf">corners_to_transform</span><span class="p">(</span><span class="n">corners</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates a transformation matrix using the corners of a raster.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    corners : array_like(Number, shape=(2**k, k))</span>
+<span class="sd">        Corners of a `k` dimensional grid in a `k` dimensional space.</span>
+<span class="sd">    scale : optional, array_like(Number, shape=(k))</span>
+<span class="sd">        Optional scale to define the pixel resolution of a raster.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    T : np.matrix(Number, shape=(k+1, k+1))</span>
+<span class="sd">        Desired transformation matrix.</span>
+<span class="sd">    shape : np.ndarray(int, shape=(k))</span>
+<span class="sd">        Shape of a grid required to cover all corners.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    Create some corners.</span>
+
+<span class="sd">    &gt;&gt;&gt; T = transformation.matrix(t=[3, 5], s=[10, 20], r=np.pi/2)</span>
+<span class="sd">    &gt;&gt;&gt; coords = Extent([np.zeros(2), np.ones(2)]).corners</span>
+<span class="sd">    &gt;&gt;&gt; corners = transformation.transform(coords, T)</span>
+<span class="sd">    &gt;&gt;&gt; print(corners)</span>
+<span class="sd">    [[  3.   5.]</span>
+<span class="sd">     [  3.  15.]</span>
+<span class="sd">     [-17.  15.]</span>
+<span class="sd">     [-17.   5.]]</span>
+
+<span class="sd">    Create transformation matrix without scale.</span>
+
+<span class="sd">    &gt;&gt;&gt; M, shape = corners_to_transform(corners)</span>
+<span class="sd">    &gt;&gt;&gt; print(np.round(M, 3))</span>
+<span class="sd">    [[ 0. -1.  3.]</span>
+<span class="sd">     [ 1.  0.  5.]</span>
+<span class="sd">     [ 0.  0.  1.]]</span>
+<span class="sd">    &gt;&gt;&gt; print(shape)</span>
+<span class="sd">    [20 10]</span>
+
+<span class="sd">    Create transformation matrix with a scale.</span>
+
+<span class="sd">    &gt;&gt;&gt; M, shape = corners_to_transform(corners, [0.5, 2])</span>
+<span class="sd">    &gt;&gt;&gt; print(np.round(M, 3))</span>
+<span class="sd">    [[ 0.  -2.   3. ]</span>
+<span class="sd">     [ 0.5  0.   5. ]</span>
+<span class="sd">     [ 0.   0.   1. ]]</span>
+<span class="sd">    &gt;&gt;&gt; print(shape)</span>
+<span class="sd">    [10 20]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">corners</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_coords</span><span class="p">(</span><span class="n">corners</span><span class="p">)</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="n">corners</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">scale</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numvector</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">dim</span><span class="p">)</span>
+
+    <span class="c1"># find transformation matrix</span>
+    <span class="n">pts</span> <span class="o">=</span> <span class="n">Extent</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">dim</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">scale</span><span class="p">)])</span><span class="o">.</span><span class="n">corners</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">registration</span><span class="o">.</span><span class="n">find_transformation</span><span class="p">(</span><span class="n">corners</span><span class="p">,</span> <span class="n">pts</span><span class="p">)</span>
+
+    <span class="c1"># get translation, rotation and scale</span>
+    <span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">det</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">decomposition</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+
+    <span class="n">T</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">scale</span><span class="p">)</span>
+
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">coords_to_keys</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">corners</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">indices</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span>
+        <span class="s1">&#39;not all indices greater zero, got </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">indices</span><span class="p">))</span>
+
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">indices</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">T</span><span class="p">,</span> <span class="n">shape</span></div>
+
+
+<div class="viewcode-block" id="transform_to_corners"><a class="viewcode-back" href="../../../pyoints.grid.html#pyoints.grid.transformation.transform_to_corners">[docs]</a><span class="k">def</span> <span class="nf">transform_to_corners</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generates the corners of a grid based on a transformation matrix.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    T : array_like(Number, shape=(k+1, k+1))</span>
+<span class="sd">        Transformation matrix in a `k` dimensional space.</span>
+<span class="sd">    shape : array_like(int, shape=(k))</span>
+<span class="sd">        Desired shape of the grid</span>
+
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; T = transformation.matrix(t=[10, 20], s=[0.5, 2])</span>
+<span class="sd">    &gt;&gt;&gt; print(np.round(T, 3))</span>
+<span class="sd">    [[ 0.5  0.  10. ]</span>
+<span class="sd">     [ 0.   2.  20. ]</span>
+<span class="sd">     [ 0.   0.   1. ]]</span>
+
+<span class="sd">    &gt;&gt;&gt; corners = transform_to_corners(T, (100, 200))</span>
+<span class="sd">    &gt;&gt;&gt; print(np.round(corners, 3))</span>
+<span class="sd">    [[ 10.  20.]</span>
+<span class="sd">     [ 60.  20.]</span>
+<span class="sd">     [ 60. 420.]</span>
+<span class="sd">     [ 10. 420.]]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ext</span> <span class="o">=</span> <span class="n">Extent</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)),</span> <span class="n">shape</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">transformation</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">ext</span><span class="o">.</span><span class="n">corners</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="extentinfo"><a class="viewcode-back" href="../../../pyoints.grid.html#pyoints.grid.transformation.extentinfo">[docs]</a><span class="k">def</span> <span class="nf">extentinfo</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">extent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Receives information on a raster subset with given boundaries.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    T : array_like(Number, shape=(k+1,k+1))</span>
+<span class="sd">        The transformation matrix of a `k` dimensional grid.</span>
+<span class="sd">    extent : array_like(Number, shape=(2 * k))</span>
+<span class="sd">        Desired extent.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    T : array_like(Number, shape=(k+1,k+1))</span>
+<span class="sd">        Extent of the original raster.</span>
+<span class="sd">    origin_key : array_like(int, shape=(k))</span>
+<span class="sd">        Key or index of the origin of the new transformation matrix.</span>
+<span class="sd">    shape : np.array(int, shape=(k))</span>
+<span class="sd">        Shape of the grid subset.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; T = transformation.matrix(t=[100, 200], s=[2, -2])</span>
+<span class="sd">    &gt;&gt;&gt; ext = Extent([150, 250, 200, 300])</span>
+<span class="sd">    &gt;&gt;&gt; M, min_corner_key, shape = extentinfo(T, ext)</span>
+<span class="sd">    &gt;&gt;&gt; print(M)</span>
+<span class="sd">    [[  2.   0. 150.]</span>
+<span class="sd">     [  0.  -2. 300.]</span>
+<span class="sd">     [  0.   0.   1.]]</span>
+<span class="sd">    &gt;&gt;&gt; print(min_corner_key)</span>
+<span class="sd">    [-50  25]</span>
+<span class="sd">    &gt;&gt;&gt; print(shape)</span>
+<span class="sd">    [26 26]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># ensure extent</span>
+    <span class="n">extent</span> <span class="o">=</span> <span class="n">Extent</span><span class="p">(</span><span class="n">extent</span><span class="p">)</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_tmatrix</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+
+    <span class="n">dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">extent</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">==</span> <span class="n">dim</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;dimensions do not match&#39;</span><span class="p">)</span>
+
+    <span class="n">corner_keys</span> <span class="o">=</span> <span class="n">coords_to_keys</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">extent</span><span class="o">.</span><span class="n">corners</span><span class="p">)</span>
+
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">corner_keys</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="c1"># Minimum corner</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">corner_keys</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">origin_key</span> <span class="o">=</span> <span class="n">corner_keys</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">)]</span>
+    <span class="n">min_corner</span> <span class="o">=</span> <span class="n">keys_to_coords</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="p">[</span><span class="n">origin_key</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">])[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+
+    <span class="c1"># define transformation</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">t</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">dim</span><span class="p">]</span> <span class="o">=</span> <span class="n">min_corner</span>
+
+    <span class="k">return</span> <span class="n">t</span><span class="p">,</span> <span class="n">origin_key</span><span class="p">,</span> <span class="n">shape</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../modules.html">Pyoints</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyoints.html">pyoints package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../modules.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Sebastian Lamprecht.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

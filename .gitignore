@@ -2,6 +2,7 @@
 *~
 build
 venv*
+dist
 *.egg
 *.egg-info
 

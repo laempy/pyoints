@@ -1,0 +1,763 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyoints.storage package &#8212; Pyoints verson 0.2 alpha documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="pyoints.registration package" href="pyoints.registration.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="pyoints-storage-package">
+<h1>pyoints.storage package<a class="headerlink" href="#pyoints-storage-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pyoints.storage.BaseGeoHandler">
+<span id="pyoints-storage-basegeohandler-module"></span><h2>pyoints.storage.BaseGeoHandler module<a class="headerlink" href="#module-pyoints.storage.BaseGeoHandler" title="Permalink to this headline">¶</a></h2>
+<p>Basic handling of spatial files.</p>
+<dl class="class">
+<dt id="pyoints.storage.BaseGeoHandler.GeoFile">
+<em class="property">class </em><code class="descclassname">pyoints.storage.BaseGeoHandler.</code><code class="descname">GeoFile</code><span class="sig-paren">(</span><em>infile</em>, <em>directory=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/BaseGeoHandler.html#GeoFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.BaseGeoHandler.GeoFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Interface to read files containing spatial information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>infile</strong> (<em>String</em>) – File to be read. It should contain data to be interpreted as points of
+<cite>k</cite> dimensions.</li>
+<li><strong>directory</strong> (<em>bool</em>) – Indicates if the file is a composite of several files stored in a
+directory.</li>
+<li><strong>Properties</strong> – </li>
+<li><strong>----------</strong> – </li>
+<li><strong>t</strong> (<em>np.matrix</em><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>k+1</em><em>, </em><em>k+1</em><em>)</em><em>)</em>) – Transformation matrix to transform the <cite>k</cite>-dimensional points. Usually
+this matrix defines the origin of a local coordinate system.</li>
+<li><strong>proj</strong> (<a class="reference internal" href="pyoints.html#pyoints.projection.Proj" title="pyoints.projection.Proj"><em>Proj</em></a>) – Coordinate projection system.</li>
+<li><strong>extent</strong> (<a class="reference internal" href="pyoints.html#pyoints.extent.Extent" title="pyoints.extent.Extent"><em>Extent</em></a><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>2 * k</em><em>)</em><em>)</em>) – Defines the spatial extent of the points.</li>
+<li><strong>corners</strong> (<em>np.ndarray</em><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>2**k</em><em>, </em><em>k</em><em>)</em><em>)</em>) – Corners of the extent.</li>
+<li><strong>date</strong> (<em>Date</em>) – Capturing date.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proj</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Extent</span></code></p>
+</div>
+<dl class="method">
+<dt id="pyoints.storage.BaseGeoHandler.GeoFile.clean_cache">
+<code class="descname">clean_cache</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/BaseGeoHandler.html#GeoFile.clean_cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.BaseGeoHandler.GeoFile.clean_cache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cleans all cached data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyoints.storage.BaseGeoHandler.GeoFile.corners">
+<code class="descname">corners</code><a class="headerlink" href="#pyoints.storage.BaseGeoHandler.GeoFile.corners" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyoints.storage.BaseGeoHandler.GeoFile.date">
+<code class="descname">date</code><a class="headerlink" href="#pyoints.storage.BaseGeoHandler.GeoFile.date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyoints.storage.BaseGeoHandler.GeoFile.extent">
+<code class="descname">extent</code><a class="headerlink" href="#pyoints.storage.BaseGeoHandler.GeoFile.extent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyoints.storage.BaseGeoHandler.GeoFile.load">
+<code class="descname">load</code><span class="sig-paren">(</span><em>extent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/BaseGeoHandler.html#GeoFile.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.BaseGeoHandler.GeoFile.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load data on demand.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>extent</strong> (<em>optional</em><em>, </em><em>array_like</em><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>2*self.dim</em><em>)</em><em>)</em>) – Defines in which volume or area points shall be loaded.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Desired geo-data of the file.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="pyoints.html#pyoints.georecords.GeoRecords" title="pyoints.georecords.GeoRecords">GeoRecords</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyoints.storage.BaseGeoHandler.GeoFile.proj">
+<code class="descname">proj</code><a class="headerlink" href="#pyoints.storage.BaseGeoHandler.GeoFile.proj" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyoints.storage.BaseGeoHandler.GeoFile.t">
+<code class="descname">t</code><a class="headerlink" href="#pyoints.storage.BaseGeoHandler.GeoFile.t" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyoints.storage.CsvHandler">
+<span id="pyoints-storage-csvhandler-module"></span><h2>pyoints.storage.CsvHandler module<a class="headerlink" href="#module-pyoints.storage.CsvHandler" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pyoints.storage.CsvHandler.loadCsv">
+<code class="descclassname">pyoints.storage.CsvHandler.</code><code class="descname">loadCsv</code><span class="sig-paren">(</span><em>infile</em>, <em>sep='</em>, <em>'</em>, <em>multicol_sep='.'</em>, <em>dtype=None</em>, <em>header=True</em>, <em>ignore='# '</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/CsvHandler.html#loadCsv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.CsvHandler.loadCsv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simplified loading of .csv files.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>infile</strong> (<em>String</em>) – File to be read.</li>
+<li><strong>sep</strong> (<em>optional</em><em>, </em><em>Character</em>) – Character separating the columns.</li>
+<li><strong>multicol_sep</strong> (<em>optional</em><em>, </em><em>Character</em>) – Indicates how the column index of multi-column are separated form the
+column name.</li>
+<li><strong>dtype</strong> (<em>np.dtype</em>) – Desired data type of the output numpy record array.</li>
+<li><strong>header</strong> (<em>bool</em>) – Indicates</li>
+<li><strong>**kwargs</strong> (<em>optional</em>) – Arguments passed to <cite>pandas.read_csv</cite>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Loaded data.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.recarary</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#pyoints.storage.CsvHandler.writeCsv" title="pyoints.storage.CsvHandler.writeCsv"><code class="xref py py-func docutils literal notranslate"><span class="pre">writeCsv()</span></code></a>, <code class="xref py py-func docutils literal notranslate"><span class="pre">pandas.read_csv()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyoints.storage.CsvHandler.writeCsv">
+<code class="descclassname">pyoints.storage.CsvHandler.</code><code class="descname">writeCsv</code><span class="sig-paren">(</span><em>data</em>, <em>outfile</em>, <em>sep='</em>, <em>'</em>, <em>multicol_sep='.'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/CsvHandler.html#writeCsv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.CsvHandler.writeCsv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write an array to a csv-file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>array_like</em>) – Data to store.</li>
+<li><strong>outfile</strong> (<em>string</em>) – File to write the data to.</li>
+<li><strong>sep</strong> (<em>optional</em><em>, </em><em>Character</em>) – Desired field separator.</li>
+<li><strong>multicol_sep</strong> (<em>optional</em><em>, </em><em>Character</em>) – Indicates how the column index of multi-column shall be separated form
+the column name. For example, the column names ‘normal.1’, ‘normal.2’
+indicate a two dimensional attribute ‘normal’.</li>
+<li><strong>**kwargs</strong> (<em>optional</em>) – Arguments passed to np.save_txt`</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#pyoints.storage.CsvHandler.loadCsv" title="pyoints.storage.CsvHandler.loadCsv"><code class="xref py py-func docutils literal notranslate"><span class="pre">loadCsv()</span></code></a>, <code class="xref py py-func docutils literal notranslate"><span class="pre">np.save_txt()</span></code></p>
+</div>
+<p class="rubric">Notes</p>
+<p>Limited type validation.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyoints.storage.DumpHandler">
+<span id="pyoints-storage-dumphandler-module"></span><h2>pyoints.storage.DumpHandler module<a class="headerlink" href="#module-pyoints.storage.DumpHandler" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyoints.storage.DumpHandler.DumpReader">
+<em class="property">class </em><code class="descclassname">pyoints.storage.DumpHandler.</code><code class="descname">DumpReader</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/DumpHandler.html#DumpReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.DumpHandler.DumpReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyoints.storage.BaseGeoHandler.GeoFile" title="pyoints.storage.BaseGeoHandler.GeoFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyoints.storage.BaseGeoHandler.GeoFile</span></code></a></p>
+<p>Class to read GeoRecords from python dump files.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-class docutils literal notranslate"><span class="pre">GeoFile</span></code></p>
+</div>
+<dl class="method">
+<dt id="pyoints.storage.DumpHandler.DumpReader.clean_cache">
+<code class="descname">clean_cache</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/DumpHandler.html#DumpReader.clean_cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.DumpHandler.DumpReader.clean_cache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cleans all cached data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyoints.storage.DumpHandler.DumpReader.corners">
+<code class="descname">corners</code><a class="headerlink" href="#pyoints.storage.DumpHandler.DumpReader.corners" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyoints.storage.DumpHandler.DumpReader.extent">
+<code class="descname">extent</code><a class="headerlink" href="#pyoints.storage.DumpHandler.DumpReader.extent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyoints.storage.DumpHandler.DumpReader.load">
+<code class="descname">load</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/DumpHandler.html#DumpReader.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.DumpHandler.DumpReader.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load data on demand.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>extent</strong> (<em>optional</em><em>, </em><em>array_like</em><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>2*self.dim</em><em>)</em><em>)</em>) – Defines in which volume or area points shall be loaded.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Desired geo-data of the file.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="pyoints.html#pyoints.georecords.GeoRecords" title="pyoints.georecords.GeoRecords">GeoRecords</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyoints.storage.DumpHandler.DumpReader.proj">
+<code class="descname">proj</code><a class="headerlink" href="#pyoints.storage.DumpHandler.DumpReader.proj" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyoints.storage.DumpHandler.DumpReader.t">
+<code class="descname">t</code><a class="headerlink" href="#pyoints.storage.DumpHandler.DumpReader.t" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pyoints.storage.DumpHandler.dumpstring_from_object">
+<code class="descclassname">pyoints.storage.DumpHandler.</code><code class="descname">dumpstring_from_object</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/DumpHandler.html#dumpstring_from_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.DumpHandler.dumpstring_from_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts an object to a dump string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>string</strong> (<em>string</em>) – Dump string</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Dump string.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyoints.storage.DumpHandler.dumpstring_to_object">
+<code class="descclassname">pyoints.storage.DumpHandler.</code><code class="descname">dumpstring_to_object</code><span class="sig-paren">(</span><em>pickled</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/DumpHandler.html#dumpstring_to_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.DumpHandler.dumpstring_to_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a dump string to an object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>string</strong> (<em>string</em>) – Dump string</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Loaded object.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyoints.storage.DumpHandler.loadDump">
+<code class="descclassname">pyoints.storage.DumpHandler.</code><code class="descname">loadDump</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/DumpHandler.html#loadDump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.DumpHandler.loadDump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads a dump file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>String</em>) – Dump file to load.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyoints.storage.DumpHandler.writeDump">
+<code class="descclassname">pyoints.storage.DumpHandler.</code><code class="descname">writeDump</code><span class="sig-paren">(</span><em>obj</em>, <em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/DumpHandler.html#writeDump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.DumpHandler.writeDump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump an object to a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>obj</strong> (<em>object</em>) – Object to dump</li>
+<li><strong>outfile</strong> (<em>String</em>) – File to dump object to.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyoints.storage.LasHandler">
+<span id="pyoints-storage-lashandler-module"></span><h2>pyoints.storage.LasHandler module<a class="headerlink" href="#module-pyoints.storage.LasHandler" title="Permalink to this headline">¶</a></h2>
+<p>Handling of .las-files.</p>
+<dl class="class">
+<dt id="pyoints.storage.LasHandler.LasReader">
+<em class="property">class </em><code class="descclassname">pyoints.storage.LasHandler.</code><code class="descname">LasReader</code><span class="sig-paren">(</span><em>infile</em>, <em>proj=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/LasHandler.html#LasReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.LasHandler.LasReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyoints.storage.BaseGeoHandler.GeoFile" title="pyoints.storage.BaseGeoHandler.GeoFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyoints.storage.BaseGeoHandler.GeoFile</span></code></a></p>
+<p>Class to read .las-files.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>infile</strong> (<em>String</em>) – Las file to be read.</li>
+<li><strong>proj</strong> (<em>optional</em><em>, </em><a class="reference internal" href="pyoints.html#pyoints.projection.Proj" title="pyoints.projection.Proj"><em>Proj</em></a>) – Spatial reference system. Usually provided only, if the spatial
+reference of the file has not be set yet.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-class docutils literal notranslate"><span class="pre">GeoFile</span></code></p>
+</div>
+<dl class="attribute">
+<dt id="pyoints.storage.LasHandler.LasReader.corners">
+<code class="descname">corners</code><a class="headerlink" href="#pyoints.storage.LasHandler.LasReader.corners" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyoints.storage.LasHandler.LasReader.extent">
+<code class="descname">extent</code><a class="headerlink" href="#pyoints.storage.LasHandler.LasReader.extent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyoints.storage.LasHandler.LasReader.load">
+<code class="descname">load</code><span class="sig-paren">(</span><em>extent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/LasHandler.html#LasReader.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.LasHandler.LasReader.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load data on demand.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>extent</strong> (<em>optional</em><em>, </em><em>array_like</em><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>2*self.dim</em><em>)</em><em>)</em>) – Defines in which volume or area points shall be loaded.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Desired geo-data of the file.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="pyoints.html#pyoints.georecords.GeoRecords" title="pyoints.georecords.GeoRecords">GeoRecords</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pyoints.storage.LasHandler.writeLas">
+<code class="descclassname">pyoints.storage.LasHandler.</code><code class="descname">writeLas</code><span class="sig-paren">(</span><em>geoRecords</em>, <em>outfile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/LasHandler.html#writeLas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.LasHandler.writeLas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a LAS file to disc.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>geoRecords</strong> (<a class="reference internal" href="pyoints.html#pyoints.georecords.GeoRecords" title="pyoints.georecords.GeoRecords"><em>GeoRecords</em></a>) – Points to store to disk.</li>
+<li><strong>outfile</strong> (<em>String</em>) – Desired output file.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyoints.storage.PlyHandler">
+<span id="pyoints-storage-plyhandler-module"></span><h2>pyoints.storage.PlyHandler module<a class="headerlink" href="#module-pyoints.storage.PlyHandler" title="Permalink to this headline">¶</a></h2>
+<p>Handling of .ply-files.</p>
+<dl class="function">
+<dt id="pyoints.storage.PlyHandler.loadPly">
+<code class="descclassname">pyoints.storage.PlyHandler.</code><code class="descname">loadPly</code><span class="sig-paren">(</span><em>infile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/PlyHandler.html#loadPly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.PlyHandler.loadPly" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads a .ply file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>infile</strong> (<em>String</em>) – PLY-file to be read.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Loaded data.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.recarray</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#pyoints.storage.PlyHandler.writePly" title="pyoints.storage.PlyHandler.writePly"><code class="xref py py-func docutils literal notranslate"><span class="pre">writePly()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyoints.storage.PlyHandler.writePly">
+<code class="descclassname">pyoints.storage.PlyHandler.</code><code class="descname">writePly</code><span class="sig-paren">(</span><em>rec</em>, <em>outfile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/PlyHandler.html#writePly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.PlyHandler.writePly" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves data to a .ply file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>rec</strong> (<em>np.recarray</em>) – Numpy record array to save.</li>
+<li><strong>outfile</strong> (<em>String</em>) – Desired output .ply file .</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#pyoints.storage.PlyHandler.loadPly" title="pyoints.storage.PlyHandler.loadPly"><code class="xref py py-func docutils literal notranslate"><span class="pre">loadPly()</span></code></a></p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyoints.storage.RasterHandler">
+<span id="pyoints-storage-rasterhandler-module"></span><h2>pyoints.storage.RasterHandler module<a class="headerlink" href="#module-pyoints.storage.RasterHandler" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyoints.storage.RasterHandler.RasterReader">
+<em class="property">class </em><code class="descclassname">pyoints.storage.RasterHandler.</code><code class="descname">RasterReader</code><span class="sig-paren">(</span><em>infile</em>, <em>proj=None</em>, <em>date=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/RasterHandler.html#RasterReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.RasterHandler.RasterReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyoints.storage.BaseGeoHandler.GeoFile" title="pyoints.storage.BaseGeoHandler.GeoFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyoints.storage.BaseGeoHandler.GeoFile</span></code></a></p>
+<p>Reads image files.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>infile</strong> (<em>String</em>) – Raster file to be read.</li>
+<li><strong>proj</strong> (<em>optional</em><em>, </em><a class="reference internal" href="pyoints.html#pyoints.projection.Proj" title="pyoints.projection.Proj"><em>Proj</em></a>) – Spatial reference system. Usually just provided, if the spatial
+reference has not been set yet.</li>
+<li><strong>date</strong> (<em>datetime.date</em>) – Date of capture.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-class docutils literal notranslate"><span class="pre">GeoFile</span></code></p>
+</div>
+<dl class="attribute">
+<dt id="pyoints.storage.RasterHandler.RasterReader.corners">
+<code class="descname">corners</code><a class="headerlink" href="#pyoints.storage.RasterHandler.RasterReader.corners" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyoints.storage.RasterHandler.RasterReader.extent">
+<code class="descname">extent</code><a class="headerlink" href="#pyoints.storage.RasterHandler.RasterReader.extent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyoints.storage.RasterHandler.RasterReader.load">
+<code class="descname">load</code><span class="sig-paren">(</span><em>extent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/RasterHandler.html#RasterReader.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.RasterHandler.RasterReader.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load data on demand.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>extent</strong> (<em>optional</em><em>, </em><em>array_like</em><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>2*self.dim</em><em>)</em><em>)</em>) – Defines in which volume or area points shall be loaded.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Desired geo-data of the file.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="pyoints.html#pyoints.georecords.GeoRecords" title="pyoints.georecords.GeoRecords">GeoRecords</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyoints.storage.RasterHandler.RasterReader.num_bands">
+<code class="descname">num_bands</code><a class="headerlink" href="#pyoints.storage.RasterHandler.RasterReader.num_bands" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pyoints.storage.RasterHandler.load_gdal">
+<code class="descclassname">pyoints.storage.RasterHandler.</code><code class="descname">load_gdal</code><span class="sig-paren">(</span><em>filename</em>, <em>proj=None</em>, <em>extent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/RasterHandler.html#load_gdal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.RasterHandler.load_gdal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads an image from disc using gdal.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> (<em>str</em>) – Path to file.</li>
+<li><strong>proj</strong> (<em>optional</em><em>, </em><a class="reference internal" href="pyoints.html#pyoints.projection.Proj" title="pyoints.projection.Proj"><em>Proj</em></a>) – Desired projection.</li>
+<li><strong>extent</strong> (<em>optional</em><em>, </em><em>array_like</em><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>4</em><em>)</em><em>)</em>) – Desired extent to load.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>bands</strong> (<em>np.array(Number, (rows, cols, bands))</em>) – Image data.</li>
+<li><strong>rotation</strong> (<em>Number</em>) – Image orientation.</li>
+<li><strong>proj</strong> (<em>Proj</em>) – Projection.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyoints.storage.RasterHandler.writeRaster">
+<code class="descclassname">pyoints.storage.RasterHandler.</code><code class="descname">writeRaster</code><span class="sig-paren">(</span><em>raster</em>, <em>outfile</em>, <em>field='bands'</em>, <em>no_data=nan</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/RasterHandler.html#writeRaster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.RasterHandler.writeRaster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes a Grid to file system.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>raster</strong> (<a class="reference internal" href="pyoints.grid.html#pyoints.grid.grid.Grid" title="pyoints.grid.grid.Grid"><em>Grid</em></a><em>(</em><em>shape=</em><em>(</em><em>cols</em><em>, </em><em>rows</em><em>)</em><em>)</em>) – A two dimensional Grid of <cite>cols</cite> columns and <cite>rows</cite> rows to be stored.</li>
+<li><strong>outfile</strong> (<em>String</em>) – File to save the raster to.</li>
+<li><strong>field</strong> (<em>optional</em><em>, </em><em>str</em>) – Field considered as raster bands.</li>
+<li><strong>no_data</strong> (<em>optional</em><em>, </em><em>object</em>) – Desired no data value.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-func docutils literal notranslate"><span class="pre">writeTif()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyoints.storage.RasterHandler.write_gdal">
+<code class="descclassname">pyoints.storage.RasterHandler.</code><code class="descname">write_gdal</code><span class="sig-paren">(</span><em>image</em>, <em>outfile</em>, <em>T=None</em>, <em>proj=None</em>, <em>no_data=nan</em>, <em>driver='GTiff'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/RasterHandler.html#write_gdal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.RasterHandler.write_gdal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes an image to disc.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>image</strong> (<em>np.ndarray</em><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>rows</em><em>, </em><em>cols</em><em>, </em><em>k</em><em>)</em><em>)</em>) – Image to save</li>
+<li><strong>outfile</strong> (<em>String</em>) – File to save the raster to.</li>
+<li><strong>no_data</strong> (<em>optional</em><em>, </em><em>object</em>) – No data value to be used.</li>
+<li><strong>T</strong> (<em>optional</em><em>, </em><em>array_like</em><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>3</em><em>, </em><em>3</em><em>)</em><em>)</em>) – Projection matrix to be used.</li>
+<li><strong>proj</strong> (<a class="reference internal" href="pyoints.html#pyoints.projection.Proj" title="pyoints.projection.Proj"><em>Proj</em></a>) – Projection to be used.</li>
+<li><strong>no_data</strong> – Desired no data value.</li>
+<li><strong>driver</strong> (<em>optional</em><em>, </em><em>str</em>) – Gdal driver.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#pyoints.storage.RasterHandler.writeRaster" title="pyoints.storage.RasterHandler.writeRaster"><code class="xref py py-func docutils literal notranslate"><span class="pre">writeRaster()</span></code></a></p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyoints.storage.dtype_converters">
+<span id="pyoints-storage-dtype-converters-module"></span><h2>pyoints.storage.dtype_converters module<a class="headerlink" href="#module-pyoints.storage.dtype_converters" title="Permalink to this headline">¶</a></h2>
+<p>Helper functions for data type conersion.</p>
+<dl class="function">
+<dt id="pyoints.storage.dtype_converters.numpy_to_gdal_dtype">
+<code class="descclassname">pyoints.storage.dtype_converters.</code><code class="descname">numpy_to_gdal_dtype</code><span class="sig-paren">(</span><em>dtype</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/dtype_converters.html#numpy_to_gdal_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.dtype_converters.numpy_to_gdal_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a numpy data type to a gdal data type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dtype</strong> (<em>np.dtype</em>) – Numpy data type to convert.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Gdal data type id.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numpy_to_gdal_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
+<span class="go">5</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyoints.storage.dtype_converters.numpy_to_laspy_dtype">
+<code class="descclassname">pyoints.storage.dtype_converters.</code><code class="descname">numpy_to_laspy_dtype</code><span class="sig-paren">(</span><em>dtype</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/dtype_converters.html#numpy_to_laspy_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.dtype_converters.numpy_to_laspy_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a numpy data type to a laspy data type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dtype</strong> (<em>np.dtype</em>) – Numpy data type to convert.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Laspy data type id.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numpy_to_laspy_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
+<span class="go">6</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyoints.storage.misc">
+<span id="pyoints-storage-misc-module"></span><h2>pyoints.storage.misc module<a class="headerlink" href="#module-pyoints.storage.misc" title="Permalink to this headline">¶</a></h2>
+<p>Some random functions, which ease development.</p>
+<dl class="function">
+<dt id="pyoints.storage.misc.create_random_GeoRecords">
+<code class="descclassname">pyoints.storage.misc.</code><code class="descname">create_random_GeoRecords</code><span class="sig-paren">(</span><em>center=None</em>, <em>epsg=25832</em>, <em>dim=3</em>, <em>n=1000</em>, <em>scale=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/misc.html#create_random_GeoRecords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.misc.create_random_GeoRecords" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pyoints.storage">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyoints.storage" title="Permalink to this headline">¶</a></h2>
+<p>Loading and saving of files.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="modules.html">Pyoints</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="pyoints.html">pyoints package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pyoints.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pyoints.examples.html">pyoints.examples package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.grid.html">pyoints.grid package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.registration.html">pyoints.registration package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">pyoints.storage package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyoints.storage.BaseGeoHandler">pyoints.storage.BaseGeoHandler module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyoints.storage.CsvHandler">pyoints.storage.CsvHandler module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyoints.storage.DumpHandler">pyoints.storage.DumpHandler module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyoints.storage.LasHandler">pyoints.storage.LasHandler module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyoints.storage.PlyHandler">pyoints.storage.PlyHandler module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyoints.storage.RasterHandler">pyoints.storage.RasterHandler module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyoints.storage.dtype_converters">pyoints.storage.dtype_converters module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyoints.storage.misc">pyoints.storage.misc module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pyoints.storage">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.assertion">pyoints.assertion module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.assign">pyoints.assign module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.classification">pyoints.classification module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.clustering">pyoints.clustering module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.coords">pyoints.coords module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.distance">pyoints.distance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.extent">pyoints.extent module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.filters">pyoints.filters module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.fit">pyoints.fit module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.georecords">pyoints.georecords module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.indexkd">pyoints.indexkd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.interpolate">pyoints.interpolate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.misc">pyoints.misc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.normals">pyoints.normals module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.nptools">pyoints.nptools module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.polar">pyoints.polar module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.projection">pyoints.projection module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.smoothing">pyoints.smoothing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.surface">pyoints.surface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.transformation">pyoints.transformation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.vector">pyoints.vector module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="modules.html">Documentation overview</a><ul>
+  <li><a href="pyoints.html">pyoints package</a><ul>
+      <li>Previous: <a href="pyoints.registration.html" title="previous chapter">pyoints.registration package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Sebastian Lamprecht.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      
+      |
+      <a href="_sources/pyoints.storage.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
