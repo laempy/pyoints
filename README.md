@@ -77,13 +77,12 @@ developers of new geo-spatial algorithms.
 
 ## Install external dependencies
 
-The following dependencies have to be installed manually, since they are required
-by the pip packages.
+The following dependencies have to be installed manually, since they are 
+required by the pip packages.
 
 ### Python
 
-The ``Pyoints`` targets Python3 >= 3.5. The code should also be compatible to
-Python2 >= 2.7.
+The ``Pyoints`` targets Python3 >= 3.5.
 
 
 ### Gdal

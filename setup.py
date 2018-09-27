@@ -7,7 +7,7 @@ script_path = os.path.dirname(os.path.abspath(__file__))
 # get long description from README
 with open(os.path.join(script_path, "README.md"), "r") as fh:
     long_description = fh.read()
-    
+
 # get requirements
 with open(os.path.join(script_path, 'requirements.txt'), "r") as f:
     install_requires = []
@@ -31,7 +31,6 @@ setuptools.setup (
         "Intended Audience :: Science/Research",
         "Topic :: Scientific/Engineering :: GIS",
         "Topic :: Scientific/Engineering :: Information Analysis",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
         "Operating System :: OS Independent",
