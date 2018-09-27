@@ -73,4 +73,10 @@ The source code for *Pyoints* has been archived to [@GitHub] at
 [@Pyoints_GitHub].
 
 
+# Acknowledgements
+
+This work was supported by the PANTHEON project which is funded by the European
+Community Horizon 2020 programme under grant agreement 774571.
+
+
 # References
