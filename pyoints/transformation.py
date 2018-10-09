@@ -676,7 +676,7 @@ class LocalSystem(np.ndarray, object):
 
     @origin.setter
     def origin(self, origin):
-        origin = ensure_numarray([origin]).T
+        origin = ensure_numvector(origin, length=self.dim)
         self[:self.dim, self.dim] = origin
 
     def decomposition(self):

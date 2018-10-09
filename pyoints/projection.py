@@ -192,10 +192,29 @@ class GeoTransform:
     """
 
     def __init__(self, from_proj, to_proj):
-        if not isinstance(from_proj, Proj) or not isinstance(to_proj, Proj):
-            raise TypeError("objects of type 'Proj' required")
-        self._from_proj = from_proj
-        self._to_proj = to_proj
+        self.from_proj = from_proj
+        self.to_proj = to_proj
+
+    @property
+    def from_proj(self):
+        return self._from_proj
+   
+    @from_proj.setter
+    def from_proj(self, proj):
+        if not isinstance(proj, Proj):
+            raise TypeError("isinstance of 'Proj' required")
+        self._from_proj = proj
+    
+    @property
+    def to_proj(self):
+        return self._to_proj
+   
+    @to_proj.setter
+    def to_proj(self, proj):
+        if not isinstance(proj, Proj):
+            raise TypeError("isinstance of 'Proj' required")
+        self._to_proj = proj
+
 
     def __call__(self, coords, reverse=False):
         """Applies the coordinate transformation.
