@@ -387,16 +387,26 @@ def dem_filter(coords, r, max_angle=70):
     r : Number or array_like(Number, shape=(n))
         Radius or radii to apply.
     max_angle : Number
-        Maximum allowed angle of a simplex.
+        Maximum allowed slope of a simplex.
 
     Returns
     -------
     array_like(int, shape=(m))
         Desired indices of points suitable for generating a surface model.
 
+    Notes
+    -----
+    Applies a `k-1` dimensional `ball` filter to identify a digital elevation
+    model. The point order is defined by the last coordinate dimension. The
+    filtering radius `r` is defined by the user. To optimize the quality of the
+    dem, all points with less than 5 neighbours within radius `2 * r` are 
+    removed from further analysis. In addition a TIN (Triangulated Irregular 
+    Network) is generated to model the surface. Each facet with a slope larger
+    than `max_angle` is removed iteratively.
+    
     See Also
     --------
-    radial_dem_filter
+    radial_dem_filter, ball
 
     """
     coords = assertion.ensure_coords(coords, min_dim=3)
@@ -441,7 +451,7 @@ def dem_filter(coords, r, max_angle=70):
     return fIds
 
 
-def radial_dem_filter(coords, angle_res, center=None):
+def radial_dem_filter(coords, angle_res, center=None, max_angle=70):
     """Filters surface points based on distance to the center. The algorithm
     is designed to create digital elevation models of terrestrial laser scans.
     Terrestrial laser scans are characterized by decreasing point densities
@@ -456,6 +466,8 @@ def radial_dem_filter(coords, angle_res, center=None):
         Filter resolution expressed as an angle.
     center : optional, array_like(Number, shape=(k))
         Desired center.
+    max_angle : Number
+        Maximum allowed angle of a simplex.
 
     Returns
     -------
@@ -478,6 +490,6 @@ def radial_dem_filter(coords, angle_res, center=None):
 
     dist = distance.dist(center[:-1], coords[:, :-1])
     radii = dist * np.sin(angle_res / 180.0 * np.pi)
-    fIds = dem_filter(coords, radii)
+    fIds = dem_filter(coords, radii, max_angle=max_angle)
     fIds = fIds[coords[fIds, -1] < center[-1]]
     return fIds
