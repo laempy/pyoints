@@ -81,7 +81,7 @@ of `GeoRecords`, which is an extension of a numpy record array.
 We get some information on the attributes of the points...
 
 >>> print(sorted(las.dtype.descr))
-[('classification', '|u1'), ('coords', '<f8', (3,)), ('intensity', '<u2')]
+[('classification', '|u1'), ('coords', '<f8', (3,)), ('intensity', '|u1')]
 
 >>> print(las[0:10].intensity)
 [216 213 214 199 214 183 198 209 200 199]

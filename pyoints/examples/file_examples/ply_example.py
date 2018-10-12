@@ -33,7 +33,7 @@ Create GeoRecords from scratch.
 >>> print(geoRecords.shape)
 (1000,)
 >>> print(sorted(geoRecords.dtype.descr))
-[('classification', '<i8'), ('coords', '<f8', (3,)), ('intensity', '<i8'), ('values', '<f8')]
+[('classification', '<u8'), ('coords', '<f8', (3,)), ('intensity', '<u8'), ('keypoint', '|b1'), ('synthetic', '|b1'), ('values', '<f8'), ('withheld', '|b1')]
 
 Save as .ply-file.
 
@@ -46,6 +46,6 @@ Load .ply-file again and check the characteristics.
 >>> print(geoRecords.shape)
 (1000,)
 >>> print(sorted(geoRecords.dtype.descr))
-[('classification', '<i4'), ('coords', '<f8', (3,)), ('intensity', '<i4'), ('values', '<f8')]
+[('classification', '|u1'), ('coords', '<f8', (3,)), ('intensity', '|u1'), ('keypoint', '|u1'), ('synthetic', '|u1'), ('values', '<f8'), ('withheld', '|u1')]
 
 """

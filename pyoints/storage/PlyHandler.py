@@ -75,7 +75,6 @@ def writePly(rec, outfile):
     --------
     loadPly
 
-
     """
     if not isinstance(rec, np.recarray):
         raise TypeError("'records' needs to be a numpy record array")
@@ -96,8 +95,9 @@ def writePly(rec, outfile):
         # change datatype if required (bug in plyfile?)
         if desc[1] == '<i8':
             desc[1] = '<i4'
+        if desc[1] == '<u8':
+            desc[1] = 'uint8'
         dtypes.append(tuple(desc))
-    rec = rec.astype(dtypes)
 
     # save data
     el = plyfile.PlyElement.describe(rec.astype(dtypes), 'vertex')

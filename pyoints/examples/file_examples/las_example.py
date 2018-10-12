@@ -34,7 +34,8 @@ Create GeoRecords from scratch.
 >>> print(geoRecords.shape)
 (1000,)
 >>> print(sorted(geoRecords.dtype.descr))
-[('classification', '<i8'), ('coords', '<f8', (3,)), ('intensity', '<i8'), ('values', '<f8')]
+[('classification', '<u8'), ('coords', '<f8', (3,)), ('intensity', '<u8'), ('keypoint', '|b1'), ('synthetic', '|b1'), ('values', '<f8'), ('withheld', '|b1')]
+
 
 Save as LAS-file.
 
@@ -51,6 +52,19 @@ Load LAS-file again and check the characteristics.
 >>> print(las.shape)
 (1000,)
 >>> print(sorted(las.dtype.descr))
-[('classification', '|u1'), ('coords', '<f8', (3,)), ('intensity', '<u2'), ('values', '<f8')]
+[('classification', '|u1'), ('coords', '<f8', (3,)), ('intensity', '|u1'), ('keypoint', '|b1'), ('synthetic', '|b1'), ('values', '<f8'), ('withheld', '|b1')]
+    
+Check values.
+
+>>> np.all(geoRecords.classification == las.classification)
+True
+>>> np.all(geoRecords.synthetic == las.synthetic)
+True
+>>> np.all(geoRecords.keypoint == las.keypoint)
+True
+>>> np.all(geoRecords.withheld == las.withheld)
+True
+>>> np.all(geoRecords.intensity == las.intensity)
+True
 
 """

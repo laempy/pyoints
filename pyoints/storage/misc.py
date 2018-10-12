@@ -30,16 +30,29 @@ from ..georecords import GeoRecords
 def create_random_GeoRecords(center=None, epsg=25832, dim=3, n=1000, scale=10):
     # Create GeoRecords from scratch (for examples)
     dtype = [
-        ('coords', float, dim),
-        ('intensity', int),
-        ('classification', int),
-        ('values', float)
+        ('coords', np.float, dim),
+        ('intensity', np.uint),
+        ('classification', np.uint),
+        ('values', np.float),
+        ('keypoint', np.bool),
+        ('synthetic', np.bool),
+        ('withheld', np.bool)
     ]
     records = np.recarray(n, dtype=dtype)
 
     records['coords'] = np.random.rand(n, dim) * scale
     records['intensity'] = np.random.rand(n) * 255
-    records['classification'] = records['intensity'] < 40
+    records['classification'] = 2
+    records['classification'][records.coords[:, 2] > 0.1 * scale] = 3
+    records['classification'][records.coords[:, 2] > 0.3 * scale] = 4
+    records['classification'][records.coords[:, 2] > 0.5 * scale] = 5
+    records['synthetic'][:4] = False
+    records['synthetic'][1] = True
+    records['keypoint'][:4] = False
+    records['keypoint'][2] = True
+    records['withheld'][:4] = False
+    records['withheld'][3] = True
+    
     records['values'] = np.arange(n)
 
     if center is not None:
