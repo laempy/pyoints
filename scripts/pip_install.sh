@@ -8,11 +8,12 @@ environment.\n\t-d\t\t: Also install packages used for development.\n\t-h\t\t:
 Display this help.'
 
 requirements="-r $REQUIREMENTS"
-while getopts v:dh option
+while getopts v:dhc option
 do
     case "${option}" in
     d) requirements="-r $REQUIREMENTS -r $DEV_REQUIREMENTS";;
     v) VENV=${OPTARG};;
+    c) CREATE=true;;
     h)
         echo $USAGE
         exit 0
@@ -24,8 +25,13 @@ do
     esac
 done
 
+
 if [ -n "$VENV" ]
 then
+    if [ -n "$CREATE" ]
+    then
+        virtualenv -p python3 ${VENV};
+    fi 
     source ${VENV}/bin/activate
     pip install pygdal==$(gdal-config --version).* $requirements --upgrade
 else
