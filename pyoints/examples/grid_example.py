@@ -65,8 +65,7 @@ object
 >>> print(len(raster[0, 0]))
 11473
 >>> print(sorted(raster[0, 0].dtype.descr))
-[('classification', '|u1'), ('coords', '<f8', (3,)), ('intensity', '<u2')]
-
+[('classification', '|u1'), ('coords', '<f8', (3,)), ('intensity', '|u1')]
 
 We can save the points of specific cells individually.
 

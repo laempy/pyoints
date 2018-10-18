@@ -461,6 +461,9 @@ class LasRecords(GeoRecords):
         ('classification', np.uint8),
         ('num_returns', np.uint8),
         ('return_num', np.uint8),
+        ('synthetic', np.bool),
+        ('keypoint', np.bool),
+        ('withheld', np.bool)
     ]
     STANDARD_FIELDS = [
         ('user_data', np.uint8),
@@ -485,6 +488,13 @@ class LasRecords(GeoRecords):
     def only_return(self):
         return self.num_returns == 1
 
+    @staticmethod
+    def available_fields():
+        fields = []
+        fields.extend(LasRecords.USER_DEFINED_FIELDS)
+        fields.extend(LasRecords.STANDARD_FIELDS)
+        return fields
+
     def activate(self, field_name):
         """Activates a desired field on demand.
 
@@ -500,10 +510,7 @@ class LasRecords(GeoRecords):
         if field_name in self.dtype.names:
             return self
 
-        fields = []
-        fields.extend(self.USER_DEFINED_FIELDS)
-        fields.extend(self.STANDARD_FIELDS)
-        for field in fields:
+        for field in self.available_fields():
             if field[0] == field_name:
                 return self.add_fields([field])
         raise ValueError('field "%s" not found' % field_name)
@@ -517,7 +524,7 @@ class LasRecords(GeoRecords):
             Filtered records.
 
         """
-        return self[self.class_indices(2, 11)]
+        return self[self.class_indices(2)]
 
     def veg(self):
         """Filters by points classified as vegetation.
@@ -528,7 +535,7 @@ class LasRecords(GeoRecords):
             Filtered records.
 
         """
-        return self[self.class_indices(3, 4, 5, 20)]
+        return self[self.class_indices(3, 4, 5)]
 
     def class_indices(self, *classes):
         """Filters by classes.
@@ -545,3 +552,4 @@ class LasRecords(GeoRecords):
 
         """
         return np.where(np.in1d(self.classification, classes))[0]
+

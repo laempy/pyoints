@@ -91,6 +91,12 @@ class LasReader(GeoFile):
     def load(self, extent=None):
 
         lasFile = laspy.file.File(self.file, mode='r')
+        
+        # check point formats
+        supported_formats = [0, 1, 2, 3, 4, 5]
+        if not lasFile.header.data_format_id in supported_formats:
+            m = "Only point formats %s supported yet, got %"
+            raise ValueError(m % (supported_formats, lasFile.header.data_format_id))
 
         scale = np.array(lasFile.header.scale, dtype=np.float64)
         offset = np.array(lasFile.header.offset, dtype=np.float64)
@@ -120,6 +126,7 @@ class LasReader(GeoFile):
         coords[:, 1] = points.Y * scale[1] + offset[1]
         coords[:, 2] = points.Z * scale[2] + offset[2]
 
+
         # grep data
         omit = ['X', 'Y', 'Z']
         dtypes = []
@@ -128,17 +135,34 @@ class LasReader(GeoFile):
             if name == 'flag_byte':
                 values = points.flag_byte
                 if np.any(values):
-                    dataDict['num_returns'] = values // 8
-                    dataDict['return_num'] = values % 8
+                    dataDict['num_returns'] = values // 8  # last three bits
+                    dataDict['return_num'] = values % 8  # first three bits
             elif name == 'raw_classification':
                 values = points.raw_classification
                 if np.any(values):
-                    dataDict['classification'] = values
+                    dataDict['classification'] = values % 32  # bits 0 to 4
+                    values = values // 32
+                if np.any(values):
+                    dataDict['synthetic'] = values % 2 # bit 5
+                    values = values // 2
+                if np.any(values):
+                    dataDict['keypoint'] = values % 2 # bit 6
+                    values = values // 2
+                if np.any(values):
+                    dataDict['withheld'] = values # bit 7
+                    
             elif name not in omit:
                 values = points[name]
                 if np.any(values):
                     dataDict[name] = values
 
+        # collect dtypes
+        available_dtypes = LasRecords.available_fields()
+        for name in dataDict.keys():
+            for descr in available_dtypes:
+                if descr[0] == name:
+                    dtypes.append(descr)
+        
         # create recarray
         data = nptools.recarray(dataDict, dtype=dtypes)
 
@@ -169,10 +193,10 @@ def writeLas(geoRecords, outfile):
     records = geoRecords.records()
 
     # Create file header
-    header = laspy.header.Header()
+    header = laspy.header.Header(file_version=1.3, point_format=3)
     header.file_sig = 'LASF'
-    header.format = 1.2
-    header.data_format_id = 3
+    #header.format = 1.3
+    #header.data_format_id = 7
 
     # Open file in write mode
     lasFile = laspy.file.File(outfile, mode='w', header=header)
@@ -225,8 +249,8 @@ def writeLas(geoRecords, outfile):
                 lasFile.define_new_dimension(name, type_id, '')
 
     # initialize
-    if 'return_num' in field_names or 'num_returns' in field_names:
-        lasFile.flag_byte = np.zeros(len(records), dtype=np.uint)
+    flag_byte = np.zeros(len(records), dtype=np.uint)
+    raw_classification = np.zeros(len(records), dtype=np.uint)
 
     # set fields
     for name in field_names:
@@ -235,12 +259,18 @@ def writeLas(geoRecords, outfile):
             lasFile.set_y_scaled(records.coords[:, 1])
             if records.dim > 2:
                 lasFile.set_z_scaled(records.coords[:, 2])
-        elif name == 'classification':
-            lasFile.set_raw_classification(records.classification)
+        elif name == 'classification':  # classification bits 0 to 4
+            raw_classification += records.classification; 
+        elif name == 'synthetic':  # classification bit 5
+            raw_classification += records.synthetic.astype(np.uint8) * 32;
+        elif name == 'keypoint':  # classification bit 6
+            raw_classification += records.keypoint.astype(np.uint8) * 64;
+        elif name == 'withheld':  # classification bit 7
+            raw_classification += records.withheld.astype(np.uint8) * 128; 
         elif name == 'return_num':
-            lasFile.flag_byte = lasFile.flag_byte + records.return_num
+            flag_byte = flag_byte + records.return_num
         elif name == 'num_returns':
-            lasFile.flag_byte = lasFile.flag_byte + records.num_returns * 8
+            flag_byte = flag_byte + records.num_returns * 8
         elif name == 'intensity':
             lasFile.set_intensity(records.intensity)
         elif name == 'user_data':
@@ -259,6 +289,9 @@ def writeLas(geoRecords, outfile):
             lasFile.set_gps_time(records.gps_time)
         elif name not in omit:
             lasFile._writer.set_dimension(name, records[name])
+
+    lasFile.set_flag_byte(flag_byte)
+    lasFile.set_raw_classification(raw_classification)
 
     # close file
     lasFile.header.update_min_max()
