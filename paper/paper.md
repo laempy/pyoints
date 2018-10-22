@@ -33,14 +33,14 @@ and technically by different data dimensions, data structures and various
 spatial, spectral and temporal resolutions.
 
 Today various software to deal with these different data sources is available.
-Software like [@GDAL] and [@opencv_library] is intended for image processing. 
-Libraries, like [@PCL], [@Open3D] and [@PDAL] focus on 3D point cloud 
-processing. Each of these software packages provide an API specially designed 
-to solve the problems of their field efficiently. When developing algorithms 
-for automated processing of various types of input data, the differing APIs and
-programming languages of these software packages become a drawback. To support
-fast  algorithm development and a short familiarization, a unified API would be 
-desirable.
+Software like GDAL [@GDAL] and OpenCV [@opencv_library] is intended for image 
+processing. Libraries, like PCL [@PCL], Open3D [@Open3D] and PDAL [@PDAL] focus
+on 3D point cloud processing. Each of these software packages provide an API 
+specially designed to solve the problems of their field efficiently. When 
+developing algorithms for automated processing of various types of input data, 
+the differing APIs and programming languages of these software packages become 
+a drawback. To supportfast  algorithm development and a short familiarization, 
+a unified API would be desirable.
 
 *Pyoints* is a python package to conveniently process and analyze point
 cloud data, voxels and raster images. It is intended to be used to support
@@ -66,11 +66,12 @@ API for loading and saving commonly used geo-data formats.
 *Pyoints* was designed to support research activities and algorithm
 development in the field of geoinformatis and remote sensing. Early versions of 
 the software have been used for [@Lamprecht_2017a] and some pre-studies at 
-Trier University. *Pyoints* is also used in the [@PANTHEON] project to 
+Trier University. *Pyoints* is also used in the PANTHEON [@PANTHEON] project to 
 monitor hazelnut orchards.
 
-The source code for *Pyoints* has been archived to [@GitHub] at 
-[@Pyoints_GitHub].
+The source code of *Pyoints* has been archived to GitHub [@Pyoints_GitHub] and
+PyPI [@Pyoints_PyPI]. The documentation can be found on GitHub Pages 
+[@Pyoints_docs].
 
 
 # Acknowledgements

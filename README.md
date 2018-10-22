@@ -169,7 +169,7 @@ venv\Scripts\activate.bat
 # Documentation
 
 You can find the documentation at 
-[docs](https://laempy.github.io/pyoints/modules.html). Here you can find 
+[docs](https://laempy.github.io/pyoints/pyoints.html). Here you can find 
 docstrings with examples for each module and some comprehensive examples. You
 can also take a look at the source files directly.
 
