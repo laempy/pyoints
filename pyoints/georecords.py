@@ -463,7 +463,8 @@ class LasRecords(GeoRecords):
         ('return_num', np.uint8),
         ('synthetic', np.bool),
         ('keypoint', np.bool),
-        ('withheld', np.bool)
+        ('withheld', np.bool),
+        ('normals', np.float, 3),
     ]
     STANDARD_FIELDS = [
         ('user_data', np.uint8),
