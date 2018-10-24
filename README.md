@@ -211,6 +211,12 @@ Any conribution to the *pyoints* project is welcome. See
 
 # Acknowledgements
 
+## Funding
+
+This work was supported by the [PANTHEON](http://www.project-pantheon.eu) 
+project which is funded by the European Community Horizon 2020 programme 
+under grant agreement 774571.
+
 
 ## Python Depencencies
 

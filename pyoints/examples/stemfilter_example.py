@@ -57,7 +57,7 @@ Thereafter, we load an input LAS point cloud.
 482981
 
 
-Rge basic idea of the algorithm is to first derive a digital elevation model to calculate
+The basic idea of the algorithm is to first derive a digital elevation model to calculate
 the height above ground. We simply rasterize the point cloud by deriving the
 lowest z-coordinate of each cell.
 

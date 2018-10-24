@@ -1,0 +1,73 @@
+{% set name = "pyoints" %}
+{% set data = load_setup_py_data() %}
+
+
+package:
+    name: {{ name }}
+    version: {{ data.get('version') }}
+  
+source:
+    #git_url: "https://github.com/laempy/pyoints"
+    git_url: "../.git"
+  
+build:
+    number: 0
+    #script: "{{ PYTHON }} -m pip install . --ignore-installed -vvv"
+
+requirements:
+    build:
+        - python
+        - pip
+        - gdal
+    dependencies:
+        - python
+        - gdal
+        - pip
+            - cylinder_fitting
+            - opencv-python
+            - matplotlib
+            - plyfile
+            - laspy
+    host:
+        - python
+        - gdal
+        - dill
+        - networkx
+        - numpy
+        - pandas
+        - rtree
+        - scikit-learn
+        - scipy
+        - pyproj
+    run:
+    {% for package in resolved_packages('host') %}
+        - {{ package }}
+    {% endfor %}
+
+test:
+    imports:
+        - cv2
+        - osgeo
+        - plyfile
+        - cylinder_fitting
+        - laspy
+        - pyoints
+        - pyoints.examples
+        - pyoints.examples.file_examples
+        - pyoints.grid
+        - pyoints.registration
+        - pyoints.storage
+        - tests
+
+about:
+    home: https://laempy.github.io/pyoints/modules.html
+    license: GNU General Public v3 or later (GPLv3+)
+    license_family: GPL3
+    license_file: ../LICENSE
+    summary: A Python package for point cloud, voxel and raster processing.
+    doc_url: https://laempy.github.io/pyoints/pyoints.html
+    dev_url: https://github.com/laempy/pyoints
+
+extra:
+    recipe-maintainers:
+        - laempy
