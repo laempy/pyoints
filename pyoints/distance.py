@@ -163,19 +163,16 @@ def sdist(p, coords):
 
     """
     p = assertion.ensure_numarray(p)
-    coords = assertion.ensure_coords(coords)
-    if len(p.shape) == 1:
-        if not len(p) == coords.shape[1]:
-            raise ValueError('Dimensions do not match!')
-    else:
-        if not p.shape == coords.shape:
+    coords = assertion.ensure_numarray(coords)
+    if not p.shape == coords.shape:
+        if not (len(coords.shape) == 2 and p.shape[0] == coords.shape[1]):
             m = "Dimensions %s and %s do not match"
             raise ValueError(m % (str(p.shape), str(coords.shape)))
 
     return snorm(coords - p)
 
 
-def rmse(A, B):
+def rmse(A, B=None):
     """Calculates the Root Mean Squared Error of corresponding data sets.
 
     Parameters
@@ -198,7 +195,11 @@ def rmse(A, B):
     0.15
 
     """
-    return np.sqrt(np.mean(sdist(A, B)))
+    if B is None:
+        d = snorm(A)
+    else:
+        d = sdist(A, B)
+    return np.sqrt(np.mean(d))
 
 
 def idw(dists, p=2):
