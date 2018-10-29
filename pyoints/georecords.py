@@ -456,16 +456,6 @@ class LasRecords(GeoRecords):
     GeoRecords
 
     """
-    USER_DEFINED_FIELDS = [
-        ('coords', np.float, 3),
-        ('classification', np.uint8),
-        ('num_returns', np.uint8),
-        ('return_num', np.uint8),
-        ('synthetic', np.bool),
-        ('keypoint', np.bool),
-        ('withheld', np.bool),
-        ('normals', np.float, 3),
-    ]
     STANDARD_FIELDS = [
         ('user_data', np.uint8),
         ('intensity', np.uint8),
@@ -476,6 +466,19 @@ class LasRecords(GeoRecords):
         ('blue', np.uint8),
         ('nir', np.uint8),
     ]
+    CUSTOM_FIELDS = [
+        ('coords', np.float, 3),
+        ('classification', np.uint8),
+        ('num_returns', np.uint8),
+        ('return_num', np.uint8),
+        ('synthetic', np.bool),
+        ('keypoint', np.bool),
+        ('withheld', np.bool),
+    ]
+    EXTRA_FIELDS = [
+        ('normals', np.float, 3),
+    ]
+    
 
     @property
     def last_return(self):
@@ -492,8 +495,9 @@ class LasRecords(GeoRecords):
     @staticmethod
     def available_fields():
         fields = []
-        fields.extend(LasRecords.USER_DEFINED_FIELDS)
         fields.extend(LasRecords.STANDARD_FIELDS)
+        fields.extend(LasRecords.CUSTOM_FIELDS)
+        fields.extend(LasRecords.EXTRA_FIELDS)
         return fields
 
     def activate(self, field_name):
