@@ -19,6 +19,7 @@ requirements:
         - python
         - pip
         - gdal
+        - conda-verify
     dependencies:
         - python
         - gdal
@@ -28,7 +29,7 @@ requirements:
             - matplotlib
             - plyfile
             - laspy
-    host:
+    run:
         - python
         - gdal
         - dill
@@ -39,10 +40,7 @@ requirements:
         - scikit-learn
         - scipy
         - pyproj
-    run:
-    {% for package in resolved_packages('host') %}
-        - {{ package }}
-    {% endfor %}
+
 
 test:
     imports:
