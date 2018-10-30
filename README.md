@@ -83,16 +83,16 @@ Conda installation is recommended. To install *Pyoints* with [Conda]
 conda install -c leampy pyoints
 ```
 
+If your system is not supported yet, you might build and install the conda 
+reciepe.
 
-### Build and install from recipe
-
-To build the package:
+Build:
 ```
 cd /path/to/pyoints/conda
 conda build /path/to/pyoints/conda
 ```
 
-Install the builded package:
+Install:
 ```
 conda create --name myenv pyoints --use-local
 ```

@@ -2,4 +2,9 @@
 SCRIPT_PATH=$(dirname $(realpath -s $0))
 
 # build conda package
-conda build ${SCRIPT_PATH}/../conda
+cd ${SCRIPT_PATH}/../conda
+conda build .
+
+
+#anaconda login
+#anaconda upload $(conda build . --output)

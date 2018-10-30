@@ -13,10 +13,16 @@ source:
 build:
     number: 0
     #script: "{{ PYTHON }} -m pip install . --ignore-installed -vvv"
-
+    #missing_dso_whitelist:
+    #    - /lib64/libutil.so.1 
+    #    - /lib64/libpthread.so.0
+    #    - /lib64/libc.so.6
+    #    - /lib64/libdl.so.2
+    #    - /lib64/librt.so.1
+    
 requirements:
     build:
-        - python
+        - python {{ python }}
         - pip
         - gdal
         - conda-verify
@@ -41,7 +47,6 @@ requirements:
         - scipy
         - pyproj
 
-
 test:
     imports:
         - cv2
@@ -55,8 +60,16 @@ test:
         - pyoints.grid
         - pyoints.registration
         - pyoints.storage
-        - tests
-
+    requirements:
+        - unittest
+        - doctest
+        - pkgutil
+        - python {{ python }}
+    source_files:
+        - tests/test_pyoints.py
+    commands:
+        - python -c "from tests.test_pyoints import runall; runall();"
+        
 about:
     home: https://laempy.github.io/pyoints/modules.html
     license: GNU General Public v3 or later (GPLv3+)
