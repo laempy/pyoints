@@ -169,19 +169,9 @@ venv\Scripts\activate.bat
 # Documentation
 
 You can find the documentation at 
-[docs](https://laempy.github.io/pyoints/modules.html). Here you can find 
+[docs](https://laempy.github.io/pyoints/pyoints.html). Here you can find 
 docstrings with examples for each module and some comprehensive examples. You
 can also take a look at the source files directly.
-
-
-
-# Testing
-
-To test the software please take a look at the [tests](tests) directory.
-Currently Python docstrings are used to test the functionality of a
-majority of *Pyoints* classes and functions. You can run the file 
-``tests/test_pyoints.py`` to run the doctests.
-
 
 
 # License
@@ -212,11 +202,10 @@ and raster processing.", URL https://github.com/laempy/pyoints,
 }
 ```
 
-# Contact
+# Community
 
-In case of questions, suggestions for improvement or software issues, please
-use the issue board or contact Sebastian Lamprecht, lamprecht@uni-trier.de.
-Contribution to the software is always welcome.
+Any conribution to the *pyoints* project is welcome. See 
+[CONTRIBUTING](CONTRIBUTING.md) for details. 
 
 
 
