@@ -16,8 +16,10 @@ build:
 
 requirements:
     build:
+        - {{ compiler('c') }}
         - python
         - pip
+        - setuptools
         - gdal
         - conda-verify
     dependencies:
@@ -25,30 +27,38 @@ requirements:
         - gdal
         - pip
             - cylinder_fitting
-            - opencv-python
-            - matplotlib
+            #- opencv-python
             - plyfile
             - laspy
+    host:
+        - python
+        - pip
+        - setuptools
     run:
         - python
         - gdal
         - dill
+        - opencv
         - networkx
-        - numpy
+        - numpy>=1.15
         - pandas
         - rtree
         - scikit-learn
         - scipy
-        - pyproj
-
+       #- pyproj
+    #run:
+    #{% for package in resolved_packages('host') %}
+    #    - {{ package }}
+    #{% endfor %}
 
 test:
+
     imports:
-        - cv2
         - osgeo
-        - plyfile
-        - cylinder_fitting
+        - cv2
         - laspy
+        - cylinder_fitting    
+        - plyfile
         - pyoints
         - pyoints.examples
         - pyoints.examples.file_examples
