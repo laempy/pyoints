@@ -22,16 +22,10 @@ build:
     
 requirements:
     build:
-<<<<<<< HEAD
         - {{ compiler('c') }}
-        - python
-=======
         - python {{ python }}
->>>>>>> 234a63641ce97baeafec16e27d4d94dfffa0753a
         - pip
         - setuptools
-        - gdal
-        - conda-verify
     dependencies:
         - python
         - gdal
@@ -55,15 +49,12 @@ requirements:
         - rtree
         - scikit-learn
         - scipy
-<<<<<<< HEAD
        #- pyproj
     #run:
     #{% for package in resolved_packages('host') %}
     #    - {{ package }}
     #{% endfor %}
-=======
-        - pyproj
->>>>>>> 234a63641ce97baeafec16e27d4d94dfffa0753a
+
 
 test:
 
