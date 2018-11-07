@@ -6,10 +6,13 @@ package:
     name: {{ name }}
     version: {{ data.get('version') }}
   
+
+  
 source:
     #git_url: "https://github.com/laempy/pyoints"
     git_url: "../.git"
   
+
 build:
     number: 0
     #script: "{{ PYTHON }} -m pip install . --ignore-installed -vvv"
@@ -22,24 +25,26 @@ build:
     
 requirements:
     build:
-        - {{ compiler('c') }}
-        - python {{ python }}
+        - python #{{ python }}
         - pip
         - setuptools
+        - conda-verify
+        #- {{ compiler('c') }}
+    #host:
+        #- python {{ python }}
+        #- pip
+        #- setuptools
+        #- {{ compiler('c') }}
     dependencies:
-        - python
-        - gdal
+        #- python {{ python }}
+        #- gdal
         - pip
             - cylinder_fitting
             #- opencv-python
             - plyfile
             - laspy
-    host:
-        - python
-        - pip
-        - setuptools
     run:
-        - python
+        - python {{ python }}
         - gdal
         - dill
         - opencv
@@ -49,7 +54,7 @@ requirements:
         - rtree
         - scikit-learn
         - scipy
-       #- pyproj
+        - pyproj
     #run:
     #{% for package in resolved_packages('host') %}
     #    - {{ package }}
@@ -57,12 +62,11 @@ requirements:
 
 
 test:
-
     imports:
         - osgeo
         - cv2
         - laspy
-        - cylinder_fitting    
+        - cylinder_fitting
         - plyfile
         - pyoints
         - pyoints.examples
@@ -71,14 +75,15 @@ test:
         - pyoints.registration
         - pyoints.storage
     requirements:
+        - python {{ python }}
         - unittest
         - doctest
         - pkgutil
-        - python {{ python }}
     source_files:
         - tests/test_pyoints.py
     commands:
-        - python -c "from tests.test_pyoints import runall; runall();"
+        #- python -c "from tests.test_pyoints import runall; runall();"
+        - $PYTHON -c "from tests.test_pyoints import runall; runall();"
         
 about:
     home: https://laempy.github.io/pyoints/modules.html
@@ -92,3 +97,7 @@ about:
 extra:
     recipe-maintainers:
         - laempy
+#    channels:
+#        - conda-forge
+#        - kayarre
+  
