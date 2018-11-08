@@ -7,7 +7,6 @@ package:
     version: {{ data.get('version') }}
   
 
-  
 source:
     #git_url: "https://github.com/laempy/pyoints"
     git_url: "../.git"
@@ -15,34 +14,29 @@ source:
 
 build:
     number: 0
+    #ignore_prefix_files: True  # required for windows binary files
+    #detect_binary_files_with_prefix: False
     #script: "{{ PYTHON }} -m pip install . --ignore-installed -vvv"
-    #missing_dso_whitelist:
-    #    - /lib64/libutil.so.1 
-    #    - /lib64/libpthread.so.0
-    #    - /lib64/libc.so.6
-    #    - /lib64/libdl.so.2
-    #    - /lib64/librt.so.1
+
     
 requirements:
     build:
         - python #{{ python }}
         - pip
         - setuptools
-        - conda-verify
         #- {{ compiler('c') }}
     #host:
-        #- python {{ python }}
+    #    - python {{ python }}
         #- pip
         #- setuptools
         #- {{ compiler('c') }}
-    dependencies:
-        #- python {{ python }}
-        #- gdal
-        - pip
-            - cylinder_fitting
+    #dependencies:
+    #    - python {{ python }}
+        #- pip
+        #    - cylinder_fitting
             #- opencv-python
-            - plyfile
-            - laspy
+        #    - plyfile
+        #    - laspy
     run:
         - python {{ python }}
         - gdal
@@ -55,35 +49,36 @@ requirements:
         - scikit-learn
         - scipy
         - pyproj
-    #run:
-    #{% for package in resolved_packages('host') %}
-    #    - {{ package }}
-    #{% endfor %}
+        #- laspy
+        #- plyfile
+        
+        # python {{ python }}
+        # libspatialindex
+        # gdal
 
-
-test:
+test:  # [linux]
     imports:
         - osgeo
         - cv2
         - laspy
-        - cylinder_fitting
         - plyfile
+        - cylinder_fitting
         - pyoints
         - pyoints.examples
         - pyoints.examples.file_examples
         - pyoints.grid
         - pyoints.registration
         - pyoints.storage
-    requirements:
-        - python {{ python }}
-        - unittest
-        - doctest
-        - pkgutil
+    #requirements:
+    #    #- python {{ python }}
+    #    - unittest
+    #    - doctest
+    #    - pkgutil
     source_files:
         - tests/test_pyoints.py
-    commands:
+    #commands:
         #- python -c "from tests.test_pyoints import runall; runall();"
-        - $PYTHON -c "from tests.test_pyoints import runall; runall();"
+        #- $PYTHON -c "from tests.test_pyoints import runall; runall();"
         
 about:
     home: https://laempy.github.io/pyoints/modules.html
@@ -97,7 +92,8 @@ about:
 extra:
     recipe-maintainers:
         - laempy
-#    channels:
-#        - conda-forge
-#        - kayarre
+    #channels:
+    #    - conda-forge
+    #    - kitware-geospatial
+    #    - kayarre
   
