@@ -1,5 +1,5 @@
 #pygdal
-numpy
+numpy>=1.15
 rtree
 laspy
 scipy
@@ -11,4 +11,3 @@ opencv-python
 plyfile
 networkx
 cylinder_fitting
-matplotlib
