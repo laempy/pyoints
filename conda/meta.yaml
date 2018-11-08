@@ -25,13 +25,15 @@ requirements:
         - pip
         - setuptools
         #- {{ compiler('c') }}
-    #host:
-    #    - python {{ python }}
+    host:
+        - python {{ python }}
         #- pip
         #- setuptools
         #- {{ compiler('c') }}
     #dependencies:
     #    - python {{ python }}
+        #- gdal
+        #- libspatialindex
         #- pip
         #    - cylinder_fitting
             #- opencv-python
@@ -40,21 +42,25 @@ requirements:
     run:
         - python {{ python }}
         - gdal
-        - dill
-        - opencv
-        - networkx
-        - numpy>=1.15
-        - pandas
-        - rtree
-        - scikit-learn
-        - scipy
-        - pyproj
+        - libspatialindex
+        #- libspatialindex  # throws error
+        #- gdal
+        #- rtree
+        #- python {{ python }}
+        #- gdal
+        #- dill
+        #- opencv
+        #- networkx
+        #- numpy>=1.15
+        #- pandas
+        #- rtree
+        #- scikit-learn
+        #- scipy
+        #- pyproj
         #- laspy
         #- plyfile
         
-        # python {{ python }}
-        # libspatialindex
-        # gdal
+
 
 test:  # [linux]
     imports:
@@ -97,3 +103,17 @@ extra:
     #    - kitware-geospatial
     #    - kayarre
   
+  
+#pygdal
+#numpy>=1.15
+#rtree
+#laspy
+#scipy
+#scikit-learn
+#pyproj
+#dill
+#pandas
+#opencv-python
+#plyfile
+#networkx
+#cylinder_fitting
