@@ -796,7 +796,7 @@ class LocalSystem(np.ndarray, object):
 
         >>> T = matrix(t=[2, 3], s=[0.5, 10])
         >>> lcoords = T.to_global([(2, 3), (2, 13), (2.5, 3), (1.5, -7)])
-        >>> print(lcoords)
+        >>> print(np.round(lcoords, 2))
         [[ 0.  0.]
          [ 0.  1.]
          [ 1.  0.]

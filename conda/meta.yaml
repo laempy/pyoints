@@ -10,7 +10,7 @@ source:
     git_url: "../.git"
   
 build:
-    number: 0
+    #number: 0
     skip: True  # [not py3k]
     
 requirements:
