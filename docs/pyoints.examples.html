@@ -114,7 +114,7 @@ of <cite>GeoRecords</cite>, which is an extension of a numpy record array.</p>
 </div>
 <p>We get some information on the attributes of the points…</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">las</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">descr</span><span class="p">))</span>
-<span class="go">[(&#39;classification&#39;, &#39;|u1&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;&lt;u2&#39;)]</span>
+<span class="go">[(&#39;classification&#39;, &#39;|u1&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;|u1&#39;)]</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">las</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span><span class="o">.</span><span class="n">intensity</span><span class="p">)</span>
@@ -283,7 +283,7 @@ are grouped to an individual point cloud.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">raster</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
 <span class="go">11473</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">raster</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">descr</span><span class="p">))</span>
-<span class="go">[(&#39;classification&#39;, &#39;|u1&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;&lt;u2&#39;)]</span>
+<span class="go">[(&#39;classification&#39;, &#39;|u1&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;|u1&#39;)]</span>
 </pre></div>
 </div>
 <p>We can save the points of specific cells individually.</p>
@@ -390,7 +390,7 @@ should be inspected with software like CloudCompare.</p>
 <span class="go">482981</span>
 </pre></div>
 </div>
-<p>Rge basic idea of the algorithm is to first derive a digital elevation model to calculate
+<p>The basic idea of the algorithm is to first derive a digital elevation model to calculate
 the height above ground. We simply rasterize the point cloud by deriving the
 lowest z-coordinate of each cell.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">las</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">origin</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">])</span>
@@ -616,6 +616,14 @@ digital elevation model.</p>
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -625,7 +633,7 @@ digital elevation model.</p>
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/pyoints.examples.rst.txt"

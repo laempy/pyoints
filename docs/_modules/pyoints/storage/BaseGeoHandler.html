@@ -122,7 +122,8 @@
     <span class="nd">@proj</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">proj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proj</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">proj</span><span class="p">,</span> <span class="n">projection</span><span class="o">.</span><span class="n">Proj</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;proj&#39; needs to be of type &#39;Proj&#39;&quot;</span><span class="p">)</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="s2">&quot;&#39;proj&#39; needs to be of type &#39;Proj&#39;, got </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">type</span><span class="p">(</span><span class="n">proj</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_proj</span> <span class="o">=</span> <span class="n">proj</span>
 
     <span class="nd">@property</span>
@@ -211,6 +212,14 @@
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -220,7 +229,7 @@
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
 

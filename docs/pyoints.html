@@ -1635,7 +1635,7 @@ neighboured points in a range of <cite>]r, 2*r[</cite>.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>coords</strong> (<em>array_like</em><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>n</em><em>, </em><em>k</em><em>)</em><em>)</em>) – Represents <cite>n</cite> points of <cite>k</cite> dimensions to filter.</li>
 <li><strong>r</strong> (<em>Number</em><em> or </em><em>array_like</em><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>n</em><em>)</em><em>)</em>) – Radius or radii to apply.</li>
-<li><strong>max_angle</strong> (<em>Number</em>) – Maximum allowed angle of a simplex.</li>
+<li><strong>max_angle</strong> (<em>Number</em>) – Maximum allowed slope of a simplex.</li>
 </ul>
 </td>
 </tr>
@@ -1647,9 +1647,17 @@ neighboured points in a range of <cite>]r, 2*r[</cite>.</p>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>Applies a <cite>k-1</cite> dimensional <cite>ball</cite> filter to identify a digital elevation
+model. The point order is defined by the last coordinate dimension. The
+filtering radius <cite>r</cite> is defined by the user. To optimize the quality of the
+dem, all points with less than 5 neighbours within radius <cite>2 * r</cite> are
+removed from further analysis. In addition a TIN (Triangulated Irregular
+Network) is generated to model the surface. Each facet with a slope larger
+than <cite>max_angle</cite> is removed iteratively.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#pyoints.filters.radial_dem_filter" title="pyoints.filters.radial_dem_filter"><code class="xref py py-func docutils literal notranslate"><span class="pre">radial_dem_filter()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#pyoints.filters.radial_dem_filter" title="pyoints.filters.radial_dem_filter"><code class="xref py py-func docutils literal notranslate"><span class="pre">radial_dem_filter()</span></code></a>, <a class="reference internal" href="#pyoints.filters.ball" title="pyoints.filters.ball"><code class="xref py py-func docutils literal notranslate"><span class="pre">ball()</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -1827,7 +1835,7 @@ dimension is used as the attribute.</li>
 
 <dl class="function">
 <dt id="pyoints.filters.radial_dem_filter">
-<code class="descclassname">pyoints.filters.</code><code class="descname">radial_dem_filter</code><span class="sig-paren">(</span><em>coords</em>, <em>angle_res</em>, <em>center=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/filters.html#radial_dem_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.filters.radial_dem_filter" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyoints.filters.</code><code class="descname">radial_dem_filter</code><span class="sig-paren">(</span><em>coords</em>, <em>angle_res</em>, <em>center=None</em>, <em>max_angle=70</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/filters.html#radial_dem_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.filters.radial_dem_filter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Filters surface points based on distance to the center. The algorithm
 is designed to create digital elevation models of terrestrial laser scans.
 Terrestrial laser scans are characterized by decreasing point densities
@@ -1841,6 +1849,7 @@ identify neighbouring points is adjusted to the distance of the scanner.</p>
 <li><strong>coords</strong> (<em>array_like</em><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>n</em><em>, </em><em>k</em><em>)</em><em>)</em>) – Points to filter.</li>
 <li><strong>angle_res</strong> (<em>positive Number</em>) – Filter resolution expressed as an angle.</li>
 <li><strong>center</strong> (<em>optional</em><em>, </em><em>array_like</em><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>k</em><em>)</em><em>)</em>) – Desired center.</li>
+<li><strong>max_angle</strong> (<em>Number</em>) – Maximum allowed angle of a simplex.</li>
 </ul>
 </td>
 </tr>
@@ -2474,7 +2483,7 @@ data.</p>
 
 <dl class="attribute">
 <dt id="pyoints.georecords.LasRecords.USER_DEFINED_FIELDS">
-<code class="descname">USER_DEFINED_FIELDS</code><em class="property"> = [('coords', &lt;class 'float'&gt;, 3), ('classification', &lt;class 'numpy.uint8'&gt;), ('num_returns', &lt;class 'numpy.uint8'&gt;), ('return_num', &lt;class 'numpy.uint8'&gt;)]</em><a class="headerlink" href="#pyoints.georecords.LasRecords.USER_DEFINED_FIELDS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">USER_DEFINED_FIELDS</code><em class="property"> = [('coords', &lt;class 'float'&gt;, 3), ('classification', &lt;class 'numpy.uint8'&gt;), ('num_returns', &lt;class 'numpy.uint8'&gt;), ('return_num', &lt;class 'numpy.uint8'&gt;), ('synthetic', &lt;class 'bool'&gt;), ('keypoint', &lt;class 'bool'&gt;), ('withheld', &lt;class 'bool'&gt;), ('normals', &lt;class 'float'&gt;, 3)]</em><a class="headerlink" href="#pyoints.georecords.LasRecords.USER_DEFINED_FIELDS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2490,6 +2499,11 @@ data.</p>
 </tbody>
 </table>
 </dd></dl>
+
+<dl class="staticmethod">
+<dt id="pyoints.georecords.LasRecords.available_fields">
+<em class="property">static </em><code class="descname">available_fields</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/georecords.html#LasRecords.available_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.georecords.LasRecords.available_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="pyoints.georecords.LasRecords.class_indices">
@@ -4740,6 +4754,16 @@ systems.</p>
 <span class="go"> [ 6.922 50.101]]</span>
 </pre></div>
 </div>
+<dl class="attribute">
+<dt id="pyoints.projection.GeoTransform.from_proj">
+<code class="descname">from_proj</code><a class="headerlink" href="#pyoints.projection.GeoTransform.from_proj" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyoints.projection.GeoTransform.to_proj">
+<code class="descname">to_proj</code><a class="headerlink" href="#pyoints.projection.GeoTransform.to_proj" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -5291,7 +5315,7 @@ system.</td>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">lcoords</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">to_global</span><span class="p">([(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">13</span><span class="p">),</span> <span class="p">(</span><span class="mf">2.5</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">)])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">lcoords</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">lcoords</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
 <span class="go">[[ 0.  0.]</span>
 <span class="go"> [ 0.  1.]</span>
 <span class="go"> [ 1.  0.]</span>
@@ -7010,6 +7034,14 @@ last dimension is used.</li>
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -7019,7 +7051,7 @@ last dimension is used.</li>
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/pyoints.rst.txt"

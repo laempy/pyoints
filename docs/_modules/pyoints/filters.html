@@ -422,16 +422,26 @@
 <span class="sd">    r : Number or array_like(Number, shape=(n))</span>
 <span class="sd">        Radius or radii to apply.</span>
 <span class="sd">    max_angle : Number</span>
-<span class="sd">        Maximum allowed angle of a simplex.</span>
+<span class="sd">        Maximum allowed slope of a simplex.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    array_like(int, shape=(m))</span>
 <span class="sd">        Desired indices of points suitable for generating a surface model.</span>
 
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Applies a `k-1` dimensional `ball` filter to identify a digital elevation</span>
+<span class="sd">    model. The point order is defined by the last coordinate dimension. The</span>
+<span class="sd">    filtering radius `r` is defined by the user. To optimize the quality of the</span>
+<span class="sd">    dem, all points with less than 5 neighbours within radius `2 * r` are </span>
+<span class="sd">    removed from further analysis. In addition a TIN (Triangulated Irregular </span>
+<span class="sd">    Network) is generated to model the surface. Each facet with a slope larger</span>
+<span class="sd">    than `max_angle` is removed iteratively.</span>
+<span class="sd">    </span>
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    radial_dem_filter</span>
+<span class="sd">    radial_dem_filter, ball</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">coords</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_coords</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">min_dim</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
@@ -476,7 +486,7 @@
     <span class="k">return</span> <span class="n">fIds</span></div>
 
 
-<div class="viewcode-block" id="radial_dem_filter"><a class="viewcode-back" href="../../pyoints.html#pyoints.filters.radial_dem_filter">[docs]</a><span class="k">def</span> <span class="nf">radial_dem_filter</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">angle_res</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="radial_dem_filter"><a class="viewcode-back" href="../../pyoints.html#pyoints.filters.radial_dem_filter">[docs]</a><span class="k">def</span> <span class="nf">radial_dem_filter</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">angle_res</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_angle</span><span class="o">=</span><span class="mi">70</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Filters surface points based on distance to the center. The algorithm</span>
 <span class="sd">    is designed to create digital elevation models of terrestrial laser scans.</span>
 <span class="sd">    Terrestrial laser scans are characterized by decreasing point densities</span>
@@ -491,6 +501,8 @@
 <span class="sd">        Filter resolution expressed as an angle.</span>
 <span class="sd">    center : optional, array_like(Number, shape=(k))</span>
 <span class="sd">        Desired center.</span>
+<span class="sd">    max_angle : Number</span>
+<span class="sd">        Maximum allowed angle of a simplex.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -513,7 +525,7 @@
 
     <span class="n">dist</span> <span class="o">=</span> <span class="n">distance</span><span class="o">.</span><span class="n">dist</span><span class="p">(</span><span class="n">center</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">coords</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
     <span class="n">radii</span> <span class="o">=</span> <span class="n">dist</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle_res</span> <span class="o">/</span> <span class="mf">180.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
-    <span class="n">fIds</span> <span class="o">=</span> <span class="n">dem_filter</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">radii</span><span class="p">)</span>
+    <span class="n">fIds</span> <span class="o">=</span> <span class="n">dem_filter</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">radii</span><span class="p">,</span> <span class="n">max_angle</span><span class="o">=</span><span class="n">max_angle</span><span class="p">)</span>
     <span class="n">fIds</span> <span class="o">=</span> <span class="n">fIds</span><span class="p">[</span><span class="n">coords</span><span class="p">[</span><span class="n">fIds</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">center</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
     <span class="k">return</span> <span class="n">fIds</span></div>
 </pre></div>
@@ -559,6 +571,14 @@
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -568,7 +588,7 @@
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
 
