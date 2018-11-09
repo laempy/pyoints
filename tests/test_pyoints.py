@@ -100,9 +100,6 @@ class test_pyoints(unittest.TestCase):
         self.assertTrue(float(pyoints.__version__) > 0)
 
 
-def runall():
-    print('Run doctests for Pyoints')
-    unittest.main()
-    
-if __name__ == '__main__':
-    runall()
+
+print('Run doctests for Pyoints')
+unittest.main()

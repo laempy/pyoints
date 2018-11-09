@@ -34,8 +34,8 @@ requirements:
         #- pip
         #- setuptools
         #- {{ compiler('c') }}
-    dependencies:
-        - python {{ python }}
+    #dependencies:
+    #    - python {{ python }}
         #- pip
         #    - cylinder_fitting
             #- opencv-python
