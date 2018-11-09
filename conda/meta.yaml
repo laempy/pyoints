@@ -18,22 +18,24 @@ build:
     #detect_binary_files_with_prefix: False
     #script: "{{ PYTHON }} -m pip install . --ignore-installed -vvv"
 
-    
 requirements:
     build:
         - python #{{ python }}
         - pip
         - setuptools
+        #- vc# 14  # [win]
+        #- pyproj
+        #- {{ compiler('c') }}
         #- {{ compiler('c') }}
     host:
         - python {{ python }}
+        #- vc
+        #- {{ compiler('c') }}
         #- pip
         #- setuptools
         #- {{ compiler('c') }}
-    #dependencies:
-    #    - python {{ python }}
-        #- gdal
-        #- libspatialindex
+    dependencies:
+        - python {{ python }}
         #- pip
         #    - cylinder_fitting
             #- opencv-python
@@ -42,7 +44,8 @@ requirements:
     run:
         - python {{ python }}
         - gdal
-        - libspatialindex
+        - pyproj  # pyproj from pip fails for windows
+        - rtree  # rtree from pip fails for windows
         #- libspatialindex  # throws error
         #- gdal
         #- rtree
@@ -62,29 +65,29 @@ requirements:
         
 
 
-test:  # [linux]
+#test:  # [linux]
+test:
     imports:
         - osgeo
         - cv2
         - laspy
         - plyfile
         - cylinder_fitting
+        - pyproj
+        - rtree
         - pyoints
         - pyoints.examples
         - pyoints.examples.file_examples
         - pyoints.grid
         - pyoints.registration
         - pyoints.storage
-    #requirements:
+    requirements:
     #    #- python {{ python }}
-    #    - unittest
-    #    - doctest
-    #    - pkgutil
+        - unittest
+        - doctest
+        - pkgutil
     source_files:
         - tests/test_pyoints.py
-    #commands:
-        #- python -c "from tests.test_pyoints import runall; runall();"
-        #- $PYTHON -c "from tests.test_pyoints import runall; runall();"
         
 about:
     home: https://laempy.github.io/pyoints/modules.html
@@ -98,22 +101,3 @@ about:
 extra:
     recipe-maintainers:
         - laempy
-    #channels:
-    #    - conda-forge
-    #    - kitware-geospatial
-    #    - kayarre
-  
-  
-#pygdal
-#numpy>=1.15
-#rtree
-#laspy
-#scipy
-#scikit-learn
-#pyproj
-#dill
-#pandas
-#opencv-python
-#plyfile
-#networkx
-#cylinder_fitting
