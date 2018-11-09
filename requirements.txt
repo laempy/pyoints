@@ -1,10 +1,7 @@
-#pygdal
 numpy>=1.15
-rtree
 laspy
 scipy
 scikit-learn
-pyproj
 dill
 pandas
 opencv-python
