@@ -13,12 +13,10 @@ by sensing an email to the package maintainer(s).
 
 ## Making Changes
 
-To contribute your code please fork *Pyoints* on GitHub. Push your changes with
-meaningfull commit messages to a topic branch. Then create a pull request to
-propose to incorporate your changes to the main project.
-
-To ensure a uniform quality of code, please follow our 
-[coding conventions](#coding-conventions).
+To contribute your code, please fork *Pyoints* on GitHub. Push your changes 
+with meaningfull commit messages to a topic branch. Then create a pull request 
+to propose to incorporate your changes to the main project. To ensure a uniform 
+quality of code, please follow our [coding conventions](#coding-conventions).
 
 
 ## Coding Conventions
@@ -51,9 +49,10 @@ of our code we encourage you to write additional tests.
 
 ## Installation from source
 
-Please install the external dependencies first (see README.md). We recommend to
-use a virtual python environment to install *Pyoints*. Unfortunately, 
-the gdal version is not detected automatically by `pgdal`. Thus, instead run:
+Please install the external dependencies first (see [README](README.md)). We 
+recommend to use a virtual python environment to install *Pyoints*. 
+Unfortunately,  the gdal version is not detected automatically by `pgdal`. 
+Thus, instead run:
 
 ```
 pip install pygdal==$(gdal-config --version).* -r requirements.txt --upgrade

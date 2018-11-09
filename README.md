@@ -105,11 +105,13 @@ conda build /path/to/pyoints/conda --variants={python: [3.6], target_platform: [
 
 ### Installation
 
-Create a virtual environment `myenv` and add the newly build *Pyoints* package:
+Create a virtual environment `myenv` and add the newly build *Pyoints* package.
 
 ```
 conda create -n myenv /path/to/builded/package/pyoints-*-py*_*.tar.bz2 --use-local
 ```
+
+The correct package path can be found with `conda build . --output`.
 
 Finally install the package:
 
@@ -118,7 +120,7 @@ conda activate myenv
 conda install pyoints
 ```
 
-### Test
+### Tests
 
 Test the package by running the provided doctests:
 
