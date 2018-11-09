@@ -8,14 +8,14 @@ account.
 ## Making Suggestions 
 
 You can make suggestions or report bugs by using the issue board on GitHub or 
-by sensing an email to lamprecht@uni-trier.de.
+by sensing an email to the package maintainer(s).
 
 
 ## Making Changes
 
-To contribute your code please fork the *Pyoints* repository on GitHub. Push 
-your changes with meaningfull commit messages to a topic branch. Then create 
-a pull request to propose to incorporate your changes to the main project.
+To contribute your code please fork *Pyoints* on GitHub. Push your changes with
+meaningfull commit messages to a topic branch. Then create a pull request to
+propose to incorporate your changes to the main project.
 
 To ensure a uniform quality of code, please follow our 
 [coding conventions](#coding-conventions).
@@ -23,22 +23,21 @@ To ensure a uniform quality of code, please follow our
 
 ## Coding Conventions
 
-### Documentation
-
-Please make sure to document your contributed code appropiatly. The *Pyoints*
-project uses *Docstrings* 
-([PEP257](https://www.python.org/dev/peps/pep-0257/) 
-to document the code of each class or function. The documentation and comments 
-must be written in english. Wherever possible the *Examples* section should 
-illustrate the basic usage of the code. The examples should also cover special
-cases, which might reveal unexpected behavior or major bugs.
- 
 
 ### Style Guide.
 
 Please follow the [PEP8](https://www.python.org/dev/peps/pep-0008/) style 
 guidelines.
 
+### Documentation
+
+Please make sure to document your contributed code appropiatly. The *Pyoints*
+project uses *Docstrings* 
+([PEP257](https://www.python.org/dev/peps/pep-0257/) 
+to document the code of each class or function. The documentation and comments 
+must be written in English. Wherever possible, the *Examples* section should 
+illustrate the basic usage of the code. The examples should also cover special
+cases, which might reveal unexpected behavior or major bugs.
 
 ### Testing
 
@@ -49,6 +48,16 @@ of *Pyoints* classes and functions. You can run the file
 add a *doctest* reference to ``tests/test_pyoints.py``. To increase the quality
 of our code we encourage you to write additional tests.
 
+
+## Installation from source
+
+Please install the external dependencies first (see README.md). We recommend to
+use a virtual python environment to install *Pyoints*. Unfortunately, 
+the gdal version is not detected automatically by `pgdal`. Thus, instead run:
+
+```
+pip install pygdal==$(gdal-config --version).* -r requirements.txt --upgrade
+```
 
 
 ## Software recommendations

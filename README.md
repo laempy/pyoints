@@ -74,7 +74,7 @@ developers of new geo-spatial algorithms.
 
 # Installation
 
-## Conda installation (recommended)
+## Conda Installation
 
 Conda installation is recommended. To install *Pyoints* with [Conda]
 (https://conda.io/docs/user-guide/getting-started.html) run:
@@ -83,105 +83,29 @@ Conda installation is recommended. To install *Pyoints* with [Conda]
 conda install -c leampy pyoints
 ```
 
-If your system is not supported yet, you might build and install the conda 
-reciepe.
-
-Build:
-```
-cd /path/to/pyoints/conda
-conda build /path/to/pyoints/conda
-```
-
-Install:
-```
-conda create --name myenv pyoints --use-local
-```
+Currently Linux (64 bit) and Windows (64 bit) are supported.
 
 
-## Manual installation (Debian)
+## Conda Build
 
-### External dependencies
-
-The following dependencies have to be installed manually, since they are 
-required by the pip packages. 
-
-#### Python
-
-*Pyoints* targets Python3 >= 3.5.
-
-
-#### Gdal
+If your system is not supported yet, you might build and install it using the 
+[conda reciepe](conda/meta.yaml).
 
 ```
-sudo apt install gdal-bin
-sudo apt install libgdal-dev
+conda build /path/to/pyoints/conda 
 ```
 
-#### libspatialindex
+If wished, you can specify the variants, like:
 
 ```
-apt install libspatialindex-dev
+conda build /path/to/pyoints/conda --variants={python: [3.6], target_platform: ['osx-64']}
 ```
 
-#### Liblas
+Finally create a virtual environment `myenv` and install *Pyoints*:
 
 ```
-apt install liblas-c3
+conda create -n myenv pyoints --use-local
 ```
-
-
-### Install *Pyoints*
-
-Unfortunately, the gdal version is not detected automatically by `pgdal`.
-Thus, installation with `setup.py` might fail.
-
-
-#### Installation via pip (recommended)
-
-```
-pip install pygdal==$(gdal-config --version).* pyoints
-```
-
-#### Installation from source
-
-```
-pip install pygdal==$(gdal-config --version).* -r requirements.txt --upgrade
-```
-
-
-
-# Development
-
-## Virtualenv (Debian)
-
-To develop the *Pyoints* package `Virtualenv` is recommended. To install the
- *Pyoints* package conveniently run following command:
- 
-```
-./scripts/pip_install.sh -v path/to/virtualenv
-```
-
-
-### Install Virtualenv
-
-Installation
-```
-apt install virtualenv
-```
-
-Initialization
-```
-cd /path/to/library
-virtualenv venv
-```
-
-### Activate virtualenv
-
-```
-cd /path/to/library
-. venv/bin/activate
-```
-
 
 
 # Documentation
