@@ -1,7 +1,0 @@
-python:
-    - 3.5
-    #- 3.6
-target_platform:
-    - win-64
-    #- osx-64
-    #- linux-64
