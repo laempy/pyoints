@@ -76,42 +76,35 @@ developers of new geo-spatial algorithms.
 
 ## Conda Installation
 
-Conda installation is recommended. To install *Pyoints* with [Conda]
-(https://conda.io/docs/user-guide/getting-started.html) run:
+Conda installation is recommended. To install *Pyoints* with 
+[Conda](https://conda.io/docs/user-guide/getting-started.html) run:
 
 ```
 conda install -c leampy pyoints
 ```
 
-Currently Linux (64 bit) and Windows (64 bit) are supported.
+Currently Linux (64 bit) and Windows (64 bit) have been packaged.
 
 
 ## Conda Build
 
 If your system is not supported yet, you might build and install it using the 
-[conda reciepe](conda/meta.yaml).
+[conda reciepe](conda/meta.yaml) specifying your desired Python version.
 
 ### Build
 
 ```
-conda build /path/to/pyoints/conda 
-```
-
-If wished, you can specify the variants, like:
-
-```
-conda build /path/to/pyoints/conda --variants={python: [3.6], target_platform: ['osx-64']}
+conda build /path/to/pyoints/conda --python=3.x
 ```
 
 ### Installation
 
 Create a virtual environment `myenv` and add the newly build *Pyoints* package.
+The package path can be found with `conda build . --output`.
 
 ```
 conda create -n myenv /path/to/builded/package/pyoints-*-py*_*.tar.bz2 --use-local
 ```
-
-The correct package path can be found with `conda build . --output`.
 
 Finally install the package:
 
