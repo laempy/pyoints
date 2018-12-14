@@ -60,7 +60,7 @@ def get_tests(root_package):
 
 
 def load_tests(loader, tests, ignore):
-    tests.addTests(get_tests(pyoints.storage))
+    """tests.addTests(get_tests(pyoints.storage))
     tests.addTests(get_tests(pyoints.assertion))
     tests.addTests(get_tests(pyoints.assign))
     tests.addTests(get_tests(pyoints.classification))
@@ -82,13 +82,13 @@ def load_tests(loader, tests, ignore):
     tests.addTests(get_tests(pyoints.registration))
     tests.addTests(get_tests(pyoints.smoothing))
     tests.addTests(get_tests(pyoints.surface))
-    tests.addTests(get_tests(pyoints.transformation))
+    tests.addTests(get_tests(pyoints.transformation))"""
     tests.addTests(get_tests(pyoints.vector))
 
-    tests.addTests(get_tests(pyoints.examples.file_examples))
+    """tests.addTests(get_tests(pyoints.examples.file_examples))
     tests.addTests(get_tests(pyoints.examples.base_example))
     tests.addTests(get_tests(pyoints.examples.grid_example))
-    tests.addTests(get_tests(pyoints.examples.stemfilter_example))
+    tests.addTests(get_tests(pyoints.examples.stemfilter_example))"""
 
     return tests
 

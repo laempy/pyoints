@@ -102,8 +102,8 @@ def angle(v, w, deg=False):
 
     Parameters
     ----------
-    v, w : array_like(Number, shape=(k))
-        Vector of 'k' dimensions.
+    v, w : array_like(Number, shape=(k)) or array_like(Number, shape=(n, k))
+        Vector or `n` vectors of `k` dimensions.
     deg : optional, bool
         Indicates whether or not the angle is returned in degree.
 
@@ -134,25 +134,40 @@ def angle(v, w, deg=False):
     4D
     >>> angle([1, 0, 0, 0], [0, 1, 1, 0], deg=True)
     90.0
+    
+    Multiple vectors at once.
+    
+    >>> print(angle([[0, 1], [1, 1]], [[1, 0], [2, 0]], deg=True))
+    [90. 45.]
 
     """
     if not isinstance(deg, bool):
         raise TypeError("'deg' has to be boolean")
 
-    v = assertion.ensure_numvector(v)
-    w = assertion.ensure_numvector(w)
-    if not len(v) == len(w):
-        raise ValueError("vectors 'v' and 'w' have to have the same length")
+    v = assertion.ensure_numarray(v).astype(np.float64)
+    w = assertion.ensure_numarray(w).astype(np.float64)
+    if not v.shape == w.shape:
+        raise ValueError("vectors 'v' and 'w' have to have the same shape")
 
-    a = (v * w).sum()
-    b = math.sqrt(distance.snorm(v) * distance.snorm(w))
-    if(b > 0):
-        a = math.acos(a / b)
-        if deg:
-            a = rad_to_deg(a)
-    else:
-        a = float('inf')
+    if len(v.shape) == 1:
+        v=np.array([v])
+        w=np.array([w])
+
+    a = (v * w).sum(1)
+    b = np.sqrt(distance.snorm(v) * distance.snorm(w))
+
+    mask = b > 0
+    a[mask] = np.arccos(a[mask] / b[mask])
+    if deg:
+        a = rad_to_deg(a)
+    a[~mask] = np.inf
+    if v.shape[0] == 1:
+        a = a[0]
+
     return a
+
+
+
 
 
 def axes_angles(v, deg=False):
