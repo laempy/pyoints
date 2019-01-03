@@ -34,6 +34,10 @@ from .. import (
     projection,
     transformation,
 )
+from numbers import Number
+
+# Use python exceptions
+gdal.UseExceptions()
 
 
 class RasterReader(GeoFile):
@@ -135,11 +139,11 @@ def load_gdal(filename, proj=None, extent=None):
         Projection.
 
     """
-        
+
     gdalRaster = gdal.Open(filename, gdal.GA_ReadOnly)
     if gdalRaster is None:
         raise IOError("raster file '%s' could not be loaded" % filename)
-        
+
     if proj is None:
         wkt = gdalRaster.GetProjection()
         if wkt is not '':
@@ -170,7 +174,7 @@ def write_gdal(
         outfile,
         T=None,
         proj=None,
-        no_data=np.nan,
+        no_data=None,
         driver='GTiff'):
     """Writes an image to disc.
 
@@ -180,14 +184,12 @@ def write_gdal(
         Image to save
     outfile : String
         File to save the raster to.
-    no_data : optional, object
-        No data value to be used.
     T : optional, array_like(Number, shape=(3, 3))
         Projection matrix to be used.
     proj : Proj
         Projection to be used.
-    no_data : optional, object
-        Desired no data value.
+    no_data : optional, Number
+        No data value to be used.
     driver : optional, str
         Gdal driver.
 
@@ -210,6 +212,8 @@ def write_gdal(
         raise ValueError("'image' has an unexpected shape for a raster")
     if not nptools.isnumeric(image):
         raise ValueError("'image' needs to be numeric")
+    if no_data is not None and not isinstance(no_data, Number):
+        raise TypeError("'no_data' needs to be numeric")
 
     bands = image.astype(nptools.minimum_numeric_dtype(image))
     num_bands = 1 if len(bands.shape) == 2 else bands.shape[2]
@@ -238,25 +242,29 @@ def write_gdal(
     # set bands
     if num_bands == 1:
         band = gdalRaster.GetRasterBand(1)
-        band.SetNoDataValue(no_data)
+        if no_data is not None:
+            band.SetNoDataValue(no_data)
         band.WriteArray(bands)
         band.FlushCache()
     else:
         for i in range(num_bands):
             band = gdalRaster.GetRasterBand(i + 1)
-            if i == 0 or driver is not 'GTiff':
+            if no_data is not None:
                 band.SetNoDataValue(no_data)
+
             band.WriteArray(bands[:, :, i])
             band.FlushCache()
             band = None
             del band
+
+    warnings.filterwarnings("error")
 
     gdalRaster.FlushCache()
     gdalRaster = None
     del gdalRaster
 
 
-def writeRaster(raster, outfile, field='bands', no_data=np.nan):
+def writeRaster(raster, outfile, field='bands', no_data=None):
     """Writes a Grid to file system.
 
     Parameters
@@ -267,7 +275,7 @@ def writeRaster(raster, outfile, field='bands', no_data=np.nan):
         File to save the raster to.
     field : optional, str
         Field considered as raster bands.
-    no_data : optional, object
+    no_data : optional, Number
         Desired no data value.
 
     Raises
