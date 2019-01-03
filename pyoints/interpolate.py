@@ -324,7 +324,7 @@ class PolynomInterpolator(Interpolator):
 
     >>> interpolator = PolynomInterpolator(coords, values, deg=1)
 
-    >>> print(interpolator([0, 1]))
+    >>> print(np.round(interpolator([0, 1]), 2))
     1.5
     >>> print(interpolator([(0, 1), (0, 0), (0, -1)]))
     [ 1.5  0.  -1.5]

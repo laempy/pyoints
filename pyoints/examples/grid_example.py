@@ -19,7 +19,6 @@
 """In this example we load a point cloud and convert it to rasters and voxels.
 
 
-
 >>> import os
 >>> import numpy as np
 
