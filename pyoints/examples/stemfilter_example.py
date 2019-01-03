@@ -81,7 +81,7 @@ We create a surface interpolator.
 >>> dem = KnnInterpolator(dem_grid.records().coords, dem_grid.records().z)
 
 
-For the stem detection, we will focus on points with height above ground 
+For the stem detection, we will focus on points with height above ground
 greater 0.5 m.
 
 >>> height = las.coords[:, 2] - dem(las.coords)

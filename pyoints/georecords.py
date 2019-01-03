@@ -478,7 +478,6 @@ class LasRecords(GeoRecords):
     EXTRA_FIELDS = [
         ('normals', np.float, 3),
     ]
-    
 
     @property
     def last_return(self):
@@ -557,4 +556,3 @@ class LasRecords(GeoRecords):
 
         """
         return np.where(np.in1d(self.classification, classes))[0]
-

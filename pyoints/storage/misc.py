@@ -52,7 +52,7 @@ def create_random_GeoRecords(center=None, epsg=25832, dim=3, n=1000, scale=10):
     records['keypoint'][2] = True
     records['withheld'][:4] = False
     records['withheld'][3] = True
-    
+
     records['values'] = np.arange(n)
 
     if center is not None:

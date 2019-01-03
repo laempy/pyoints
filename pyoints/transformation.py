@@ -102,7 +102,7 @@ def transform(coords, T, inverse=False, precise=False):
         # multiple points
         if precise:
             # precise, but slow
-            #tcoords = (homogenious(coords) @ T.T)[:, 0:-1]
+            # tcoords = (homogenious(coords) @ T.T)[:, 0:-1]
             tcoords = np.dot(homogenious(coords), T.T)[:, 0:-1]
         else:
             # fast, but not very precise
@@ -333,8 +333,8 @@ def r_matrix(a, order='xyz'):
         coefficients are required.
     order : optional, String
         For at least three axes, `order` specifies the order of rotations. For
-        example, an order of `zxy` means first to translate according to z axis,
-        then rotate according to x-axis, and finally rotate according to
+        example, an order of `zxy` means first to translate according to z
+        axis, then rotate according to x-axis, and finally rotate according to
         y-axis.
 
     Returns
@@ -430,44 +430,44 @@ def r_matrix(a, order='xyz'):
 
 def q_matrix(q):
     """Creates an rotation matrix based on quaternion values.
-    
+
     Parameters
     ----------
     q : array_like(Number, shape=(4))
         Quaternion parameters (w, x, y, z).
-    
+
     Returns
     -------
     LocalSystem(int, shape=(4, 4))
         Rotation matrix derived from quaternions.
-        
+
     Examples
     --------
-    
+
     >>> T = q_matrix([0.7071, 0.7071, 0, 0])
     >>> print(np.round(T, 2))
     [[ 1.  0.  0.  0.]
      [ 0.  0. -1.  0.]
      [ 0.  1.  0.  0.]
      [ 0.  0.  0.  1.]]
-        
+
     >>> t, r, s, det = decomposition(T)
     >>> print(r)
     [ 1.57077715 -0.          0.        ]
     >>> print(t)
     [0. 0. 0.]
-    
-    
+
+
     """
     q = ensure_numvector(q, length=4)
     if not np.isclose(distance.snorm(q), 1, rtol=0.001):
         raise ValueError("Invalid quaternion. Square sum should be one.")
-        
+
     yaw = np.arctan2(
-            2 * (q[0] * q[1] + q[2] * q[3]), 1 - 2 * (q[1] ** 2 + q[2] ** 2))
+        2 * (q[0] * q[1] + q[2] * q[3]), 1 - 2 * (q[1] ** 2 + q[2] ** 2))
     pitch = np.arcsin(2 * (q[0] * q[2] - q[3] * q[1]))
     roll = np.arctan2(
-            2 * (q[0] * q[3] + q[1] * q[2]), 1 - 2 * (q[2] ** 2 + q[3] ** 2))
+        2 * (q[0] * q[3] + q[1] * q[2]), 1 - 2 * (q[2] ** 2 + q[3] ** 2))
     return r_matrix([yaw, pitch, roll])
 
 

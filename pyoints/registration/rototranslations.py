@@ -154,10 +154,10 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     # solve linear equation system
     mA = np.vstack(rA + oA)
     mB = np.hstack(rB + oB)
-    
+
     # set rcond for backwards compatibility
     rcond = np.finfo(np.float64).eps * max(mA.shape)
-    
+
     M = np.linalg.lstsq(mA, mB, rcond=rcond)[0]
 
     # Extract roto-transformation matrices

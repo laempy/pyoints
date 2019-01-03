@@ -53,7 +53,7 @@ Load LAS-file again and check the characteristics.
 (1000,)
 >>> print(sorted(las.dtype.descr))
 [('classification', '|u1'), ('coords', '<f8', (3,)), ('intensity', '|u1'), ('keypoint', '|b1'), ('synthetic', '|b1'), ('values', '<f8'), ('withheld', '|b1')]
-    
+
 Check values.
 
 >>> np.all(geoRecords.classification == las.classification)

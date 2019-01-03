@@ -257,8 +257,6 @@ def write_gdal(
             band = None
             del band
 
-    warnings.filterwarnings("error")
-
     gdalRaster.FlushCache()
     gdalRaster = None
     del gdalRaster

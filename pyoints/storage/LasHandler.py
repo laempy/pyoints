@@ -91,12 +91,14 @@ class LasReader(GeoFile):
     def load(self, extent=None):
 
         lasFile = laspy.file.File(self.file, mode='r')
-        
+
         # check point formats
         supported_formats = [0, 1, 2, 3, 4, 5]
-        if not lasFile.header.data_format_id in supported_formats:
+        if lasFile.header.data_format_id not in supported_formats:
             m = "Only point formats %s supported yet, got %"
-            raise ValueError(m % (supported_formats, lasFile.header.data_format_id))
+            raise ValueError(
+                m %
+                (supported_formats, lasFile.header.data_format_id))
 
         scale = np.array(lasFile.header.scale, dtype=np.float64)
         offset = np.array(lasFile.header.offset, dtype=np.float64)
@@ -126,7 +128,6 @@ class LasReader(GeoFile):
         coords[:, 1] = points.Y * scale[1] + offset[1]
         coords[:, 2] = points.Z * scale[2] + offset[2]
 
-
         # grep data
         omit = ['X', 'Y', 'Z']
         dtypes = []
@@ -143,14 +144,14 @@ class LasReader(GeoFile):
                     dataDict['classification'] = values % 32  # bits 0 to 4
                     values = values // 32
                 if np.any(values):
-                    dataDict['synthetic'] = values % 2 # bit 5
+                    dataDict['synthetic'] = values % 2  # bit 5
                     values = values // 2
                 if np.any(values):
-                    dataDict['keypoint'] = values % 2 # bit 6
+                    dataDict['keypoint'] = values % 2  # bit 6
                     values = values // 2
                 if np.any(values):
-                    dataDict['withheld'] = values # bit 7
-                    
+                    dataDict['withheld'] = values  # bit 7
+
             elif name not in omit:
                 values = points[name]
                 if np.any(values):
@@ -162,7 +163,7 @@ class LasReader(GeoFile):
             for descr in available_dtypes:
                 if descr[0] == name:
                     dtypes.append(descr)
-        
+
         # create recarray
         data = nptools.recarray(dataDict, dtype=dtypes)
 
@@ -222,7 +223,7 @@ def writeLas(geoRecords, outfile):
     offset[:dim] = geoRecords.t.origin
 
     max_values = np.abs(records.extent().corners - offset[:dim]).max(0)
-    max_digits = 2**28 # long int
+    max_digits = 2**28  # long int
     scale[:dim] = max_values / max_digits
     scale[np.isclose(scale, 0)] = 1 / max_digits
 
@@ -260,13 +261,13 @@ def writeLas(geoRecords, outfile):
             if records.dim > 2:
                 lasFile.set_z_scaled(records.coords[:, 2])
         elif name == 'classification':  # classification bits 0 to 4
-            raw_classification += records.classification; 
+            raw_classification += records.classification
         elif name == 'synthetic':  # classification bit 5
-            raw_classification += records.synthetic.astype(np.uint8) * 32;
+            raw_classification += records.synthetic.astype(np.uint8) * 32
         elif name == 'keypoint':  # classification bit 6
-            raw_classification += records.keypoint.astype(np.uint8) * 64;
+            raw_classification += records.keypoint.astype(np.uint8) * 64
         elif name == 'withheld':  # classification bit 7
-            raw_classification += records.withheld.astype(np.uint8) * 128; 
+            raw_classification += records.withheld.astype(np.uint8) * 128
         elif name == 'return_num':
             flag_byte = flag_byte + records.return_num
         elif name == 'num_returns':

@@ -100,6 +100,5 @@ class test_pyoints(unittest.TestCase):
         self.assertTrue(float(pyoints.__version__) > 0)
 
 
-
 print('Run doctests for Pyoints')
 unittest.main()

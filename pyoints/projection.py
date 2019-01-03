@@ -198,23 +198,22 @@ class GeoTransform:
     @property
     def from_proj(self):
         return self._from_proj
-   
+
     @from_proj.setter
     def from_proj(self, proj):
         if not isinstance(proj, Proj):
             raise TypeError("isinstance of 'Proj' required")
         self._from_proj = proj
-    
+
     @property
     def to_proj(self):
         return self._to_proj
-   
+
     @to_proj.setter
     def to_proj(self, proj):
         if not isinstance(proj, Proj):
             raise TypeError("isinstance of 'Proj' required")
         self._to_proj = proj
-
 
     def __call__(self, coords, reverse=False):
         """Applies the coordinate transformation.

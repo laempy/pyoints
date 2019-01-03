@@ -133,9 +133,9 @@ def angle(v, w, deg=False):
     4D
     >>> angle([1, 0, 0, 0], [0, 1, 1, 0], deg=True)
     90.0
-    
+
     Multiple vectors at once.
-    
+
     >>> print(angle([[0, 1], [1, 1]], [[1, 0], [2, 0]], deg=True))
     [90. 45.]
 
@@ -149,8 +149,8 @@ def angle(v, w, deg=False):
         raise ValueError("vectors 'v' and 'w' have to have the same shape")
 
     if len(v.shape) == 1:
-        v=np.array([v])
-        w=np.array([w])
+        v = np.array([v])
+        w = np.array([w])
 
     a = (v * w).sum(1)
     b = np.sqrt(distance.snorm(v) * distance.snorm(w))
@@ -248,7 +248,8 @@ def direction(v, deg=False):
 
 
 def zenith(v, axis=-1, deg=False):
-    """Angle between a vector or vectors in relation to a specific coordinate axes.
+    """Angle between a vector or vectors in relation to a specific coordinate
+    axes.
 
     Parameters
     ----------
@@ -861,7 +862,8 @@ class Vector(object):
             return v + self.origin
 
     def angles(self, deg=False):
-        """Calculates the angles of the vector in relation to the coordinate axes.
+        """Calculates the angles of the vector in relation to the coordinate
+        axes.
 
         Parameters
         ----------
@@ -925,7 +927,7 @@ class Plane(object):
     origin : np.ndarray(Number, shape=(k))
         Defines the origin of the planes `k` dimensional local coordinate
         system.
-    \*vec : np.ndarray(Number, shape=(k))
+    *vec : np.ndarray(Number, shape=(k))
         The `k`-1 vectors of `vec` define the orientation of the plane. The
         missing  axis (perpenticular to the vectors) are calculated
         automatically using principal component analysis. So, parallel
@@ -1385,7 +1387,7 @@ def vector_plane_intersection(vec, plane):
     Notes
     -----
     The algorithm solves the linear equation system:
-    `plane.origin - vec.origin | k \* vec.vec - s \* plane.vec`
+    `plane.origin - vec.origin | k * vec.vec - s * plane.vec`
 
     Examples
     --------

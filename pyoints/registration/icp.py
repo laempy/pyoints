@@ -53,7 +53,7 @@ class ICP:
 
     Notes
     -----
-    A modified variant of the originally ICP algorithm presented by Besl and 
+    A modified variant of the originally ICP algorithm presented by Besl and
     McKay (1992) [1].
 
     References

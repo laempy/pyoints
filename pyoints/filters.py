@@ -399,11 +399,11 @@ def dem_filter(coords, r, max_angle=70):
     Applies a `k-1` dimensional `ball` filter to identify a digital elevation
     model. The point order is defined by the last coordinate dimension. The
     filtering radius `r` is defined by the user. To optimize the quality of the
-    dem, all points with less than 5 neighbours within radius `2 * r` are 
-    removed from further analysis. In addition a TIN (Triangulated Irregular 
+    dem, all points with less than 5 neighbours within radius `2 * r` are
+    removed from further analysis. In addition a TIN (Triangulated Irregular
     Network) is generated to model the surface. Each facet with a slope larger
     than `max_angle` is removed iteratively.
-    
+
     See Also
     --------
     radial_dem_filter, ball
