@@ -59,7 +59,7 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="go">(1000,)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">descr</span><span class="p">))</span>
-<span class="go">[(&#39;classification&#39;, &#39;&lt;i8&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;&lt;i8&#39;), (&#39;values&#39;, &#39;&lt;f8&#39;)]</span>
+<span class="go">[(&#39;classification&#39;, &#39;&lt;u8&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;&lt;u8&#39;), (&#39;keypoint&#39;, &#39;|b1&#39;), (&#39;synthetic&#39;, &#39;|b1&#39;), (&#39;values&#39;, &#39;&lt;f8&#39;), (&#39;withheld&#39;, &#39;|b1&#39;)]</span>
 </pre></div>
 </div>
 <p>Save as a .csv-file.</p>
@@ -72,7 +72,7 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="go">(1000,)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">descr</span><span class="p">))</span>
-<span class="go">[(&#39;classification&#39;, &#39;&lt;f8&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;index&#39;, &#39;&lt;i8&#39;), (&#39;intensity&#39;, &#39;&lt;f8&#39;), (&#39;values&#39;, &#39;&lt;f8&#39;)]</span>
+<span class="go">[(&#39;classification&#39;, &#39;&lt;f8&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;index&#39;, &#39;&lt;i8&#39;), (&#39;intensity&#39;, &#39;&lt;f8&#39;), (&#39;keypoint&#39;, &#39;&lt;f8&#39;), (&#39;synthetic&#39;, &#39;&lt;f8&#39;), (&#39;values&#39;, &#39;&lt;f8&#39;), (&#39;withheld&#39;, &#39;&lt;f8&#39;)]</span>
 </pre></div>
 </div>
 </div>
@@ -95,7 +95,7 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="go">(1000,)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">descr</span><span class="p">))</span>
-<span class="go">[(&#39;classification&#39;, &#39;&lt;i8&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;&lt;i8&#39;), (&#39;values&#39;, &#39;&lt;f8&#39;)]</span>
+<span class="go">[(&#39;classification&#39;, &#39;&lt;u8&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;&lt;u8&#39;), (&#39;keypoint&#39;, &#39;|b1&#39;), (&#39;synthetic&#39;, &#39;|b1&#39;), (&#39;values&#39;, &#39;&lt;f8&#39;), (&#39;withheld&#39;, &#39;|b1&#39;)]</span>
 </pre></div>
 </div>
 <p>Save as a DUMP-file.</p>
@@ -111,7 +111,7 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="go">(1000,)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">descr</span><span class="p">))</span>
-<span class="go">[(&#39;classification&#39;, &#39;&lt;i8&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;&lt;i8&#39;), (&#39;values&#39;, &#39;&lt;f8&#39;)]</span>
+<span class="go">[(&#39;classification&#39;, &#39;&lt;u8&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;&lt;u8&#39;), (&#39;keypoint&#39;, &#39;|b1&#39;), (&#39;synthetic&#39;, &#39;|b1&#39;), (&#39;values&#39;, &#39;&lt;f8&#39;), (&#39;withheld&#39;, &#39;|b1&#39;)]</span>
 </pre></div>
 </div>
 </div>
@@ -134,7 +134,7 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="go">(1000,)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">descr</span><span class="p">))</span>
-<span class="go">[(&#39;classification&#39;, &#39;&lt;i8&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;&lt;i8&#39;), (&#39;values&#39;, &#39;&lt;f8&#39;)]</span>
+<span class="go">[(&#39;classification&#39;, &#39;&lt;u8&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;&lt;u8&#39;), (&#39;keypoint&#39;, &#39;|b1&#39;), (&#39;synthetic&#39;, &#39;|b1&#39;), (&#39;values&#39;, &#39;&lt;f8&#39;), (&#39;withheld&#39;, &#39;|b1&#39;)]</span>
 </pre></div>
 </div>
 <p>Save as LAS-file.</p>
@@ -152,7 +152,20 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">las</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="go">(1000,)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">las</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">descr</span><span class="p">))</span>
-<span class="go">[(&#39;classification&#39;, &#39;|u1&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;&lt;u2&#39;), (&#39;values&#39;, &#39;&lt;f8&#39;)]</span>
+<span class="go">[(&#39;classification&#39;, &#39;|u1&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;|u1&#39;), (&#39;keypoint&#39;, &#39;|b1&#39;), (&#39;synthetic&#39;, &#39;|b1&#39;), (&#39;values&#39;, &#39;&lt;f8&#39;), (&#39;withheld&#39;, &#39;|b1&#39;)]</span>
+</pre></div>
+</div>
+<p>Check values.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">classification</span> <span class="o">==</span> <span class="n">las</span><span class="o">.</span><span class="n">classification</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">synthetic</span> <span class="o">==</span> <span class="n">las</span><span class="o">.</span><span class="n">synthetic</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">keypoint</span> <span class="o">==</span> <span class="n">las</span><span class="o">.</span><span class="n">keypoint</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">withheld</span> <span class="o">==</span> <span class="n">las</span><span class="o">.</span><span class="n">withheld</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">intensity</span> <span class="o">==</span> <span class="n">las</span><span class="o">.</span><span class="n">intensity</span><span class="p">)</span>
+<span class="go">True</span>
 </pre></div>
 </div>
 </div>
@@ -174,7 +187,7 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="go">(1000,)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">descr</span><span class="p">))</span>
-<span class="go">[(&#39;classification&#39;, &#39;&lt;i8&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;&lt;i8&#39;), (&#39;values&#39;, &#39;&lt;f8&#39;)]</span>
+<span class="go">[(&#39;classification&#39;, &#39;&lt;u8&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;&lt;u8&#39;), (&#39;keypoint&#39;, &#39;|b1&#39;), (&#39;synthetic&#39;, &#39;|b1&#39;), (&#39;values&#39;, &#39;&lt;f8&#39;), (&#39;withheld&#39;, &#39;|b1&#39;)]</span>
 </pre></div>
 </div>
 <p>Save as .ply-file.</p>
@@ -187,7 +200,7 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="go">(1000,)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">descr</span><span class="p">))</span>
-<span class="go">[(&#39;classification&#39;, &#39;&lt;i4&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;&lt;i4&#39;), (&#39;values&#39;, &#39;&lt;f8&#39;)]</span>
+<span class="go">[(&#39;classification&#39;, &#39;|u1&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;|u1&#39;), (&#39;keypoint&#39;, &#39;|u1&#39;), (&#39;synthetic&#39;, &#39;|u1&#39;), (&#39;values&#39;, &#39;&lt;f8&#39;), (&#39;withheld&#39;, &#39;|u1&#39;)]</span>
 </pre></div>
 </div>
 </div>
@@ -344,6 +357,14 @@ the output image using a Geographic Information System (GIS).</p>
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -353,7 +374,7 @@ the output image using a Geographic Information System (GIS).</p>
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/pyoints.examples.file_examples.rst.txt"

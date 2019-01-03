@@ -1,14 +1,10 @@
-#pygdal
-numpy
-rtree
+numpy>=1.15
 laspy
 scipy
 scikit-learn
-pyproj
 dill
 pandas
 opencv-python
 plyfile
 networkx
 cylinder_fitting
-matplotlib

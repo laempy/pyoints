@@ -496,6 +496,10 @@
         <span class="p">(</span><span class="s1">&#39;classification&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
         <span class="p">(</span><span class="s1">&#39;num_returns&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
         <span class="p">(</span><span class="s1">&#39;return_num&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;synthetic&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;keypoint&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;withheld&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;normals&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
     <span class="p">]</span>
     <span class="n">STANDARD_FIELDS</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">(</span><span class="s1">&#39;user_data&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
@@ -520,6 +524,13 @@
     <span class="k">def</span> <span class="nf">only_return</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_returns</span> <span class="o">==</span> <span class="mi">1</span>
 
+<div class="viewcode-block" id="LasRecords.available_fields"><a class="viewcode-back" href="../../pyoints.html#pyoints.georecords.LasRecords.available_fields">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">available_fields</span><span class="p">():</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">LasRecords</span><span class="o">.</span><span class="n">USER_DEFINED_FIELDS</span><span class="p">)</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">LasRecords</span><span class="o">.</span><span class="n">STANDARD_FIELDS</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fields</span></div>
+
 <div class="viewcode-block" id="LasRecords.activate"><a class="viewcode-back" href="../../pyoints.html#pyoints.georecords.LasRecords.activate">[docs]</a>    <span class="k">def</span> <span class="nf">activate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Activates a desired field on demand.</span>
 
@@ -535,10 +546,7 @@
         <span class="k">if</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span>
 
-        <span class="n">fields</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">fields</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">USER_DEFINED_FIELDS</span><span class="p">)</span>
-        <span class="n">fields</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">STANDARD_FIELDS</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">available_fields</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">field</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">field_name</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_fields</span><span class="p">([</span><span class="n">field</span><span class="p">])</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;field &quot;</span><span class="si">%s</span><span class="s1">&quot; not found&#39;</span> <span class="o">%</span> <span class="n">field_name</span><span class="p">)</span></div>
@@ -552,7 +560,7 @@
 <span class="sd">            Filtered records.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">class_indices</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">11</span><span class="p">)]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">class_indices</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span></div>
 
 <div class="viewcode-block" id="LasRecords.veg"><a class="viewcode-back" href="../../pyoints.html#pyoints.georecords.LasRecords.veg">[docs]</a>    <span class="k">def</span> <span class="nf">veg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Filters by points classified as vegetation.</span>
@@ -563,7 +571,7 @@
 <span class="sd">            Filtered records.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">class_indices</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">)]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">class_indices</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)]</span></div>
 
 <div class="viewcode-block" id="LasRecords.class_indices"><a class="viewcode-back" href="../../pyoints.html#pyoints.georecords.LasRecords.class_indices">[docs]</a>    <span class="k">def</span> <span class="nf">class_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">classes</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Filters by classes.</span>
@@ -580,6 +588,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classification</span><span class="p">,</span> <span class="n">classes</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span></div></div>
+
 </pre></div>
 
           </div>
@@ -623,6 +632,14 @@
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -632,7 +649,7 @@
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
 

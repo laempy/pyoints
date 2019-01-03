@@ -7,58 +7,40 @@ package:
     version: {{ data.get('version') }}
   
 source:
-    #git_url: "https://github.com/laempy/pyoints"
     git_url: "../.git"
   
 build:
-    number: 0
-    #script: "{{ PYTHON }} -m pip install . --ignore-installed -vvv"
-
+    #number: 0
+    skip: True  # [not py3k]
+    
 requirements:
     build:
         - python
         - pip
-        - gdal
-    dependencies:
-        - python
-        - gdal
-        - pip
-            - cylinder_fitting
-            - opencv-python
-            - matplotlib
-            - plyfile
-            - laspy
+        - setuptools
     host:
-        - python
-        - gdal
-        - dill
-        - networkx
-        - numpy
-        - pandas
-        - rtree
-        - scikit-learn
-        - scipy
-        - pyproj
+        - python {{ python }}
     run:
-    {% for package in resolved_packages('host') %}
-        - {{ package }}
-    {% endfor %}
-
+        - python {{ python }}
+        - gdal  # pygdal is not able to detect gdal version
+        - pyproj  # pyproj via pip fails for windows
+        - rtree  # rtree via pip fails for windows
+        
 test:
     imports:
-        - cv2
         - osgeo
-        - plyfile
-        - cylinder_fitting
+        - cv2
         - laspy
+        - plyfile
+        - pyproj
+        - rtree
+        - cylinder_fitting
         - pyoints
         - pyoints.examples
-        - pyoints.examples.file_examples
         - pyoints.grid
         - pyoints.registration
         - pyoints.storage
-        - tests
-
+        
 about:
     home: https://laempy.github.io/pyoints/modules.html
     license: GNU General Public v3 or later (GPLv3+)

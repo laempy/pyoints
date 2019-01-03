@@ -9,3 +9,6 @@ Sphinx
 sphinxcontrib-napoleon
 ipykernel
 cloudpickle
+unittest
+doctest
+pkgutil

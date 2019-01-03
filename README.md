@@ -72,97 +72,60 @@ if you like. Thus *Pyoints* is particulary designed for scientists and
 developers of new geo-spatial algorithms.
 
 
+# Installation
 
-# Installation (Ubuntu)
+## Conda Installation
 
-## Install external dependencies
-
-The following dependencies have to be installed manually, since they are 
-required by the pip packages.
-
-### Python
-
-The *Pyoints* targets Python3 >= 3.5.
-
-
-### Gdal
+Conda installation is recommended. To install *Pyoints* with [Conda]
+(https://conda.io/docs/user-guide/getting-started.html) run:
 
 ```
-sudo apt install gdal-bin
-sudo apt install libgdal-dev
+conda install -c leampy pyoints
 ```
 
-### libspatialindex
+Currently Linux (64 bit) and Windows (64 bit) are supported.
+
+
+## Conda Build
+
+If your system is not supported yet, you might build and install it using the 
+[conda reciepe](conda/meta.yaml).
+
+### Build
 
 ```
-apt install libspatialindex-dev
+conda build /path/to/pyoints/conda 
 ```
 
-### Liblas
+If wished, you can specify the variants, like:
 
 ```
-apt install liblas-c3
+conda build /path/to/pyoints/conda --variants={python: [3.6], target_platform: ['osx-64']}
 ```
 
+### Installation
 
-## Install Pyoints (Ubuntu)
-
-Unfortunately, the gdal version is not detected automatically by `pgdal`.
-Thus, installation with `setup.py` might fail.
-
-
-### Installation via pip (recommended)
+Create a virtual environment `myenv` and add the newly build *Pyoints* package.
 
 ```
-pip install pygdal==$(gdal-config --version).* pyoints
+conda create -n myenv /path/to/builded/package/pyoints-*-py*_*.tar.bz2 --use-local
 ```
 
-## Installation with from source
+The correct package path can be found with `conda build . --output`.
+
+Finally install the package:
 
 ```
-pip install pygdal==$(gdal-config --version).* -r requirements.txt --upgrade
+conda activate myenv
+conda install pyoints
 ```
 
+### Tests
 
-### Installation with installation script
+Test the package by running the provided doctests:
 
-The installation script asks you to provide a virtual Python environment
-(virtualenv). You need to initialize it first.
 ```
-./scripts/pip_install.sh -v path/to/virtualenv
-```
-
-
-
-# Development
-
-## Virtualenv
-
-### Install Virtualenv
-
-Installation (Ubuntu)
-```
-apt install virtualenv
-```
-
-Initialize
-```
-cd /path/to/library
-virtualenv venv
-```
-
-### Activate virtualenv
-
-Linux
-```
-cd /path/to/library
-. venv/bin/activate
-```
-
-Windows
-```
-cd path\to\library
-venv\Scripts\activate.bat
+python /path/to/pyoints/tests/test_pyoints.py
 ```
 
 
@@ -174,6 +137,7 @@ docstrings with examples for each module and some comprehensive examples. You
 can also take a look at the source files directly.
 
 
+
 # License
 
 Copyright (c) 2018, Sebastian Lamprecht, Trier University,
@@ -181,6 +145,7 @@ lamprecht@uni-trier.de
 
 *Pyoints* is free software made available under the GNU General Public
 License v3 or later (GPLv3+). See [LICENSE](LICENSE) for details.
+
 
 
 # Citing
@@ -202,7 +167,8 @@ and raster processing.", URL https://github.com/laempy/pyoints,
 }
 ```
 
-# Community
+
+# Contributing
 
 Any conribution to the *pyoints* project is welcome. See 
 [CONTRIBUTING](CONTRIBUTING.md) for details. 
@@ -356,55 +322,3 @@ Marios Hadjieleftheriou
 * [MIT license](https://libspatialindex.github.io/)
 
 
-
-## Software recommendations
-
-The following Python packages were used for software development, testing and
-documentation.
-
-
-### autopep8
-
-Hideo Hattori
-* [PyPI](https://pypi.org/project/autopep8/)
-* [homepage](https://github.com/hhatto/autopep8)
-* [MIT compatible license](https://github.com/matplotlib/matplotlib/blob/master/LICENSE/LICENSE)
-
-
-### CloudCompare
-
-Daniel Girardeau-Montaut
-* [homepage](https://www.danielgm.net/cc/)
-* [GPL v2](https://github.com/CloudCompare/CloudCompare/blob/master/license.txt)
-
-
-### matplotlib
-
-John D. Hunter, Michael Droettboom
-* [PyPI](https://pypi.org/project/matplotlib/)
-* [homepage](https://matplotlib.org/)
-* [BSD compatible license](https://github.com/matplotlib/matplotlib/blob/master/LICENSE/LICENSE)
-
-
-### pycodestyle
-
-Ian Lee
-* [PyPI](https://pypi.org/project/pycodestyle/)
-* [homepage](https://pycodestyle.readthedocs.io/en/latest/)
-* [Expat license](https://pycodestyle.readthedocs.io/en/latest/index.html#license)
-
-
-### Sphinx
-
-Georg Brandl
-* [PyPI](https://pypi.org/project/Sphinx/)
-* [homepage](http://www.sphinx-doc.org/en/master/)
-* [3-Clause BSD license](https://github.com/sphinx-doc/sphinx)
-
-
-### sphinxcontrib-napoleon
-
-Rob Ruana
-* [PyPI](https://pypi.org/project/sphinxcontrib-napoleon/)
-* [homepage](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/)
-* [2-Clause BSD license](https://github.com/sphinx-contrib/napoleon/blob/master/LICENSE)

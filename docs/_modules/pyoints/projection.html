@@ -227,10 +227,29 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_proj</span><span class="p">,</span> <span class="n">to_proj</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">from_proj</span><span class="p">,</span> <span class="n">Proj</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to_proj</span><span class="p">,</span> <span class="n">Proj</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;objects of type &#39;Proj&#39; required&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_from_proj</span> <span class="o">=</span> <span class="n">from_proj</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_to_proj</span> <span class="o">=</span> <span class="n">to_proj</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">from_proj</span> <span class="o">=</span> <span class="n">from_proj</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_proj</span> <span class="o">=</span> <span class="n">to_proj</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">from_proj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from_proj</span>
+   
+    <span class="nd">@from_proj</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">from_proj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">proj</span><span class="p">,</span> <span class="n">Proj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;isinstance of &#39;Proj&#39; required&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_from_proj</span> <span class="o">=</span> <span class="n">proj</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">to_proj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_proj</span>
+   
+    <span class="nd">@to_proj</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">to_proj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">proj</span><span class="p">,</span> <span class="n">Proj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;isinstance of &#39;Proj&#39; required&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_to_proj</span> <span class="o">=</span> <span class="n">proj</span>
+
 
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Applies the coordinate transformation.</span>
@@ -328,6 +347,14 @@
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -337,7 +364,7 @@
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
 
