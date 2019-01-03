@@ -37,7 +37,7 @@ class Surface:
 
     See Also
     --------
-    poynts.interpolate.Interpolator
+    pyoints.interpolate.Interpolator
 
     Examples
     --------
