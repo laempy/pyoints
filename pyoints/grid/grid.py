@@ -203,39 +203,70 @@ class Grid(GeoRecords):
 
         Examples
         --------
-        
+
+        Derive a raster form corners with a positive scale.
+
+        >>> corners = [(1, 2), (4, 2), (4, 10), (1, 10)]
+        >>> scale = [1, 2]
+        >>> raster = Grid.from_corners(projection.Proj(), corners, scale)
+
+        >>> print(raster.shape)
+        (4, 3)
+        >>> print(sorted(raster.dtype.descr))
+        [('coords', '<f8', (2,))]
+        >>> print(np.round(raster.t, 2))
+        [[ 1.  0.  1.]
+         [-0.  2.  2.]
+         [ 0.  0.  1.]]
+
+        >>> print(np.round(raster.records().coords.min(0), 2))
+        [1.5 3. ]
+        >>> print(np.round(raster.records().coords.max(0), 2))
+        [3.5 9. ]
+
+        >>> keys = raster.coords_to_keys(corners)
+        >>> print(keys)
+        [[0 0]
+         [0 3]
+         [4 3]
+         [4 0]]
+        >>> np.allclose(
+        ...     raster.coords_to_coords(corners),
+        ...     raster.keys_to_coords(keys)
+        ... )
+        True
+
+        Example with inverted axes.
+
         >>> from pyoints import transformation
 
         >>> corners = [(1, 1), (3, 1), (3, 4), (1, 4)]
-        >>> scale = [0.5, -1]
-        >>> raster = Grid.from_corners(projection.Proj(), corners, None)
+        >>> raster = Grid.from_corners(projection.Proj(), corners, [-0.5, -1])
 
         >>> print(raster.shape)
-        (2, 4)
-        >>> print(raster)
-        
-        >>> print(raster.t)
-        
+        (3, 4)
+        >>> print(np.round(raster.records().coords.min(0), 2))
+        [1.25 1.5 ]
+        >>> print(np.round(raster.records().coords.max(0), 2))
+        [2.75 3.5 ]
+
         >>> t, r, s, det = transformation.decomposition(raster.t)
         >>> print(np.round(t, 2))
-        
-        >>> print(np.round(r, 2))
-        
+        [3. 4.]
         >>> print(np.round(s, 2))
-        
-        >>> print(np.round(det, 2))
-        
+        [0.5 1. ]
+
         >>> keys = raster.coords_to_keys(corners)
         >>> print(keys)
-        
-        >>> raster.keys_to_coords(keys) - 0.5 * np.array(scale)
-        
-        >>> np.all(corners == raster.keys_to_coords(keys))
-        
-        >>> print(raster.t.origin)
-        [3. 4.]
-        >>> print(sorted(raster.dtype.descr))
-        [('coords', '<f8', (2,))]
+        [[2 4]
+         [2 0]
+         [0 0]
+         [0 4]]
+        >>> np.allclose(
+        ...     raster.coords_to_coords(corners),
+        ...     raster.keys_to_coords(keys)
+        ... )
+        True
 
         """
         T, shape = corners_to_transform(corners, scale=scale)
@@ -429,7 +460,7 @@ class Grid(GeoRecords):
             Numpy record array of `n` points to voxelize. It requires the two
             dimensional field 'coords' associated with `k` dimensional
             coordinates.
-        \*\*kwargs
+        **kwargs
             Arguments passed to voxelize.
 
         See Also

@@ -89,7 +89,7 @@ def transform(coords, T, inverse=False, precise=False):
         try:
             T = np.linalg.inv(T)
         except np.linalg.LinAlgError as e:
-            warnings.warn(e.message)
+            warnings.warn(str(e))
             T = np.linalg.pinv(T)
 
     T = np.asarray(T)
@@ -811,7 +811,7 @@ class LocalSystem(np.ndarray, object):
 
         >>> T = matrix(t=[2, 3], s=[0.5, 10])
         >>> lcoords = T.to_local([(0, 0), (0, 1), (1, 0), (-1, -1)])
-        >>> print(np.round(lcoords))
+        >>> print(np.round(lcoords, 2))
         [[ 2.   3. ]
          [ 2.  13. ]
          [ 2.5  3. ]
