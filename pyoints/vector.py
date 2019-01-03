@@ -19,7 +19,6 @@
 """Various vector operations.
 """
 
-import math
 import numpy as np
 
 from . import (
@@ -165,9 +164,6 @@ def angle(v, w, deg=False):
         a = a[0]
 
     return a
-
-
-
 
 
 def axes_angles(v, deg=False):
@@ -992,13 +988,13 @@ class Plane(object):
      [ 4  2  7]]
 
     >>> local_coords = plane.t.to_local(global_coords)
-    >>> print(local_coords)
+    >>> print(np.round(local_coords, 2))
     [[ 0.  0.  0.]
      [ 2.  0.  0.]
      [-3. -2. -2.]
      [-4. -4. -5.]
      [ 4.  3.  0.]]
-    >>> print(plane.t.to_global(local_coords))
+    >>> print(np.round(plane.t.to_global(local_coords), 2))
     [[ 1.  2.  3.]
      [ 1.  2.  5.]
      [-1.  0.  0.]
@@ -1007,7 +1003,7 @@ class Plane(object):
 
     Calculation of the distance of the global points to the plane.
 
-    >>> print(plane.distance(global_coords))
+    >>> print(np.round(plane.distance(global_coords), 2))
     [0. 0. 2. 5. 0.]
 
     Creation of the special case of a line in a two dimensional space.
@@ -1040,12 +1036,12 @@ class Plane(object):
      [ 7 10]]
 
     >>> local_coords = plane.t.to_local(global_coords)
-    >>> print(local_coords)
+    >>> print(np.round(local_coords, 2))
     [[ 0.   0. ]
      [ 5.   0. ]
      [-1.4  0.2]
      [10.   0. ]]
-    >>> print(plane.t.to_global(local_coords))
+    >>> print(np.round(plane.t.to_global(local_coords), 2))
     [[ 1.  2.]
      [ 4.  6.]
      [ 0.  1.]
@@ -1053,7 +1049,7 @@ class Plane(object):
 
     Calculation of the distance of the global points to the plane.
 
-    >>> print(plane.distance(global_coords))
+    >>> print(np.round(plane.distance(global_coords), 2))
     [0.  0.  0.2 0. ]
 
     """

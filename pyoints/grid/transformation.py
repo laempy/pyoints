@@ -234,21 +234,30 @@ def corners_to_transform(corners, scale=None):
     else:
         scale = assertion.ensure_numvector(scale, length=dim)
 
+    
+    #pts = Extent([np.zeros(dim), np.ones(dim)]).corners# * scale[::-1]
+    #T = registration.find_rototranslation(corners, pts)
+
     # find transformation matrix
     pts = Extent([np.zeros(dim), np.sign(scale)]).corners
+    print(pts)
+
+    
     T = registration.find_transformation(corners, pts)
 
     # get translation, rotation and scale
     t, r, s, det = transformation.decomposition(T)
-
+    print(r)
+    print(s)
     T = transformation.matrix(t=t, r=r, s=scale)
-
+    print(corners)
     indices = coords_to_keys(T, corners)
     assert np.all(indices >= 0), (
         'not all indices greater zero, got %s' % str(indices))
-
+    
+    print(indices.max(0))
     shape = indices.max(0).astype(int)
-
+    print(shape)
     return T, shape
 
 

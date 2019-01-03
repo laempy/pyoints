@@ -203,12 +203,35 @@ class Grid(GeoRecords):
 
         Examples
         --------
+        
+        >>> from pyoints import transformation
 
         >>> corners = [(1, 1), (3, 1), (3, 4), (1, 4)]
-        >>> raster = Grid.from_corners(projection.Proj(), corners, [-0.5, -1])
+        >>> scale = [0.5, -1]
+        >>> raster = Grid.from_corners(projection.Proj(), corners, None)
 
         >>> print(raster.shape)
         (2, 4)
+        >>> print(raster)
+        
+        >>> print(raster.t)
+        
+        >>> t, r, s, det = transformation.decomposition(raster.t)
+        >>> print(np.round(t, 2))
+        
+        >>> print(np.round(r, 2))
+        
+        >>> print(np.round(s, 2))
+        
+        >>> print(np.round(det, 2))
+        
+        >>> keys = raster.coords_to_keys(corners)
+        >>> print(keys)
+        
+        >>> raster.keys_to_coords(keys) - 0.5 * np.array(scale)
+        
+        >>> np.all(corners == raster.keys_to_coords(keys))
+        
         >>> print(raster.t.origin)
         [3. 4.]
         >>> print(sorted(raster.dtype.descr))

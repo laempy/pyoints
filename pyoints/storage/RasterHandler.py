@@ -244,7 +244,8 @@ def write_gdal(
     else:
         for i in range(num_bands):
             band = gdalRaster.GetRasterBand(i + 1)
-            band.SetNoDataValue(no_data)
+            if i == 0 or driver is not 'GTiff':
+                band.SetNoDataValue(no_data)
             band.WriteArray(bands[:, :, i])
             band.FlushCache()
             band = None
