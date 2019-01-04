@@ -28,6 +28,7 @@ from .. import (
     registration,
     Extent,
 )
+from ..misc import print_rounded
 
 
 def keys_to_indices(keys, shape):
@@ -208,7 +209,7 @@ def corners_to_transform(corners, scale=None):
     Create transformation matrix without scale.
 
     >>> M, shape = corners_to_transform(corners)
-    >>> print(np.round(M, 3))
+    >>> print_rounded(M)
     [[ 0. -1.  3.]
      [ 1.  0.  5.]
      [ 0.  0.  1.]]
@@ -218,7 +219,7 @@ def corners_to_transform(corners, scale=None):
     Create transformation matrix with a scale.
 
     >>> M, shape = corners_to_transform(corners, [0.5, 2])
-    >>> print(np.round(M, 3))
+    >>> print_rounded(M)
     [[ 0.  -2.   3. ]
      [ 0.5  0.   5. ]
      [ 0.   0.   1. ]]
@@ -243,12 +244,9 @@ def corners_to_transform(corners, scale=None):
     t, r, s, det = transformation.decomposition(T)
 
     T = transformation.matrix(t=t, r=r, s=scale)
-    indices = np.round(T.to_global(corners))[:, ::-1].astype(int)
+    indices = T.to_global(corners) + 0.5  # +0.5 to ensure center of cell
+    shape = indices.max(0).astype(int)[::-1]
 
-    assert np.all(indices >= 0), (
-        'not all indices greater zero, got %s' % str(indices))
-
-    shape = indices.max(0).astype(int)
     return T, shape
 
 
@@ -267,20 +265,28 @@ def transform_to_corners(T, shape):
     --------
 
     >>> T = transformation.matrix(t=[10, 20], s=[0.5, 2])
-    >>> print(np.round(T, 3))
+    >>> print_rounded(T)
     [[ 0.5  0.  10. ]
      [ 0.   2.  20. ]
      [ 0.   0.   1. ]]
 
     >>> corners = transform_to_corners(T, (100, 200))
-    >>> print(np.round(corners, 3))
+    >>> print_rounded(corners)
     [[ 10.  20.]
-     [ 60.  20.]
-     [ 60. 420.]
-     [ 10. 420.]]
+     [110.  20.]
+     [110. 220.]
+     [ 10. 220.]]
+    >>> print(coords_to_keys(T, corners))
+    [[  0   0]
+     [  0 200]
+     [100 200]
+     [100   0]]
 
     """
-    ext = Extent([np.zeros(len(shape)), shape])
+    shape = assertion.ensure_shape(shape)
+    T = assertion.ensure_tmatrix(T, dim=len(shape))
+
+    ext = Extent([np.zeros(len(shape)), shape[::-1]])
     return transformation.transform(ext.corners, T)
 
 

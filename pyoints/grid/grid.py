@@ -29,7 +29,6 @@ from .. import (
 )
 from .. georecords import GeoRecords
 from .. extent import Extent
-
 from .transformation import (
     keys_to_coords,
     coords_to_keys,
@@ -37,7 +36,9 @@ from .transformation import (
     keys_to_indices,
     indices_to_keys,
     corners_to_transform,
+    transform_to_corners,
 )
+from ..misc import print_rounded
 
 
 class Grid(GeoRecords):
@@ -214,27 +215,44 @@ class Grid(GeoRecords):
         (4, 3)
         >>> print(sorted(raster.dtype.descr))
         [('coords', '<f8', (2,))]
-        >>> print(np.round(raster.t, 2))
-        [[ 1.  0.  1.]
-         [-0.  2.  2.]
-         [ 0.  0.  1.]]
+        >>> print_rounded(raster.t)
+        [[1. 0. 1.]
+         [0. 2. 2.]
+         [0. 0. 1.]]
 
-        >>> print(np.round(raster.records().coords.min(0), 2))
-        [1.5 3. ]
-        >>> print(np.round(raster.records().coords.max(0), 2))
-        [3.5 9. ]
+        >>> print_rounded(raster.coords)
+        [[[1.5 3. ]
+          [2.5 3. ]
+          [3.5 3. ]]
+        <BLANKLINE>
+         [[1.5 5. ]
+          [2.5 5. ]
+          [3.5 5. ]]
+        <BLANKLINE>
+         [[1.5 7. ]
+          [2.5 7. ]
+          [3.5 7. ]]
+        <BLANKLINE>
+         [[1.5 9. ]
+          [2.5 9. ]
+          [3.5 9. ]]]
 
-        >>> keys = raster.coords_to_keys(corners)
-        >>> print(keys)
-        [[0 0]
-         [0 3]
-         [4 3]
-         [4 0]]
-        >>> np.allclose(
-        ...     raster.coords_to_coords(corners),
-        ...     raster.keys_to_coords(keys)
-        ... )
-        True
+        >>> print_rounded(raster.corners)
+        [[ 1.  2.]
+         [ 4.  2.]
+         [ 4. 10.]
+         [ 1. 10.]]
+        >>> keys = raster.t.to_global(corners)
+        >>> print_rounded(keys)
+        [[0. 0.]
+         [3. 0.]
+         [3. 4.]
+         [0. 4.]]
+        >>> print_rounded(raster.t.to_local(keys))
+        [[ 1.  2.]
+         [ 4.  2.]
+         [ 4. 10.]
+         [ 1. 10.]]
 
         Example with inverted axes.
 
@@ -245,28 +263,49 @@ class Grid(GeoRecords):
 
         >>> print(raster.shape)
         (3, 4)
-        >>> print(np.round(raster.records().coords.min(0), 2))
+        >>> print_rounded(raster.records().coords.min(0))
         [1.25 1.5 ]
-        >>> print(np.round(raster.records().coords.max(0), 2))
+        >>> print_rounded(raster.records().coords.max(0))
         [2.75 3.5 ]
 
         >>> t, r, s, det = transformation.decomposition(raster.t)
-        >>> print(np.round(t, 2))
+        >>> print_rounded(t)
         [3. 4.]
-        >>> print(np.round(s, 2))
+        >>> print_rounded(s)
         [0.5 1. ]
 
-        >>> keys = raster.coords_to_keys(corners)
-        >>> print(keys)
-        [[2 4]
-         [2 0]
-         [0 0]
-         [0 4]]
-        >>> np.allclose(
-        ...     raster.coords_to_coords(corners),
-        ...     raster.keys_to_coords(keys)
-        ... )
-        True
+        >>> print_rounded(raster.coords)
+        [[[2.75 3.5 ]
+          [2.25 3.5 ]
+          [1.75 3.5 ]
+          [1.25 3.5 ]]
+        <BLANKLINE>
+         [[2.75 2.5 ]
+          [2.25 2.5 ]
+          [1.75 2.5 ]
+          [1.25 2.5 ]]
+        <BLANKLINE>
+         [[2.75 1.5 ]
+          [2.25 1.5 ]
+          [1.75 1.5 ]
+          [1.25 1.5 ]]]
+
+        >>> print_rounded(raster.corners)
+        [[3. 4.]
+         [1. 4.]
+         [1. 1.]
+         [3. 1.]]
+        >>> keys = raster.t.to_global(corners)
+        >>> print_rounded(keys)
+        [[4. 3.]
+         [0. 3.]
+         [0. 0.]
+         [4. 0.]]
+        >>> print_rounded(raster.t.to_local(keys))
+        [[1. 1.]
+         [3. 1.]
+         [3. 4.]
+         [1. 4.]]
 
         """
         T, shape = corners_to_transform(corners, scale=scale)
@@ -325,6 +364,10 @@ class Grid(GeoRecords):
         """
         corners = Extent(ext).corners
         return cls.from_corners(proj, corners, scale)
+
+    @property
+    def corners(self):
+        return transform_to_corners(self.t, self.shape)
 
     def transform(self, T):
         """Transforms coordinates.
@@ -460,7 +503,7 @@ class Grid(GeoRecords):
             Numpy record array of `n` points to voxelize. It requires the two
             dimensional field 'coords' associated with `k` dimensional
             coordinates.
-        **kwargs
+        \*\*kwargs
             Arguments passed to voxelize.
 
         See Also
