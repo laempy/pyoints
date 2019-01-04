@@ -28,6 +28,7 @@ from . import (
     distance,
 )
 from .transformation import eigen
+from .misc import print_rounded
 
 
 def prefer_orientation(normals, preferred):
@@ -169,7 +170,7 @@ def fit_normals(
     Fit normals using `k` nearest neighbours.
 
     >>> normals = fit_normals(coords, k=2, preferred=[1, 0])
-    >>> print(np.round(normals, 2))
+    >>> print_rounded(normals, 2)
     [[ 0.71 -0.71]
      [ 0.71 -0.71]
      [ 0.    1.  ]
@@ -181,7 +182,7 @@ def fit_normals(
     Fit normals a using all nearest neighbours within radius `r`.
 
     >>> normals = fit_normals(coords, r=2.5, preferred=[1, 0])
-    >>> print(np.round(normals, 2))
+    >>> print_rounded(normals, 2)
     [[ 0.71 -0.71]
      [ 0.84 -0.54]
      [ 0.45 -0.89]
@@ -193,7 +194,7 @@ def fit_normals(
     Fit normals using `k` nearest neighbours within radius `r`.
 
     >>> normals = fit_normals(coords, r=2.5, k=3, preferred=[1, 0])
-    >>> print(np.round(normals, 2))
+    >>> print_rounded(normals)
     [[ 0.71 -0.71]
      [ 0.84 -0.54]
      [ 0.76 -0.65]
@@ -280,7 +281,7 @@ def approximate_normals(coords, r=np.inf, k=None, preferred=None):
     Approximate two normals using all neighbours within radius `n`.
 
     >>> normals = approximate_normals(coords, 2.5, preferred=(1, 0))
-    >>> print(np.round(normals, 2))
+    >>> print_rounded(normals)
     [[ 0.71 -0.71]
      [ 0.45 -0.89]
      [ 0.45 -0.89]
@@ -292,7 +293,7 @@ def approximate_normals(coords, r=np.inf, k=None, preferred=None):
     Approximate two normals using `k` nearest neighbours.
 
     >>> normals = approximate_normals(coords, k=4, preferred=(1, 0))
-    >>> print(np.round(normals, 2))
+    >>> print_rounded(normals)
     [[ 0.76 -0.65]
      [ 0.76 -0.65]
      [ 0.59  0.81]
@@ -304,7 +305,7 @@ def approximate_normals(coords, r=np.inf, k=None, preferred=None):
     Approximate two normals using `k` nearest neighbours within radius `r`.
 
     >>> normals = approximate_normals(coords, k=4, r=2.5, preferred=(1, 0))
-    >>> print(np.round(normals, 2))
+    >>> print_rounded(normals)
     [[ 0.71 -0.71]
      [ 0.45 -0.89]
      [ 0.45 -0.89]

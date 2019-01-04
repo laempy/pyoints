@@ -29,6 +29,7 @@ from .. import (
     distance,
     assign,
 )
+from ..misc import print_rounded
 
 
 class ICP:
@@ -84,14 +85,14 @@ class ICP:
     >>> tA = T['A'].to_local(A)
     >>> tB = T['B'].to_local(B)
 
-    >>> print(np.round(tA, 2))
+    >>> print_rounded(tA)
     [[ 0.5  0.5]
      [ 0.   0. ]
      [-0.  -0.1]
      [ 1.3  1. ]
      [ 1.  -0. ]
      [-1.  -2. ]]
-    >>> print(np.round(tB, 2))
+    >>> print_rounded(tB)
     [[ 0.56  0.48]
      [ 0.43 -0.01]
      [ 1.19  0.95]
@@ -104,11 +105,11 @@ class ICP:
     >>> pairs = matcher(tB)
 
     >>> rmse = distance.rmse(A[pairs[:, 0], :], B[pairs[:, 1], :])
-    >>> print(np.round(rmse, 3))
+    >>> print_rounded(rmse, 3)
     0.183
 
     >>> rmse = distance.rmse(tA[pairs[:, 0], :], tB[pairs[:, 1], :])
-    >>> print(np.round(rmse, 3))
+    >>> print_rounded(rmse, 3)
     0.09
 
     ICP also takes advantage of normals (NICP).
@@ -125,7 +126,7 @@ class ICP:
     >>> T, pairs, report = nicp(coords_dict, normals_dict=normals_dict)
 
     >>> tA = T['A'].to_local(A)
-    >>> print(np.round(tA, 2))
+    >>> print_rounded(tA)
     [[ 0.5  0.5]
      [ 0.   0. ]
      [ 0.  -0.1]
@@ -134,7 +135,7 @@ class ICP:
      [-1.  -2. ]]
 
     >>> tB = T['B'].to_local(B)
-    >>> print(np.round(tB, 2))
+    >>> print_rounded(tB)
     [[ 0.4  0.5]
      [ 0.3  0. ]
      [ 1.   1. ]

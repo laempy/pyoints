@@ -23,6 +23,7 @@ import time
 import sys
 import pkg_resources
 import numpy as np
+from numbers import Number
 
 
 def tic():
@@ -122,3 +123,28 @@ def print_object_size(obj):
 
     """
     print(sizeof_fmt(get_size(obj)))
+
+
+def print_rounded(values, decimals=2):
+    """Prints rounded values.
+
+    Parameters
+    ----------
+    values : Number or array_like(Number)
+        Values to display.
+    decimals : optional, int
+        Number of decimals passed to 'numpy.round'.
+
+    Notes
+    -----
+    Sets negative values close to zero to zero.
+
+    """
+    if isinstance(values, Number):
+        rounded = np.round(values, decimals=decimals)
+        if np.isclose(values, 0):
+            rounded = values * 0
+    else:
+        rounded = np.round(values, decimals=decimals)
+        rounded[np.isclose(values, 0)] = 0
+    print(rounded)

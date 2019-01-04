@@ -16,14 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
 # END OF LICENSE NOTE
+"""Run all tests of Pyoints.
+"""
+
 import unittest
 import doctest
 import pkgutil
 
 import pyoints
-
-"""Run all tests of Pyoints.
-"""
 
 
 def get_tests(root_package):

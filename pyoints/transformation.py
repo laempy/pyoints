@@ -40,6 +40,7 @@ from .assertion import (
     ensure_tmatrix,
     isnumeric,
 )
+from .misc import print_rounded
 
 
 def transform(coords, T, inverse=False, precise=False):
@@ -356,7 +357,7 @@ def r_matrix(a, order='xyz'):
     Two dimensional case.
 
     >>> R = r_matrix(np.pi/4)
-    >>> print(np.round(R, 3))
+    >>> print_rounded(R, 3)
     [[ 0.707 -0.707  0.   ]
      [ 0.707  0.707  0.   ]
      [ 0.     0.     1.   ]]
@@ -364,8 +365,8 @@ def r_matrix(a, order='xyz'):
     Three dimensional case.
 
     >>> R = r_matrix([np.pi/2, 0, np.pi/4])
-    >>> print(np.round(R, 3))
-    [[ 0.707 -0.     0.707  0.   ]
+    >>> print_rounded(R, 3)
+    [[ 0.707  0.     0.707  0.   ]
      [ 0.707  0.    -0.707  0.   ]
      [ 0.     1.     0.     0.   ]
      [ 0.     0.     0.     1.   ]]
@@ -445,7 +446,7 @@ def q_matrix(q):
     --------
 
     >>> T = q_matrix([0.7071, 0.7071, 0, 0])
-    >>> print(np.round(T, 2))
+    >>> print_rounded(T, 2)
     [[ 1.  0.  0.  0.]
      [ 0.  0. -1.  0.]
      [ 0.  1.  0.  0.]
@@ -490,12 +491,12 @@ def add_dim(T):
     Two dimensional case.
 
     >>> T = matrix(t=[2, 3 ], s=[0.5, 2])
-    >>> print(np.round(T, 3))
+    >>> print_rounded(T, 3)
     [[0.5 0.  2. ]
      [0.  2.  3. ]
      [0.  0.  1. ]]
     >>> T = add_dim(T)
-    >>> print(np.round(T, 3))
+    >>> print_rounded(T, 3)
     [[0.5 0.  0.  2. ]
      [0.  2.  0.  3. ]
      [0.  0.  1.  0. ]
@@ -690,7 +691,7 @@ class LocalSystem(np.ndarray, object):
      [ 0.   0.   1. ]]
     >>> print(L.dim)
     2
-    >>> print(np.round(L.origin, 3))
+    >>> print_rounded(L.origin)
     [2. 3.]
 
     See Also
@@ -811,7 +812,7 @@ class LocalSystem(np.ndarray, object):
 
         >>> T = matrix(t=[2, 3], s=[0.5, 10])
         >>> lcoords = T.to_local([(0, 0), (0, 1), (1, 0), (-1, -1)])
-        >>> print(np.round(lcoords, 2))
+        >>> print_rounded(lcoords)
         [[ 2.   3. ]
          [ 2.  13. ]
          [ 2.5  3. ]
@@ -839,7 +840,7 @@ class LocalSystem(np.ndarray, object):
 
         >>> T = matrix(t=[2, 3], s=[0.5, 10])
         >>> gcoords = T.to_global([(2, 3), (2, 13), (2.5, 3), (1.5, -7)])
-        >>> print(np.round(gcoords, 2))
+        >>> print_rounded(gcoords)
         [[ 0.  0.]
          [ 0.  1.]
          [ 1.  0.]
@@ -872,7 +873,7 @@ class LocalSystem(np.ndarray, object):
          [0. 2. 0.]
          [0. 0. 1.]]
         >>> e = T.explained_variance([(2, 1), (0, 0), (1, 1), (2, 3)])
-        >>> print(np.round(e, 3))
+        >>> print_rounded(e, 3)
         [0.688 4.75 ]
 
         See Also
@@ -907,7 +908,7 @@ class LocalSystem(np.ndarray, object):
          [0. 2. 0.]
          [0. 0. 1.]]
         >>> e = T.explained_variance_ratio([(2, 1), (0, 0), (1, 1), (2, 3)])
-        >>> print(np.round(e, 3))
+        >>> print_rounded(e, 3)
         [0.126 0.874]
 
         See Also

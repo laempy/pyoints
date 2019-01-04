@@ -26,6 +26,7 @@ from .. import (
     transformation,
     nptools,
 )
+from ..misc import print_rounded
 
 
 def find_rototranslations(coords_dict, pairs_dict, weights=None):
@@ -81,14 +82,14 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     >>> print(sorted(res.keys()))
     ['A', 'B']
     >>> tA = res['A'].to_local(coords_dict['A'])
-    >>> print(np.round(tA, 1))
+    >>> print_rounded(tA)
     [[-1. -2.]
      [-1.  2.]
      [ 1.  2.]
      [ 1. -2.]
      [ 5. 10.]]
     >>> tB = res['B'].to_local(coords_dict['B'])
-    >>> print(np.round(tB, 1))
+    >>> print_rounded(tB)
     [[-1. -2.]
      [-1.  2.]
      [ 1.  2.]
@@ -119,19 +120,19 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     >>> print(sorted(res.keys()))
     ['A', 'B', 'C']
     >>> tA = res['A'].to_local(coords_dict['A'])
-    >>> print(np.round(tA, 1))
+    >>> print_rounded(tA, 1)
     [[-10. -20.   3.]
      [ -1.   2.   4.]
      [  1.  10.   5.]
      [  1.  -2.  60.]]
     >>> tB = res['B'].to_local(coords_dict['B'])
-    >>> print(np.round(tB, 1))
+    >>> print_rounded(tB, 1)
     [[-10. -20.   3.]
      [ -1.   2.   4.]
      [  1.  10.   5.]
      [  1.  -2.  60.]]
     >>> tC = res['C'].to_local(coords_dict['C'])
-    >>> print(np.round(tC, 1))
+    >>> print_rounded(tC, 1)
     [[-10. -20.   3.]
      [ -1.   2.   4.]
      [  1.  10.   5.]

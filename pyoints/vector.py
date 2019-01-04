@@ -27,6 +27,7 @@ from . import (
     nptools,
     transformation,
 )
+from .misc import print_rounded
 
 
 def rad_to_deg(rad):
@@ -82,10 +83,10 @@ def deg_to_rad(deg):
     Examples
     --------
 
-    >>> round(deg_to_rad(90), 3)
+    >>> print_rounded(deg_to_rad(90), 3)
     1.571
     >>> rad = deg_to_rad([0, 45, 180, 360])
-    >>> print(np.round(rad, 3))
+    >>> print_rounded(rad, 3)
     [0.    0.785 3.142 6.283]
 
     """
@@ -268,19 +269,19 @@ def zenith(v, axis=-1, deg=False):
     --------
 
     >>> v = [1, 0]
-    >>> print(zenith(v, deg=True))
+    >>> print_rounded(zenith(v, deg=True))
     90.0
 
     >>> v = [0, 0, 1]
-    >>> print(zenith(v, deg=True))
+    >>> print_rounded(zenith(v, deg=True))
     0.0
 
     >>> v = [(0, 0), (1, 0), (0, 1), (1, 1)]
-    >>> print(zenith(v, deg=True))
+    >>> print_rounded(zenith(v, deg=True))
     [nan 90.  0. 45.]
 
     >>> v = [1, 0, 1]
-    >>> print(np.round(zenith([1, 0, 1], axis=2, deg=True), 1))
+    >>> print_rounded(zenith([1, 0, 1], axis=2, deg=True))
     45.0
 
     """
@@ -464,7 +465,7 @@ def basis(vec, origin=None):
     Keep the original orientation, but set a new origin.
 
     >>> b = basis([2, 0], origin=[2, 3])
-    >>> print(np.round(b, 2))
+    >>> print_rounded(b)
     [[ 1.  0. -2.]
      [ 0.  1. -3.]
      [ 0.  0.  1.]]
@@ -713,15 +714,15 @@ class Vector(object):
         >>> r = 45 * np.pi / 180.0
         >>> t = [1, 2]
         >>> T = transformation.matrix(t=t, r=r, order='rts')
-        >>> print(np.round(T, 2))
+        >>> print_rounded(T)
         [[ 0.71 -0.71  1.  ]
          [ 0.71  0.71  2.  ]
          [ 0.    0.    1.  ]]
 
         >>> vec = vec.transform(T)
-        >>> print(np.round(vec.origin, 2))
+        >>> print_rounded(vec.origin)
         [1.   3.41]
-        >>> print(np.round(vec.vec, 2))
+        >>> print_rounded(vec.vec)
         [0.71 0.71]
 
         """
@@ -812,7 +813,7 @@ class Vector(object):
 
         >>> v = Vector((1, 1, 1), (2, 3, 4))
         >>> ks = v.k([v.origin - v.vec, v.target, v.origin - 2 * v.vec])
-        >>> print(np.round(ks, 2))
+        >>> print_rounded(ks)
         [-1.  1. -2.]
 
         """
@@ -880,7 +881,7 @@ class Vector(object):
 
         >>> v = Vector((1, 1, 1), (2, 3, 4))
         >>> angles = v.angles(deg=True)
-        >>> print(np.round(angles, 3))
+        >>> print_rounded(angles, 3)
         [68.199 56.145 42.031]
 
         """
@@ -905,13 +906,13 @@ class Vector(object):
 
         >>> v = Vector((1, -1), (1, 2))
         >>> dist = v.distance([(1, -1), (0, -3), (2, 1), (2, -2), (0, 0)])
-        >>> print(np.round(dist, 3))
+        >>> print_rounded(dist, 3)
         [0.    0.    0.    1.342 1.342]
-        >>> print(np.linalg.inv(v.t).origin)
+        >>> print_rounded(np.linalg.inv(v.t).origin)
         [ 1. -1.]
-        >>> print(v.t.pc(1) * v.length)
+        >>> print_rounded(v.t.pc(1) * v.length)
         [1. 2.]
-        >>> print(v.t.pc(2) * v.length)
+        >>> print_rounded(v.t.pc(2) * v.length)
         [-2.  1.]
 
         """
@@ -990,13 +991,13 @@ class Plane(object):
      [ 4  2  7]]
 
     >>> local_coords = plane.t.to_local(global_coords)
-    >>> print(np.round(local_coords, 2))
+    >>> print_rounded(local_coords)
     [[ 0.  0.  0.]
      [ 2.  0.  0.]
      [-3. -2. -2.]
      [-4. -4. -5.]
      [ 4.  3.  0.]]
-    >>> print(np.round(plane.t.to_global(local_coords), 2))
+    >>> print_rounded(plane.t.to_global(local_coords))
     [[ 1.  2.  3.]
      [ 1.  2.  5.]
      [-1.  0.  0.]
@@ -1005,7 +1006,7 @@ class Plane(object):
 
     Calculation of the distance of the global points to the plane.
 
-    >>> print(np.round(plane.distance(global_coords), 2))
+    >>> print_rounded(plane.distance(global_coords))
     [0. 0. 2. 5. 0.]
 
     Creation of the special case of a line in a two dimensional space.
@@ -1018,7 +1019,7 @@ class Plane(object):
     [[ 0.6 -0.8  1. ]
      [ 0.8  0.6  2. ]
      [ 0.   0.   1. ]]
-    >>> print(plane.t.eigen_values)
+    >>> print_rounded(plane.t.eigen_values)
     [50.  0.]
     >>> print(plane.dim)
     2
@@ -1031,19 +1032,19 @@ class Plane(object):
     ...     plane.vec[0, :] - 3,
     ...     plane.origin + 2 * plane.vec[0, :]
     ... ]
-    >>> print(np.array(global_coords))
+    >>> print_rounded(np.array(global_coords))
     [[ 1  2]
      [ 4  6]
      [ 0  1]
      [ 7 10]]
 
     >>> local_coords = plane.t.to_local(global_coords)
-    >>> print(np.round(local_coords, 2))
+    >>> print_rounded(local_coords)
     [[ 0.   0. ]
      [ 5.   0. ]
      [-1.4  0.2]
      [10.   0. ]]
-    >>> print(np.round(plane.t.to_global(local_coords), 2))
+    >>> print_rounded(plane.t.to_global(local_coords))
     [[ 1.  2.]
      [ 4.  6.]
      [ 0.  1.]
@@ -1051,7 +1052,7 @@ class Plane(object):
 
     Calculation of the distance of the global points to the plane.
 
-    >>> print(np.round(plane.distance(global_coords), 2))
+    >>> print_rounded(plane.distance(global_coords))
     [0.  0.  0.2 0. ]
 
     """
@@ -1281,15 +1282,15 @@ class Plane(object):
         >>> r = 45 * np.pi / 180.0
         >>> t = [1, 2]
         >>> T = transformation.matrix(t=t, r=r, order='rts')
-        >>> print(np.round(T, 2))
+        >>> print_rounded(T)
         [[ 0.71 -0.71  1.  ]
          [ 0.71  0.71  2.  ]
          [ 0.    0.    1.  ]]
 
         >>> plane = plane.transform(T)
-        >>> print(np.round(plane.origin, 2))
+        >>> print_rounded(plane.origin)
         [1.   3.41]
-        >>> print(np.round(plane.vec, 2))
+        >>> print_rounded(plane.vec)
         [[0.71 0.71]]
 
         """

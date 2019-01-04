@@ -22,7 +22,10 @@
 import numpy as np
 
 from .indexkd import IndexKD
-from . import assertion
+from . import (
+    assertion,
+)
+from .misc import print_rounded
 
 
 def mean_ball(
@@ -70,7 +73,7 @@ def mean_ball(
     coordinate dimensions are affected, too.
 
     >>> scoords = mean_ball(coords, 1.5)
-    >>> print(np.round(np.ptp(scoords, axis=0), 3))
+    >>> print_rounded(np.ptp(scoords, axis=0), 3)
     [8.    8.    0.033]
 
     Modify the aggregation function to smooth the third coordinate axis only.
@@ -79,13 +82,13 @@ def mean_ball(
     ...     coord[2] = ncoords[:, 2].mean(0)
     ...     return coord
     >>> scoords = mean_ball(coords, 1.5, f=aggregate_function)
-    >>> print(np.round(np.ptp(scoords, axis=0), 3))
+    >>> print_rounded(np.ptp(scoords, axis=0), 3)
     [9.    9.    0.026]
 
     Increase number of iterations to get a smoother result.
 
     >>> scoords = mean_ball(coords, 1.5, num_iter=3, f=aggregate_function)
-    >>> print(np.round(np.ptp(scoords, axis=0), 3))
+    >>> print_rounded(np.ptp(scoords, axis=0), 3)
     [9.   9.   0.01]
 
     """
@@ -159,7 +162,7 @@ def mean_knn(
     coordinate dimensions are affected, too.
 
     >>> scoords = mean_knn(coords, 5)
-    >>> print(np.round(np.ptp(scoords, axis=0), 3))
+    >>> print_rounded(np.ptp(scoords, axis=0), 3)
     [8.2  8.2  0.02]
 
     Modify the aggregation function to smooth the third coordinate axis only.
@@ -168,7 +171,7 @@ def mean_knn(
     ...     coord[2] = ncoords[:, 2].mean(0)
     ...     return coord
     >>> scoords = mean_knn(coords, 5, f=aggregate_function)
-    >>> print(np.round(np.ptp(scoords, axis=0), 3))
+    >>> print_rounded(np.ptp(scoords, axis=0), 3)
     [9.    9.    0.033]
 
     """

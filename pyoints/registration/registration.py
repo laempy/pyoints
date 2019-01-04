@@ -25,6 +25,7 @@ from .. import (
     assertion,
     transformation,
 )
+from ..misc import print_rounded
 
 
 def find_transformation(A, B):
@@ -110,7 +111,7 @@ def find_rototranslation(A, B):
     >>> M = find_rototranslation(A, B)
 
     >>> C = transformation.transform(B, M, inverse=False)
-    >>> print(np.round(C, 2))
+    >>> print_rounded(C, 2)
     [[0. 0.]
      [0. 1.]
      [1. 1.]

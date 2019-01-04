@@ -25,6 +25,7 @@ from .import (
     distance,
     assertion,
 )
+from .misc import print_rounded
 
 
 def coords_to_polar(coords):
@@ -55,7 +56,7 @@ def coords_to_polar(coords):
 
     >>> coords = [(0, 0), (0, 1), (1, 0), (1, 1), (-1, 1), (2, -5)]
     >>> pcoords = coords_to_polar(coords)
-    >>> print(np.round(pcoords, 3))
+    >>> print_rounded(pcoords, 3)
     [[ 0.     0.   ]
      [ 1.     1.571]
      [ 1.     0.   ]
@@ -67,7 +68,7 @@ def coords_to_polar(coords):
 
     >>> coords = [(0, 0, 0), (1, 1, 0), (-1, -1, -1), (2, -5, 9)]
     >>> pcoords = coords_to_polar(coords)
-    >>> print(np.round(pcoords, 3))
+    >>> print_rounded(pcoords, 3)
     [[ 0.     0.     0.   ]
      [ 1.414  0.785  1.571]
      [ 1.732 -2.356  2.186]
@@ -127,7 +128,7 @@ def polar_to_coords(pcoords):
 
     >>> pcoords = [(0, 0), (3, 0), (3, np.pi), (4, -0.5*np.pi), (1, 0.5)]
     >>> coords = polar_to_coords(pcoords)
-    >>> print(np.round(coords, 3))
+    >>> print_rounded(coords, 3)
     [[ 0.     0.   ]
      [ 3.     0.   ]
      [-3.     0.   ]
@@ -138,7 +139,7 @@ def polar_to_coords(pcoords):
 
     >>> pcoords = [(0, 0, 0), (2, 0, 0),(4, 0, np.pi), (4, 0.5*np.pi, 0.5)]
     >>> coords = polar_to_coords(pcoords)
-    >>> print(np.round(coords, 3))
+    >>> print_rounded(coords, 3)
     [[ 0.     0.     0.   ]
      [ 0.     0.     2.   ]
      [ 0.     0.    -4.   ]

@@ -24,7 +24,10 @@ import pyproj
 import numpy as np
 from osgeo import osr
 
-from . import assertion
+from . import (
+    assertion,
+)
+from .misc import print_rounded
 
 
 # Global proj4 definitions
@@ -175,7 +178,7 @@ class GeoTransform:
     >>> geoTransfrom = GeoTransform(wgs84, gk2)
 
     >>> tCoords = geoTransfrom(coords)
-    >>> print(np.round(tCoords, 3))
+    >>> print_rounded(tCoords, 3)
     [[2560446.801 5537522.386]
      [2560808.009 5537303.984]
      [2564724.211 5539797.116]
@@ -183,7 +186,7 @@ class GeoTransform:
 
     Reverse transformation.
 
-    >>> print(np.round(geoTransfrom(tCoords, reverse=True), 3))
+    >>> print_rounded(geoTransfrom(tCoords, reverse=True), 3)
     [[ 6.842 49.971]
      [ 6.847 49.969]
      [ 6.902 49.991]

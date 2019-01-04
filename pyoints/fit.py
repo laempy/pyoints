@@ -27,6 +27,7 @@ from . import (
     assertion,
     vector,
 )
+from .misc import print_rounded
 
 
 def fit_sphere(coords, weights=1.0):
@@ -68,7 +69,7 @@ def fit_sphere(coords, weights=1.0):
     >>> center, r, residuals = fit_sphere(coords)
     >>> print(center)
     [2. 4.]
-    >>> print(np.round(r, 2))
+    >>> print_rounded(r)
     5.0
 
     """
@@ -136,15 +137,15 @@ def fit_cylinder(coords, vec=None):
 
     >>> vec, r, residuals = fit_cylinder(coords, vec=[0, 0, 1])
 
-    >>> print(np.round(r, 2))
+    >>> print_rounded(r)
     2.5
-    >>> print(np.round(vec.origin, 2))
+    >>> print_rounded(vec.origin)
     [10. 20. 30.]
 
     Check distances to vector.
 
     >>> dists = vec.distance(coords)
-    >>> print(np.round([np.min(dists), np.max(dists)], 2))
+    >>> print_rounded([np.min(dists), np.max(dists)])
     [2.5 2.5]
 
     """

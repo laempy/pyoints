@@ -27,7 +27,10 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression
 
-from . import assertion
+from . import (
+    assertion,
+)
+from .misc import print_rounded
 
 
 class Interpolator:
@@ -119,9 +122,9 @@ class LinearInterpolator(Interpolator):
 
     >>> interpolator = LinearInterpolator(coords, values)
 
-    >>> print(interpolator([0, 1]))
+    >>> print_rounded(interpolator([0, 1]))
     1.5
-    >>> print(interpolator([(0, 1), (0, 0), (0, -1)]))
+    >>> print_rounded(interpolator([(0, 1), (0, 0), (0, -1)]))
     [1.5 0.  nan]
 
     Interpolation of multi-dimensional values.
@@ -131,9 +134,9 @@ class LinearInterpolator(Interpolator):
 
     >>> interpolator = LinearInterpolator(coords, values)
 
-    >>> print(interpolator([0, 1]))
+    >>> print_rounded(interpolator([0, 1]))
     [1.  2.  5.5]
-    >>> print(interpolator([(0, 1), (0, 0), (0, -1)]))
+    >>> print_rounded(interpolator([(0, 1), (0, 0), (0, -1)]))
     [[1.  2.  5.5]
      [0.  1.  3. ]
      [nan nan nan]]
@@ -324,9 +327,9 @@ class PolynomInterpolator(Interpolator):
 
     >>> interpolator = PolynomInterpolator(coords, values, deg=1)
 
-    >>> print(np.round(interpolator([0, 1]), 2))
+    >>> print_rounded(interpolator([0, 1]))
     1.5
-    >>> print(interpolator([(0, 1), (0, 0), (0, -1)]))
+    >>> print_rounded(interpolator([(0, 1), (0, 0), (0, -1)]))
     [ 1.5  0.  -1.5]
 
     Interpolation of multi-dimensional values.
@@ -336,12 +339,12 @@ class PolynomInterpolator(Interpolator):
 
     >>> interpolator = PolynomInterpolator(coords, values, deg=1)
 
-    >>> print(np.round(interpolator([0, 1]), 2))
+    >>> print_rounded(interpolator([0, 1]))
     [1.  2.  5.5]
-    >>> print(np.round(interpolator([(0, 1), (0, 0), (0, -1)]), 2))
+    >>> print_rounded(interpolator([(0, 1), (0, 0), (0, -1)]))
     [[ 1.   2.   5.5]
-     [-0.   1.   3. ]
-     [-1.  -0.   0.5]]
+     [ 0.   1.   3. ]
+     [-1.   0.   0.5]]
 
     """
 

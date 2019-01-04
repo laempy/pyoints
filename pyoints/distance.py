@@ -21,7 +21,10 @@
 
 import numpy as np
 
-from . import assertion
+from . import (
+    assertion,
+)
+from .misc import print_rounded
 
 
 def norm(coords):
@@ -191,7 +194,7 @@ def rmse(A, B=None):
 
     >>> A = [(2, 2), (1, 1), (1, 2)]
     >>> B = [(2.2, 2), (0.9, 1.1), (1, 2.1)]
-    >>> print(np.round(rmse(A, B), 2))
+    >>> print_rounded(rmse(A, B))
     0.15
 
     """
