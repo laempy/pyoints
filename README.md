@@ -80,7 +80,7 @@ Conda installation is recommended. To install *Pyoints* with
 [Conda](https://conda.io/docs/user-guide/getting-started.html) run:
 
 ```
-conda install -c leampy pyoints
+conda install -c laempy pyoints
 ```
 
 Currently Linux (64 bit) and Windows (64 bit) have been packaged.
@@ -120,6 +120,29 @@ Test the package by running the provided doctests:
 ```
 python /path/to/pyoints/tests/test_pyoints.py
 ```
+
+
+## Installation from source
+
+We recommend to use a virtual environment (like Conda) to install *Pyoints*.
+
+Installation of the external dependencies:
+```
+conda install gdal, pyproj, rtree
+```
+
+Cloning of the repository:
+```
+git clone https://github.com/laempy/pyoints.git
+cd pyoints
+```
+
+Installation of the python packages via *pip*.
+```
+pip install pygdal==$(gdal-config --version).* -e .
+```
+Unfortunately, the gdal version is not detected automatically by *pgdal*. Thus,
+we have to specify the gdal version expicilely with ```gdal-config --version```.
 
 
 # Documentation
