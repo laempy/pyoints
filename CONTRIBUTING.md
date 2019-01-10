@@ -47,18 +47,6 @@ add a *doctest* reference to ``tests/test_pyoints.py``. To increase the quality
 of our code we encourage you to write additional tests.
 
 
-## Installation from source
-
-Please install the external dependencies first (see [README](README.md)). We 
-recommend to use a virtual python environment to install *Pyoints*. 
-Unfortunately,  the gdal version is not detected automatically by `pgdal`. 
-Thus, instead run:
-
-```
-pip install pygdal==$(gdal-config --version).* -r requirements.txt --upgrade
-```
-
-
 ## Software recommendations
 
 The following Python packages were used for software development, testing and
