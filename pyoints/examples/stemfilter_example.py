@@ -57,9 +57,9 @@ Thereafter, we load an input LAS point cloud.
 482981
 
 
-The basic idea of the algorithm is to first derive a digital elevation model to calculate
-the height above ground. We simply rasterize the point cloud by deriving the
-lowest z-coordinate of each cell.
+The basic idea of the algorithm is to first derive a digital elevation model to
+calculate the height above ground. We simply rasterize the point cloud by
+deriving the lowest z-coordinate of each cell.
 
 >>> T = transformation.matrix(t=las.t.origin[:2], s=[0.8, 0.8])
 >>> def aggregate_function(ids):
