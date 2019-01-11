@@ -1,12 +1,25 @@
 #!/bin/bash
+
 SCRIPT_PATH=$(dirname $(realpath -s $0))
+SOURCE_PATH='../pyoints'
+TUTORIALS_PATH='../tutorials'
+OUT_PATH='../docs'
+COMPILE_PATH='../sphinx_docs'
+SPHINX_PATH='../sphinx'
+
 cd $SCRIPT_PATH
-if [ -d "../docs" ]; then
-  # "remove docs"
-  rm -r ../docs
+
+if [ -d "$OUT_PATH" ]; then
+  rm -r "$OUT_PATH"
 fi
-sphinx-apidoc -f -o ../sphinx ../pyoints
-cd ../sphinx
-make html
-mv ./html ../docs
-touch ../docs/.nojekyll
+if [ -d "$COMPILE_PATH" ]; then
+  rm -r "$COMPILE_PATH"
+fi
+
+cp -r "$SPHINX_PATH" "$COMPILE_PATH"
+cp -r "$TUTORIALS_PATH" "$COMPILE_PATH"
+
+sphinx-apidoc -f -o "$COMPILE_PATH" "$SOURCE_PATH"
+python3 -m sphinx "$COMPILE_PATH" "$OUT_PATH"
+
+touch "$OUT_PATH/.nojekyll"

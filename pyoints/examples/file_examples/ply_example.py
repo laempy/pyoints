@@ -45,7 +45,7 @@ Load .ply-file again and check the characteristics.
 >>> geoRecords = storage.loadPly(outfile)
 >>> print(geoRecords.shape)
 (1000,)
->>> print(sorted(geoRecords.dtype.descr))
-[('classification', '|u1'), ('coords', '<f8', (3,)), ('intensity', '|u1'), ('keypoint', '|u1'), ('synthetic', '|u1'), ('values', '<f8'), ('withheld', '|u1')]
+>>> print(sorted(geoRecords.dtype.names))
+['classification', 'coords', 'intensity', 'keypoint', 'synthetic', 'values', 'withheld']
 
 """
