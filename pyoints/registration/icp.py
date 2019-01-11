@@ -85,19 +85,19 @@ class ICP:
     >>> tA = T['A'].to_local(A)
     >>> tB = T['B'].to_local(B)
 
-    >>> print_rounded(tA)
+    >>> print_rounded(tA, 1)
     [[ 0.5  0.5]
      [ 0.   0. ]
      [-0.  -0.1]
      [ 1.3  1. ]
      [ 1.  -0. ]
      [-1.  -2. ]]
-    >>> print_rounded(tB)
-    [[ 0.56  0.48]
-     [ 0.43 -0.01]
-     [ 1.19  0.95]
-     [ 2.18  0.89]
-     [-0.97 -1.94]]
+    >>> print_rounded(tB, 1)
+    [[ 0.6  0.5]
+     [ 0.4 -0. ]
+     [ 1.2  0.9]
+     [ 2.2  0.9]
+     [-1.  -1.9]]
 
     Find matches and compare RMSE (Root Mean Squared Error).
 
@@ -105,11 +105,11 @@ class ICP:
     >>> pairs = matcher(tB)
 
     >>> rmse = distance.rmse(A[pairs[:, 0], :], B[pairs[:, 1], :])
-    >>> print_rounded(rmse, 3)
-    0.183
+    >>> print_rounded(rmse, 2)
+    0.18
 
     >>> rmse = distance.rmse(tA[pairs[:, 0], :], tB[pairs[:, 1], :])
-    >>> print_rounded(rmse, 3)
+    >>> print_rounded(rmse, 2)
     0.09
 
     ICP also takes advantage of normals (NICP).
@@ -147,7 +147,7 @@ class ICP:
     def __init__(self,
                  radii,
                  max_iter=50,
-                 max_change_ratio=0.01,
+                 max_change_ratio=0.001,
                  assign_class=assign.KnnMatcher,
                  update_normals=False,
                  **assign_parameters):

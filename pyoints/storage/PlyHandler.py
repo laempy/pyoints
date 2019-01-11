@@ -22,8 +22,11 @@
 import plyfile
 import numpy as np
 
+from ..georecords import LasRecords
+from ..projection import Proj
 
-def loadPly(infile):
+
+def loadPly(infile, proj=Proj()):
     """Loads a .ply file.
 
     Parameters
@@ -45,7 +48,7 @@ def loadPly(infile):
     records = plydata['vertex'].data.view(np.recarray)
 
     # rename fields
-    dtypes = [('coords', float, 3)]
+    dtypes = [('coords', np.float32, 3)]
     fields = [records.dtype.descr[i] for i in range(3, len(records.dtype))]
     dtypes.extend(fields)
     dtypes = np.dtype(dtypes)
@@ -55,10 +58,9 @@ def loadPly(infile):
     for name in dtypes.names:
         names.append(name.replace('scalar_', ''))
     dtypes.names = names
+    records = records.view(dtypes).copy()
 
-    records = records.view(dtypes)
-
-    return records
+    return LasRecords(proj, records)
 
 
 def writePly(rec, outfile):
