@@ -1,4 +1,3 @@
-*.rst
 doctrees
 _static
 !conf.py
