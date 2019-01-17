@@ -16,6 +16,8 @@ if [ -d "$COMPILE_PATH" ]; then
   rm -r "$COMPILE_PATH"
 fi
 
+jupyter nbconvert --to script "$TUTORIALS_PATH/*.ipynb"
+
 cp -r "$SPHINX_PATH" "$COMPILE_PATH"
 cp -r "$TUTORIALS_PATH" "$COMPILE_PATH"
 
