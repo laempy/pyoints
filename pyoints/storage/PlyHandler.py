@@ -19,12 +19,15 @@
 """Handling of .ply-files.
 """
 
+import os
 import plyfile
 import numpy as np
 
 from ..georecords import LasRecords
 from ..projection import Proj
 
+from ..misc import *
+import warnings
 
 def loadPly(infile, proj=Proj()):
     """Loads a .ply file.
@@ -44,7 +47,14 @@ def loadPly(infile, proj=Proj()):
     writePly
 
     """
-    plydata = plyfile.PlyData.read(infile)
+    if not os.path.isfile(infile):
+        raise IOError('file "%s" not found' % infile)
+
+    with warnings.catch_warnings():
+        # ignore UserWarning
+        warnings.filterwarnings("ignore", category=UserWarning)
+        plydata = plyfile.PlyData.read(infile)
+
     records = plydata['vertex'].data.view(np.recarray)
 
     # rename fields
