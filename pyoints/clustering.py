@@ -113,7 +113,8 @@ def clustering(indexKD,
 
 
 def majority_clusters(indexKD, r, **kwargs):
-    """Clustering by majority voting.
+    """Clustering by majority voting. The algorithm assigns points iteratively
+    to the most dominant class within a given radius.
 
     Parameters
     ----------

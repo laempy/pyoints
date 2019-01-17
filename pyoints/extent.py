@@ -235,16 +235,17 @@ class Extent(np.recarray, object):
         # check
         n, c_dim = coords.shape
         if not c_dim <= self.dim:
-            raise ValueError('dimensions do not match')
+            m = 'expected %i dimensions, but got %i'
+            raise ValueError(m % (self.dim, c_dim))
 
         min_ext, max_ext = self.split()
 
         # Order axes by range to speed up the process (heuristic)
         order = np.argsort(self.ranges[0:dim])
         mask = np.any(
-            (np.abs(
-                min_ext[order]) < np.inf, np.abs(
-                max_ext[order]) < np.inf), axis=0)
+            (np.abs(min_ext[order]) < np.inf, np.abs(max_ext[order]) < np.inf),
+            axis=0
+        )
         axes = order[mask]
 
         indices = np.arange(n)
