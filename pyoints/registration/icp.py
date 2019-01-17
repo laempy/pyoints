@@ -55,14 +55,20 @@ class ICP:
     Notes
     -----
     A modified variant of the originally ICP algorithm presented by Besl and
-    McKay (1992) [1].
+    McKay (1992) [1]. Inspired by the Normal ICP algorithm of Serafin and
+    Grisetti [2][3] a ICP variant the surface normals has been implemented.
 
     References
     ----------
-
     [1] P.J. Besl and N.D. McKay (1992): "A Method for Registration of 3-D
     Shapes", IEEE Transactions on Pattern Analysis and Machine Intelligence,
     vol. 14 (2): 239-256.
+    [2] J. Serafin and G. Grisetti (2014): "Using augmented measurements to
+    improve the convergence of icp", International Conference on Simulation,
+    Modeling, and Programming for Autonomous Robots. Springer, Cham: 566-577.
+    [3] J. Serafin and G. Grisetti (2014): "NICP: Dense normal based point
+    cloud registration", International Conference on Intelligent Robots and
+    Systems (IROS): 742-749.
 
     Examples
     --------
@@ -229,7 +235,7 @@ class ICP:
         max_change = distance.norm(self._radii[:dim]) * self._max_change_ratio
 
         # ICP algorithm
-        report = {'RMSE': []}
+        report = {'RMSE': [], 'T':[]}
         for num_iter in range(self._max_iter):
 
             # assign pairs
@@ -271,7 +277,11 @@ class ICP:
 
             # take a look at the residuals between before and after
             rmse = _get_change_rmse(coords_dict, T_dict, T_dict_new)
+
+            # update report
             report['RMSE'].append(rmse)
+            report['T'].append(T_dict_new)
+
             if rmse <= max_change:
                 break
 
