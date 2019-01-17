@@ -141,13 +141,16 @@ class GeoRecords(np.recarray, object):
     def dim(self):
         return self.dtype['coords'].shape[0]
 
+
     @property
     def coords(self):
+        #return self['coords'].view(Coords)
         if not hasattr(self, '_coords'):
-            # copy required for garbadge collection
+        #    # copy required for garbadge collection
             self._coords = self['coords'].copy().view(Coords)
         return self._coords
-
+    
+        
     def _clear_cache(self):
         if hasattr(self, '_coords'):
             del self._coords
@@ -327,8 +330,9 @@ class GeoRecords(np.recarray, object):
          [14 25]]
 
         """
-        self.coords = self.coords.transform(T)
+        self['coords'] = self.coords.transform(T)
         self.t = T @ self.t
+        self._clear_cache()
         return self
 
     def project(self, proj):
