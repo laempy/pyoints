@@ -168,16 +168,17 @@ License v3 or later (GPLv3+). See [LICENSE](LICENSE) for details.
 
 Please cite `Pyoints` as:
 
-Sebastian Lamprecht (2018): "Pyoints: A Python package for point cloud, voxel
-and raster processing.", URL https://github.com/laempy/pyoints,
-[Online; accessed date].
+Sebastian Lamprecht (2018):
+"Pyoints: A Python package for point cloud, voxel and raster processing.",
+URL [https://github.com/laempy/pyoints](https://github.com/laempy/pyoints),
+\[Online; accessed date\].
 
 ```
-@Misc{,
+@Misc{lamprecht_2018,
   author = {Sebastian Lamprecht},
-  organization = {Trier University}
+  organization = {Trier University},
   title = {{Pyoints}: A Python package for point cloud, voxel and raster processing.},
-  year = {2018--},
+  year = {2018},
   url = "https://github.com/laempy/pyoints",
   note = {[Online; accessed <today>]}
 }
@@ -321,7 +322,7 @@ Howard Butler
 
 ## External Depencencies
 
-``Pyoints` binds following external libraries as required by some of the pip
+*Pyoints* binds following external libraries as required by some of the pip
 packages.
 
 
