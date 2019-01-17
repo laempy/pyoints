@@ -36,7 +36,7 @@ be performed with unified functions. Thus, each extension of `GeoRecords`
 provides a spatial index `IndexKD` to conveniently perform efficient
 neighborhood queries. The class `IndexKD` is a wrapper of different spatial
 indices, to handle *k*-dimensional spatial queries of different kinds. The
-spatial indices are always only initialized on demand for performance reasons, 
+spatial indices are always only initialized on demand for performance reasons,
 but cached for future queries. For example, an instance `geoRecords` of
 `GeoRecords` representing three dimensional points allows to create a three
 dimensional spatial index by calling `geoRecords.indexKD()`. If you are not
@@ -54,15 +54,15 @@ Based on the general concept of *Pyoints* presented above, a bunch of
 algorithms, functions and filters have been implemented, to process geo-data
 with low programming efforts.
 
-Of course, one might wonder whether Python is adequate to analyze point cloud 
-data since other languages languages are much more efficient. This is obviously 
-true, but in the experience of the author, Python is very useful to implement 
+Of course, one might wonder whether Python is adequate to analyze point cloud
+data since other languages languages are much more efficient. This is obviously
+true, but in the experience of the author, Python is very useful to implement
 and test new algorithms very quickly. Algorithms for point cloud analysis and
 processing often rely on spatial neighborhood queries. Since *Pyoints*
 takes advantage of very efficient Python libraries, which are basically
 wrappers for binaries written in more efficient languages, the performance
 loss is limited. Additionally, *Pyoints* takes care of selecting and caching
-appropiate spatial indices for you, so you can focus on the core of your 
+appropiate spatial indices for you, so you can focus on the core of your
 algorithm idea.
 
 So, if you have an algorithm idea and you want to implement it quickly and play
@@ -76,7 +76,7 @@ developers of new geo-spatial algorithms.
 
 ## Conda Installation
 
-Conda installation is recommended. To install *Pyoints* with 
+Conda installation is recommended. To install *Pyoints* with
 [Conda](https://conda.io/docs/user-guide/getting-started.html) run:
 
 ```
@@ -88,7 +88,7 @@ Currently Linux (64 bit) and Windows (64 bit) have been packaged.
 
 ## Conda Build
 
-If your system is not supported yet, you might build and install it using the 
+If your system is not supported yet, you might build and install it using the
 [conda reciepe](conda/meta.yaml) specifying your desired Python version.
 
 ### Build
@@ -147,8 +147,8 @@ we have to specify the gdal version expicilely with ```gdal-config --version```.
 
 # Documentation
 
-You can find the documentation at 
-[docs](https://laempy.github.io/pyoints/pyoints.html). Here you can find 
+You can find the documentation at
+[docs](https://laempy.github.io/pyoints/pyoints.html). Here you can find
 docstrings with examples for each module and some comprehensive examples. You
 can also take a look at the source files directly.
 
@@ -169,7 +169,7 @@ License v3 or later (GPLv3+). See [LICENSE](LICENSE) for details.
 Please cite `Pyoints` as:
 
 Sebastian Lamprecht (2018): "Pyoints: A Python package for point cloud, voxel
-and raster processing.", URL https://github.com/laempy/pyoints, 
+and raster processing.", URL https://github.com/laempy/pyoints,
 [Online; accessed date].
 
 ```
@@ -186,8 +186,8 @@ and raster processing.", URL https://github.com/laempy/pyoints,
 
 # Contributing
 
-Any conribution to the *pyoints* project is welcome. See 
-[CONTRIBUTING](CONTRIBUTING.md) for details. 
+Any conribution to the *pyoints* project is welcome. See
+[CONTRIBUTING](CONTRIBUTING.md) for details.
 
 
 
@@ -195,9 +195,17 @@ Any conribution to the *pyoints* project is welcome. See
 
 ## Funding
 
-This work was supported by the [PANTHEON](http://www.project-pantheon.eu) 
-project which is funded by the European Community Horizon 2020 programme 
+This work was supported by the [PANTHEON](http://www.project-pantheon.eu)
+project which is funded by the European Community Horizon 2020 programme
 under grant agreement 774571.
+
+## Datasets
+
+For the tutorials the "Stanford Bunny" dataset has been used:
+
+Stanford Computer Graphics Laboratory (1994): "Stanford Bunny", URL:
+[https://graphics.stanford.edu/data/3Dscanrep/](https://graphics.stanford.edu/data/3Dscanrep/),
+(Accessed: 17 January 2019)
 
 
 ## Python Depencencies
