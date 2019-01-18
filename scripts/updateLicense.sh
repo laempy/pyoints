@@ -8,7 +8,7 @@ LICENSE_FILE='./templates/GPL_LICENSE.txt'
 OPENING_PATTERN='# BEGIN OF LICENSE NOTE'
 CLOSING_PATTERN='# END OF LICENSE NOTE'
 
-FILE_PATHS='../pyoints ../examples ../tests'
+FILE_PATHS='../pyoints ../tests'
 LICENSE='../LICENSE'
 
 USAGE="Usage to update|insert|remove license: updateLicense.sh -u|-i|-r"
