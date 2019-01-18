@@ -1,0 +1,247 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Pyoints &#8212; Pyoints verson 0.2.1 beta documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Pyoints" href="readme.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="readme.html" title="Pyoints"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">Pyoints verson 0.2.1 beta documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pyoints">
+<h1>Pyoints<a class="headerlink" href="#pyoints" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="readme.html">Pyoints</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#general-concept">General concept</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#is-pyoints-suitable-for-me">Is Pyoints suitable for me?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#citing">Citing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#contributing">Contributing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#acknowledgements">Acknowledgements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#making-suggestions">Making Suggestions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#making-changes">Making Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#id1">Coding Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#software-recommendations">Software recommendations</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="license.html">LICENSE</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="tutorials">
+<h2>Tutorials<a class="headerlink" href="#tutorials" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/getting_started.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/getting_started.html#Grid">Grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/getting_started.html#GeoRecords">GeoRecords</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/getting_started.html#Transformation">Transformation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/getting_started.html#IndexKD">IndexKD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/getting_started.html#Point-filters">Point filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/getting_started.html#Smoothing">Smoothing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/getting_started.html#Clustering">Clustering</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/stem_detection.html">Detection of tree stems with Pyoints</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/stem_detection.html#Loading-of-the-point-cloud-data">Loading of the point cloud data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/stem_detection.html#Calculation-of-the-height-above-ground">Calculation of the height above ground</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/stem_detection.html#Fitering-of-stem-points">Fitering of stem points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/stem_detection.html#Identification-of-stem-clusters">Identification of stem clusters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/stem_detection.html#Fitting-of-stem-vectors">Fitting of stem vectors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/icp.html">ICP for point cloud alignment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/icp.html#Preparing-the-data">Preparing the data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/icp.html#ICP-algorithm">ICP algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/icp.html#NICP-algorithm">NICP algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/icp.html#References">References</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<table border="1" class="colwidths-given docutils" id="id1">
+<caption><span class="caption-text">Downloads</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Topic</th>
+<th class="head">Jupiter Notebook</th>
+<th class="head">Python Script</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Getting started</td>
+<td><a class="reference download internal" download="" href="_downloads/bac27c0d8a15a81cd42b7ba93a2ebd0f/getting_started.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">getting_started.ipynb</span></code></a></td>
+<td><a class="reference download internal" download="" href="_downloads/cd3fd2c207914aec0e3b57509e5b1a4e/getting_started.py"><code class="xref download docutils literal notranslate"><span class="pre">getting_started.py</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>ICP</td>
+<td><a class="reference download internal" download="" href="_downloads/c44c04e4acefb2b4b89774c65d2cfb5f/icp.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">icp.ipynb</span></code></a></td>
+<td><a class="reference download internal" download="" href="_downloads/51f8ada99bd2302aff2952eb3c048c50/icp.py"><code class="xref download docutils literal notranslate"><span class="pre">icp.py</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Stem detection</td>
+<td><a class="reference download internal" download="" href="_downloads/3db11f8f77e7ac0075aa8e69e0998219/stem_detection.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">stem_detection.ipynb</span></code></a></td>
+<td><a class="reference download internal" download="" href="_downloads/67f17cf78199fffcda57740e2bff9808/stem_detection.py"><code class="xref download docutils literal notranslate"><span class="pre">stem_detection.py</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">pyoints</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.html">pyoints package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyoints.examples.html">pyoints.examples package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyoints.grid.html">pyoints.grid package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyoints.registration.html">pyoints.registration package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyoints.storage.html">pyoints.storage package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#module-pyoints.assertion">pyoints.assertion module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#module-pyoints.assign">pyoints.assign module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#module-pyoints.classification">pyoints.classification module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#module-pyoints.clustering">pyoints.clustering module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#module-pyoints.coords">pyoints.coords module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#module-pyoints.distance">pyoints.distance module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#module-pyoints.extent">pyoints.extent module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#module-pyoints.filters">pyoints.filters module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#module-pyoints.fit">pyoints.fit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#module-pyoints.georecords">pyoints.georecords module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#module-pyoints.indexkd">pyoints.indexkd module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#module-pyoints.interpolate">pyoints.interpolate module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#module-pyoints.misc">pyoints.misc module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#module-pyoints.normals">pyoints.normals module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#module-pyoints.nptools">pyoints.nptools module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#module-pyoints.polar">pyoints.polar module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#module-pyoints.projection">pyoints.projection module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#module-pyoints.smoothing">pyoints.smoothing module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#module-pyoints.surface">pyoints.surface module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#module-pyoints.transformation">pyoints.transformation module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#module-pyoints.vector">pyoints.vector module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyoints.html#module-pyoints">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="#">
+              <img class="logo" src="_static/logo_pyoints.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="#">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Pyoints</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#tutorials">Tutorials</a></li>
+<li><a class="reference internal" href="#api">API</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="readme.html"
+                        title="next chapter">Pyoints</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="readme.html" title="Pyoints"
+             >next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">Pyoints verson 0.2.1 beta documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Sebastian Lamprecht.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+    </div>
+  </body>
+</html>

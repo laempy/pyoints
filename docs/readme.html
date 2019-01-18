@@ -1,0 +1,493 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Pyoints &#8212; Pyoints verson 0.2.1 beta documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributing" href="contributing.html" />
+    <link rel="prev" title="Pyoints" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="contributing.html" title="Contributing"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Pyoints"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Pyoints verson 0.2.1 beta documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pyoints">
+<h1>Pyoints<a class="headerlink" href="#pyoints" title="Permalink to this headline">¶</a></h1>
+<p><em>Pyoints</em> is a python package to conveniently process and analyze point
+cloud data, voxels and raster images. It is intended to be used to support
+the development of advanced algorithms for geo-data processing.</p>
+<div class="section" id="general-concept">
+<h2>General concept<a class="headerlink" href="#general-concept" title="Permalink to this headline">¶</a></h2>
+<p>The key idea of <em>Pyoints</em> is to provide unified data structures to handle
+points, voxels and rasters in the same manner. It is assumed that the
+data can be interpreted as a two or three dimensional point cloud. Thus we have
+a collection of geo-objects, here called <code class="docutils literal notranslate"><span class="pre">GeoRecords</span></code>, which are characterized
+by two or three dimensional coordinates <code class="docutils literal notranslate"><span class="pre">coords</span></code>, a spatial reference <code class="docutils literal notranslate"><span class="pre">proj</span></code>
+and a transformation matrix <code class="docutils literal notranslate"><span class="pre">t</span></code>. The spatial reference and transformation
+matrix are required to define the global location of the geo-objects. Next to
+the origin, the transformation matrix also stores the scale and rotation of the
+local coordinate system.</p>
+<p>The unified data structures simplify the joint use of point clouds, voxels
+and rasters significantly, while keeping their natural characteristics. To
+ease the processing and analysis, each point, voxel or raster cell are stored
+in the commonly used numpy record array according to its natural structure. For
+example, a three dimensional point cloud represents a set of points, each
+characterized by a coordinate and none to many additional attributes. So the
+points are stored in a one dimensional record array. Conversely raster
+images are stored in a two dimensional record array, which allows for the
+commonly used index access of raster cells. Still, each cell is characterized
+by a coordinate and none to many additional attributes. Three dimensional
+voxels are accordingly represented by three dimensional record arrays.</p>
+<p>Since all objects of a voxel or raster are also interpreted as a point cloud,
+spatial neighborhood queries, like nearest neighbors or distance search, can
+be performed with unified functions. Thus, each extension of <code class="docutils literal notranslate"><span class="pre">GeoRecords</span></code>
+provides a spatial index <code class="docutils literal notranslate"><span class="pre">IndexKD</span></code> to conveniently perform efficient
+neighborhood queries. The class <code class="docutils literal notranslate"><span class="pre">IndexKD</span></code> is a wrapper of different spatial
+indices, to handle <em>k</em>-dimensional spatial queries of different kinds. The
+spatial indices are always only initialized on demand for performance reasons,
+but cached for future queries. For example, an instance <code class="docutils literal notranslate"><span class="pre">geoRecords</span></code> of
+<code class="docutils literal notranslate"><span class="pre">GeoRecords</span></code> representing three dimensional points allows to create a three
+dimensional spatial index by calling <code class="docutils literal notranslate"><span class="pre">geoRecords.indexKD()</span></code>. If you are not
+interested in the third dimension, you can call <code class="docutils literal notranslate"><span class="pre">geoRecords.indexKD(2)</span></code> to
+perform two dimensional spatial queries.</p>
+<p>If you just want to handle coordinates without additional attributes, the class
+<code class="docutils literal notranslate"><span class="pre">Coords</span></code> might interest you. This class also provides the <code class="docutils literal notranslate"><span class="pre">IndexKD</span></code> feature,
+but waives to use of a projection and transformation matrix.</p>
+</div>
+<div class="section" id="is-pyoints-suitable-for-me">
+<h2>Is Pyoints suitable for me?<a class="headerlink" href="#is-pyoints-suitable-for-me" title="Permalink to this headline">¶</a></h2>
+<p>Based on the general concept of <em>Pyoints</em> presented above, a bunch of
+algorithms, functions and filters have been implemented, to process geo-data
+with low programming efforts.</p>
+<p>Of course, one might wonder whether Python is adequate to analyze point cloud
+data since other languages languages are much more efficient. This is obviously
+true, but in the experience of the author, Python is very useful to implement
+and test new algorithms very quickly. Algorithms for point cloud analysis and
+processing often rely on spatial neighborhood queries. Since <em>Pyoints</em>
+takes advantage of very efficient Python libraries, which are basically
+wrappers for binaries written in more efficient languages, the performance
+loss is limited. Additionally, <em>Pyoints</em> takes care of selecting and caching
+appropiate spatial indices for you, so you can focus on the core of your
+algorithm idea.</p>
+<p>So, if you have an algorithm idea and you want to implement it quickly and play
+around with different settings, <em>Pyoints</em> is made for you. After finding an
+approiate algorithm it can be implemented in a more efficient language
+if you like. Thus <em>Pyoints</em> is particulary designed for scientists and
+developers of new geo-spatial algorithms.</p>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="conda-installation">
+<h3>Conda Installation<a class="headerlink" href="#conda-installation" title="Permalink to this headline">¶</a></h3>
+<p>Conda installation is recommended. To install <em>Pyoints</em> with
+<a class="reference external" href="https://conda.io/docs/user-guide/getting-started.html">Conda</a> run:</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>conda install -c laempy pyoints
+</pre></div>
+</div>
+<p>Currently Linux (64 bit) and Windows (64 bit) have been packaged.</p>
+</div>
+<div class="section" id="conda-build">
+<h3>Conda Build<a class="headerlink" href="#conda-build" title="Permalink to this headline">¶</a></h3>
+<p>If your system is not supported yet, you might build and install it using the
+<a class="reference external" href="conda/meta.yaml">conda reciepe</a> specifying your desired Python version.
+Currently Linux (64 bit) and Windows (64 bit) have been tested successfully
+with Python 3.5 and Python 3.6.</p>
+<div class="section" id="build">
+<h4>Build<a class="headerlink" href="#build" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>conda build /path/to/pyoints/conda --python=3.x
+</pre></div>
+</div>
+</div>
+<div class="section" id="id1">
+<h4>Installation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<p>Create a virtual environment <code class="docutils literal notranslate"><span class="pre">myenv</span></code> and add the newly build <em>Pyoints</em> package.
+The package path can be found with <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">build</span> <span class="pre">.</span> <span class="pre">--output</span></code>.</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>conda create -n myenv /path/to/builded/package/pyoints-*-py*_*.tar.bz2 --use-local
+</pre></div>
+</div>
+<p>Finally install the package:</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>conda activate myenv
+conda install pyoints
+</pre></div>
+</div>
+</div>
+<div class="section" id="tests">
+<h4>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h4>
+<p>Test the package by running the provided doctests:</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>python /path/to/pyoints/tests/test_pyoints.py
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="installation-from-source">
+<h3>Installation from source<a class="headerlink" href="#installation-from-source" title="Permalink to this headline">¶</a></h3>
+<p>We recommend to use a virtual environment (like Conda) to install <em>Pyoints</em>.</p>
+<p>Installation of the external dependencies:</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>conda install gdal, pyproj, rtree
+</pre></div>
+</div>
+<p>Cloning of the repository:</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/laempy/pyoints.git
+cd pyoints
+</pre></div>
+</div>
+<p>Installation of the python packages via <em>pip</em>.</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>pip install pygdal==$(gdal-config --version).* -e .
+</pre></div>
+</div>
+<p>Unfortunately, the gdal version is not detected automatically by <em>pgdal</em>. Thus,
+we have to specify the gdal version expicilely with <code class="docutils literal notranslate"><span class="pre">gdal-config</span> <span class="pre">--version</span></code>.</p>
+</div>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p>You can find the documentation at
+<a class="reference external" href="https://laempy.github.io/pyoints">docs</a>. Here you can find
+docstrings with examples for each module and some comprehensive examples. You
+can also take a look at the source files directly.</p>
+</div>
+<div class="section" id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (c) 2018, Sebastian Lamprecht, Trier University,
+<a class="reference external" href="mailto:lamprecht&#37;&#52;&#48;uni-trier&#46;de">lamprecht<span>&#64;</span>uni-trier<span>&#46;</span>de</a></p>
+<p><em>Pyoints</em> is free software made available under the GNU General Public
+License v3 or later (GPLv3+). See <a class="reference external" href="LICENSE">LICENSE</a> for details.</p>
+</div>
+<div class="section" id="citing">
+<h2>Citing<a class="headerlink" href="#citing" title="Permalink to this headline">¶</a></h2>
+<p>Please cite <code class="docutils literal notranslate"><span class="pre">Pyoints</span></code> as:</p>
+<p>Sebastian Lamprecht (2018):
+“Pyoints: A Python package for point cloud, voxel and raster processing.”,
+URL <a class="reference external" href="https://github.com/laempy/pyoints">https://github.com/laempy/pyoints</a>,
+[Online; accessed date].</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="p">@</span>Misc<span class="p">{</span>lamprecht_2018<span class="p">,</span>
+  <span class="ss">author =</span> <span class="p">{</span>Sebastian Lamprecht<span class="p">},</span>
+  <span class="ss">organization =</span> <span class="p">{</span>Trier University<span class="p">},</span>
+  <span class="ss">title =</span> <span class="p">{{</span>Pyoints<span class="p">}:</span> A Python package for point cloud<span class="p">,</span> voxel <span class="ow">and</span> raster processing<span class="o">.</span><span class="p">},</span>
+  <span class="ss">year =</span> <span class="p">{</span><span class="mi">2018</span><span class="p">},</span>
+  <span class="ss">url =</span> <span class="s2">&quot;https://github.com/laempy/pyoints&quot;</span><span class="p">,</span>
+  <span class="ss">note =</span> <span class="p">{[</span>Online<span class="p">;</span> accessed <span class="l">&lt;today&gt;</span><span class="p">]}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="contributing">
+<h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h2>
+<p>Any conribution to the <em>pyoints</em> project is welcome. See
+<a class="reference external" href="CONTRIBUTING.md">CONTRIBUTING</a> for details.</p>
+</div>
+<div class="section" id="acknowledgements">
+<h2>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="funding">
+<h3>Funding<a class="headerlink" href="#funding" title="Permalink to this headline">¶</a></h3>
+<p>This work was supported by the <a class="reference external" href="http://www.project-pantheon.eu">PANTHEON</a>
+project which is funded by the European Community Horizon 2020 programme
+under grant agreement 774571.</p>
+</div>
+<div class="section" id="datasets">
+<h3>Datasets<a class="headerlink" href="#datasets" title="Permalink to this headline">¶</a></h3>
+<p>For the tutorials the “Stanford Bunny” dataset has been used:</p>
+<p>Stanford Computer Graphics Laboratory (1994): “Stanford Bunny”, URL:
+<a class="reference external" href="https://graphics.stanford.edu/data/3Dscanrep/">https://graphics.stanford.edu/data/3Dscanrep/</a>,
+(Accessed: 17 January 2019)</p>
+</div>
+<div class="section" id="python-depencencies">
+<h3>Python Depencencies<a class="headerlink" href="#python-depencencies" title="Permalink to this headline">¶</a></h3>
+<p>This software dynamically binds the following Python packages (distributed via
+pip). Many thanks to the authors for providing such great open source software.</p>
+<div class="section" id="cylinder-fitting">
+<h4>cylinder_fitting<a class="headerlink" href="#cylinder-fitting" title="Permalink to this headline">¶</a></h4>
+<p>Xingjie Pan</p>
+<ul class="simple">
+<li><a class="reference external" href="https://pypi.org/project/cylinder_fitting/">PyPI</a></li>
+<li><a class="reference external" href="https://github.com/xingjiepan/cylinder_fitting">homepage</a></li>
+<li><a class="reference external" href="https://github.com/xingjiepan/cylinder_fitting/blob/master/license.txt">3-Clause BSD license</a></li>
+</ul>
+</div>
+<div class="section" id="dill">
+<h4>dill<a class="headerlink" href="#dill" title="Permalink to this headline">¶</a></h4>
+<p>Mike McKerns</p>
+<ul class="simple">
+<li><a class="reference external" href="https://pypi.org/project/dill/">PyPI</a></li>
+<li><a class="reference external" href="https://github.com/uqfoundation/dill">homepage</a></li>
+<li><a class="reference external" href="https://github.com/uqfoundation/dill/blob/master/LICENSE">3-Clause BSD license</a></li>
+</ul>
+</div>
+<div class="section" id="pygdal">
+<h4>pygdal<a class="headerlink" href="#pygdal" title="Permalink to this headline">¶</a></h4>
+<p>Frank Warmerdam</p>
+<ul class="simple">
+<li><a class="reference external" href="https://pypi.org/project/pygdal/">PyPI</a></li>
+<li><a class="reference external" href="https://github.com/nextgis/pygdal">homepage</a></li>
+<li><a class="reference external" href="https://github.com/laspy/laspy/blob/master/LICENSE.txt">2-Clause BSD license</a></li>
+</ul>
+</div>
+<div class="section" id="laspy">
+<h4>laspy<a class="headerlink" href="#laspy" title="Permalink to this headline">¶</a></h4>
+<p>Grant Brown and Howard Butler</p>
+<ul class="simple">
+<li><a class="reference external" href="https://pypi.org/project/laspy/">PyPI</a></li>
+<li><a class="reference external" href="https://github.com/laspy/laspy">homepage</a></li>
+<li><a class="reference external" href="https://github.com/laspy/laspy/blob/master/LICENSE.txt">2-Clause BSD license</a></li>
+</ul>
+</div>
+<div class="section" id="networkx">
+<h4>networkx<a class="headerlink" href="#networkx" title="Permalink to this headline">¶</a></h4>
+<p>NetworkX Developers</p>
+<ul class="simple">
+<li><a class="reference external" href="https://pypi.org/project/networkx/">PyPI</a></li>
+<li><a class="reference external" href="http://networkx.github.io/">homepage</a></li>
+<li><a class="reference external" href="https://github.com/networkx/networkx/blob/master/LICENSE.txt">3-Clause BSD license</a></li>
+</ul>
+</div>
+<div class="section" id="numpy">
+<h4>numpy<a class="headerlink" href="#numpy" title="Permalink to this headline">¶</a></h4>
+<p>Travis E. Oliphant et al.</p>
+<ul class="simple">
+<li><a class="reference external" href="https://pypi.org/project/numpy/">PyPI</a></li>
+<li><a class="reference external" href="http://www.numpy.org/">homepage</a></li>
+<li><a class="reference external" href="http://www.numpy.org/license.html#license">3-Clause BSD license</a></li>
+</ul>
+</div>
+<div class="section" id="opencv-python">
+<h4>opencv-python<a class="headerlink" href="#opencv-python" title="Permalink to this headline">¶</a></h4>
+<p>Olli-Pekka Heinisuo</p>
+<ul class="simple">
+<li><a class="reference external" href="https://pypi.org/project/opencv-python/">PyPI</a></li>
+<li><a class="reference external" href="https://github.com/skvark/opencv-python">homepage</a></li>
+<li><a class="reference external" href="https://github.com/opencv/opencv/blob/master/LICENSE">MIT license</a></li>
+</ul>
+</div>
+<div class="section" id="pandas">
+<h4>pandas<a class="headerlink" href="#pandas" title="Permalink to this headline">¶</a></h4>
+<p>The PyData Development Team</p>
+<ul class="simple">
+<li><a class="reference external" href="https://pypi.org/project/pandas/">PyPI</a></li>
+<li><a class="reference external" href="http://pandas.pydata.org/">homepage</a></li>
+<li><a class="reference external" href="https://github.com/pandas-dev/pandas/blob/master/LICENSE">3-Clause BSD license</a></li>
+</ul>
+</div>
+<div class="section" id="plyfile">
+<h4>plyfile<a class="headerlink" href="#plyfile" title="Permalink to this headline">¶</a></h4>
+<p>Darsh Ranjan</p>
+<ul class="simple">
+<li><a class="reference external" href="https://pypi.org/project/plyfile/https://pypi.org/project/plyfile/">PyPI</a></li>
+<li><a class="reference external" href="https://github.com/dranjan/python-plyfile">homepage</a></li>
+<li><a class="reference external" href="https://github.com/dranjan/python-plyfile/blob/master/COPYING">GPL v3.0 (or later)</a></li>
+</ul>
+</div>
+<div class="section" id="pyproj">
+<h4>pyproj<a class="headerlink" href="#pyproj" title="Permalink to this headline">¶</a></h4>
+<p>Jeff Whitaker</p>
+<ul class="simple">
+<li><a class="reference external" href="https://pypi.org/project/pyproj/">PyPI</a></li>
+<li><a class="reference external" href="https://github.com/jswhit/pyproj">homepage</a></li>
+<li><a class="reference external" href="https://github.com/jswhit/pyproj/blob/master/LICENSE">OSI approved license</a></li>
+</ul>
+</div>
+<div class="section" id="scikit-learn">
+<h4>scikit-learn<a class="headerlink" href="#scikit-learn" title="Permalink to this headline">¶</a></h4>
+<p>Andreas Mueller</p>
+<ul class="simple">
+<li><a class="reference external" href="https://pypi.org/project/scikit-learn/">PyPI</a></li>
+<li><a class="reference external" href="http://scikit-learn.org/stable/">homepage</a></li>
+<li><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/master/COPYING">3-Clause BSD license</a></li>
+</ul>
+</div>
+<div class="section" id="scipy">
+<h4>scipy<a class="headerlink" href="#scipy" title="Permalink to this headline">¶</a></h4>
+<p>SciPy Developers</p>
+<ul class="simple">
+<li><a class="reference external" href="https://pypi.org/project/scipy/">PyPI</a></li>
+<li><a class="reference external" href="https://www.scipy.org/">homepage</a></li>
+<li><a class="reference external" href="https://github.com/scipy/scipy/blob/master/LICENSE.txt">3-Clause BSD license</a></li>
+</ul>
+</div>
+<div class="section" id="rtree">
+<h4>rtree<a class="headerlink" href="#rtree" title="Permalink to this headline">¶</a></h4>
+<p>Howard Butler</p>
+<ul class="simple">
+<li><a class="reference external" href="https://pypi.org/project/Rtree/">PyPI</a></li>
+<li><a class="reference external" href="http://toblerity.org/rtree/">homepage</a></li>
+<li><a class="reference external" href="https://github.com/Toblerity/rtree/blob/master/LICENSE.txt">LGPL v2.1 (or later)</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="external-depencencies">
+<h3>External Depencencies<a class="headerlink" href="#external-depencencies" title="Permalink to this headline">¶</a></h3>
+<p><em>Pyoints</em> binds following external libraries as required by some of the pip
+packages.</p>
+<div class="section" id="gdal">
+<h4>GDAL<a class="headerlink" href="#gdal" title="Permalink to this headline">¶</a></h4>
+<p>Frank Warmerdam</p>
+<ul class="simple">
+<li><a class="reference external" href="https://www.gdal.org/">homepage</a></li>
+<li><a class="reference external" href="https://trac.osgeo.org/gdal/wiki/FAQGeneral#WhatlicensedoesGDALOGRuse">X11/MIT license</a></li>
+</ul>
+</div>
+<div class="section" id="liblas">
+<h4>Liblas<a class="headerlink" href="#liblas" title="Permalink to this headline">¶</a></h4>
+<p>Howard Butler, Mateusz Loskot et. al.</p>
+<ul class="simple">
+<li><a class="reference external" href="https://liblas.org/">homepage</a></li>
+<li><a class="reference external" href="https://liblas.org/copyright.html#license">X11/MIT license</a></li>
+</ul>
+</div>
+<div class="section" id="libspatialindex">
+<h4>libspatialindex<a class="headerlink" href="#libspatialindex" title="Permalink to this headline">¶</a></h4>
+<p>Marios Hadjieleftheriou</p>
+<ul class="simple">
+<li><a class="reference external" href="https://libspatialindex.github.io/">homepage</a></li>
+<li><a class="reference external" href="https://libspatialindex.github.io/">MIT license</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo_pyoints.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Pyoints</a><ul>
+<li><a class="reference internal" href="#general-concept">General concept</a></li>
+<li><a class="reference internal" href="#is-pyoints-suitable-for-me">Is Pyoints suitable for me?</a></li>
+<li><a class="reference internal" href="#installation">Installation</a><ul>
+<li><a class="reference internal" href="#conda-installation">Conda Installation</a></li>
+<li><a class="reference internal" href="#conda-build">Conda Build</a><ul>
+<li><a class="reference internal" href="#build">Build</a></li>
+<li><a class="reference internal" href="#id1">Installation</a></li>
+<li><a class="reference internal" href="#tests">Tests</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#installation-from-source">Installation from source</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+<li><a class="reference internal" href="#license">License</a></li>
+<li><a class="reference internal" href="#citing">Citing</a></li>
+<li><a class="reference internal" href="#contributing">Contributing</a></li>
+<li><a class="reference internal" href="#acknowledgements">Acknowledgements</a><ul>
+<li><a class="reference internal" href="#funding">Funding</a></li>
+<li><a class="reference internal" href="#datasets">Datasets</a></li>
+<li><a class="reference internal" href="#python-depencencies">Python Depencencies</a><ul>
+<li><a class="reference internal" href="#cylinder-fitting">cylinder_fitting</a></li>
+<li><a class="reference internal" href="#dill">dill</a></li>
+<li><a class="reference internal" href="#pygdal">pygdal</a></li>
+<li><a class="reference internal" href="#laspy">laspy</a></li>
+<li><a class="reference internal" href="#networkx">networkx</a></li>
+<li><a class="reference internal" href="#numpy">numpy</a></li>
+<li><a class="reference internal" href="#opencv-python">opencv-python</a></li>
+<li><a class="reference internal" href="#pandas">pandas</a></li>
+<li><a class="reference internal" href="#plyfile">plyfile</a></li>
+<li><a class="reference internal" href="#pyproj">pyproj</a></li>
+<li><a class="reference internal" href="#scikit-learn">scikit-learn</a></li>
+<li><a class="reference internal" href="#scipy">scipy</a></li>
+<li><a class="reference internal" href="#rtree">rtree</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#external-depencencies">External Depencencies</a><ul>
+<li><a class="reference internal" href="#gdal">GDAL</a></li>
+<li><a class="reference internal" href="#liblas">Liblas</a></li>
+<li><a class="reference internal" href="#libspatialindex">libspatialindex</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Pyoints</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="contributing.html"
+                        title="next chapter">Contributing</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/readme.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="contributing.html" title="Contributing"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Pyoints"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Pyoints verson 0.2.1 beta documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Sebastian Lamprecht.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+    </div>
+  </body>
+</html>
