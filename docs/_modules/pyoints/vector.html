@@ -6,30 +6,35 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyoints.vector &#8212; Pyoints verson 0.2 alpha documentation</title>
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <title>pyoints.vector &#8212; Pyoints verson 0.2.1 beta documentation</title>
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-   
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="search" title="Search" href="../../search.html" /> 
   </head><body>
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Pyoints verson 0.2.1 beta documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
-
           <div class="body" role="main">
             
   <h1>Source code for pyoints.vector</h1><div class="highlight"><pre>
@@ -54,7 +59,6 @@
 <span class="sd">&quot;&quot;&quot;Various vector operations.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="p">(</span>
@@ -63,6 +67,7 @@
     <span class="n">nptools</span><span class="p">,</span>
     <span class="n">transformation</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.misc</span> <span class="k">import</span> <span class="n">print_rounded</span>
 
 
 <div class="viewcode-block" id="rad_to_deg"><a class="viewcode-back" href="../../pyoints.html#pyoints.vector.rad_to_deg">[docs]</a><span class="k">def</span> <span class="nf">rad_to_deg</span><span class="p">(</span><span class="n">rad</span><span class="p">):</span>
@@ -118,10 +123,10 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 
-<span class="sd">    &gt;&gt;&gt; round(deg_to_rad(90), 3)</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(deg_to_rad(90), 3)</span>
 <span class="sd">    1.571</span>
 <span class="sd">    &gt;&gt;&gt; rad = deg_to_rad([0, 45, 180, 360])</span>
-<span class="sd">    &gt;&gt;&gt; print(np.round(rad, 3))</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(rad, 3)</span>
 <span class="sd">    [0.    0.785 3.142 6.283]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -137,8 +142,8 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    v, w : array_like(Number, shape=(k))</span>
-<span class="sd">        Vector of &#39;k&#39; dimensions.</span>
+<span class="sd">    v, w : array_like(Number, shape=(k)) or array_like(Number, shape=(n, k))</span>
+<span class="sd">        Vector or `n` vectors of `k` dimensions.</span>
 <span class="sd">    deg : optional, bool</span>
 <span class="sd">        Indicates whether or not the angle is returned in degree.</span>
 
@@ -170,23 +175,35 @@
 <span class="sd">    &gt;&gt;&gt; angle([1, 0, 0, 0], [0, 1, 1, 0], deg=True)</span>
 <span class="sd">    90.0</span>
 
+<span class="sd">    Multiple vectors at once.</span>
+
+<span class="sd">    &gt;&gt;&gt; print(angle([[0, 1], [1, 1]], [[1, 0], [2, 0]], deg=True))</span>
+<span class="sd">    [90. 45.]</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">deg</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;deg&#39; has to be boolean&quot;</span><span class="p">)</span>
 
-    <span class="n">v</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numvector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-    <span class="n">w</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numvector</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;vectors &#39;v&#39; and &#39;w&#39; have to have the same length&quot;</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numarray</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numarray</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;vectors &#39;v&#39; and &#39;w&#39; have to have the same shape&quot;</span><span class="p">)</span>
 
-    <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span> <span class="o">*</span> <span class="n">w</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-    <span class="n">b</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">distance</span><span class="o">.</span><span class="n">snorm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">*</span> <span class="n">distance</span><span class="o">.</span><span class="n">snorm</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">b</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">a</span> <span class="o">/</span> <span class="n">b</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">deg</span><span class="p">:</span>
-            <span class="n">a</span> <span class="o">=</span> <span class="n">rad_to_deg</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="p">])</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">w</span><span class="p">])</span>
+
+    <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span> <span class="o">*</span> <span class="n">w</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">distance</span><span class="o">.</span><span class="n">snorm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">*</span> <span class="n">distance</span><span class="o">.</span><span class="n">snorm</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
+
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">b</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="n">a</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">/</span> <span class="n">b</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">deg</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">rad_to_deg</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">a</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+    <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
     <span class="k">return</span> <span class="n">a</span></div>
 
 
@@ -272,7 +289,8 @@
 
 
 <div class="viewcode-block" id="zenith"><a class="viewcode-back" href="../../pyoints.html#pyoints.vector.zenith">[docs]</a><span class="k">def</span> <span class="nf">zenith</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Angle between a vector or vectors in relation to a specific coordinate axes.</span>
+    <span class="sd">&quot;&quot;&quot;Angle between a vector or vectors in relation to a specific coordinate</span>
+<span class="sd">    axes.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -291,19 +309,19 @@
 <span class="sd">    --------</span>
 
 <span class="sd">    &gt;&gt;&gt; v = [1, 0]</span>
-<span class="sd">    &gt;&gt;&gt; print(zenith(v, deg=True))</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(zenith(v, deg=True))</span>
 <span class="sd">    90.0</span>
 
 <span class="sd">    &gt;&gt;&gt; v = [0, 0, 1]</span>
-<span class="sd">    &gt;&gt;&gt; print(zenith(v, deg=True))</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(zenith(v, deg=True))</span>
 <span class="sd">    0.0</span>
 
 <span class="sd">    &gt;&gt;&gt; v = [(0, 0), (1, 0), (0, 1), (1, 1)]</span>
-<span class="sd">    &gt;&gt;&gt; print(zenith(v, deg=True))</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(zenith(v, deg=True))</span>
 <span class="sd">    [nan 90.  0. 45.]</span>
 
 <span class="sd">    &gt;&gt;&gt; v = [1, 0, 1]</span>
-<span class="sd">    &gt;&gt;&gt; print(np.round(zenith([1, 0, 1], axis=2, deg=True), 1))</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(zenith([1, 0, 1], axis=2, deg=True))</span>
 <span class="sd">    45.0</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -487,7 +505,7 @@
 <span class="sd">    Keep the original orientation, but set a new origin.</span>
 
 <span class="sd">    &gt;&gt;&gt; b = basis([2, 0], origin=[2, 3])</span>
-<span class="sd">    &gt;&gt;&gt; print(np.round(b, 2))</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(b)</span>
 <span class="sd">    [[ 1.  0. -2.]</span>
 <span class="sd">     [ 0.  1. -3.]</span>
 <span class="sd">     [ 0.  0.  1.]]</span>
@@ -736,15 +754,15 @@
 <span class="sd">        &gt;&gt;&gt; r = 45 * np.pi / 180.0</span>
 <span class="sd">        &gt;&gt;&gt; t = [1, 2]</span>
 <span class="sd">        &gt;&gt;&gt; T = transformation.matrix(t=t, r=r, order=&#39;rts&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; print(np.round(T, 2))</span>
+<span class="sd">        &gt;&gt;&gt; print_rounded(T)</span>
 <span class="sd">        [[ 0.71 -0.71  1.  ]</span>
 <span class="sd">         [ 0.71  0.71  2.  ]</span>
 <span class="sd">         [ 0.    0.    1.  ]]</span>
 
 <span class="sd">        &gt;&gt;&gt; vec = vec.transform(T)</span>
-<span class="sd">        &gt;&gt;&gt; print(np.round(vec.origin, 2))</span>
+<span class="sd">        &gt;&gt;&gt; print_rounded(vec.origin)</span>
 <span class="sd">        [1.   3.41]</span>
-<span class="sd">        &gt;&gt;&gt; print(np.round(vec.vec, 2))</span>
+<span class="sd">        &gt;&gt;&gt; print_rounded(vec.vec)</span>
 <span class="sd">        [0.71 0.71]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -835,7 +853,7 @@
 
 <span class="sd">        &gt;&gt;&gt; v = Vector((1, 1, 1), (2, 3, 4))</span>
 <span class="sd">        &gt;&gt;&gt; ks = v.k([v.origin - v.vec, v.target, v.origin - 2 * v.vec])</span>
-<span class="sd">        &gt;&gt;&gt; print(np.round(ks, 2))</span>
+<span class="sd">        &gt;&gt;&gt; print_rounded(ks)</span>
 <span class="sd">        [-1.  1. -2.]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -885,7 +903,8 @@
             <span class="k">return</span> <span class="n">v</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span>
 
 <div class="viewcode-block" id="Vector.angles"><a class="viewcode-back" href="../../pyoints.html#pyoints.vector.Vector.angles">[docs]</a>    <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calculates the angles of the vector in relation to the coordinate axes.</span>
+        <span class="sd">&quot;&quot;&quot;Calculates the angles of the vector in relation to the coordinate</span>
+<span class="sd">        axes.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -902,7 +921,7 @@
 
 <span class="sd">        &gt;&gt;&gt; v = Vector((1, 1, 1), (2, 3, 4))</span>
 <span class="sd">        &gt;&gt;&gt; angles = v.angles(deg=True)</span>
-<span class="sd">        &gt;&gt;&gt; print(np.round(angles, 3))</span>
+<span class="sd">        &gt;&gt;&gt; print_rounded(angles, 3)</span>
 <span class="sd">        [68.199 56.145 42.031]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -927,13 +946,13 @@
 
 <span class="sd">        &gt;&gt;&gt; v = Vector((1, -1), (1, 2))</span>
 <span class="sd">        &gt;&gt;&gt; dist = v.distance([(1, -1), (0, -3), (2, 1), (2, -2), (0, 0)])</span>
-<span class="sd">        &gt;&gt;&gt; print(np.round(dist, 3))</span>
+<span class="sd">        &gt;&gt;&gt; print_rounded(dist, 3)</span>
 <span class="sd">        [0.    0.    0.    1.342 1.342]</span>
-<span class="sd">        &gt;&gt;&gt; print(np.linalg.inv(v.t).origin)</span>
+<span class="sd">        &gt;&gt;&gt; print_rounded(np.linalg.inv(v.t).origin)</span>
 <span class="sd">        [ 1. -1.]</span>
-<span class="sd">        &gt;&gt;&gt; print(v.t.pc(1) * v.length)</span>
+<span class="sd">        &gt;&gt;&gt; print_rounded(v.t.pc(1) * v.length)</span>
 <span class="sd">        [1. 2.]</span>
-<span class="sd">        &gt;&gt;&gt; print(v.t.pc(2) * v.length)</span>
+<span class="sd">        &gt;&gt;&gt; print_rounded(v.t.pc(2) * v.length)</span>
 <span class="sd">        [-2.  1.]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -949,7 +968,7 @@
 <span class="sd">    origin : np.ndarray(Number, shape=(k))</span>
 <span class="sd">        Defines the origin of the planes `k` dimensional local coordinate</span>
 <span class="sd">        system.</span>
-<span class="sd">    \*vec : np.ndarray(Number, shape=(k))</span>
+<span class="sd">    *vec : np.ndarray(Number, shape=(k))</span>
 <span class="sd">        The `k`-1 vectors of `vec` define the orientation of the plane. The</span>
 <span class="sd">        missing  axis (perpenticular to the vectors) are calculated</span>
 <span class="sd">        automatically using principal component analysis. So, parallel</span>
@@ -1012,13 +1031,13 @@
 <span class="sd">     [ 4  2  7]]</span>
 
 <span class="sd">    &gt;&gt;&gt; local_coords = plane.t.to_local(global_coords)</span>
-<span class="sd">    &gt;&gt;&gt; print(local_coords)</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(local_coords)</span>
 <span class="sd">    [[ 0.  0.  0.]</span>
 <span class="sd">     [ 2.  0.  0.]</span>
 <span class="sd">     [-3. -2. -2.]</span>
 <span class="sd">     [-4. -4. -5.]</span>
 <span class="sd">     [ 4.  3.  0.]]</span>
-<span class="sd">    &gt;&gt;&gt; print(plane.t.to_global(local_coords))</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(plane.t.to_global(local_coords))</span>
 <span class="sd">    [[ 1.  2.  3.]</span>
 <span class="sd">     [ 1.  2.  5.]</span>
 <span class="sd">     [-1.  0.  0.]</span>
@@ -1027,7 +1046,7 @@
 
 <span class="sd">    Calculation of the distance of the global points to the plane.</span>
 
-<span class="sd">    &gt;&gt;&gt; print(plane.distance(global_coords))</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(plane.distance(global_coords))</span>
 <span class="sd">    [0. 0. 2. 5. 0.]</span>
 
 <span class="sd">    Creation of the special case of a line in a two dimensional space.</span>
@@ -1040,7 +1059,7 @@
 <span class="sd">    [[ 0.6 -0.8  1. ]</span>
 <span class="sd">     [ 0.8  0.6  2. ]</span>
 <span class="sd">     [ 0.   0.   1. ]]</span>
-<span class="sd">    &gt;&gt;&gt; print(plane.t.eigen_values)</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(plane.t.eigen_values)</span>
 <span class="sd">    [50.  0.]</span>
 <span class="sd">    &gt;&gt;&gt; print(plane.dim)</span>
 <span class="sd">    2</span>
@@ -1053,19 +1072,19 @@
 <span class="sd">    ...     plane.vec[0, :] - 3,</span>
 <span class="sd">    ...     plane.origin + 2 * plane.vec[0, :]</span>
 <span class="sd">    ... ]</span>
-<span class="sd">    &gt;&gt;&gt; print(np.array(global_coords))</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(np.array(global_coords))</span>
 <span class="sd">    [[ 1  2]</span>
 <span class="sd">     [ 4  6]</span>
 <span class="sd">     [ 0  1]</span>
 <span class="sd">     [ 7 10]]</span>
 
 <span class="sd">    &gt;&gt;&gt; local_coords = plane.t.to_local(global_coords)</span>
-<span class="sd">    &gt;&gt;&gt; print(local_coords)</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(local_coords)</span>
 <span class="sd">    [[ 0.   0. ]</span>
 <span class="sd">     [ 5.   0. ]</span>
 <span class="sd">     [-1.4  0.2]</span>
 <span class="sd">     [10.   0. ]]</span>
-<span class="sd">    &gt;&gt;&gt; print(plane.t.to_global(local_coords))</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(plane.t.to_global(local_coords))</span>
 <span class="sd">    [[ 1.  2.]</span>
 <span class="sd">     [ 4.  6.]</span>
 <span class="sd">     [ 0.  1.]</span>
@@ -1073,7 +1092,7 @@
 
 <span class="sd">    Calculation of the distance of the global points to the plane.</span>
 
-<span class="sd">    &gt;&gt;&gt; print(plane.distance(global_coords))</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(plane.distance(global_coords))</span>
 <span class="sd">    [0.  0.  0.2 0. ]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1303,15 +1322,15 @@
 <span class="sd">        &gt;&gt;&gt; r = 45 * np.pi / 180.0</span>
 <span class="sd">        &gt;&gt;&gt; t = [1, 2]</span>
 <span class="sd">        &gt;&gt;&gt; T = transformation.matrix(t=t, r=r, order=&#39;rts&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; print(np.round(T, 2))</span>
+<span class="sd">        &gt;&gt;&gt; print_rounded(T)</span>
 <span class="sd">        [[ 0.71 -0.71  1.  ]</span>
 <span class="sd">         [ 0.71  0.71  2.  ]</span>
 <span class="sd">         [ 0.    0.    1.  ]]</span>
 
 <span class="sd">        &gt;&gt;&gt; plane = plane.transform(T)</span>
-<span class="sd">        &gt;&gt;&gt; print(np.round(plane.origin, 2))</span>
+<span class="sd">        &gt;&gt;&gt; print_rounded(plane.origin)</span>
 <span class="sd">        [1.   3.41]</span>
-<span class="sd">        &gt;&gt;&gt; print(np.round(plane.vec, 2))</span>
+<span class="sd">        &gt;&gt;&gt; print_rounded(plane.vec)</span>
 <span class="sd">        [[0.71 0.71]]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1409,7 +1428,7 @@
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    The algorithm solves the linear equation system:</span>
-<span class="sd">    `plane.origin - vec.origin | k \* vec.vec - s \* plane.vec`</span>
+<span class="sd">    `plane.origin - vec.origin | k * vec.vec - s * plane.vec`</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1462,34 +1481,13 @@
 </pre></div>
 
           </div>
-          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../../modules.html">Pyoints</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../pyoints.html">pyoints package</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../modules.html">Documentation overview</a><ul>
-  <li><a href="../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/logo_pyoints.png" alt="Logo"/>
+            </a></p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <div class="searchformwrapper">
@@ -1502,29 +1500,26 @@
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2018, Sebastian Lamprecht.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Pyoints verson 0.2.1 beta documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Sebastian Lamprecht.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+    </div>
   </body>
 </html>

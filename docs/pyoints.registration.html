@@ -6,32 +6,44 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyoints.registration package &#8212; Pyoints verson 0.2 alpha documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <title>pyoints.registration package &#8212; Pyoints verson 0.2.1 beta documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pyoints.storage package" href="pyoints.storage.html" />
-    <link rel="prev" title="pyoints.grid package" href="pyoints.grid.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="prev" title="pyoints.grid package" href="pyoints.grid.html" /> 
   </head><body>
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyoints.storage.html" title="pyoints.storage package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pyoints.grid.html" title="pyoints.grid package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Pyoints verson 0.2.1 beta documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >pyoints</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="pyoints.html" accesskey="U">pyoints package</a> &#187;</li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
-
           <div class="body" role="main">
             
   <div class="section" id="pyoints-registration-package">
@@ -44,7 +56,7 @@
 <p>Implementation of the Iterative Closest Point Algorithm.</p>
 <dl class="class">
 <dt id="pyoints.registration.icp.ICP">
-<em class="property">class </em><code class="descclassname">pyoints.registration.icp.</code><code class="descname">ICP</code><span class="sig-paren">(</span><em>radii</em>, <em>max_iter=50</em>, <em>max_change_ratio=0.01</em>, <em>assign_class=&lt;class 'pyoints.assign.KnnMatcher'&gt;</em>, <em>update_normals=False</em>, <em>**assign_parameters</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/registration/icp.html#ICP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.registration.icp.ICP" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pyoints.registration.icp.</code><code class="descname">ICP</code><span class="sig-paren">(</span><em>radii</em>, <em>max_iter=50</em>, <em>max_change_ratio=0.001</em>, <em>assign_class=&lt;class 'pyoints.assign.KnnMatcher'&gt;</em>, <em>update_normals=False</em>, <em>**assign_parameters</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/registration/icp.html#ICP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.registration.icp.ICP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Implementation of a variant of the Iterative Closest Point algorithm [1]
 with support of multiple point sets and point normals.</p>
@@ -68,11 +80,18 @@ If point normals shall also be used to find point pairs, the length of
 </table>
 <p class="rubric">Notes</p>
 <p>A modified variant of the originally ICP algorithm presented by Besl and
-McKay (1992) [1].</p>
+McKay (1992) [1]. Inspired by the Normal ICP algorithm of Serafin and
+Grisetti [2][3] a ICP variant the surface normals has been implemented.</p>
 <p class="rubric">References</p>
 <p>[1] P.J. Besl and N.D. McKay (1992): “A Method for Registration of 3-D
 Shapes”, IEEE Transactions on Pattern Analysis and Machine Intelligence,
-vol. 14 (2): 239-256.</p>
+vol. 14 (2): 239-256.
+[2] J. Serafin and G. Grisetti (2014): “Using augmented measurements to
+improve the convergence of icp”, International Conference on Simulation,
+Modeling, and Programming for Autonomous Robots. Springer, Cham: 566-577.
+[3] J. Serafin and G. Grisetti (2014): “NICP: Dense normal based point
+cloud registration”, International Conference on Intelligent Robots and
+Systems (IROS): 742-749.</p>
 <p class="rubric">Examples</p>
 <p>Create corresponding point sets.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
@@ -93,19 +112,19 @@ vol. 14 (2): 239-256.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tB</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">tA</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">tA</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="go">[[ 0.5  0.5]</span>
 <span class="go"> [ 0.   0. ]</span>
 <span class="go"> [-0.  -0.1]</span>
 <span class="go"> [ 1.3  1. ]</span>
 <span class="go"> [ 1.  -0. ]</span>
 <span class="go"> [-1.  -2. ]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">tB</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-<span class="go">[[ 0.56  0.48]</span>
-<span class="go"> [ 0.43 -0.01]</span>
-<span class="go"> [ 1.19  0.95]</span>
-<span class="go"> [ 2.18  0.89]</span>
-<span class="go"> [-0.97 -1.94]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">tB</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">[[ 0.6  0.5]</span>
+<span class="go"> [ 0.4 -0. ]</span>
+<span class="go"> [ 1.2  0.9]</span>
+<span class="go"> [ 2.2  0.9]</span>
+<span class="go"> [-1.  -1.9]]</span>
 </pre></div>
 </div>
 <p>Find matches and compare RMSE (Root Mean Squared Error).</p>
@@ -114,12 +133,12 @@ vol. 14 (2): 239-256.</p>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rmse</span> <span class="o">=</span> <span class="n">distance</span><span class="o">.</span><span class="n">rmse</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">:],</span> <span class="n">B</span><span class="p">[</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">:])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">rmse</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-<span class="go">0.183</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">rmse</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">0.18</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rmse</span> <span class="o">=</span> <span class="n">distance</span><span class="o">.</span><span class="n">rmse</span><span class="p">(</span><span class="n">tA</span><span class="p">[</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">:],</span> <span class="n">tB</span><span class="p">[</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">:])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">rmse</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">rmse</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="go">0.09</span>
 </pre></div>
 </div>
@@ -138,7 +157,7 @@ vol. 14 (2): 239-256.</p>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tA</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">tA</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">tA</span><span class="p">)</span>
 <span class="go">[[ 0.5  0.5]</span>
 <span class="go"> [ 0.   0. ]</span>
 <span class="go"> [ 0.  -0.1]</span>
@@ -148,7 +167,7 @@ vol. 14 (2): 239-256.</p>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tB</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">tB</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">tB</span><span class="p">)</span>
 <span class="go">[[ 0.4  0.5]</span>
 <span class="go"> [ 0.3  0. ]</span>
 <span class="go"> [ 1.   1. ]</span>
@@ -205,7 +224,7 @@ corresponding 3D points”, URL
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">C</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="go">[[0. 0.]</span>
 <span class="go"> [0. 1.]</span>
 <span class="go"> [1. 1.]</span>
@@ -302,14 +321,14 @@ URL <a class="reference external" href="http://geomatica.como.polimi.it/corsi/de
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
 <span class="go">[&#39;A&#39;, &#39;B&#39;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tA</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">tA</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">tA</span><span class="p">)</span>
 <span class="go">[[-1. -2.]</span>
 <span class="go"> [-1.  2.]</span>
 <span class="go"> [ 1.  2.]</span>
 <span class="go"> [ 1. -2.]</span>
 <span class="go"> [ 5. 10.]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tB</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">tB</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">tB</span><span class="p">)</span>
 <span class="go">[[-1. -2.]</span>
 <span class="go"> [-1.  2.]</span>
 <span class="go"> [ 1.  2.]</span>
@@ -344,19 +363,19 @@ URL <a class="reference external" href="http://geomatica.como.polimi.it/corsi/de
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
 <span class="go">[&#39;A&#39;, &#39;B&#39;, &#39;C&#39;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tA</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">tA</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">tA</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="go">[[-10. -20.   3.]</span>
 <span class="go"> [ -1.   2.   4.]</span>
 <span class="go"> [  1.  10.   5.]</span>
 <span class="go"> [  1.  -2.  60.]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tB</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">tB</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">tB</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="go">[[-10. -20.   3.]</span>
 <span class="go"> [ -1.   2.   4.]</span>
 <span class="go"> [  1.  10.   5.]</span>
 <span class="go"> [  1.  -2.  60.]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tC</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">coords_dict</span><span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">tC</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">tC</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="go">[[-10. -20.   3.]</span>
 <span class="go"> [ -1.   2.   4.]</span>
 <span class="go"> [  1.  10.   5.]</span>
@@ -374,75 +393,38 @@ URL <a class="reference external" href="http://geomatica.como.polimi.it/corsi/de
 
 
           </div>
-          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="modules.html">Pyoints</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="pyoints.html">pyoints package</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="pyoints.html#subpackages">Subpackages</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="pyoints.examples.html">pyoints.examples package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pyoints.grid.html">pyoints.grid package</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">pyoints.registration package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-pyoints.registration.icp">pyoints.registration.icp module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-pyoints.registration.registration">pyoints.registration.registration module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-pyoints.registration.rototranslations">pyoints.registration.rototranslations module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-pyoints.registration">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="pyoints.storage.html">pyoints.storage package</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.assertion">pyoints.assertion module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.assign">pyoints.assign module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.classification">pyoints.classification module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.clustering">pyoints.clustering module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.coords">pyoints.coords module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.distance">pyoints.distance module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.extent">pyoints.extent module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.filters">pyoints.filters module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.fit">pyoints.fit module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.georecords">pyoints.georecords module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.indexkd">pyoints.indexkd module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.interpolate">pyoints.interpolate module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.misc">pyoints.misc module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.normals">pyoints.normals module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.nptools">pyoints.nptools module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.polar">pyoints.polar module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.projection">pyoints.projection module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.smoothing">pyoints.smoothing module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.surface">pyoints.surface module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.transformation">pyoints.transformation module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.vector">pyoints.vector module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints">Module contents</a></li>
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo_pyoints.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pyoints.registration package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pyoints.registration.icp">pyoints.registration.icp module</a></li>
+<li><a class="reference internal" href="#module-pyoints.registration.registration">pyoints.registration.registration module</a></li>
+<li><a class="reference internal" href="#module-pyoints.registration.rototranslations">pyoints.registration.rototranslations module</a></li>
+<li><a class="reference internal" href="#module-pyoints.registration">Module contents</a></li>
 </ul>
 </li>
 </ul>
 
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="modules.html">Documentation overview</a><ul>
-  <li><a href="pyoints.html">pyoints package</a><ul>
-      <li>Previous: <a href="pyoints.grid.html" title="previous chapter">pyoints.grid package</a></li>
-      <li>Next: <a href="pyoints.storage.html" title="next chapter">pyoints.storage package</a></li>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pyoints.grid.html"
+                        title="previous chapter">pyoints.grid package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pyoints.storage.html"
+                        title="next chapter">pyoints.storage package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/pyoints.registration.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <div class="searchformwrapper">
@@ -455,32 +437,33 @@ URL <a class="reference external" href="http://geomatica.como.polimi.it/corsi/de
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2018, Sebastian Lamprecht.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="_sources/pyoints.registration.rst.txt"
-          rel="nofollow">Page source</a>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyoints.storage.html" title="pyoints.storage package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pyoints.grid.html" title="pyoints.grid package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Pyoints verson 0.2.1 beta documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >pyoints</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="pyoints.html" >pyoints package</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Sebastian Lamprecht.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+    </div>
   </body>
 </html>

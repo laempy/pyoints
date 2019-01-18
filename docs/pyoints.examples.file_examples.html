@@ -6,32 +6,45 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyoints.examples.file_examples package &#8212; Pyoints verson 0.2 alpha documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <title>pyoints.examples.file_examples package &#8212; Pyoints verson 0.2.1 beta documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pyoints.grid package" href="pyoints.grid.html" />
-    <link rel="prev" title="pyoints.examples package" href="pyoints.examples.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="prev" title="pyoints.examples package" href="pyoints.examples.html" /> 
   </head><body>
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyoints.grid.html" title="pyoints.grid package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pyoints.examples.html" title="pyoints.examples package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Pyoints verson 0.2.1 beta documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >pyoints</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="pyoints.html" >pyoints package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="pyoints.examples.html" accesskey="U">pyoints.examples package</a> &#187;</li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
-
           <div class="body" role="main">
             
   <div class="section" id="pyoints-examples-file-examples-package">
@@ -199,8 +212,8 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">geoRecords</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">loadPly</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="go">(1000,)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">descr</span><span class="p">))</span>
-<span class="go">[(&#39;classification&#39;, &#39;|u1&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;|u1&#39;), (&#39;keypoint&#39;, &#39;|u1&#39;), (&#39;synthetic&#39;, &#39;|u1&#39;), (&#39;values&#39;, &#39;&lt;f8&#39;), (&#39;withheld&#39;, &#39;|u1&#39;)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">))</span>
+<span class="go">[&#39;classification&#39;, &#39;coords&#39;, &#39;intensity&#39;, &#39;keypoint&#39;, &#39;synthetic&#39;, &#39;values&#39;, &#39;withheld&#39;]</span>
 </pre></div>
 </div>
 </div>
@@ -273,78 +286,40 @@ the output image using a Geographic Information System (GIS).</p>
 
 
           </div>
-          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="modules.html">Pyoints</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="pyoints.html">pyoints package</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="pyoints.html#subpackages">Subpackages</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="pyoints.examples.html">pyoints.examples package</a><ul class="current">
-<li class="toctree-l4 current"><a class="reference internal" href="pyoints.examples.html#subpackages">Subpackages</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pyoints.examples.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pyoints.examples.html#module-pyoints.examples.base_example">pyoints.examples.base_example module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pyoints.examples.html#module-pyoints.examples.grid_example">pyoints.examples.grid_example module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pyoints.examples.html#module-pyoints.examples.stemfilter_example">pyoints.examples.stemfilter_example module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pyoints.examples.html#module-pyoints.examples">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="pyoints.grid.html">pyoints.grid package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pyoints.registration.html">pyoints.registration package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pyoints.storage.html">pyoints.storage package</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.assertion">pyoints.assertion module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.assign">pyoints.assign module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.classification">pyoints.classification module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.clustering">pyoints.clustering module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.coords">pyoints.coords module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.distance">pyoints.distance module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.extent">pyoints.extent module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.filters">pyoints.filters module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.fit">pyoints.fit module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.georecords">pyoints.georecords module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.indexkd">pyoints.indexkd module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.interpolate">pyoints.interpolate module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.misc">pyoints.misc module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.normals">pyoints.normals module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.nptools">pyoints.nptools module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.polar">pyoints.polar module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.projection">pyoints.projection module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.smoothing">pyoints.smoothing module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.surface">pyoints.surface module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.transformation">pyoints.transformation module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints.vector">pyoints.vector module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyoints.html#module-pyoints">Module contents</a></li>
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo_pyoints.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pyoints.examples.file_examples package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pyoints.examples.file_examples.csv_example">pyoints.examples.file_examples.csv_example module</a></li>
+<li><a class="reference internal" href="#module-pyoints.examples.file_examples.dump_example">pyoints.examples.file_examples.dump_example module</a></li>
+<li><a class="reference internal" href="#module-pyoints.examples.file_examples.las_example">pyoints.examples.file_examples.las_example module</a></li>
+<li><a class="reference internal" href="#module-pyoints.examples.file_examples.ply_example">pyoints.examples.file_examples.ply_example module</a></li>
+<li><a class="reference internal" href="#module-pyoints.examples.file_examples.raster_example">pyoints.examples.file_examples.raster_example module</a></li>
+<li><a class="reference internal" href="#module-pyoints.examples.file_examples">Module contents</a></li>
 </ul>
 </li>
 </ul>
 
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="modules.html">Documentation overview</a><ul>
-  <li><a href="pyoints.html">pyoints package</a><ul>
-  <li><a href="pyoints.examples.html">pyoints.examples package</a><ul>
-      <li>Previous: <a href="pyoints.examples.html" title="previous chapter">pyoints.examples package</a></li>
-      <li>Next: <a href="pyoints.grid.html" title="next chapter">pyoints.grid package</a></li>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pyoints.examples.html"
+                        title="previous chapter">pyoints.examples package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pyoints.grid.html"
+                        title="next chapter">pyoints.grid package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/pyoints.examples.file_examples.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <div class="searchformwrapper">
@@ -357,32 +332,34 @@ the output image using a Geographic Information System (GIS).</p>
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2018, Sebastian Lamprecht.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="_sources/pyoints.examples.file_examples.rst.txt"
-          rel="nofollow">Page source</a>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyoints.grid.html" title="pyoints.grid package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pyoints.examples.html" title="pyoints.examples package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Pyoints verson 0.2.1 beta documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >pyoints</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="pyoints.html" >pyoints package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="pyoints.examples.html" >pyoints.examples package</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Sebastian Lamprecht.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+    </div>
   </body>
 </html>

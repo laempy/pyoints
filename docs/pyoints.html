@@ -6,32 +6,43 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyoints package &#8212; Pyoints verson 0.2 alpha documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <title>pyoints package &#8212; Pyoints verson 0.2.1 beta documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pyoints.examples package" href="pyoints.examples.html" />
-    <link rel="prev" title="pyoints" href="modules.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="prev" title="pyoints" href="modules.html" /> 
   </head><body>
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyoints.examples.html" title="pyoints.examples package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="pyoints"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Pyoints verson 0.2.1 beta documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">pyoints</a> &#187;</li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
-
           <div class="body" role="main">
             
   <div class="section" id="pyoints-package">
@@ -870,7 +881,8 @@ pp. 226-231.</p>
 <dl class="function">
 <dt id="pyoints.clustering.majority_clusters">
 <code class="descclassname">pyoints.clustering.</code><code class="descname">majority_clusters</code><span class="sig-paren">(</span><em>indexKD</em>, <em>r</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/clustering.html#majority_clusters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.clustering.majority_clusters" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clustering by majority voting.</p>
+<dd><p>Clustering by majority voting. The algorithm assigns points iteratively
+to the most dominant class within a given radius.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1261,7 +1273,7 @@ automatically. Setting new coordinates clears the cache.</p>
 
 <dl class="function">
 <dt id="pyoints.distance.rmse">
-<code class="descclassname">pyoints.distance.</code><code class="descname">rmse</code><span class="sig-paren">(</span><em>A</em>, <em>B</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/distance.html#rmse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.distance.rmse" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyoints.distance.</code><code class="descname">rmse</code><span class="sig-paren">(</span><em>A</em>, <em>B=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/distance.html#rmse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.distance.rmse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the Root Mean Squared Error of corresponding data sets.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1278,7 +1290,7 @@ automatically. Setting new coordinates clears the cache.</p>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">B</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">2.2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">2.1</span><span class="p">)]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">rmse</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">rmse</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">))</span>
 <span class="go">0.15</span>
 </pre></div>
 </div>
@@ -1935,15 +1947,15 @@ identify neighbouring points is adjusted to the distance of the scanner.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">vec</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">residuals</span> <span class="o">=</span> <span class="n">fit_cylinder</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 <span class="go">2.5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">vec</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">vec</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
 <span class="go">[10. 20. 30.]</span>
 </pre></div>
 </div>
 <p>Check distances to vector.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dists</span> <span class="o">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">dists</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dists</span><span class="p">)],</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">dists</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dists</span><span class="p">)])</span>
 <span class="go">[2.5 2.5]</span>
 </pre></div>
 </div>
@@ -1986,7 +1998,7 @@ determine the circle parameters.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">center</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">residuals</span> <span class="o">=</span> <span class="n">fit_sphere</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">center</span><span class="p">)</span>
 <span class="go">[2. 4.]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 <span class="go">5.0</span>
 </pre></div>
 </div>
@@ -2477,13 +2489,18 @@ data.</p>
 <p class="last"><a class="reference internal" href="#pyoints.georecords.GeoRecords" title="pyoints.georecords.GeoRecords"><code class="xref py py-class docutils literal notranslate"><span class="pre">GeoRecords</span></code></a></p>
 </div>
 <dl class="attribute">
-<dt id="pyoints.georecords.LasRecords.STANDARD_FIELDS">
-<code class="descname">STANDARD_FIELDS</code><em class="property"> = [('user_data', &lt;class 'numpy.uint8'&gt;), ('intensity', &lt;class 'numpy.uint8'&gt;), ('pt_src_id', &lt;class 'numpy.uint8'&gt;), ('gps_time', &lt;class 'float'&gt;), ('red', &lt;class 'numpy.uint8'&gt;), ('green', &lt;class 'numpy.uint8'&gt;), ('blue', &lt;class 'numpy.uint8'&gt;), ('nir', &lt;class 'numpy.uint8'&gt;)]</em><a class="headerlink" href="#pyoints.georecords.LasRecords.STANDARD_FIELDS" title="Permalink to this definition">¶</a></dt>
+<dt id="pyoints.georecords.LasRecords.CUSTOM_FIELDS">
+<code class="descname">CUSTOM_FIELDS</code><em class="property"> = [('coords', &lt;class 'float'&gt;, 3), ('classification', &lt;class 'numpy.uint8'&gt;), ('num_returns', &lt;class 'numpy.uint8'&gt;), ('return_num', &lt;class 'numpy.uint8'&gt;), ('synthetic', &lt;class 'bool'&gt;), ('keypoint', &lt;class 'bool'&gt;), ('withheld', &lt;class 'bool'&gt;)]</em><a class="headerlink" href="#pyoints.georecords.LasRecords.CUSTOM_FIELDS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="pyoints.georecords.LasRecords.USER_DEFINED_FIELDS">
-<code class="descname">USER_DEFINED_FIELDS</code><em class="property"> = [('coords', &lt;class 'float'&gt;, 3), ('classification', &lt;class 'numpy.uint8'&gt;), ('num_returns', &lt;class 'numpy.uint8'&gt;), ('return_num', &lt;class 'numpy.uint8'&gt;), ('synthetic', &lt;class 'bool'&gt;), ('keypoint', &lt;class 'bool'&gt;), ('withheld', &lt;class 'bool'&gt;), ('normals', &lt;class 'float'&gt;, 3)]</em><a class="headerlink" href="#pyoints.georecords.LasRecords.USER_DEFINED_FIELDS" title="Permalink to this definition">¶</a></dt>
+<dt id="pyoints.georecords.LasRecords.EXTRA_FIELDS">
+<code class="descname">EXTRA_FIELDS</code><em class="property"> = [('normals', &lt;class 'float'&gt;, 3)]</em><a class="headerlink" href="#pyoints.georecords.LasRecords.EXTRA_FIELDS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyoints.georecords.LasRecords.STANDARD_FIELDS">
+<code class="descname">STANDARD_FIELDS</code><em class="property"> = [('user_data', &lt;class 'numpy.uint8'&gt;), ('intensity', &lt;class 'numpy.uint8'&gt;), ('pt_src_id', &lt;class 'numpy.uint8'&gt;), ('gps_time', &lt;class 'float'&gt;), ('red', &lt;class 'numpy.uint8'&gt;), ('green', &lt;class 'numpy.uint8'&gt;), ('blue', &lt;class 'numpy.uint8'&gt;), ('nir', &lt;class 'numpy.uint8'&gt;)]</em><a class="headerlink" href="#pyoints.georecords.LasRecords.STANDARD_FIELDS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -3319,9 +3336,9 @@ of [<cite>min_th</cite>, <cite>max_th</cite>].</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">interpolator</span> <span class="o">=</span> <span class="n">LinearInterpolator</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">interpolator</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">interpolator</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
 <span class="go">1.5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">interpolator</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">interpolator</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]))</span>
 <span class="go">[1.5 0.  nan]</span>
 </pre></div>
 </div>
@@ -3333,9 +3350,9 @@ of [<cite>min_th</cite>, <cite>max_th</cite>].</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">interpolator</span> <span class="o">=</span> <span class="n">LinearInterpolator</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">interpolator</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">interpolator</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
 <span class="go">[1.  2.  5.5]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">interpolator</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">interpolator</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]))</span>
 <span class="go">[[1.  2.  5.5]</span>
 <span class="go"> [0.  1.  3. ]</span>
 <span class="go"> [nan nan nan]]</span>
@@ -3429,9 +3446,9 @@ of [<cite>min_th</cite>, <cite>max_th</cite>].</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">interpolator</span> <span class="o">=</span> <span class="n">PolynomInterpolator</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">interpolator</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">interpolator</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
 <span class="go">1.5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">interpolator</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">interpolator</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]))</span>
 <span class="go">[ 1.5  0.  -1.5]</span>
 </pre></div>
 </div>
@@ -3443,12 +3460,12 @@ of [<cite>min_th</cite>, <cite>max_th</cite>].</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">interpolator</span> <span class="o">=</span> <span class="n">PolynomInterpolator</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">interpolator</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="mi">2</span><span class="p">))</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">interpolator</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
 <span class="go">[1.  2.  5.5]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">interpolator</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]),</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">interpolator</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]))</span>
 <span class="go">[[ 1.   2.   5.5]</span>
-<span class="go"> [-0.   1.   3. ]</span>
-<span class="go"> [-1.  -0.   0.5]]</span>
+<span class="go"> [ 0.   1.   3. ]</span>
+<span class="go"> [-1.   0.   0.5]]</span>
 </pre></div>
 </div>
 <dl class="attribute">
@@ -3485,6 +3502,26 @@ of [<cite>min_th</cite>, <cite>max_th</cite>].</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyoints.misc.print_rounded">
+<code class="descclassname">pyoints.misc.</code><code class="descname">print_rounded</code><span class="sig-paren">(</span><em>values</em>, <em>decimals=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/misc.html#print_rounded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.misc.print_rounded" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints rounded values.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>values</strong> (<em>Number</em><em> or </em><em>array_like</em><em>(</em><em>Number</em><em>)</em>) – Values to display.</li>
+<li><strong>decimals</strong> (<em>optional</em><em>, </em><em>int</em>) – Number of decimals passed to ‘numpy.round’.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>Sets negative values close to zero to zero.</p>
 </dd></dl>
 
 <dl class="function">
@@ -3549,7 +3586,7 @@ assigning the derived normal to all neighbours.</p>
 </div>
 <p>Approximate two normals using all neighbours within radius <cite>n</cite>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normals</span> <span class="o">=</span> <span class="n">approximate_normals</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">normals</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">normals</span><span class="p">)</span>
 <span class="go">[[ 0.71 -0.71]</span>
 <span class="go"> [ 0.45 -0.89]</span>
 <span class="go"> [ 0.45 -0.89]</span>
@@ -3561,7 +3598,7 @@ assigning the derived normal to all neighbours.</p>
 </div>
 <p>Approximate two normals using <cite>k</cite> nearest neighbours.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normals</span> <span class="o">=</span> <span class="n">approximate_normals</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">normals</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">normals</span><span class="p">)</span>
 <span class="go">[[ 0.76 -0.65]</span>
 <span class="go"> [ 0.76 -0.65]</span>
 <span class="go"> [ 0.59  0.81]</span>
@@ -3573,7 +3610,7 @@ assigning the derived normal to all neighbours.</p>
 </div>
 <p>Approximate two normals using <cite>k</cite> nearest neighbours within radius <cite>r</cite>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normals</span> <span class="o">=</span> <span class="n">approximate_normals</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">normals</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">normals</span><span class="p">)</span>
 <span class="go">[[ 0.71 -0.71]</span>
 <span class="go"> [ 0.45 -0.89]</span>
 <span class="go"> [ 0.45 -0.89]</span>
@@ -3622,7 +3659,7 @@ None, <cite>indices</cite> is set to <cite>range(n)</cite>.</li>
 </div>
 <p>Fit normals using <cite>k</cite> nearest neighbours.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normals</span> <span class="o">=</span> <span class="n">fit_normals</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">normals</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">normals</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="go">[[ 0.71 -0.71]</span>
 <span class="go"> [ 0.71 -0.71]</span>
 <span class="go"> [ 0.    1.  ]</span>
@@ -3634,7 +3671,7 @@ None, <cite>indices</cite> is set to <cite>range(n)</cite>.</li>
 </div>
 <p>Fit normals a using all nearest neighbours within radius <cite>r</cite>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normals</span> <span class="o">=</span> <span class="n">fit_normals</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">normals</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">normals</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="go">[[ 0.71 -0.71]</span>
 <span class="go"> [ 0.84 -0.54]</span>
 <span class="go"> [ 0.45 -0.89]</span>
@@ -3646,7 +3683,7 @@ None, <cite>indices</cite> is set to <cite>range(n)</cite>.</li>
 </div>
 <p>Fit normals using <cite>k</cite> nearest neighbours within radius <cite>r</cite>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normals</span> <span class="o">=</span> <span class="n">fit_normals</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">normals</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">normals</span><span class="p">)</span>
 <span class="go">[[ 0.71 -0.71]</span>
 <span class="go"> [ 0.84 -0.54]</span>
 <span class="go"> [ 0.76 -0.65]</span>
@@ -4636,7 +4673,7 @@ axes angles.</td>
 <p>2D coordinates.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">)]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pcoords</span> <span class="o">=</span> <span class="n">coords_to_polar</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">pcoords</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">pcoords</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">[[ 0.     0.   ]</span>
 <span class="go"> [ 1.     1.571]</span>
 <span class="go"> [ 1.     0.   ]</span>
@@ -4648,7 +4685,7 @@ axes angles.</td>
 <p>3D coordinates.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">)]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pcoords</span> <span class="o">=</span> <span class="n">coords_to_polar</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">pcoords</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">pcoords</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">[[ 0.     0.     0.   ]</span>
 <span class="go"> [ 1.414  0.785  1.571]</span>
 <span class="go"> [ 1.732 -2.356  2.186]</span>
@@ -4685,7 +4722,7 @@ system.</td>
 <p>2D coordinates.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pcoords</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">polar_to_coords</span><span class="p">(</span><span class="n">pcoords</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">[[ 0.     0.   ]</span>
 <span class="go"> [ 3.     0.   ]</span>
 <span class="go"> [-3.     0.   ]</span>
@@ -4696,7 +4733,7 @@ system.</td>
 <p>3D coordinates.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pcoords</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">polar_to_coords</span><span class="p">(</span><span class="n">pcoords</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">[[ 0.     0.     0.   ]</span>
 <span class="go"> [ 0.     0.     2.   ]</span>
 <span class="go"> [ 0.     0.    -4.   ]</span>
@@ -4739,7 +4776,7 @@ systems.</p>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tCoords</span> <span class="o">=</span> <span class="n">geoTransfrom</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">tCoords</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">tCoords</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">[[2560446.801 5537522.386]</span>
 <span class="go"> [2560808.009 5537303.984]</span>
 <span class="go"> [2564724.211 5539797.116]</span>
@@ -4747,7 +4784,7 @@ systems.</p>
 </pre></div>
 </div>
 <p>Reverse transformation.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">geoTransfrom</span><span class="p">(</span><span class="n">tCoords</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="mi">3</span><span class="p">))</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">geoTransfrom</span><span class="p">(</span><span class="n">tCoords</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">[[ 6.842 49.971]</span>
 <span class="go"> [ 6.847 49.969]</span>
 <span class="go"> [ 6.902 49.991]</span>
@@ -4950,7 +4987,7 @@ and returns a smoothed coordinate.</li>
 <p>Smooth coordinates to get a more regular surface. But the first two
 coordinate dimensions are affected, too.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">scoords</span> <span class="o">=</span> <span class="n">mean_ball</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">scoords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">scoords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">[8.    8.    0.033]</span>
 </pre></div>
 </div>
@@ -4959,13 +4996,13 @@ coordinate dimensions are affected, too.</p>
 <span class="gp">... </span>    <span class="n">coord</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">ncoords</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="n">coord</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scoords</span> <span class="o">=</span> <span class="n">mean_ball</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">aggregate_function</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">scoords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">scoords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">[9.    9.    0.026]</span>
 </pre></div>
 </div>
 <p>Increase number of iterations to get a smoother result.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">scoords</span> <span class="o">=</span> <span class="n">mean_ball</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="n">num_iter</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">aggregate_function</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">scoords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">scoords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">[9.   9.   0.01]</span>
 </pre></div>
 </div>
@@ -5012,7 +5049,7 @@ and returns a smoothed coordinate.</li>
 <p>Smooth coordinates to get a more regular surface. But the first two
 coordinate dimensions are affected, too.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">scoords</span> <span class="o">=</span> <span class="n">mean_knn</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">scoords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">scoords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">[8.2  8.2  0.02]</span>
 </pre></div>
 </div>
@@ -5021,7 +5058,7 @@ coordinate dimensions are affected, too.</p>
 <span class="gp">... </span>    <span class="n">coord</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">ncoords</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="n">coord</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scoords</span> <span class="o">=</span> <span class="n">mean_knn</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">aggregate_function</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">scoords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">scoords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">[9.    9.    0.033]</span>
 </pre></div>
 </div>
@@ -5051,7 +5088,7 @@ coordinate dimensions are affected, too.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><code class="xref py py-class docutils literal notranslate"><span class="pre">poynts.interpolate.Interpolator</span></code></p>
+<p class="last"><a class="reference internal" href="#pyoints.interpolate.Interpolator" title="pyoints.interpolate.Interpolator"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyoints.interpolate.Interpolator</span></code></a></p>
 </div>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">method</span> <span class="o">=</span> <span class="n">interpolate</span><span class="o">.</span><span class="n">LinearInterpolator</span>
@@ -5121,7 +5158,7 @@ coordinate dimensions are affected, too.</p>
 <span class="go"> [ 0.   0.   1. ]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
 <span class="go">2</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
 <span class="go">[2. 3.]</span>
 </pre></div>
 </div>
@@ -5185,7 +5222,7 @@ system.</td>
 <span class="go"> [0. 2. 0.]</span>
 <span class="go"> [0. 0. 1.]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">explained_variance</span><span class="p">([(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">[0.688 4.75 ]</span>
 </pre></div>
 </div>
@@ -5220,7 +5257,7 @@ system.</td>
 <span class="go"> [0. 2. 0.]</span>
 <span class="go"> [0. 0. 1.]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">explained_variance_ratio</span><span class="p">([(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">[0.126 0.874]</span>
 </pre></div>
 </div>
@@ -5314,8 +5351,8 @@ system.</td>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">lcoords</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">to_global</span><span class="p">([(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">13</span><span class="p">),</span> <span class="p">(</span><span class="mf">2.5</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">)])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">lcoords</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gcoords</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">to_global</span><span class="p">([(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">13</span><span class="p">),</span> <span class="p">(</span><span class="mf">2.5</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">gcoords</span><span class="p">)</span>
 <span class="go">[[ 0.  0.]</span>
 <span class="go"> [ 0.  1.]</span>
 <span class="go"> [ 1.  0.]</span>
@@ -5344,7 +5381,7 @@ system.</td>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">lcoords</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">to_local</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">lcoords</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">lcoords</span><span class="p">)</span>
 <span class="go">[[ 2.   3. ]</span>
 <span class="go"> [ 2.  13. ]</span>
 <span class="go"> [ 2.5  3. ]</span>
@@ -5462,12 +5499,12 @@ used to fit a PCA.</td>
 <p class="rubric">Examples</p>
 <p>Two dimensional case.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span> <span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">[[0.5 0.  2. ]</span>
 <span class="go"> [0.  2.  3. ]</span>
 <span class="go"> [0.  0.  1. ]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">add_dim</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">[[0.5 0.  0.  2. ]</span>
 <span class="go"> [0.  2.  0.  3. ]</span>
 <span class="go"> [0.  0.  1.  0. ]</span>
@@ -5707,6 +5744,40 @@ scale <cite>s</cite>.</li>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyoints.transformation.q_matrix">
+<code class="descclassname">pyoints.transformation.</code><code class="descname">q_matrix</code><span class="sig-paren">(</span><em>q</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/transformation.html#q_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.transformation.q_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an rotation matrix based on quaternion values.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>q</strong> (<em>array_like</em><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>4</em><em>)</em><em>)</em>) – Quaternion parameters (w, x, y, z).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Rotation matrix derived from quaternions.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#pyoints.transformation.LocalSystem" title="pyoints.transformation.LocalSystem">LocalSystem</a>(int, shape=(4, 4))</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">q_matrix</span><span class="p">([</span><span class="mf">0.7071</span><span class="p">,</span> <span class="mf">0.7071</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">[[ 1.  0.  0.  0.]</span>
+<span class="go"> [ 0.  0. -1.  0.]</span>
+<span class="go"> [ 0.  1.  0.  0.]</span>
+<span class="go"> [ 0.  0.  0.  1.]]</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">det</span> <span class="o">=</span> <span class="n">decomposition</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+<span class="go">[ 1.57077715 -0.          0.        ]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="go">[0. 0. 0.]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyoints.transformation.r_matrix">
 <code class="descclassname">pyoints.transformation.</code><code class="descname">r_matrix</code><span class="sig-paren">(</span><em>a</em>, <em>order='xyz'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/transformation.html#r_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.transformation.r_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a rotation matrix.</p>
@@ -5718,8 +5789,8 @@ scale <cite>s</cite>.</li>
 <li><strong>r</strong> (<em>Number</em><em> or </em><em>array_like</em><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>k</em><em>)</em><em>)</em>) – Rotation coefficients for each coordinate dimension. At least two
 coefficients are required.</li>
 <li><strong>order</strong> (<em>optional</em><em>, </em><em>String</em>) – For at least three axes, <cite>order</cite> specifies the order of rotations. For
-example, an order of <cite>zxy</cite> means first to translate according to z axis,
-then rotate according to x-axis, and finally rotate according to
+example, an order of <cite>zxy</cite> means first to translate according to z
+axis, then rotate according to x-axis, and finally rotate according to
 y-axis.</li>
 </ul>
 </td>
@@ -5741,7 +5812,7 @@ y-axis.</li>
 <p class="rubric">Examples</p>
 <p>Two dimensional case.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">r_matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">[[ 0.707 -0.707  0.   ]</span>
 <span class="go"> [ 0.707  0.707  0.   ]</span>
 <span class="go"> [ 0.     0.     1.   ]]</span>
@@ -5749,8 +5820,8 @@ y-axis.</li>
 </div>
 <p>Three dimensional case.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">r_matrix</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-<span class="go">[[ 0.707 -0.     0.707  0.   ]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">[[ 0.707  0.     0.707  0.   ]</span>
 <span class="go"> [ 0.707  0.    -0.707  0.   ]</span>
 <span class="go"> [ 0.     1.     0.     0.   ]</span>
 <span class="go"> [ 0.     0.     0.     1.   ]]</span>
@@ -6004,13 +6075,13 @@ plane.</p>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">local_coords</span> <span class="o">=</span> <span class="n">plane</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">global_coords</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">local_coords</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">local_coords</span><span class="p">)</span>
 <span class="go">[[ 0.  0.  0.]</span>
 <span class="go"> [ 2.  0.  0.]</span>
 <span class="go"> [-3. -2. -2.]</span>
 <span class="go"> [-4. -4. -5.]</span>
 <span class="go"> [ 4.  3.  0.]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">plane</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">to_global</span><span class="p">(</span><span class="n">local_coords</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">plane</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">to_global</span><span class="p">(</span><span class="n">local_coords</span><span class="p">))</span>
 <span class="go">[[ 1.  2.  3.]</span>
 <span class="go"> [ 1.  2.  5.]</span>
 <span class="go"> [-1.  0.  0.]</span>
@@ -6019,7 +6090,7 @@ plane.</p>
 </pre></div>
 </div>
 <p>Calculation of the distance of the global points to the plane.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">plane</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">global_coords</span><span class="p">))</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">plane</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">global_coords</span><span class="p">))</span>
 <span class="go">[0. 0. 2. 5. 0.]</span>
 </pre></div>
 </div>
@@ -6033,7 +6104,7 @@ plane.</p>
 <span class="go">[[ 0.6 -0.8  1. ]</span>
 <span class="go"> [ 0.8  0.6  2. ]</span>
 <span class="go"> [ 0.   0.   1. ]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">plane</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">eigen_values</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">plane</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">eigen_values</span><span class="p">)</span>
 <span class="go">[50.  0.]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">plane</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
 <span class="go">2</span>
@@ -6046,7 +6117,7 @@ plane.</p>
 <span class="gp">... </span>    <span class="n">plane</span><span class="o">.</span><span class="n">vec</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="mi">3</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">plane</span><span class="o">.</span><span class="n">origin</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">plane</span><span class="o">.</span><span class="n">vec</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
 <span class="gp">... </span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">global_coords</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">global_coords</span><span class="p">))</span>
 <span class="go">[[ 1  2]</span>
 <span class="go"> [ 4  6]</span>
 <span class="go"> [ 0  1]</span>
@@ -6054,12 +6125,12 @@ plane.</p>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">local_coords</span> <span class="o">=</span> <span class="n">plane</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">global_coords</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">local_coords</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">local_coords</span><span class="p">)</span>
 <span class="go">[[ 0.   0. ]</span>
 <span class="go"> [ 5.   0. ]</span>
 <span class="go"> [-1.4  0.2]</span>
 <span class="go"> [10.   0. ]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">plane</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">to_global</span><span class="p">(</span><span class="n">local_coords</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">plane</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">to_global</span><span class="p">(</span><span class="n">local_coords</span><span class="p">))</span>
 <span class="go">[[ 1.  2.]</span>
 <span class="go"> [ 4.  6.]</span>
 <span class="go"> [ 0.  1.]</span>
@@ -6067,7 +6138,7 @@ plane.</p>
 </pre></div>
 </div>
 <p>Calculation of the distance of the global points to the plane.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">plane</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">global_coords</span><span class="p">))</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">plane</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">global_coords</span><span class="p">))</span>
 <span class="go">[0.  0.  0.2 0. ]</span>
 </pre></div>
 </div>
@@ -6137,16 +6208,16 @@ plane.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="mi">45</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;rts&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
 <span class="go">[[ 0.71 -0.71  1.  ]</span>
 <span class="go"> [ 0.71  0.71  2.  ]</span>
 <span class="go"> [ 0.    0.    1.  ]]</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plane</span> <span class="o">=</span> <span class="n">plane</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">plane</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">plane</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
 <span class="go">[1.   3.41]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">plane</span><span class="o">.</span><span class="n">vec</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">plane</span><span class="o">.</span><span class="n">vec</span><span class="p">)</span>
 <span class="go">[[0.71 0.71]]</span>
 </pre></div>
 </div>
@@ -6271,7 +6342,8 @@ defined by the vector.</p>
 <dl class="method">
 <dt id="pyoints.vector.Vector.angles">
 <code class="descname">angles</code><span class="sig-paren">(</span><em>deg=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/vector.html#Vector.angles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.vector.Vector.angles" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the angles of the vector in relation to the coordinate axes.</p>
+<dd><p>Calculates the angles of the vector in relation to the coordinate
+axes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -6287,7 +6359,7 @@ defined by the vector.</p>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">angles</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">angles</span><span class="p">(</span><span class="n">deg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">[68.199 56.145 42.031]</span>
 </pre></div>
 </div>
@@ -6317,13 +6389,13 @@ defined by the vector.</p>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dist</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">distance</span><span class="p">([(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">[0.    0.    0.    1.342 1.342]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
 <span class="go">[ 1. -1.]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">pc</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">pc</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
 <span class="go">[1. 2.]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">pc</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">pc</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
 <span class="go">[-2.  1.]</span>
 </pre></div>
 </div>
@@ -6384,7 +6456,7 @@ system.</td>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ks</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">k</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="n">origin</span> <span class="o">-</span> <span class="n">v</span><span class="o">.</span><span class="n">vec</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">origin</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">v</span><span class="o">.</span><span class="n">vec</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">ks</span><span class="p">)</span>
 <span class="go">[-1.  1. -2.]</span>
 </pre></div>
 </div>
@@ -6434,16 +6506,16 @@ system.</td>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="mi">45</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">transformation</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;rts&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
 <span class="go">[[ 0.71 -0.71  1.  ]</span>
 <span class="go"> [ 0.71  0.71  2.  ]</span>
 <span class="go"> [ 0.    0.    1.  ]]</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">vec</span> <span class="o">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">vec</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">vec</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
 <span class="go">[1.   3.41]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">vec</span><span class="o">.</span><span class="n">vec</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">vec</span><span class="o">.</span><span class="n">vec</span><span class="p">)</span>
 <span class="go">[0.71 0.71]</span>
 </pre></div>
 </div>
@@ -6465,7 +6537,7 @@ system.</td>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>w</strong> (<em>v</em><em>,</em>) – Vector of ‘k’ dimensions.</li>
+<li><strong>w</strong> (<em>v</em><em>,</em>) – Vector or <cite>n</cite> vectors of <cite>k</cite> dimensions.</li>
 <li><strong>deg</strong> (<em>optional</em><em>, </em><em>bool</em>) – Indicates whether or not the angle is returned in degree.</li>
 </ul>
 </td>
@@ -6498,6 +6570,11 @@ system.</td>
 <p>4D
 &gt;&gt;&gt; angle([1, 0, 0, 0], [0, 1, 1, 0], deg=True)
 90.0</p>
+<p>Multiple vectors at once.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">angle</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">deg</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="go">[90. 45.]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -6622,7 +6699,7 @@ basic vectors is one.</p>
 </div>
 <p>Keep the original orientation, but set a new origin.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">basis</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 <span class="go">[[ 1.  0. -2.]</span>
 <span class="go"> [ 0.  1. -3.]</span>
 <span class="go"> [ 0.  0.  1.]]</span>
@@ -6684,10 +6761,10 @@ basic vectors is one.</p>
 <p class="last"><a class="reference internal" href="#pyoints.vector.rad_to_deg" title="pyoints.vector.rad_to_deg"><code class="xref py py-func docutils literal notranslate"><span class="pre">rad_to_deg()</span></code></a></p>
 </div>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">deg_to_rad</span><span class="p">(</span><span class="mi">90</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">deg_to_rad</span><span class="p">(</span><span class="mi">90</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">1.571</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rad</span> <span class="o">=</span> <span class="n">deg_to_rad</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">360</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">rad</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">rad</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">[0.    0.785 3.142 6.283]</span>
 </pre></div>
 </div>
@@ -6911,7 +6988,8 @@ argument and needs to return the distance to the surface.</li>
 <dl class="function">
 <dt id="pyoints.vector.zenith">
 <code class="descclassname">pyoints.vector.</code><code class="descname">zenith</code><span class="sig-paren">(</span><em>v</em>, <em>axis=-1</em>, <em>deg=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/vector.html#zenith"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.vector.zenith" title="Permalink to this definition">¶</a></dt>
-<dd><p>Angle between a vector or vectors in relation to a specific coordinate axes.</p>
+<dd><p>Angle between a vector or vectors in relation to a specific coordinate
+axes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -6933,22 +7011,22 @@ last dimension is used.</li>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">zenith</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">zenith</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 <span class="go">90.0</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">zenith</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">zenith</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 <span class="go">0.0</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">zenith</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">zenith</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 <span class="go">[nan 90.  0. 45.]</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">zenith</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">zenith</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 <span class="go">45.0</span>
 </pre></div>
 </div>
@@ -6962,66 +7040,57 @@ last dimension is used.</li>
 
 
           </div>
-          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="modules.html">Pyoints</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">pyoints package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="pyoints.examples.html">pyoints.examples package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pyoints.grid.html">pyoints.grid package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pyoints.registration.html">pyoints.registration package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pyoints.storage.html">pyoints.storage package</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyoints.assertion">pyoints.assertion module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyoints.assign">pyoints.assign module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyoints.classification">pyoints.classification module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyoints.clustering">pyoints.clustering module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyoints.coords">pyoints.coords module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyoints.distance">pyoints.distance module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyoints.extent">pyoints.extent module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyoints.filters">pyoints.filters module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyoints.fit">pyoints.fit module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyoints.georecords">pyoints.georecords module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyoints.indexkd">pyoints.indexkd module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyoints.interpolate">pyoints.interpolate module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyoints.misc">pyoints.misc module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyoints.normals">pyoints.normals module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyoints.nptools">pyoints.nptools module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyoints.polar">pyoints.polar module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyoints.projection">pyoints.projection module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyoints.smoothing">pyoints.smoothing module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyoints.surface">pyoints.surface module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyoints.transformation">pyoints.transformation module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyoints.vector">pyoints.vector module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyoints">Module contents</a></li>
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo_pyoints.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pyoints package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pyoints.assertion">pyoints.assertion module</a></li>
+<li><a class="reference internal" href="#module-pyoints.assign">pyoints.assign module</a></li>
+<li><a class="reference internal" href="#module-pyoints.classification">pyoints.classification module</a></li>
+<li><a class="reference internal" href="#module-pyoints.clustering">pyoints.clustering module</a></li>
+<li><a class="reference internal" href="#module-pyoints.coords">pyoints.coords module</a></li>
+<li><a class="reference internal" href="#module-pyoints.distance">pyoints.distance module</a></li>
+<li><a class="reference internal" href="#module-pyoints.extent">pyoints.extent module</a></li>
+<li><a class="reference internal" href="#module-pyoints.filters">pyoints.filters module</a></li>
+<li><a class="reference internal" href="#module-pyoints.fit">pyoints.fit module</a></li>
+<li><a class="reference internal" href="#module-pyoints.georecords">pyoints.georecords module</a></li>
+<li><a class="reference internal" href="#module-pyoints.indexkd">pyoints.indexkd module</a></li>
+<li><a class="reference internal" href="#module-pyoints.interpolate">pyoints.interpolate module</a></li>
+<li><a class="reference internal" href="#module-pyoints.misc">pyoints.misc module</a></li>
+<li><a class="reference internal" href="#module-pyoints.normals">pyoints.normals module</a></li>
+<li><a class="reference internal" href="#module-pyoints.nptools">pyoints.nptools module</a></li>
+<li><a class="reference internal" href="#module-pyoints.polar">pyoints.polar module</a></li>
+<li><a class="reference internal" href="#module-pyoints.projection">pyoints.projection module</a></li>
+<li><a class="reference internal" href="#module-pyoints.smoothing">pyoints.smoothing module</a></li>
+<li><a class="reference internal" href="#module-pyoints.surface">pyoints.surface module</a></li>
+<li><a class="reference internal" href="#module-pyoints.transformation">pyoints.transformation module</a></li>
+<li><a class="reference internal" href="#module-pyoints.vector">pyoints.vector module</a></li>
+<li><a class="reference internal" href="#module-pyoints">Module contents</a></li>
 </ul>
 </li>
 </ul>
 
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="modules.html">Documentation overview</a><ul>
-      <li>Previous: <a href="modules.html" title="previous chapter">pyoints</a></li>
-      <li>Next: <a href="pyoints.examples.html" title="next chapter">pyoints.examples package</a></li>
-  </ul></li>
-</ul>
-</div>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="modules.html"
+                        title="previous chapter">pyoints</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pyoints.examples.html"
+                        title="next chapter">pyoints.examples package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/pyoints.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <div class="searchformwrapper">
@@ -7034,32 +7103,32 @@ last dimension is used.</li>
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2018, Sebastian Lamprecht.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="_sources/pyoints.rst.txt"
-          rel="nofollow">Page source</a>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyoints.examples.html" title="pyoints.examples package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="pyoints"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Pyoints verson 0.2.1 beta documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >pyoints</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Sebastian Lamprecht.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+    </div>
   </body>
 </html>

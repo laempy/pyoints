@@ -6,30 +6,35 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyoints.storage.RasterHandler &#8212; Pyoints verson 0.2 alpha documentation</title>
-    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <title>pyoints.storage.RasterHandler &#8212; Pyoints verson 0.2.1 beta documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
     <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" />
-   
-  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="search" title="Search" href="../../../search.html" /> 
   </head><body>
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Pyoints verson 0.2.1 beta documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
-
           <div class="body" role="main">
             
   <h1>Source code for pyoints.storage.RasterHandler</h1><div class="highlight"><pre>
@@ -69,6 +74,10 @@
     <span class="n">projection</span><span class="p">,</span>
     <span class="n">transformation</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="k">import</span> <span class="n">Number</span>
+
+<span class="c1"># Use python exceptions</span>
+<span class="n">gdal</span><span class="o">.</span><span class="n">UseExceptions</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="RasterReader"><a class="viewcode-back" href="../../../pyoints.storage.html#pyoints.storage.RasterHandler.RasterReader">[docs]</a><span class="k">class</span> <span class="nc">RasterReader</span><span class="p">(</span><span class="n">GeoFile</span><span class="p">):</span>
@@ -170,11 +179,11 @@
 <span class="sd">        Projection.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-        
+
     <span class="n">gdalRaster</span> <span class="o">=</span> <span class="n">gdal</span><span class="o">.</span><span class="n">Open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">gdal</span><span class="o">.</span><span class="n">GA_ReadOnly</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">gdalRaster</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;raster file &#39;</span><span class="si">%s</span><span class="s2">&#39; could not be loaded&quot;</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
-        
+
     <span class="k">if</span> <span class="n">proj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">wkt</span> <span class="o">=</span> <span class="n">gdalRaster</span><span class="o">.</span><span class="n">GetProjection</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">wkt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
@@ -205,7 +214,7 @@
         <span class="n">outfile</span><span class="p">,</span>
         <span class="n">T</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">proj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">no_data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">no_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">driver</span><span class="o">=</span><span class="s1">&#39;GTiff&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Writes an image to disc.</span>
 
@@ -215,14 +224,12 @@
 <span class="sd">        Image to save</span>
 <span class="sd">    outfile : String</span>
 <span class="sd">        File to save the raster to.</span>
-<span class="sd">    no_data : optional, object</span>
-<span class="sd">        No data value to be used.</span>
 <span class="sd">    T : optional, array_like(Number, shape=(3, 3))</span>
 <span class="sd">        Projection matrix to be used.</span>
 <span class="sd">    proj : Proj</span>
 <span class="sd">        Projection to be used.</span>
-<span class="sd">    no_data : optional, object</span>
-<span class="sd">        Desired no data value.</span>
+<span class="sd">    no_data : optional, Number</span>
+<span class="sd">        No data value to be used.</span>
 <span class="sd">    driver : optional, str</span>
 <span class="sd">        Gdal driver.</span>
 
@@ -245,6 +252,8 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;image&#39; has an unexpected shape for a raster&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">nptools</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;image&#39; needs to be numeric&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">no_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">no_data</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;no_data&#39; needs to be numeric&quot;</span><span class="p">)</span>
 
     <span class="n">bands</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">nptools</span><span class="o">.</span><span class="n">minimum_numeric_dtype</span><span class="p">(</span><span class="n">image</span><span class="p">))</span>
     <span class="n">num_bands</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bands</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">bands</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
@@ -273,13 +282,16 @@
     <span class="c1"># set bands</span>
     <span class="k">if</span> <span class="n">num_bands</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">band</span> <span class="o">=</span> <span class="n">gdalRaster</span><span class="o">.</span><span class="n">GetRasterBand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">band</span><span class="o">.</span><span class="n">SetNoDataValue</span><span class="p">(</span><span class="n">no_data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">no_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">band</span><span class="o">.</span><span class="n">SetNoDataValue</span><span class="p">(</span><span class="n">no_data</span><span class="p">)</span>
         <span class="n">band</span><span class="o">.</span><span class="n">WriteArray</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>
         <span class="n">band</span><span class="o">.</span><span class="n">FlushCache</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_bands</span><span class="p">):</span>
             <span class="n">band</span> <span class="o">=</span> <span class="n">gdalRaster</span><span class="o">.</span><span class="n">GetRasterBand</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="n">band</span><span class="o">.</span><span class="n">SetNoDataValue</span><span class="p">(</span><span class="n">no_data</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">no_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">band</span><span class="o">.</span><span class="n">SetNoDataValue</span><span class="p">(</span><span class="n">no_data</span><span class="p">)</span>
+
             <span class="n">band</span><span class="o">.</span><span class="n">WriteArray</span><span class="p">(</span><span class="n">bands</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">i</span><span class="p">])</span>
             <span class="n">band</span><span class="o">.</span><span class="n">FlushCache</span><span class="p">()</span>
             <span class="n">band</span> <span class="o">=</span> <span class="kc">None</span>
@@ -290,7 +302,7 @@
     <span class="k">del</span> <span class="n">gdalRaster</span></div>
 
 
-<div class="viewcode-block" id="writeRaster"><a class="viewcode-back" href="../../../pyoints.storage.html#pyoints.storage.RasterHandler.writeRaster">[docs]</a><span class="k">def</span> <span class="nf">writeRaster</span><span class="p">(</span><span class="n">raster</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;bands&#39;</span><span class="p">,</span> <span class="n">no_data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">):</span>
+<div class="viewcode-block" id="writeRaster"><a class="viewcode-back" href="../../../pyoints.storage.html#pyoints.storage.RasterHandler.writeRaster">[docs]</a><span class="k">def</span> <span class="nf">writeRaster</span><span class="p">(</span><span class="n">raster</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;bands&#39;</span><span class="p">,</span> <span class="n">no_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Writes a Grid to file system.</span>
 
 <span class="sd">    Parameters</span>
@@ -301,7 +313,7 @@
 <span class="sd">        File to save the raster to.</span>
 <span class="sd">    field : optional, str</span>
 <span class="sd">        Field considered as raster bands.</span>
-<span class="sd">    no_data : optional, object</span>
+<span class="sd">    no_data : optional, Number</span>
 <span class="sd">        Desired no data value.</span>
 
 <span class="sd">    Raises</span>
@@ -329,34 +341,13 @@
 </pre></div>
 
           </div>
-          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../../../modules.html">Pyoints</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../pyoints.html">pyoints package</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../../modules.html">Documentation overview</a><ul>
-  <li><a href="../../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/logo_pyoints.png" alt="Logo"/>
+            </a></p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <div class="searchformwrapper">
@@ -369,29 +360,26 @@
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2018, Sebastian Lamprecht.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Pyoints verson 0.2.1 beta documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Sebastian Lamprecht.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+    </div>
   </body>
 </html>
