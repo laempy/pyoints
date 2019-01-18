@@ -12,3 +12,5 @@ cloudpickle
 unittest
 doctest
 pkgutil
+m2r
+nbsphinx

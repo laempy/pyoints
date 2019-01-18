@@ -87,7 +87,9 @@ Currently Linux (64 bit) and Windows (64 bit) have been packaged.
 ### Conda Build
 
 If your system is not supported yet, you might build and install it using the
-[conda reciepe](conda/meta.yaml) specifying your desired Python version.
+[conda reciepe](conda/meta.yaml) specifying your desired Python version. 
+Currently Linux (64 bit) and Windows (64 bit) have been tested successfully
+with Python 3.5 and Python 3.6.
 
 #### Build
 
@@ -146,7 +148,7 @@ we have to specify the gdal version expicilely with ```gdal-config --version```.
 ## Documentation
 
 You can find the documentation at
-[docs](https://laempy.github.io/pyoints/pyoints.html). Here you can find
+[docs](https://laempy.github.io/pyoints). Here you can find
 docstrings with examples for each module and some comprehensive examples. You
 can also take a look at the source files directly.
 
