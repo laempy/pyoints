@@ -43,11 +43,11 @@ extensions = [
     'sphinx.ext.viewcode',
     #'sphinx.ext.todo',
     'sphinx.ext.napoleon',
-    #'sphinx.ext.coverage',
+    'sphinx.ext.coverage',
     #'sphinx.ext.autosummary',
     'nbsphinx',
     'sphinx.ext.mathjax',
-    'recommonmark',
+    'm2r',
 ]
 
 # Add any paths that contain templates here, relative to this directory.

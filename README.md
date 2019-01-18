@@ -1,7 +1,5 @@
 # Pyoints
 
-![logo](./figures/logo_pyoints.png)
-
 *Pyoints* is a python package to conveniently process and analyze point
 cloud data, voxels and raster images. It is intended to be used to support
 the development of advanced algorithms for geo-data processing.
@@ -72,9 +70,9 @@ if you like. Thus *Pyoints* is particulary designed for scientists and
 developers of new geo-spatial algorithms.
 
 
-# Installation
+## Installation
 
-## Conda Installation
+### Conda Installation
 
 Conda installation is recommended. To install *Pyoints* with
 [Conda](https://conda.io/docs/user-guide/getting-started.html) run:
@@ -86,18 +84,18 @@ conda install -c laempy pyoints
 Currently Linux (64 bit) and Windows (64 bit) have been packaged.
 
 
-## Conda Build
+### Conda Build
 
 If your system is not supported yet, you might build and install it using the
 [conda reciepe](conda/meta.yaml) specifying your desired Python version.
 
-### Build
+#### Build
 
 ```
 conda build /path/to/pyoints/conda --python=3.x
 ```
 
-### Installation
+#### Installation
 
 Create a virtual environment `myenv` and add the newly build *Pyoints* package.
 The package path can be found with `conda build . --output`.
@@ -113,7 +111,7 @@ conda activate myenv
 conda install pyoints
 ```
 
-### Tests
+#### Tests
 
 Test the package by running the provided doctests:
 
@@ -122,7 +120,7 @@ python /path/to/pyoints/tests/test_pyoints.py
 ```
 
 
-## Installation from source
+### Installation from source
 
 We recommend to use a virtual environment (like Conda) to install *Pyoints*.
 
@@ -145,7 +143,7 @@ Unfortunately, the gdal version is not detected automatically by *pgdal*. Thus,
 we have to specify the gdal version expicilely with ```gdal-config --version```.
 
 
-# Documentation
+## Documentation
 
 You can find the documentation at
 [docs](https://laempy.github.io/pyoints/pyoints.html). Here you can find
@@ -154,7 +152,7 @@ can also take a look at the source files directly.
 
 
 
-# License
+## License
 
 Copyright (c) 2018, Sebastian Lamprecht, Trier University,
 lamprecht@uni-trier.de
@@ -164,7 +162,7 @@ License v3 or later (GPLv3+). See [LICENSE](LICENSE) for details.
 
 
 
-# Citing
+## Citing
 
 Please cite `Pyoints` as:
 
@@ -185,22 +183,22 @@ URL [https://github.com/laempy/pyoints](https://github.com/laempy/pyoints),
 ```
 
 
-# Contributing
+## Contributing
 
 Any conribution to the *pyoints* project is welcome. See
 [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 
 
-# Acknowledgements
+## Acknowledgements
 
-## Funding
+### Funding
 
 This work was supported by the [PANTHEON](http://www.project-pantheon.eu)
 project which is funded by the European Community Horizon 2020 programme
 under grant agreement 774571.
 
-## Datasets
+### Datasets
 
 For the tutorials the "Stanford Bunny" dataset has been used:
 
@@ -209,13 +207,13 @@ Stanford Computer Graphics Laboratory (1994): "Stanford Bunny", URL:
 (Accessed: 17 January 2019)
 
 
-## Python Depencencies
+### Python Depencencies
 
 This software dynamically binds the following Python packages (distributed via
 pip). Many thanks to the authors for providing such great open source software.
 
 
-### cylinder_fitting
+#### cylinder_fitting
 
 Xingjie Pan
 * [PyPI](https://pypi.org/project/cylinder_fitting/)
@@ -223,7 +221,7 @@ Xingjie Pan
 * [3-Clause BSD license](https://github.com/xingjiepan/cylinder_fitting/blob/master/license.txt)
 
 
-### dill
+#### dill
 
 Mike McKerns
 * [PyPI](https://pypi.org/project/dill/)
@@ -231,7 +229,7 @@ Mike McKerns
 * [3-Clause BSD license](https://github.com/uqfoundation/dill/blob/master/LICENSE)
 
 
-### pygdal
+#### pygdal
 
 Frank Warmerdam
 * [PyPI](https://pypi.org/project/pygdal/)
@@ -239,7 +237,7 @@ Frank Warmerdam
 * [2-Clause BSD license](https://github.com/laspy/laspy/blob/master/LICENSE.txt)
 
 
-### laspy
+#### laspy
 
 Grant Brown and Howard Butler
 * [PyPI](https://pypi.org/project/laspy/)
@@ -247,7 +245,7 @@ Grant Brown and Howard Butler
 * [2-Clause BSD license](https://github.com/laspy/laspy/blob/master/LICENSE.txt)
 
 
-### networkx
+#### networkx
 
 NetworkX Developers
 * [PyPI](https://pypi.org/project/networkx/)
@@ -255,7 +253,7 @@ NetworkX Developers
 * [3-Clause BSD license](https://github.com/networkx/networkx/blob/master/LICENSE.txt)
 
 
-### numpy
+#### numpy
 
 Travis E. Oliphant et al.
 * [PyPI](https://pypi.org/project/numpy/)
@@ -263,7 +261,7 @@ Travis E. Oliphant et al.
 * [3-Clause BSD license](http://www.numpy.org/license.html#license)
 
 
-### opencv-python
+#### opencv-python
 
 Olli-Pekka Heinisuo
 * [PyPI](https://pypi.org/project/opencv-python/)
@@ -271,7 +269,7 @@ Olli-Pekka Heinisuo
 * [MIT license](https://github.com/opencv/opencv/blob/master/LICENSE)
 
 
-### pandas
+#### pandas
 
 The PyData Development Team
 * [PyPI](https://pypi.org/project/pandas/)
@@ -279,7 +277,7 @@ The PyData Development Team
 * [3-Clause BSD license](https://github.com/pandas-dev/pandas/blob/master/LICENSE)
 
 
-### plyfile
+#### plyfile
 
 Darsh Ranjan
 * [PyPI](https://pypi.org/project/plyfile/https://pypi.org/project/plyfile/)
@@ -287,7 +285,7 @@ Darsh Ranjan
 * [GPL v3.0 (or later)](https://github.com/dranjan/python-plyfile/blob/master/COPYING)
 
 
-### pyproj
+#### pyproj
 
 Jeff Whitaker
 * [PyPI](https://pypi.org/project/pyproj/)
@@ -295,7 +293,7 @@ Jeff Whitaker
 * [OSI approved license](https://github.com/jswhit/pyproj/blob/master/LICENSE)
 
 
-### scikit-learn
+#### scikit-learn
 
 Andreas Mueller
 * [PyPI](https://pypi.org/project/scikit-learn/)
@@ -303,7 +301,7 @@ Andreas Mueller
 * [3-Clause BSD license](https://github.com/scikit-learn/scikit-learn/blob/master/COPYING)
 
 
-### scipy
+#### scipy
 
 SciPy Developers
 * [PyPI](https://pypi.org/project/scipy/)
@@ -311,7 +309,7 @@ SciPy Developers
 * [3-Clause BSD license](https://github.com/scipy/scipy/blob/master/LICENSE.txt)
 
 
-### rtree
+#### rtree
 
 Howard Butler
 * [PyPI](https://pypi.org/project/Rtree/)
@@ -320,27 +318,27 @@ Howard Butler
 
 
 
-## External Depencencies
+### External Depencencies
 
 *Pyoints* binds following external libraries as required by some of the pip
 packages.
 
 
-### GDAL
+#### GDAL
 
 Frank Warmerdam
 * [homepage](https://www.gdal.org/)
 * [X11/MIT license](https://trac.osgeo.org/gdal/wiki/FAQGeneral#WhatlicensedoesGDALOGRuse)
 
 
-### Liblas
+#### Liblas
 
 Howard Butler, Mateusz Loskot et. al.
 * [homepage](https://liblas.org/)
 * [X11/MIT license](https://liblas.org/copyright.html#license)
 
 
-### libspatialindex
+#### libspatialindex
 
 Marios Hadjieleftheriou
 * [homepage](https://libspatialindex.github.io/)
