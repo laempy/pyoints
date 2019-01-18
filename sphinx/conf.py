@@ -40,7 +40,7 @@ release = u'verson 0.3 beta'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    #'sphinx.ext.viewcode',
+    'sphinx.ext.viewcode',
     #'sphinx.ext.todo',
     'sphinx.ext.napoleon',
     #'sphinx.ext.coverage',
