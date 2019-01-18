@@ -20,13 +20,13 @@ sys.path.insert(0, os.path.abspath('../'))
 # -- Project information -----------------------------------------------------
 
 project = u'Pyoints'
-copyright = u'2018, Sebastian Lamprecht'
+copyright = u'2019, Sebastian Lamprecht'
 author = u'Sebastian Lamprecht'
 
 # The short X.Y version
-version = u'0.2'
+version = u'0.3'
 # The full version, including alpha/beta/rc tags
-release = u'verson 0.2 alpha'
+release = u'verson 0.3 beta'
 
 
 # -- General configuration ---------------------------------------------------
@@ -47,6 +47,7 @@ extensions = [
     #'sphinx.ext.autosummary',
     'nbsphinx',
     'sphinx.ext.mathjax',
+    'recommonmark',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -168,3 +169,6 @@ texinfo_documents = [
      author, 'Pyoints', 'One line description of project.',
      'Miscellaneous'),
 ]
+
+
+html_logo = '../figures/logo_pyoints.png'

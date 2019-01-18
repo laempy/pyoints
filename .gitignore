@@ -13,4 +13,4 @@ dist
 .spyproject
 .spyderproject*
 
-sphinx_docs/*
+sphinx_docs
