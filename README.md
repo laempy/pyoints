@@ -80,7 +80,7 @@ Conda installation is recommended. To install *Pyoints* with
 [Conda](https://conda.io/docs/user-guide/getting-started.html) run:
 
 ```
-conda install -c leampy pyoints
+conda install -c laempy pyoints
 ```
 
 Currently Linux (64 bit) and Windows (64 bit) have been packaged.
