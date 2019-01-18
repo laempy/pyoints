@@ -58,7 +58,7 @@ def loadPly(infile, proj=Proj()):
     records = plydata['vertex'].data.view(np.recarray)
 
     # rename fields
-    dtypes = [('coords', np.float32, 3)]
+    dtypes = [('coords', records.x.dtype, 3)]
     fields = [records.dtype.descr[i] for i in range(3, len(records.dtype))]
     dtypes.extend(fields)
     dtypes = np.dtype(dtypes)
