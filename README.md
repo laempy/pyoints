@@ -46,7 +46,7 @@ If you just want to handle coordinates without additional attributes, the class
 but waives to use of a projection and transformation matrix.
 
 
-## When is Pyoints suitable for me?
+## Is Pyoints suitable for me?
 
 Based on the general concept of *Pyoints* presented above, a bunch of
 algorithms, functions and filters have been implemented, to process geo-data
