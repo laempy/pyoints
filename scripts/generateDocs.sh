@@ -16,7 +16,7 @@ if [ -d "$COMPILE_PATH" ]; then
   rm -r "$COMPILE_PATH"
 fi
 
-jupyter nbconvert --to script "$TUTORIALS_PATH/*.ipynb"
+
 
 cp -r "$SPHINX_PATH" "$COMPILE_PATH"
 cp -r "$TUTORIALS_PATH" "$COMPILE_PATH"
@@ -25,6 +25,7 @@ cp ../README.md "$COMPILE_PATH/"
 cp ../CONTRIBUTING.md "$COMPILE_PATH/"
 cp ../LICENSE "$COMPILE_PATH/"
 
+jupyter nbconvert --to script "$COMPILE_PATH/*.ipynb"
 
 #sphinx-apidoc -f -o "$COMPILE_PATH" "$SOURCE_PATH"
 python3 -m sphinx "$COMPILE_PATH" "$OUT_PATH"
