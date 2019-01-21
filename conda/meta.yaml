@@ -20,14 +20,16 @@ requirements:
         - setuptools
     host:
         - python {{ python }}
+        - gdal  # pygdal is not able to detect gdal version
     run:
         - python {{ python }}
         - gdal  # pygdal is not able to detect gdal version
-        - pyproj  # pyproj via pip fails for windows
-        - rtree  # rtree via pip fails for windows
-        
+        - pyproj  # pyproj via pip fails for Windows
+        - rtree  # rtree via pip fails for Windows
+
 test:
     imports:
+        - numpy
         - osgeo
         - cv2
         - laspy
