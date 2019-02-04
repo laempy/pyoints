@@ -1,5 +1,7 @@
 #numpy>=1.15
 #gdal
+#rtree
+#pyproj
 laspy
 scipy
 scikit-learn

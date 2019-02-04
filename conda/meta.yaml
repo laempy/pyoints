@@ -1,18 +1,18 @@
 {% set name = "pyoints" %}
 {% set data = load_setup_py_data() %}
-{% set numpy_min_version = "1.15" %}
+
 
 package:
     name: {{ name }}
     version: {{ data.get('version') }}
-  
+
 source:
     git_url: "../.git"
-  
+
 build:
     #number: 0
     skip: True  # [not py3k]
-    
+
 requirements:
     build:
         - python
@@ -44,7 +44,7 @@ test:
         - pyoints.grid
         - pyoints.registration
         - pyoints.storage
-        
+
 about:
     home: https://laempy.github.io/pyoints/modules.html
     license: GNU General Public v3 or later (GPLv3+)
