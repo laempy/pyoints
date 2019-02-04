@@ -1,5 +1,5 @@
 numpy>=1.15
-gdal
+#gdal
 laspy
 scipy
 scikit-learn

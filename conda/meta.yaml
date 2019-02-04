@@ -20,10 +20,11 @@ requirements:
         - setuptools
     host:
         - python {{ python }}
-        - gdal  # pygdal is not able to detect gdal version
+        - GDAL  # pygdal is not able to detect gdal version
+        - cython
     run:
         - python {{ python }}
-        - gdal  # pygdal is not able to detect gdal version
+        #- gdal  # pygdal is not able to detect gdal version
         - pyproj  # pyproj via pip fails for Windows
         - rtree  # rtree via pip fails for Windows
 
