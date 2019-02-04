@@ -4,7 +4,6 @@ laspy
 scipy
 scikit-learn
 dill
-pandas
 opencv-python
 plyfile
 networkx

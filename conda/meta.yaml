@@ -21,12 +21,11 @@ requirements:
     host:
         - python {{ python }}
         #- GDAL  # pygdal is not able to detect gdal version
-        - gdal  # pygdal is not able to detect gdal version
-        - numpy>=1.15
     run:
         - python {{ python }}
         - gdal  # pygdal is not able to detect gdal version
         - numpy>=1.15
+        - pandas
         #- gdal  # pygdal is not able to detect gdal version
         - pyproj  # pyproj via pip fails for Windows
         - rtree  # rtree via pip fails for Windows
