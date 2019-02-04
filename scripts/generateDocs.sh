@@ -4,7 +4,7 @@ SCRIPT_PATH=$(dirname $(realpath -s $0))
 SOURCE_PATH='../pyoints'
 TUTORIALS_PATH='../tutorials'
 OUT_PATH='../docs'
-COMPILE_PATH='../sphinx_docs'
+COMPILE_PATH='../sphinx-build'
 SPHINX_PATH='../sphinx'
 
 cd $SCRIPT_PATH
