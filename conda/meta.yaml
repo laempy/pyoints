@@ -21,6 +21,7 @@ requirements:
     host:
         - python {{ python }}
         #- GDAL  # pygdal is not able to detect gdal version
+
     run:
         - python {{ python }}
         - gdal  # pygdal is not able to detect gdal version
