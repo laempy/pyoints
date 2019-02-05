@@ -124,7 +124,7 @@ developers of new geo-spatial algorithms.</p>
 <p>If your system is not supported yet, you might build and install it using the
 <a class="reference external" href="conda/meta.yaml">conda reciepe</a> specifying your desired Python version.
 Currently Linux (64 bit) and Windows (64 bit) have been tested successfully
-with Python 3.5 and Python 3.6.</p>
+with Python 3.5, 3.6 and 3.7.</p>
 <div class="section" id="build">
 <h4>Build<a class="headerlink" href="#build" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>conda build /path/to/pyoints/conda --python=3.x
@@ -133,13 +133,13 @@ with Python 3.5 and Python 3.6.</p>
 </div>
 <div class="section" id="id1">
 <h4>Installation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
-<p>Create a virtual environment <code class="docutils literal notranslate"><span class="pre">myenv</span></code> and add the newly build <em>Pyoints</em> package.
+<p>Create a virtual environment <code class="docutils literal notranslate"><span class="pre">pyoints_env</span></code> and add the newly build <em>Pyoints</em> package.
 The package path can be found with <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">build</span> <span class="pre">.</span> <span class="pre">--output</span></code>.</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>conda create -n myenv /path/to/builded/package/pyoints-*-py*_*.tar.bz2 --use-local
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>conda create -n pyoints_env /path/to/builded/package/pyoints-*-py*_*.tar.bz2 --use-local
 </pre></div>
 </div>
 <p>Finally install the package:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>conda activate myenv
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>conda activate pyoints_env
 conda install pyoints
 </pre></div>
 </div>
@@ -156,7 +156,7 @@ conda install pyoints
 <h3>Installation from source<a class="headerlink" href="#installation-from-source" title="Permalink to this headline">¶</a></h3>
 <p>We recommend to use a virtual environment (like Conda) to install <em>Pyoints</em>.</p>
 <p>Installation of the external dependencies:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>conda install gdal, pyproj, rtree
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>conda install gdal, pyproj, numpy, rtree
 </pre></div>
 </div>
 <p>Cloning of the repository:</p>
@@ -168,16 +168,16 @@ cd pyoints
 <div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>pip install pygdal==$(gdal-config --version).* -e .
 </pre></div>
 </div>
-<p>Unfortunately, the gdal version is not detected automatically by <em>pgdal</em>. Thus,
-we have to specify the gdal version expicilely with <code class="docutils literal notranslate"><span class="pre">gdal-config</span> <span class="pre">--version</span></code>.</p>
+<p>Unfortunately, the gdal version is not detected automatically by <em>pygdal</em>.
+Thus, we have to specify the gdal version expicilely with
+<code class="docutils literal notranslate"><span class="pre">gdal-config</span> <span class="pre">--version</span></code>.</p>
 </div>
 </div>
 <div class="section" id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
 <p>You can find the documentation at
-<a class="reference external" href="https://laempy.github.io/pyoints">docs</a>. Here you can find
-docstrings with examples for each module and some comprehensive examples. You
-can also take a look at the source files directly.</p>
+<a class="reference external" href="https://laempy.github.io/pyoints">docs</a>. Here you can find some introducing
+tutorials and docstring examples for each module.</p>
 </div>
 <div class="section" id="license">
 <h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>

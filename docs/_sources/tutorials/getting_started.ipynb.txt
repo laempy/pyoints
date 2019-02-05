@@ -130,7 +130,7 @@
             "cell_type":"markdown",
             "metadata":{},
             "source":[
-                "Now, we visuallize the x 'indices' of the raster."
+                "Now, we visualize the x 'indices' of the raster."
             ]
         },
         {
@@ -169,7 +169,7 @@
             "cell_type":"markdown",
             "metadata":{},
             "source":[
-                "Based on these coordinates we create an additional field",
+                "Based on these coordinates we create an additional field ",
                 "representing a surface."
             ]
         },
@@ -207,7 +207,7 @@
             "source":[
                 "If we like to treat the raster as a point cloud or list of ",
                 "points, we call the 'records' function. As a result we ",
-                "recieve a flattened version of the raster."
+                "receive a flattened version of the raster records."
             ]
         },
         {
@@ -228,7 +228,7 @@
             "cell_type":"markdown",
             "metadata":{},
             "source":[
-                "We use these flattened coordinates to visuallize the ",
+                "We use these flattened coordinates to visualize the ",
                 "centers of the raster cells."
             ]
         },
@@ -265,9 +265,9 @@
                 "To understand the usage of the GeoRecords, we crate a ",
                 "three dimensional point cloud using the coordinates ",
                 "derived before. We also use the same coordinate reference ",
-                "system of the raster. The creation of a GeoRecord array ",
-                "requires for a record array with at least a field 'coords' ",
-                "specifying the point coordinates."
+                "system. The creation of a GeoRecord array requires for a ",
+                "record array with at least a field 'coords' specifying the ",
+                "point coordinates."
             ]
         },
         {
@@ -291,7 +291,7 @@
             "cell_type":"markdown",
             "metadata":{},
             "source":[
-                "Let's inspect the properties of the point cloud first."
+                "We inspect the properties of the point cloud first."
             ]
         },
         {
@@ -320,7 +320,7 @@
             "cell_type":"markdown",
             "metadata":{},
             "source":[
-                "Before we visuallize the point cloud, we define the axis ",
+                "Before we visualize the point cloud, we define the axis ",
                 "limits."
             ]
         },
@@ -360,7 +360,8 @@
             "metadata":{},
             "source":[
                 "## Transformation\n",
-                "We might like to transform the raster coordinates a bit."
+                "For some applications we might like to transform the raster ",
+                "coordinates a bit."
             ]
         },
         {
@@ -425,8 +426,8 @@
             "metadata":{},
             "source":[
                 "## IndexKD\n",
-                "The 'GeoRecords' class provides a 'IndexKD' function to ",
-                "peform spatial neighborhood queries efficiently."
+                "The 'GeoRecords' class provides a 'IndexKD' instance to ",
+                "perform spatial neighborhood queries efficiently."
             ]
         },
         {
@@ -435,8 +436,8 @@
             "source":[
                 "### Radial filtering\n",
                 "We begin with filtering the points within a sphere around ",
-                "some points. As a result, we recieve a list of point ",
-                "indices which can be used for subsampling."
+                "some points. As a result, we receive a list of point ",
+                "indices which can be used for sub-sampling."
             ]
         },
         {
@@ -564,9 +565,9 @@
             "metadata":{},
             "source":[
                 "### Nearest neighbor filtering\n",
-                "We can also filter the nearest neighbors of the given ",
-                "points. Next to a list of point indices, we recieve a list ",
-                "of point distances of the same size."
+                "We can also filter the nearest neighbors of the points ",
+                "given before. Next to a list of point indices, we receive ",
+                "a list of point distances of the same shape."
             ]
         },
         {
@@ -692,7 +693,7 @@
                 "### Point counting\n",
                 "We have the option to count the number of points within a ",
                 "given radius. For this purpose we select a subset of the ",
-                "raster first. Then, for the point cloud, we count the ",
+                "raster first. Then, using the point cloud, we count the ",
                 "number of raster cells within the given radius."
             ]
         },
@@ -736,7 +737,7 @@
                 "You might have noticed, that this was a fist step of data ",
                 "fusion, since we related the raster cells to the point ",
                 "cloud. This can also be done for nearest neighbor or ",
-                "similar queries regardless of dimension."
+                "similar spatial queries regardless of dimension."
             ]
         },
         {
@@ -745,9 +746,9 @@
             "source":[
                 "## Point filters\n",
                 "To create a subset of points, we typically use some kind ",
-                "of point filters We begin with a duplicate point filter. ",
-                "To be able to integrate such filters easily into your own ",
-                "algorithms an iterator is returned instead of a list of ",
+                "of point filters. We begin with a duplicate point filter. ",
+                "To ease the integration of such filters into your own ",
+                "algorithms, an iterator is returned instead of a list of ",
                 "point indices."
             ]
         },
@@ -862,7 +863,7 @@
             "metadata":{},
             "source":[
                 "## Smoothing\n",
-                "To compensate for noise, or recieve just a smoother result ",
+                "To compensate for noise, or receive just a smoother result ",
                 "we can use smoothing algorithms. The algorithm presented ",
                 "here averages the coordinates of the nearest neighbors."
             ]
@@ -904,7 +905,7 @@
                 "A common problem is to cluster point clouds. Here we use ",
                 "a clustering algorithm, which assigns points iteratively ",
                 "to the most dominant class within a given radius. By ",
-                "iterating from top to bottom, the points get assigned to ",
+                "iterating from top to bottom, the points are assigned to ",
                 "the hills of the surface."
             ]
         },

@@ -379,7 +379,7 @@ extent:
 [-14.6, -13.6, 24.6, 9.6]
 </pre></div></div>
 </div>
-<p>Now, we visuallize the x ‘indices’ of the raster.</p>
+<p>Now, we visualize the x ‘indices’ of the raster.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
@@ -467,7 +467,7 @@ extent:
   [ 24.6 -13.6]]]
 </pre></div></div>
 </div>
-<p>Based on these coordinates we create an additional fieldrepresenting a surface.</p>
+<p>Based on these coordinates we create an additional field representing a surface.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
@@ -511,7 +511,7 @@ extent:
 <img alt="../_images/tutorials_getting_started_15_0.png" src="../_images/tutorials_getting_started_15_0.png" />
 </div>
 </div>
-<p>If we like to treat the raster as a point cloud or list of points, we call the ‘records’ function. As a result we recieve a flattened version of the raster.</p>
+<p>If we like to treat the raster as a point cloud or list of points, we call the ‘records’ function. As a result we receive a flattened version of the raster records.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
@@ -545,7 +545,7 @@ coords:
  [ 24.6 -13.6]]
 </pre></div></div>
 </div>
-<p>We use these flattened coordinates to visuallize the centers of the raster cells.</p>
+<p>We use these flattened coordinates to visualize the centers of the raster cells.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
@@ -572,7 +572,7 @@ coords:
 <div class="section" id="GeoRecords">
 <h2>GeoRecords<a class="headerlink" href="#GeoRecords" title="Permalink to this headline">¶</a></h2>
 <p>The ‘Grid’ class presented before extends the ‘GeoRecords’ class. Grid objects, like rasters or voxels are well structured, while GeoRecords in general are just a collection of points.</p>
-<p>To understand the usage of the GeoRecords, we crate a three dimensional point cloud using the coordinates derived before. We also use the same coordinate reference system of the raster. The creation of a GeoRecord array requires for a record array with at least a field ‘coords’ specifying the point coordinates.</p>
+<p>To understand the usage of the GeoRecords, we crate a three dimensional point cloud using the coordinates derived before. We also use the same coordinate reference system. The creation of a GeoRecord array requires for a record array with at least a field ‘coords’ specifying the point coordinates.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
@@ -590,7 +590,7 @@ coords:
 </pre></div>
 </div>
 </div>
-<p>Let’s inspect the properties of the point cloud first.</p>
+<p>We inspect the properties of the point cloud first.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
@@ -637,7 +637,7 @@ extent:
 [-14.6, -13.6, 1.88, 24.6, 9.6, 19.61]
 </pre></div></div>
 </div>
-<p>Before we visuallize the point cloud, we define the axis limits.</p>
+<p>Before we visualize the point cloud, we define the axis limits.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
@@ -679,7 +679,7 @@ extent:
 </div>
 <div class="section" id="Transformation">
 <h2>Transformation<a class="headerlink" href="#Transformation" title="Permalink to this headline">¶</a></h2>
-<p>We might like to transform the raster coordinates a bit.</p>
+<p>For some applications we might like to transform the raster coordinates a bit.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
@@ -795,10 +795,10 @@ extent:
 </div>
 <div class="section" id="IndexKD">
 <h2>IndexKD<a class="headerlink" href="#IndexKD" title="Permalink to this headline">¶</a></h2>
-<p>The ‘GeoRecords’ class provides a ‘IndexKD’ function to peform spatial neighborhood queries efficiently.</p>
+<p>The ‘GeoRecords’ class provides a ‘IndexKD’ instance to perform spatial neighborhood queries efficiently.</p>
 <div class="section" id="Radial-filtering">
 <h3>Radial filtering<a class="headerlink" href="#Radial-filtering" title="Permalink to this headline">¶</a></h3>
-<p>We begin with filtering the points within a sphere around some points. As a result, we recieve a list of point indices which can be used for subsampling.</p>
+<p>We begin with filtering the points within a sphere around some points. As a result, we receive a list of point indices which can be used for sub-sampling.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
@@ -936,7 +936,7 @@ extent:
 </div>
 <div class="section" id="Nearest-neighbor-filtering">
 <h3>Nearest neighbor filtering<a class="headerlink" href="#Nearest-neighbor-filtering" title="Permalink to this headline">¶</a></h3>
-<p>We can also filter the nearest neighbors of the given points. Next to a list of point indices, we recieve a list of point distances of the same size.</p>
+<p>We can also filter the nearest neighbors of the points given before. Next to a list of point indices, we receive a list of point distances of the same shape.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
@@ -1059,7 +1059,7 @@ extent:
 </div>
 <div class="section" id="Point-counting">
 <h3>Point counting<a class="headerlink" href="#Point-counting" title="Permalink to this headline">¶</a></h3>
-<p>We have the option to count the number of points within a given radius. For this purpose we select a subset of the raster first. Then, for the point cloud, we count the number of raster cells within the given radius.</p>
+<p>We have the option to count the number of points within a given radius. For this purpose we select a subset of the raster first. Then, using the point cloud, we count the number of raster cells within the given radius.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
 </pre></div>
@@ -1107,12 +1107,12 @@ extent:
 <img alt="../_images/tutorials_getting_started_59_0.png" src="../_images/tutorials_getting_started_59_0.png" />
 </div>
 </div>
-<p>You might have noticed, that this was a fist step of data fusion, since we related the raster cells to the point cloud. This can also be done for nearest neighbor or similar queries regardless of dimension.</p>
+<p>You might have noticed, that this was a fist step of data fusion, since we related the raster cells to the point cloud. This can also be done for nearest neighbor or similar spatial queries regardless of dimension.</p>
 </div>
 </div>
 <div class="section" id="Point-filters">
 <h2>Point filters<a class="headerlink" href="#Point-filters" title="Permalink to this headline">¶</a></h2>
-<p>To create a subset of points, we typically use some kind of point filters We begin with a duplicate point filter. To be able to integrate such filters easily into your own algorithms an iterator is returned instead of a list of point indices.</p>
+<p>To create a subset of points, we typically use some kind of point filters. We begin with a duplicate point filter. To ease the integration of such filters into your own algorithms, an iterator is returned instead of a list of point indices.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
 </pre></div>
@@ -1255,7 +1255,7 @@ extent:
 </div>
 <div class="section" id="Smoothing">
 <h2>Smoothing<a class="headerlink" href="#Smoothing" title="Permalink to this headline">¶</a></h2>
-<p>To compensate for noise, or recieve just a smoother result we can use smoothing algorithms. The algorithm presented here averages the coordinates of the nearest neighbors.</p>
+<p>To compensate for noise, or receive just a smoother result we can use smoothing algorithms. The algorithm presented here averages the coordinates of the nearest neighbors.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
 </pre></div>
@@ -1295,7 +1295,7 @@ extent:
 </div>
 <div class="section" id="Clustering">
 <h2>Clustering<a class="headerlink" href="#Clustering" title="Permalink to this headline">¶</a></h2>
-<p>A common problem is to cluster point clouds. Here we use a clustering algorithm, which assigns points iteratively to the most dominant class within a given radius. By iterating from top to bottom, the points get assigned to the hills of the surface.</p>
+<p>A common problem is to cluster point clouds. Here we use a clustering algorithm, which assigns points iteratively to the most dominant class within a given radius. By iterating from top to bottom, the points are assigned to the hills of the surface.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
 </pre></div>

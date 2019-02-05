@@ -6,9 +6,9 @@
             "source":[
                 "# ICP for point cloud alignment",
                 "\n",
-                "In this tutorial we will learn to align several point clouds",
-                "using two variants of the Iterative Closest Point (ICP) ",
-                "algorithm."
+                "In this tutorial we will learn to align several point ",
+                "clouds using two variants of the Iterative Closest Point ",
+                "(ICP) [[1]](#References) algorithm."
             ]
         },
         {
@@ -58,7 +58,7 @@
             "source":[
                 "## Preparing the data\n",
                 "We load three point clouds of the ",
-                "Standfort Bunny [[1]](#References) dataset. The ",
+                "Standfort Bunny [[2]](#References) dataset. The ",
                 "original PLY files have been converted to a binary format ",
                 "to spare disc space and speed up loading time."
             ]
@@ -100,7 +100,7 @@
             "cell_type":"markdown",
             "metadata":{},
             "source":[
-                "We filter the point cloud to recieve sparse point clouds ",
+                "We filter the point cloud to receive sparse point clouds ",
                 "more suitable for visualization. Thinning the point clouds ",
                 "also speeds up the ICP algorithm."
             ]
@@ -121,8 +121,8 @@
             "cell_type":"markdown",
             "metadata":{},
             "source":[
-                "Before we visuallize the point cloud, we define the colors ",
-                "and the axes limits."
+                "Before we visualize the point cloud, we define the colors ",
+                "and axes limits."
             ]
         },
         {
@@ -166,7 +166,7 @@
                 "We can see, that the point clouds B and C are rotated by 45 ",
                 "and 90 degree. Since the ICP algorithm assumes already ",
                 "roughly aligned point clouds as an input, we rotate the ",
-                "point clouds accordingly. But to harden the problem a bit, ",
+                "point clouds accordingly. But, to harden the problem a bit, ",
                 "we use slightly differing rotation angles."
             ]
         },
@@ -190,7 +190,7 @@
             "source":[
                 "We update axes limits and visualize the point clouds again. ",
                 "The resulting point clouds serve as input for the ICP ",
-                "algorithm." 
+                "algorithm."
             ]
         },
         {
@@ -254,10 +254,11 @@
             "cell_type":"markdown",
             "metadata":{},
             "source":[
-                "We initialize an ICP object. The algorithm iteratively ",
-                "matches the 'k' closest points. To limit the ratio of ",
-                "missmatched points, the 'radii' parameter is provided. ",
-                "It defines an ellipsoid within points can be assigned."
+                "First, we initialize an ICP object. The algorithm ",
+                "iteratively matches the 'k' closest points. To limit the ",
+                "ratio of mismatched points, the 'radii' parameter is ",
+                "provided. It defines an ellipsoid within points can be ",
+                "assigned."
             ]
         },
         {
@@ -281,12 +282,11 @@
             "metadata":{},
             "source":[
                 "After initialization, we apply the ICP algorithm to our ",
-                "dataset. The algorithm provides three dictionaries as a ",
-                "result. The first dictionary provides the final ",
-                "roto-translation matrices of the point clouds. The second ",
-                "one specifies the corresponding point matches. The third ",
-                "dictonary gives some information on the convergence of ",
-                "the algorithm."
+                "dataset. The algorithm returns three dictionaries. ",
+                "The first dictionary provides the final roto-translation ",
+                "matrices of the point clouds. The second specifies the ",
+                "corresponding point matches. The third dictionary gives ",
+                "some information on the convergence of the algorithm."
             ]
         },
         {
@@ -302,8 +302,8 @@
             "cell_type":"markdown",
             "metadata":{},
             "source":[
-                "Let's visuallize the resulting point sets and and the root ",
-                "mean squared error (RMSE)."
+                "Let's visualize the resulting point sets and the Root Mean ",
+                "Squared Error (RMSE)."
             ]
         },
         {
@@ -348,8 +348,8 @@
             "metadata":{},
             "source":[
                 "Although the result is not perfect, the point clouds have ",
-                "been aligned. The remaining miss-alignment is most ",
-                "likely caused by a lot of miss-matched points."
+                "been aligned. The remaining misalignment is most likely ",
+                "caused by a lot of mismatched points."
             ]
         },
         {
@@ -357,8 +357,8 @@
             "metadata":{},
             "source":[
                 "## NICP algorithm\n",
-                "Inspired by the idea of a Normal ICP algorithm, proposed by ",
-                "Serafin and Grisetti [[2]](#References) [[3]](#References), ",
+                "Inspired by the idea of a Normal ICP algorithm proposed by ",
+                "Serafin and Grisetti [[3]](#References) [[4]](#References), ",
                 "a ICP variant has been developed which considers the ",
                 "surface orientation of the points."
             ]
@@ -408,8 +408,10 @@
             "metadata":{},
             "source":[
                 "The surface orientation should reduce the ratio of ",
-                "miss-matched points. Now, we create the NICP instance and ",
-                "apply the algorithm to our point clouds and point normals."
+                "mismatched points. Now, we create the NICP instance. ",
+                "A six dimensional ellipsoid is defined which takes into ",
+                "account the point distances, as well as the normal ",
+                "differences."
             ]
         },
         {
@@ -427,6 +429,13 @@
                     "\tupdate_normals=True,\n",
                     "\tk=1\n",
                 ")"
+            ]
+        },
+        {
+            "cell_type":"markdown",
+            "metadata":{},
+            "source":[
+                "The NICP instance is used to apply the algorithm."
             ]
         },
         {
@@ -538,18 +547,22 @@
             "metadata":{},
             "source":[
                 "## References\n",
-                "[1] Stanford University Computer Graphics Laboratory, (1993): ",
+                "[1] P.J. Besl and N.D. McKay (1992): 'A Method for ",
+                "Registration of 3-D Shapes', IEEE Transactions on Pattern ",
+                "Analysis and Machine Intelligence, vol. 14 (2): 239-256.\n",
+                "\n",
+                "[2] Stanford University Computer Graphics Laboratory, (1993): ",
                 "'Stanford Bunny', ",
                 "URL [https://graphics.stanford.edu/data/3Dscanrep/](https://graphics.stanford.edu/data/3Dscanrep/)\n",
                 "(accessed January 17, 2019).\n",
                 "\n",
-                "[2] J. Serafin and G. Grisetti (2014): ",
+                "[3] J. Serafin and G. Grisetti (2014): ",
                 "'Using augmented measurements to improve the convergence of icp', ",
                 "International Conference on Simulation, Modeling, and ",
                 "Programming for Autonomous Robots. ",
-                "Springer, Cham: 566-577. \n",
+                "Springer, Cham: 566-577.\n",
                 "\n",
-                "[3] J. Serafin and G. Grisetti (2014): ",
+                "[4] J. Serafin and G. Grisetti (2014): ",
                 "'NICP: Dense normal based pointcloud registration', ",
                 "International Conference on Intelligent Robots and Systems (IROS): ",
                 "742-749."
