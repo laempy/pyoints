@@ -69,15 +69,14 @@ the software have been used for [@Lamprecht_2017a] and some pre-studies at
 Trier University. *Pyoints* is also used in the PANTHEON project [@PANTHEON] to
 monitor hazelnut orchards.
 
-The source code of *Pyoints* has been archived to GitHub [@Pyoints_GitHub] and
-PyPI [@Pyoints_PyPI]. The documentation can be found on GitHub Pages
-[@Pyoints_docs].
+The source code of *Pyoints* has been archived to GitHub [@Pyoints_GitHub]. The
+documentation can be found on GitHub Pages [@Pyoints_docs].
 
 
 # Acknowledgements
 
-This work was supported by the PANTHEON project which is funded by the European
-Community Horizon 2020 programme under grant agreement 774571.
+This work has been supported by the European Commission under the grant
+agreement number 774571 Project PANTHEON.
 
 
 # References

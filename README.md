@@ -168,19 +168,17 @@ License v3 or later (GPLv3+). See [LICENSE](LICENSE) for details.
 
 Please cite `Pyoints` as:
 
-Sebastian Lamprecht (2018):
+Sebastian Lamprecht (2019):
 "Pyoints: A Python package for point cloud, voxel and raster processing.",
-URL [https://github.com/laempy/pyoints](https://github.com/laempy/pyoints),
-\[Online; accessed date\].
+[![DOI](https://zenodo.org/badge/144562205.svg)](https://zenodo.org/badge/latestdoi/144562205).
 
 ```
-@Misc{lamprecht_2018,
+@Misc{lamprecht_2019,
   author = {Sebastian Lamprecht},
   organization = {Trier University},
   title = {{Pyoints}: A Python package for point cloud, voxel and raster processing.},
-  year = {2018},
-  url = "https://github.com/laempy/pyoints",
-  note = {[Online; accessed <today>]}
+  year = {2019},
+  doi = {https://zenodo.org/badge/latestdoi/144562205}
 }
 ```
 
@@ -196,9 +194,9 @@ Any conribution to the *pyoints* project is welcome. See
 
 ### Funding
 
-This work was supported by the [PANTHEON](http://www.project-pantheon.eu)
-project which is funded by the European Community Horizon 2020 programme
-under grant agreement 774571.
+This work has been supported by the European Commission under the grant
+agreement number 774571 Project [PANTHEON](http://www.project-pantheon.eu).
+
 
 ### Datasets
 
