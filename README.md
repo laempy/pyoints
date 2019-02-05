@@ -87,9 +87,9 @@ Currently Linux (64 bit) and Windows (64 bit) have been packaged.
 ### Conda Build
 
 If your system is not supported yet, you might build and install it using the
-[conda reciepe](conda/meta.yaml) specifying your desired Python version. 
+[conda reciepe](conda/meta.yaml) specifying your desired Python version.
 Currently Linux (64 bit) and Windows (64 bit) have been tested successfully
-with Python 3.5 and Python 3.6.
+with Python 3.5, 3.6 and 3.7.
 
 #### Build
 
@@ -99,17 +99,17 @@ conda build /path/to/pyoints/conda --python=3.x
 
 #### Installation
 
-Create a virtual environment `myenv` and add the newly build *Pyoints* package.
+Create a virtual environment `pyoints_env` and add the newly build *Pyoints* package.
 The package path can be found with `conda build . --output`.
 
 ```
-conda create -n myenv /path/to/builded/package/pyoints-*-py*_*.tar.bz2 --use-local
+conda create -n pyoints_env /path/to/builded/package/pyoints-*-py*_*.tar.bz2 --use-local
 ```
 
 Finally install the package:
 
 ```
-conda activate myenv
+conda activate pyoints_env
 conda install pyoints
 ```
 
@@ -128,7 +128,7 @@ We recommend to use a virtual environment (like Conda) to install *Pyoints*.
 
 Installation of the external dependencies:
 ```
-conda install gdal, pyproj, rtree
+conda install gdal, pyproj, numpy, rtree
 ```
 
 Cloning of the repository:
@@ -141,16 +141,16 @@ Installation of the python packages via *pip*.
 ```
 pip install pygdal==$(gdal-config --version).* -e .
 ```
-Unfortunately, the gdal version is not detected automatically by *pgdal*. Thus,
-we have to specify the gdal version expicilely with ```gdal-config --version```.
+Unfortunately, the gdal version is not detected automatically by *pygdal*.
+Thus, we have to specify the gdal version expicilely with
+`gdal-config --version`.
 
 
 ## Documentation
 
 You can find the documentation at
-[docs](https://laempy.github.io/pyoints). Here you can find
-docstrings with examples for each module and some comprehensive examples. You
-can also take a look at the source files directly.
+[docs](https://laempy.github.io/pyoints). Here you can find some introducing
+tutorials and docstring examples for each module.
 
 
 
