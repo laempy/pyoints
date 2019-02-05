@@ -168,9 +168,8 @@ License v3 or later (GPLv3+). See [LICENSE](LICENSE) for details.
 
 Please cite `Pyoints` as:
 
-Sebastian Lamprecht (2019):
-"Pyoints: A Python package for point cloud, voxel and raster processing.",
-[![DOI](https://zenodo.org/badge/144562205.svg)](https://zenodo.org/badge/latestdoi/144562205).
+S. Lamprecht (2019):
+"Pyoints: A Python package for point cloud, voxel and raster processing". [![DOI](https://zenodo.org/badge/144562205.svg)](https://zenodo.org/badge/latestdoi/144562205)
 
 ```
 @Misc{lamprecht_2019,
@@ -178,7 +177,7 @@ Sebastian Lamprecht (2019):
   organization = {Trier University},
   title = {{Pyoints}: A Python package for point cloud, voxel and raster processing.},
   year = {2019},
-  doi = {https://zenodo.org/badge/latestdoi/144562205}
+  doi = {10.5281/zenodo.2557575}
 }
 ```
 
