@@ -244,6 +244,14 @@ Grant Brown and Howard Butler
 * [2-Clause BSD license](https://github.com/laspy/laspy/blob/master/LICENSE.txt)
 
 
+#### liblas
+
+Romulo Goncalves
+* [PyPI](https://pypi.org/project/libLAS/)
+* [homepage](https://liblas.org/)
+* [3-Clause BSD license](https://liblas.org/copyright.html#license)
+
+
 #### networkx
 
 NetworkX Developers
