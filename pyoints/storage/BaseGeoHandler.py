@@ -24,6 +24,7 @@ from .. import (
     assertion,
     projection
 )
+import warnings
 
 
 class GeoFile:
@@ -86,7 +87,10 @@ class GeoFile:
 
     @proj.setter
     def proj(self, proj):
-        if not isinstance(proj, projection.Proj):
+        if proj is None:
+            proj = projection.Proj()
+            warnings.warn("'proj' not set, so I assume '%s'" % proj.proj4)
+        elif not isinstance(proj, projection.Proj):
             m = "'proj' needs to be of type 'Proj', got %s" % type(proj)
             raise TypeError(m)
         self._proj = proj

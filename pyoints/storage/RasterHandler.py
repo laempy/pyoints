@@ -67,13 +67,10 @@ class RasterReader(GeoFile):
 
         if proj is None:
             wkt = gdalRaster.GetProjection()
-            if wkt is not '':
+            if not wkt == '':
                 self.proj = projection.Proj.from_proj4(
                     osr.SpatialReference(wkt=wkt).ExportToProj4())
-            else:
-                warnings.warn("no projection found")
-        else:
-            self.proj = proj
+        self.proj = proj
 
         self.t = transformation.matrix_from_gdal(gdalRaster.GetGeoTransform())
 
@@ -147,8 +144,7 @@ def load_gdal(filename, proj=None, extent=None):
     if proj is None:
         wkt = gdalRaster.GetProjection()
         if wkt is not '':
-            proj = projection.Proj.from_proj4(
-                osr.SpatialReference(wkt=wkt).ExportToProj4())
+            proj = projection.Proj.from_wkt(wkt)
         else:
             warnings.warn("no projection found")
 
