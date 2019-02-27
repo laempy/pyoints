@@ -75,32 +75,32 @@ class Grid(GeoRecords):
     >>> raster = Grid(proj, data, T)
     >>> print(raster.dtype.descr)
     [('values', '<i8'), ('coords', '<f8', (2,))]
-    >>> print(raster.shape)
+    >>> print_rounded(raster.shape)
     (4, 3)
-    >>> print(raster.dim)
+    >>> print_rounded(raster.dim)
     2
-    >>> print(raster.t.origin)
-    [10. 20.]
+    >>> print_rounded(raster.t.origin)
+    [ 10.  20.]
 
     Get cell data of the raster.
 
-    >>> print(raster.coords)
-    [[[10.25 20.2 ]
-      [10.75 20.2 ]
-      [11.25 20.2 ]]
+    >>> print_rounded(raster.coords)
+    [[[ 10.25  20.2 ]
+      [ 10.75  20.2 ]
+      [ 11.25  20.2 ]]
     <BLANKLINE>
-     [[10.25 20.6 ]
-      [10.75 20.6 ]
-      [11.25 20.6 ]]
+     [[ 10.25  20.6 ]
+      [ 10.75  20.6 ]
+      [ 11.25  20.6 ]]
     <BLANKLINE>
-     [[10.25 21.  ]
-      [10.75 21.  ]
-      [11.25 21.  ]]
+     [[ 10.25  21.  ]
+      [ 10.75  21.  ]
+      [ 11.25  21.  ]]
     <BLANKLINE>
-     [[10.25 21.4 ]
-      [10.75 21.4 ]
-      [11.25 21.4 ]]]
-    >>> print(raster.values)
+     [[ 10.25  21.4 ]
+      [ 10.75  21.4 ]
+      [ 11.25  21.4 ]]]
+    >>> print_rounded(raster.values)
     [[ 0  1  2]
      [ 3  4  5]
      [ 6  7  8]
@@ -108,12 +108,12 @@ class Grid(GeoRecords):
 
     Convert coordinates to indices and reverse.
 
-    >>> print(raster.coords_to_keys(raster.t.origin))
+    >>> print_rounded(raster.coords_to_keys(raster.t.origin))
     [0 0]
-    >>> print(raster.keys_to_coords([-0.5, -0.5]))
-    [10. 20.]
+    >>> print_rounded(raster.keys_to_coords([-0.5, -0.5]))
+    [ 10.  20.]
 
-    >>> print(raster.coords_to_keys(raster.coords))
+    >>> print_rounded(raster.coords_to_keys(raster.coords))
     [[[0 0]
       [0 1]
       [0 2]]
@@ -129,31 +129,31 @@ class Grid(GeoRecords):
      [[3 0]
       [3 1]
       [3 2]]]
-    >>> print(raster.keys_to_coords(raster.keys))
-    [[[10.25 20.2 ]
-      [10.75 20.2 ]
-      [11.25 20.2 ]]
+    >>> print_rounded(raster.keys_to_coords(raster.keys))
+    [[[ 10.25  20.2 ]
+      [ 10.75  20.2 ]
+      [ 11.25  20.2 ]]
     <BLANKLINE>
-     [[10.25 20.6 ]
-      [10.75 20.6 ]
-      [11.25 20.6 ]]
+     [[ 10.25  20.6 ]
+      [ 10.75  20.6 ]
+      [ 11.25  20.6 ]]
     <BLANKLINE>
-     [[10.25 21.  ]
-      [10.75 21.  ]
-      [11.25 21.  ]]
+     [[ 10.25  21.  ]
+      [ 10.75  21.  ]
+      [ 11.25  21.  ]]
     <BLANKLINE>
-     [[10.25 21.4 ]
-      [10.75 21.4 ]
-      [11.25 21.4 ]]]
+     [[ 10.25  21.4 ]
+      [ 10.75  21.4 ]
+      [ 11.25  21.4 ]]]
 
     Usage of the spatial index.
 
     >>> dists, indices = raster.indexKD().knn(raster.t.origin, k=5)
-    >>> print(dists)
-    [0.32015621 0.65       0.77620873 0.96046864 1.03077641]
-    >>> print(indices)
+    >>> print_rounded(dists)
+    [ 0.32  0.65  0.78  0.96  1.03]
+    >>> print_rounded(indices)
     [0 3 1 4 6]
-    >>> print(raster.indices_to_keys(indices))
+    >>> print_rounded(raster.indices_to_keys(indices))
     [[0 0]
      [1 0]
      [0 1]
@@ -211,49 +211,49 @@ class Grid(GeoRecords):
         >>> scale = [1, 2]
         >>> raster = Grid.from_corners(projection.Proj(), corners, scale)
 
-        >>> print(raster.shape)
+        >>> print_rounded(raster.shape)
         (4, 3)
         >>> print(sorted(raster.dtype.descr))
         [('coords', '<f8', (2,))]
         >>> print_rounded(raster.t)
-        [[1. 0. 1.]
-         [0. 2. 2.]
-         [0. 0. 1.]]
+        [[ 1.  0.  1.]
+         [ 0.  2.  2.]
+         [ 0.  0.  1.]]
 
         >>> print_rounded(raster.coords)
-        [[[1.5 3. ]
-          [2.5 3. ]
-          [3.5 3. ]]
+        [[[ 1.5  3. ]
+          [ 2.5  3. ]
+          [ 3.5  3. ]]
         <BLANKLINE>
-         [[1.5 5. ]
-          [2.5 5. ]
-          [3.5 5. ]]
+         [[ 1.5  5. ]
+          [ 2.5  5. ]
+          [ 3.5  5. ]]
         <BLANKLINE>
-         [[1.5 7. ]
-          [2.5 7. ]
-          [3.5 7. ]]
+         [[ 1.5  7. ]
+          [ 2.5  7. ]
+          [ 3.5  7. ]]
         <BLANKLINE>
-         [[1.5 9. ]
-          [2.5 9. ]
-          [3.5 9. ]]]
+         [[ 1.5  9. ]
+          [ 2.5  9. ]
+          [ 3.5  9. ]]]
 
         >>> print_rounded(raster.corners)
-        [[ 1.  2.]
-         [ 4.  2.]
-         [ 4. 10.]
-         [ 1. 10.]]
+        [[  1.   2.]
+         [  4.   2.]
+         [  4.  10.]
+         [  1.  10.]]
         >>> keys = raster.t.to_global(corners)
         >>> print_rounded(keys)
-        [[0. 0.]
-         [3. 0.]
-         [3. 4.]
-         [0. 4.]]
+        [[ 0.  0.]
+         [ 3.  0.]
+         [ 3.  4.]
+         [ 0.  4.]]
         >>> print_rounded(raster.t.to_local(keys))
-        [[ 1.  2.]
-         [ 4.  2.]
-         [ 4. 10.]
-         [ 1. 10.]]
-
+        [[  1.   2.]
+         [  4.   2.]
+         [  4.  10.]
+         [  1.  10.]]
+    
         Example with inverted axes.
 
         >>> from pyoints import transformation
@@ -261,51 +261,51 @@ class Grid(GeoRecords):
         >>> corners = [(1, 1), (3, 1), (3, 4), (1, 4)]
         >>> raster = Grid.from_corners(projection.Proj(), corners, [-0.5, -1])
 
-        >>> print(raster.shape)
+        >>> print_rounded(raster.shape)
         (3, 4)
         >>> print_rounded(raster.records().coords.min(0))
-        [1.25 1.5 ]
+        [ 1.25  1.5 ]
         >>> print_rounded(raster.records().coords.max(0))
-        [2.75 3.5 ]
+        [ 2.75  3.5 ]
 
         >>> t, r, s, det = transformation.decomposition(raster.t)
         >>> print_rounded(t)
-        [3. 4.]
+        [ 3.  4.]
         >>> print_rounded(s)
-        [0.5 1. ]
+        [ 0.5  1. ]
 
         >>> print_rounded(raster.coords)
-        [[[2.75 3.5 ]
-          [2.25 3.5 ]
-          [1.75 3.5 ]
-          [1.25 3.5 ]]
+        [[[ 2.75  3.5 ]
+          [ 2.25  3.5 ]
+          [ 1.75  3.5 ]
+          [ 1.25  3.5 ]]
         <BLANKLINE>
-         [[2.75 2.5 ]
-          [2.25 2.5 ]
-          [1.75 2.5 ]
-          [1.25 2.5 ]]
+         [[ 2.75  2.5 ]
+          [ 2.25  2.5 ]
+          [ 1.75  2.5 ]
+          [ 1.25  2.5 ]]
         <BLANKLINE>
-         [[2.75 1.5 ]
-          [2.25 1.5 ]
-          [1.75 1.5 ]
-          [1.25 1.5 ]]]
+         [[ 2.75  1.5 ]
+          [ 2.25  1.5 ]
+          [ 1.75  1.5 ]
+          [ 1.25  1.5 ]]]
 
         >>> print_rounded(raster.corners)
-        [[3. 4.]
-         [1. 4.]
-         [1. 1.]
-         [3. 1.]]
+        [[ 3.  4.]
+         [ 1.  4.]
+         [ 1.  1.]
+         [ 3.  1.]]
         >>> keys = raster.t.to_global(corners)
         >>> print_rounded(keys)
-        [[4. 3.]
-         [0. 3.]
-         [0. 0.]
-         [4. 0.]]
+        [[ 4.  3.]
+         [ 0.  3.]
+         [ 0.  0.]
+         [ 4.  0.]]
         >>> print_rounded(raster.t.to_local(keys))
-        [[1. 1.]
-         [3. 1.]
-         [3. 4.]
-         [1. 4.]]
+        [[ 1.  1.]
+         [ 3.  1.]
+         [ 3.  4.]
+         [ 1.  4.]]
 
         """
         T, shape = corners_to_transform(corners, scale=scale)
@@ -341,25 +341,25 @@ class Grid(GeoRecords):
         >>> extent = [1, 1, 3, 4]
         >>> raster = Grid.from_extent(projection.Proj(), extent, [0.5, 1])
 
-        >>> print(raster.shape)
+        >>> print_rounded(raster.shape)
         (3, 4)
         >>> print(sorted(raster.dtype.descr))
         [('coords', '<f8', (2,))]
-        >>> print(raster.coords)
-        [[[1.25 1.5 ]
-          [1.75 1.5 ]
-          [2.25 1.5 ]
-          [2.75 1.5 ]]
+        >>> print_rounded(raster.coords)
+        [[[ 1.25  1.5 ]
+          [ 1.75  1.5 ]
+          [ 2.25  1.5 ]
+          [ 2.75  1.5 ]]
         <BLANKLINE>
-         [[1.25 2.5 ]
-          [1.75 2.5 ]
-          [2.25 2.5 ]
-          [2.75 2.5 ]]
+         [[ 1.25  2.5 ]
+          [ 1.75  2.5 ]
+          [ 2.25  2.5 ]
+          [ 2.75  2.5 ]]
         <BLANKLINE>
-         [[1.25 3.5 ]
-          [1.75 3.5 ]
-          [2.25 3.5 ]
-          [2.75 3.5 ]]]
+         [[ 1.25  3.5 ]
+          [ 1.75  3.5 ]
+          [ 2.25  3.5 ]
+          [ 2.75  3.5 ]]]
 
         """
         corners = Extent(ext).corners
@@ -469,22 +469,22 @@ class Grid(GeoRecords):
         >>> T = transformation.matrix(s=(1, 2), t=[1, 0])
         >>> proj = projection.Proj()
         >>> grid = Grid(proj, np.recarray((4, 5), dtype=[]), T=T)
-        >>> print(grid.extent())
-        [1.5 1.  5.5 7. ]
+        >>> print_rounded(grid.extent())
+        [ 1.5  1.   5.5  7. ]
 
         Select subset by extent.
 
         >>> subset = grid.window_by_extent([3, 2, 7, 6])
-        >>> print(subset.shape)
+        >>> print_rounded(subset.shape)
         (2, 3)
-        >>> print(subset.coords)
-        [[[3.5 3. ]
-          [4.5 3. ]
-          [5.5 3. ]]
+        >>> print_rounded(subset.coords)
+        [[[ 3.5  3. ]
+          [ 4.5  3. ]
+          [ 5.5  3. ]]
         <BLANKLINE>
-         [[3.5 5. ]
-          [4.5 5. ]
-          [5.5 5. ]]]
+         [[ 3.5  5. ]
+          [ 4.5  5. ]
+          [ 5.5  5. ]]]
 
         """
         extent = Extent(extent)
@@ -526,25 +526,25 @@ class Grid(GeoRecords):
         >>> proj = projection.Proj()
         >>> grid = Grid(proj, np.recarray((3, 4), dtype=dtype), T=T)
 
-        >>> print(grid.shape)
+        >>> print_rounded(grid.shape)
         (3, 4)
-        >>> print(grid.coords)
-        [[[2.25 1.5 ]
-          [4.75 1.5 ]
-          [7.25 1.5 ]
-          [9.75 1.5 ]]
+        >>> print_rounded(grid.coords)
+        [[[ 2.25  1.5 ]
+          [ 4.75  1.5 ]
+          [ 7.25  1.5 ]
+          [ 9.75  1.5 ]]
         <BLANKLINE>
-         [[2.25 4.5 ]
-          [4.75 4.5 ]
-          [7.25 4.5 ]
-          [9.75 4.5 ]]
+         [[ 2.25  4.5 ]
+          [ 4.75  4.5 ]
+          [ 7.25  4.5 ]
+          [ 9.75  4.5 ]]
         <BLANKLINE>
-         [[2.25 7.5 ]
-          [4.75 7.5 ]
-          [7.25 7.5 ]
-          [9.75 7.5 ]]]
-        >>> print(grid.t.origin)
-        [1. 0.]
+         [[ 2.25  7.5 ]
+          [ 4.75  7.5 ]
+          [ 7.25  7.5 ]
+          [ 9.75  7.5 ]]]
+        >>> print_rounded(grid.t.origin)
+        [ 1.  0.]
 
         Create records to voxelize.
 
@@ -557,11 +557,11 @@ class Grid(GeoRecords):
         >>> voxels = grid.voxelize(rec)
         >>> grid['points'] = voxels
 
-        >>> print(grid['points'][0, 0].coords)
-        [[0.  0. ]
-         [1.  0.5]
-         [2.  2. ]
-         [3.  2. ]]
+        >>> print_rounded(grid['points'][0, 0].coords)
+        [[ 0.   0. ]
+         [ 1.   0.5]
+         [ 2.   2. ]
+         [ 3.   2. ]]
 
         """
         return voxelize(rec, self.t, shape=self.shape, **kwargs)
@@ -615,13 +615,13 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
 
     >>> print(grid.dtype)
     object
-    >>> print(grid.shape)
+    >>> print_rounded(grid.shape)
     (3, 2)
-    >>> print(grid[0, 0].coords)
-    [[0.  0. ]
-     [1.  0.5]
-     [2.  2. ]]
-
+    >>> print_rounded(grid[0, 0].coords)
+    [[ 0.   0. ]
+     [ 1.   0.5]
+     [ 2.   2. ]]
+    
     Voxelize with aggregation function.
 
     >>> dtype = [('points', type(rec)), ('count', int)]
@@ -630,16 +630,16 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
 
     >>> print(grid.dtype.descr)
     [('points', '|O'), ('count', '<i8')]
-    >>> print(grid.shape)
+    >>> print_rounded(grid.shape)
     (3, 2)
-    >>> print(grid.count)
+    >>> print_rounded(grid.count)
     [[3 2]
      [1 0]
      [0 1]]
-    >>> print(grid[0, 0].points.coords)
-    [[0.  0. ]
-     [1.  0.5]
-     [2.  2. ]]
+    >>> print_rounded(grid[0, 0].points.coords)
+    [[ 0.   0. ]
+     [ 1.   0.5]
+     [ 2.   2. ]]
 
     Voxelize three dimensional coordinates to receive a two dimensional raster.
 
@@ -649,9 +649,9 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
 
     >>> T = transformation.matrix(s=(2.5, 3), t=[0, 0])
     >>> grid = voxelize(rec, T)
-    >>> print(grid.shape)
+    >>> print_rounded(grid.shape)
     (3, 2)
-    >>> print(grid[0, 0].coords)
+    >>> print_rounded(grid[0, 0].coords)
     [[ 0.   0.   1. ]
      [-2.   0.3  5. ]
      [ 2.   2.   3. ]]

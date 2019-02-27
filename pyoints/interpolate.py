@@ -125,7 +125,7 @@ class LinearInterpolator(Interpolator):
     >>> print_rounded(interpolator([0, 1]))
     1.5
     >>> print_rounded(interpolator([(0, 1), (0, 0), (0, -1)]))
-    [1.5 0.  nan]
+    [ 1.5  0.   nan]
 
     Interpolation of multi-dimensional values.
 
@@ -135,11 +135,11 @@ class LinearInterpolator(Interpolator):
     >>> interpolator = LinearInterpolator(coords, values)
 
     >>> print_rounded(interpolator([0, 1]))
-    [1.  2.  5.5]
+    [ 1.   2.   5.5]
     >>> print_rounded(interpolator([(0, 1), (0, 0), (0, -1)]))
-    [[1.  2.  5.5]
-     [0.  1.  3. ]
-     [nan nan nan]]
+    [[ 1.   2.   5.5]
+     [ 0.   1.   3. ]
+     [ nan  nan  nan]]
 
     """
 
@@ -242,7 +242,7 @@ class KnnInterpolator(Interpolator):
     >>> print(interpolator([0, 1]))
     1.5
     >>> print(interpolator([(0, 1), (0, 0), (0, -1)]))
-    [1.5 0.  0. ]
+    [ 1.5  0.   0. ]
 
     Interpolation of multi-dimensional values.
 
@@ -252,11 +252,11 @@ class KnnInterpolator(Interpolator):
     >>> interpolator = KnnInterpolator(coords, values, k=2)
 
     >>> print(interpolator([0, 1]))
-    [1.  2.  5.5]
+    [ 1.   2.   5.5]
     >>> print(interpolator([(0, 1), (0, 0), (0, -1)]))
-    [[1.   2.   5.5 ]
-     [0.   1.   3.  ]
-     [0.5  1.5  4.25]]
+    [[ 1.    2.    5.5 ]
+     [ 0.    1.    3.  ]
+     [ 0.5   1.5   4.25]]
 
     """
 
@@ -340,7 +340,7 @@ class PolynomInterpolator(Interpolator):
     >>> interpolator = PolynomInterpolator(coords, values, deg=1)
 
     >>> print_rounded(interpolator([0, 1]))
-    [1.  2.  5.5]
+    [ 1.   2.   5.5]
     >>> print_rounded(interpolator([(0, 1), (0, 0), (0, -1)]))
     [[ 1.   2.   5.5]
      [ 0.   1.   3. ]
