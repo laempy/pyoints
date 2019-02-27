@@ -141,10 +141,41 @@ def print_rounded(values, decimals=2):
 
     """
     if isinstance(values, Number):
-        rounded = np.round(values, decimals=decimals)
+        values = np.round(values, decimals=decimals)
         if np.isclose(values, 0):
-            rounded = values * 0
+            values = values * 0
     else:
-        rounded = np.round(values, decimals=decimals)
-        rounded[np.isclose(values, 0)] = 0
-    print(rounded)
+        values[np.isclose(values, 0)] = 0
+
+    max_val = 5
+    import re
+    max_str_len = len(str(int(max_val))) + decimals + 2
+    formatter = {
+        'int_kind': lambda x:'{0:d}'.format(x),
+        'float_kind': lambda x: ('{0. <%i}|' % decimals).format(x),
+    }
+    np.set_printoptions(
+        linewidth=75,
+        precision=decimals,
+        suppress=True,
+        threshold=20,
+        sign=' ',
+        floatmode='unique',
+        #formatter=formatter,
+        legacy='1.13'
+    )
+
+    s = np.array2string(
+        values,
+        max_line_width=75,
+        precision=decimals,
+        suppress_small=True,
+        separator=' ',
+        threshold=20,
+        sign=' ',
+        floatmode='unique',
+        #formatter=formatter,
+        legacy='1.13',
+    )
+    print(values)
+
