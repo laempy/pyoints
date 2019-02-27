@@ -38,6 +38,7 @@ Let's begin with loading the required modules.
 ...     GeoRecords,
 ...     interpolate,
 ... )
+>>> from pyoints.misc import print_rounded
 
 
 First, we define an input and an output path.
@@ -66,7 +67,7 @@ deriving the lowest z-coordinate of each cell.
 ...     return las.coords[ids, 2].min() if len(ids) > 0 else np.nan
 >>> dtype = [('z', float)]
 >>> dem_grid = grid.voxelize(las, T, agg_func=aggregate_function, dtype=dtype)
->>> print(dem_grid.shape)
+>>> print_rounded(dem_grid.shape)
 (9, 9)
 
 
@@ -147,7 +148,7 @@ stems by clustering the points.
 
 >>> print(len(cluster_indices))
 84
->>> print(np.unique(cluster_indices))
+>>> print_rounded(np.unique(cluster_indices))
 [-1  0  1  2  3  4  5]
 
 
@@ -156,8 +157,8 @@ In the next step, we remove small clusters and unassigned points.
 >>> cluster_dict = classification.classes_to_dict(cluster_indices, min_size=5)
 >>> cluster_indices = classification.dict_to_classes(cluster_dict, len(las))
 
->>> print(sorted(cluster_dict.keys()))
-[0, 1, 3, 5]
+>>> print_rounded(sorted(cluster_dict.keys()))
+[0 1 3 5]
 
 
 We add an additional field to the point cloud to store the tree number.
