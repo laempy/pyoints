@@ -380,3 +380,7 @@ class PolynomInterpolator(Interpolator):
     @property
     def coef(self):
         return self._interpolator.coef_
+
+    @property
+    def intercept(self):
+        return self._interpolator.intercept_
