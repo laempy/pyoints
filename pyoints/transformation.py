@@ -41,7 +41,6 @@ from .assertion import (
     isnumeric,
 )
 from .misc import print_rounded
-print_rounded(1)
 
 
 def transform(coords, T, inverse=False, precise=False):
@@ -72,16 +71,16 @@ def transform(coords, T, inverse=False, precise=False):
     >>> T = [(1, 0, 5), (0, 1, 3), (0, 0, 1)]
 
     >>> tcoords = transform(coords, T)
-    >>> print(tcoords)
-    [[5. 3.]
-     [6. 5.]
-     [7. 6.]
-     [5. 6.]]
-    >>> print(transform(tcoords, T, inverse=True))
-    [[0. 0.]
-     [1. 2.]
-     [2. 3.]
-     [0. 3.]]
+    >>> print_rounded(tcoords)
+    [[ 5.  3.]
+     [ 6.  5.]
+     [ 7.  6.]
+     [ 5.  6.]]
+    >>> print_rounded(transform(tcoords, T, inverse=True))
+    [[ 0.  0.]
+     [ 1.  2.]
+     [ 2.  3.]
+     [ 0.  3.]]
 
     """
     T = ensure_tmatrix(T)
@@ -241,11 +240,11 @@ def i_matrix(dim):
     Examples
     --------
 
-    >>> print(i_matrix(3))
-    [[1. 0. 0. 0.]
-     [0. 1. 0. 0.]
-     [0. 0. 1. 0.]
-     [0. 0. 0. 1.]]
+    >>> print_rounded(i_matrix(3))
+    [[ 1.  0.  0.  0.]
+     [ 0.  1.  0.  0.]
+     [ 0.  0.  1.  0.]
+     [ 0.  0.  0.  1.]]
 
     """
     if not (isinstance(dim, int) and dim >= 2):
@@ -275,11 +274,11 @@ def t_matrix(t):
     Examples
     --------
 
-    >>> print(t_matrix([1, 2, 3]))
-    [[1. 0. 0. 1.]
-     [0. 1. 0. 2.]
-     [0. 0. 1. 3.]
-     [0. 0. 0. 1.]]
+    >>> print_rounded(t_matrix([1, 2, 3]))
+    [[ 1.  0.  0.  1.]
+     [ 0.  1.  0.  2.]
+     [ 0.  0.  1.  3.]
+     [ 0.  0.  0.  1.]]
 
     """
     t = ensure_numvector(t, min_length=2)
@@ -309,7 +308,7 @@ def s_matrix(s):
     Examples
     --------
 
-    >>> print(s_matrix([0.5, 1, -3]))
+    >>> print_rounded(s_matrix([0.5, 1, -3]))
     [[ 0.5  0.   0.   0. ]
      [ 0.   1.   0.   0. ]
      [ 0.   0.  -3.   0. ]
@@ -358,7 +357,7 @@ def r_matrix(a, order='xyz'):
     Two dimensional case.
 
     >>> R = r_matrix(np.pi/4)
-    >>> print(R, 3)
+    >>> print_rounded(R, 3)
     [[ 0.707 -0.707  0.   ]
      [ 0.707  0.707  0.   ]
      [ 0.     0.     1.   ]]
@@ -366,7 +365,7 @@ def r_matrix(a, order='xyz'):
     Three dimensional case.
 
     >>> R = r_matrix([np.pi/2, 0, np.pi/4])
-    >>> print(R, 3)
+    >>> print_rounded(R, 3)
     [[ 0.707  0.     0.707  0.   ]
      [ 0.707  0.    -0.707  0.   ]
      [ 0.     1.     0.     0.   ]
@@ -447,17 +446,17 @@ def q_matrix(q):
     --------
 
     >>> T = q_matrix([0.7071, 0.7071, 0, 0])
-    >>> print(T, 2)
+    >>> print_rounded(T, 2)
     [[ 1.  0.  0.  0.]
      [ 0.  0. -1.  0.]
      [ 0.  1.  0.  0.]
      [ 0.  0.  0.  1.]]
 
     >>> t, r, s, det = decomposition(T)
-    >>> print(r)
-    [ 1.57077715 -0.          0.        ]
-    >>> print(t)
-    [0. 0. 0.]
+    >>> print_rounded(r)
+    [ 1.57  0.    0.  ]
+    >>> print_rounded(t)
+    [ 0.  0.  0.]
 
 
     """
@@ -492,16 +491,16 @@ def add_dim(T):
     Two dimensional case.
 
     >>> T = matrix(t=[2, 3 ], s=[0.5, 2])
-    >>> print(T, 3)
-    [[0.5 0.  2. ]
-     [0.  2.  3. ]
-     [0.  0.  1. ]]
+    >>> print_rounded(T, 3)
+    [[ 0.5  0.   2. ]
+     [ 0.   2.   3. ]
+     [ 0.   0.   1. ]]
     >>> T = add_dim(T)
-    >>> print(T, 3)
-    [[0.5 0.  0.  2. ]
-     [0.  2.  0.  3. ]
-     [0.  0.  1.  0. ]
-     [0.  0.  0.  1. ]]
+    >>> print_rounded(T, 3)
+    [[ 0.5  0.   0.   2. ]
+     [ 0.   2.   0.   3. ]
+     [ 0.   0.   1.   0. ]
+     [ 0.   0.   0.   1. ]]
 
     """
     T = ensure_tmatrix(T)
@@ -532,13 +531,13 @@ def decomposition(T, ignore_warnings=False):
 
     >>> T = matrix(t=[2, 3], r=0.2, s=[0.5, 2])
     >>> t, r, s, det = decomposition(T)
-    >>> print(t)
-    [2. 3.]
-    >>> print(r)
+    >>> print_rounded(t)
+    [ 2.  3.]
+    >>> print_rounded(r)
     0.2
-    >>> print(s)
-    [0.5 2. ]
-    >>> print(det)
+    >>> print_rounded(s)
+    [ 0.5  2. ]
+    >>> print_rounded(det)
     1.0
 
     See Also
@@ -615,7 +614,7 @@ def matrix_from_gdal(t):
     --------
 
     >>> T = matrix_from_gdal([-28493, 9, 2, 4255884, -2, -9.0])
-    >>> print(T.astype(int))
+    >>> print_rounded(T.astype(int))
     [[      9       2  -28493]
      [     -2      -9 4255884]
      [      0       0       1]]
@@ -656,7 +655,7 @@ def matrix_to_gdal(T):
 
     >>> T = np.array([(9, -2, -28493), (2, -9, 4255884), (0, 0, 1)])
     >>> t = matrix_to_gdal(T)
-    >>> print(t)
+    >>> print_rounded(t)
     (-28493.0, 9.0, -2.0, 4255884.0, 2.0, -9.0)
 
     """
@@ -686,14 +685,14 @@ class LocalSystem(np.ndarray, object):
     --------
 
     >>> L = LocalSystem([(2, -0.5, 2), (0.5, 1, 3), (0, 0, 1)])
-    >>> print(L)
+    >>> print_rounded(L)
     [[ 2.  -0.5  2. ]
      [ 0.5  1.   3. ]
      [ 0.   0.   1. ]]
-    >>> print(L.dim)
+    >>> print_rounded(L.dim)
     2
-    >>> print(L.origin)
-    [2. 3.]
+    >>> print_rounded(L.origin)
+    [ 2.  3.]
 
     See Also
     --------
@@ -754,40 +753,40 @@ class LocalSystem(np.ndarray, object):
         Reflect a two dimensional transformation matrix.
 
         >>> L = LocalSystem(matrix(t=[1, 2], s=[0.5, 2]))
-        >>> print(L)
-        [[0.5 0.  1. ]
-         [0.  2.  2. ]
-         [0.  0.  1. ]]
-        >>> print(L.to_local([2, 3]))
-        [2. 8.]
-
-        >>> L.reflect()
-        >>> print(L)
-        [[-0.5 -0.  -1. ]
+        >>> print_rounded(L)
+        [[ 0.5  0.   1. ]
          [ 0.   2.   2. ]
          [ 0.   0.   1. ]]
-        >>> print(L.to_local([2, 3]))
+        >>> print_rounded(L.to_local([2, 3]))
+        [ 2.  8.]
+
+        >>> L.reflect()
+        >>> print_rounded(L)
+        [[-0.5  0.  -1. ]
+         [ 0.   2.   2. ]
+         [ 0.   0.   1. ]]
+        >>> print_rounded(L.to_local([2, 3]))
         [-2.  8.]
 
         Reflect a three dimensional transformation matrix.
 
         >>> L = LocalSystem(matrix(t=[1, 2, 3], s=[0.5, -2, 1]))
-        >>> print(L)
+        >>> print_rounded(L)
         [[ 0.5  0.   0.   1. ]
          [ 0.  -2.   0.   2. ]
          [ 0.   0.   1.   3. ]
          [ 0.   0.   0.   1. ]]
-        >>> print(L.to_local([1, 2, 3]))
+        >>> print_rounded(L.to_local([1, 2, 3]))
         [ 1.5 -2.   6. ]
 
         >>> L.reflect(axis=1)
-        >>> print(L)
+        >>> print_rounded(L)
         [[ 0.5  0.   0.   1. ]
          [ 0.   2.   0.  -2. ]
          [ 0.   0.   1.   3. ]
          [ 0.   0.   0.   1. ]]
-        >>> print(L.to_local([1, 2, 3]))
-        [1.5 2.  6. ]
+        >>> print_rounded(L.to_local([1, 2, 3]))
+        [ 1.5  2.   6. ]
 
         """
         R = np.eye(self.dim + 1)
@@ -813,11 +812,11 @@ class LocalSystem(np.ndarray, object):
 
         >>> T = matrix(t=[2, 3], s=[0.5, 10])
         >>> lcoords = T.to_local([(0, 0), (0, 1), (1, 0), (-1, -1)])
-        >>> print(lcoords)
-        [[ 2.   3. ]
-         [ 2.  13. ]
-         [ 2.5  3. ]
-         [ 1.5 -7. ]]
+        >>> print_rounded(lcoords)
+        [[  2.    3. ]
+         [  2.   13. ]
+         [  2.5   3. ]
+         [  1.5  -7. ]]
 
         """
         return transform(global_coords, self)
@@ -841,7 +840,7 @@ class LocalSystem(np.ndarray, object):
 
         >>> T = matrix(t=[2, 3], s=[0.5, 10])
         >>> gcoords = T.to_global([(2, 3), (2, 13), (2.5, 3), (1.5, -7)])
-        >>> print(gcoords)
+        >>> print_rounded(gcoords)
         [[ 0.  0.]
          [ 0.  1.]
          [ 1.  0.]
@@ -869,13 +868,13 @@ class LocalSystem(np.ndarray, object):
         --------
 
         >>> T = s_matrix([1, 2])
-        >>> print(T)
-        [[1. 0. 0.]
-         [0. 2. 0.]
-         [0. 0. 1.]]
+        >>> print_rounded(T)
+        [[ 1.  0.  0.]
+         [ 0.  2.  0.]
+         [ 0.  0.  1.]]
         >>> e = T.explained_variance([(2, 1), (0, 0), (1, 1), (2, 3)])
-        >>> print(e, 3)
-        [0.688 4.75 ]
+        >>> print_rounded(e, 3)
+        [ 0.688  4.75 ]
 
         See Also
         --------
@@ -904,13 +903,13 @@ class LocalSystem(np.ndarray, object):
         --------
 
         >>> T = s_matrix([1, 2])
-        >>> print(T)
-        [[1. 0. 0.]
-         [0. 2. 0.]
-         [0. 0. 1.]]
+        >>> print_rounded(T)
+        [[ 1.  0.  0.]
+         [ 0.  2.  0.]
+         [ 0.  0.  1.]]
         >>> e = T.explained_variance_ratio([(2, 1), (0, 0), (1, 1), (2, 3)])
-        >>> print(e, 3)
-        [0.126 0.874]
+        >>> print_rounded(e, 3)
+        [ 0.126  0.874]
 
         See Also
         --------
@@ -954,11 +953,11 @@ def eigen(coords):
 
     >>> coords = [(0, 0), (3, 4)]
     >>> eigen_vectors, eigen_values = eigen(coords)
-    >>> print(eigen_vectors)
+    >>> print_rounded(eigen_vectors)
     [[ 0.6 -0.8]
      [ 0.8  0.6]]
-    >>> print(eigen_values)
-    [12.5  0. ]
+    >>> print_rounded(eigen_values)
+    [ 12.5   0. ]
 
     """
     coords = ensure_coords(coords)
@@ -1001,15 +1000,15 @@ class PCA(LocalSystem):
 
     >>> coords = [(0, 0), (3, 4)]
     >>> T = PCA(coords)
-    >>> print(T)
+    >>> print_rounded(T)
     [[ 0.6  0.8 -2.5]
      [-0.8  0.6  0. ]
      [ 0.   0.   1. ]]
-    >>> print(np.linalg.inv(T))
+    >>> print_rounded(np.linalg.inv(T))
     [[ 0.6 -0.8  1.5]
      [ 0.8  0.6  2. ]
      [ 0.   0.   1. ]]
-    >>> print(transform(coords, T))
+    >>> print_rounded(transform(coords, T))
     [[-2.5  0. ]
      [ 2.5  0. ]]
 
@@ -1050,14 +1049,14 @@ class PCA(LocalSystem):
 
         >>> coords = [(-3, -4), (0, 0), (12, 16)]
         >>> T = PCA(coords)
-        >>> print(T)
+        >>> print_rounded(T)
         [[ 0.6  0.8 -5. ]
          [-0.8  0.6  0. ]
          [ 0.   0.   1. ]]
 
-        >>> print(T.pc(1))
-        [0.6 0.8]
-        >>> print(T.pc(2))
+        >>> print_rounded(T.pc(1))
+        [ 0.6  0.8]
+        >>> print_rounded(T.pc(2))
         [-0.8  0.6]
 
         """
