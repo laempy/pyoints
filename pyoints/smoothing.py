@@ -66,15 +66,15 @@ def mean_ball(
 
     Get value range in each coordinate dimension.
 
-    >>> print(np.ptp(coords, axis=0))
-    [9.  9.  0.1]
+    >>> print_rounded(np.ptp(coords, axis=0))
+    [ 9.   9.   0.1]
 
     Smooth coordinates to get a more regular surface. But the first two
     coordinate dimensions are affected, too.
 
     >>> scoords = mean_ball(coords, 1.5)
     >>> print_rounded(np.ptp(scoords, axis=0), 3)
-    [8.    8.    0.033]
+    [ 8.     8.     0.033]
 
     Modify the aggregation function to smooth the third coordinate axis only.
 
@@ -83,13 +83,13 @@ def mean_ball(
     ...     return coord
     >>> scoords = mean_ball(coords, 1.5, f=aggregate_function)
     >>> print_rounded(np.ptp(scoords, axis=0), 3)
-    [9.    9.    0.026]
+    [ 9.     9.     0.026]
 
     Increase number of iterations to get a smoother result.
 
     >>> scoords = mean_ball(coords, 1.5, num_iter=3, f=aggregate_function)
     >>> print_rounded(np.ptp(scoords, axis=0), 3)
-    [9.   9.   0.01]
+    [ 9.    9.    0.01]
 
     """
     coords = assertion.ensure_coords(coords)
@@ -155,15 +155,15 @@ def mean_knn(
 
     Get value range in each coordinate dimension.
 
-    >>> print(np.ptp(coords, axis=0))
-    [9.  9.  0.1]
+    >>> print_rounded(np.ptp(coords, axis=0))
+    [ 9.   9.   0.1]
 
     Smooth coordinates to get a more regular surface. But the first two
     coordinate dimensions are affected, too.
 
     >>> scoords = mean_knn(coords, 5)
     >>> print_rounded(np.ptp(scoords, axis=0), 3)
-    [8.2  8.2  0.02]
+    [ 8.2   8.2   0.02]
 
     Modify the aggregation function to smooth the third coordinate axis only.
 
@@ -172,7 +172,7 @@ def mean_knn(
     ...     return coord
     >>> scoords = mean_knn(coords, 5, f=aggregate_function)
     >>> print_rounded(np.ptp(scoords, axis=0), 3)
-    [9.    9.    0.033]
+    [ 9.     9.     0.033]
 
     """
     coords = assertion.ensure_coords(coords)
