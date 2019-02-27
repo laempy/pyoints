@@ -18,17 +18,17 @@ with open(os.path.join(script_path, 'requirements.txt'), "r") as f:
             install_requires.append(pkgname)
 
 
-setuptools.setup (
+setuptools.setup(
     name="pyoints",
-    version="0.2.1b1",
+    version="0.2.0rc1",
     author="Sebastian Lamprecht",
     author_email="lamprecht@uni-trier.de",
     description="A Python package for point cloud, voxel and raster processing.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://laempy.github.io/pyoints/modules.html",
+    url="https://github.com/laempy/pyoints",
     project_urls={
-        'Documentation': 'https://laempy.github.io/pyoints/modules.html',
+        'Documentation': 'https://laempy.github.io/pyoints',
         'GitHub': 'https://github.com/laempy/pyoints',
     },
     packages=setuptools.find_packages(),
@@ -40,7 +40,7 @@ setuptools.setup (
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
         "Operating System :: OS Independent",
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
     ),
     python_requires='>=3.5',
     license='GPLv3+',
