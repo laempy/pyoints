@@ -112,10 +112,10 @@ def find_rototranslation(A, B):
 
     >>> C = transformation.transform(B, M, inverse=False)
     >>> print_rounded(C, 2)
-    [[0. 0.]
-     [0. 1.]
-     [1. 1.]
-     [1. 0.]]
+    [[ 0.  0.]
+     [ 0.  1.]
+     [ 1.  1.]
+     [ 1.  0.]]
 
     """
     A = assertion.ensure_coords(A)

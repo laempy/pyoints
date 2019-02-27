@@ -83,18 +83,18 @@ def find_rototranslations(coords_dict, pairs_dict, weights=None):
     ['A', 'B']
     >>> tA = res['A'].to_local(coords_dict['A'])
     >>> print_rounded(tA)
-    [[-1. -2.]
-     [-1.  2.]
-     [ 1.  2.]
-     [ 1. -2.]
-     [ 5. 10.]]
+    [[ -1.  -2.]
+     [ -1.   2.]
+     [  1.   2.]
+     [  1.  -2.]
+     [  5.  10.]]
     >>> tB = res['B'].to_local(coords_dict['B'])
     >>> print_rounded(tB)
-    [[-1. -2.]
-     [-1.  2.]
-     [ 1.  2.]
-     [ 1. -2.]
-     [ 5. 10.]]
+    [[ -1.  -2.]
+     [ -1.   2.]
+     [  1.   2.]
+     [  1.  -2.]
+     [  5.  10.]]
 
     3D coordinates.
 

@@ -69,10 +69,10 @@ def coords_to_polar(coords):
     >>> coords = [(0, 0, 0), (1, 1, 0), (-1, -1, -1), (2, -5, 9)]
     >>> pcoords = coords_to_polar(coords)
     >>> print_rounded(pcoords, 3)
-    [[ 0.     0.     0.   ]
-     [ 1.414  0.785  1.571]
-     [ 1.732 -2.356  2.186]
-     [10.488 -1.19   0.539]]
+    [[  0.      0.      0.   ]
+     [  1.414   0.785   1.571]
+     [  1.732  -2.356   2.186]
+     [ 10.488  -1.19    0.539]]
 
     """
     coords = assertion.ensure_coords(coords)
