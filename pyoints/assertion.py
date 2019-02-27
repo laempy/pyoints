@@ -24,6 +24,8 @@ from numbers import Number
 
 from . import nptools
 
+from .misc import print_rounded
+
 
 def ensure_dim(value, dim=None, min_dim=2, max_dim=np.inf):
     """Ensure a dimension value to be in a specific range.
@@ -193,9 +195,9 @@ def ensure_numarray(arr, shape=None):
     Examples
     --------
 
-    >>> print(ensure_numarray([0,1,2]))
+    >>> print_rounded(ensure_numarray([0,1,2]))
     [0 1 2]
-    >>> print(ensure_numarray((-4,-5)))
+    >>> print_rounded(ensure_numarray((-4,-5)))
     [-4 -5]
 
     """
@@ -234,7 +236,7 @@ def ensure_numvector(v, length=None, min_length=1, max_length=np.inf):
 
     >>> v = (3, 2, 4, 4)
     >>> v = ensure_numvector(v)
-    >>> print(v)
+    >>> print_rounded(v)
     [3 2 4 4]
 
     Vector of insufficient length.
@@ -320,7 +322,7 @@ def ensure_coords(coords, by_col=False, dim=None, min_dim=2, max_dim=np.inf):
     >>> coords = ensure_coords([(3, 2), (2, 4), (-1, 2), (9, 3)])
     >>> print(isinstance(coords, np.ndarray))
     True
-    >>> print(coords)
+    >>> print_rounded(coords)
     [[ 3  2]
      [ 2  4]
      [-1  2]
@@ -329,7 +331,7 @@ def ensure_coords(coords, by_col=False, dim=None, min_dim=2, max_dim=np.inf):
     Coordinates provided column by column.
 
     >>> coords = ensure_coords([(3, 2, -1, 9), (2, 4, 2, 3)], by_col=True)
-    >>> print(coords)
+    >>> print_rounded(coords)
     [[ 3  2]
      [ 2  4]
      [-1  2]

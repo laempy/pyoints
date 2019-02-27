@@ -31,6 +31,8 @@ from . import (
     nptools,
 )
 
+from .misc import print_rounded
+
 
 class GeoRecords(np.recarray, object):
     """Abstraction class to ease handling point sets as well as structured
@@ -73,9 +75,9 @@ class GeoRecords(np.recarray, object):
     ...    'values': [1, 3, 4, 0, 6]
     ... }
     >>> geo = GeoRecords(projection.Proj(), data)
-    >>> print(geo.values)
+    >>> print_rounded(geo.values)
     [1 3 4 0 6]
-    >>> print(geo.coords)
+    >>> print_rounded(geo.coords)
     [[ 2.   3. ]
      [ 3.   2. ]
      [ 0.   1. ]
@@ -85,7 +87,7 @@ class GeoRecords(np.recarray, object):
     Set new coordinates.
 
     >>> geo['coords'] = [(1, 2), (9, 2), (8, 2), (-7, 3), (7, 8)]
-    >>> print(geo.coords)
+    >>> print_rounded(geo.coords)
     [[ 1.  2.]
      [ 9.  2.]
      [ 8.  2.]
@@ -104,9 +106,9 @@ class GeoRecords(np.recarray, object):
     ... }
     >>> data = nptools.recarray(data,dim=2)
     >>> geo = GeoRecords(None, data)
-    >>> print(geo.shape)
+    >>> print_rounded(geo.shape)
     (3, 2)
-    >>> print(geo.coords)
+    >>> print_rounded(geo.coords)
     [[[ 2.   3.2]
       [-3.   2.2]]
     <BLANKLINE>
@@ -230,9 +232,9 @@ class GeoRecords(np.recarray, object):
         ... }
         >>> data = nptools.recarray(data, dim=2)
         >>> geo = GeoRecords(None, data)
-        >>> print(geo.shape)
+        >>> print_rounded(geo.shape)
         (3, 2)
-        >>> print(geo.records().coords)
+        >>> print_rounded(geo.records().coords)
         [[ 2.   3.2]
          [-3.   2.2]
          [ 0.   1.1]
@@ -265,7 +267,7 @@ class GeoRecords(np.recarray, object):
         ...    'values': [1, 3, 4, 0]
         ... }
         >>> geo = GeoRecords(None, data)
-        >>> print(geo.keys)
+        >>> print_rounded(geo.keys)
         [[0]
          [1]
          [2]
@@ -276,7 +278,7 @@ class GeoRecords(np.recarray, object):
         >>> data = np.ones(
         ...         (4,3), dtype=[('coords', float, 2)]).view(np.recarray)
         >>> geo = GeoRecords(None, data)
-        >>> print(geo.keys)
+        >>> print_rounded(geo.keys)
         [[[0 0]
           [0 1]
           [0 2]]
@@ -323,7 +325,7 @@ class GeoRecords(np.recarray, object):
 
         >>> T = transformation.matrix(t=[10, 20], s=[0.5, 1])
         >>> _ = geo.transform(T)
-        >>> print(geo.coords)
+        >>> print_rounded(geo.coords)
         [[11 23]
          [11 22]
          [10 21]

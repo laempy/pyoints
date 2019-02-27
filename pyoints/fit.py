@@ -67,8 +67,8 @@ def fit_sphere(coords, weights=1.0):
     >>> y = np.sqrt(5**2 - x**2)
     >>> coords = np.array([x,y]).T + [2,4]
     >>> center, r, residuals = fit_sphere(coords)
-    >>> print(center)
-    [2. 4.]
+    >>> print_rounded(center)
+    [ 2.  4.]
     >>> print_rounded(r)
     5.0
 
@@ -140,13 +140,13 @@ def fit_cylinder(coords, vec=None):
     >>> print_rounded(r)
     2.5
     >>> print_rounded(vec.origin)
-    [10. 20. 30.]
+    [ 10.  20.  30.]
 
     Check distances to vector.
 
     >>> dists = vec.distance(coords)
     >>> print_rounded([np.min(dists), np.max(dists)])
-    [2.5 2.5]
+    [ 2.5  2.5]
 
     """
     coords = assertion.ensure_coords(coords, dim=3)

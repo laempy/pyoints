@@ -27,6 +27,8 @@ from . import (
     nptools,
 )
 
+from .misc import print_rounded
+
 
 def classes_to_dict(
         classification,
@@ -66,8 +68,8 @@ def classes_to_dict(
     >>> class_dict = classes_to_dict(classes)
     >>> print(sorted(class_dict))
     ['bird', 'cat', 'dog']
-    >>> print(class_dict['cat'])
-    [0, 1, 6]
+    >>> print_rounded(class_dict['cat'])
+    [0 1 6]
 
     >>> classes = [0, 0, 1, 2, 1, 0, 3, 3, 5, 3, 2, 1, 0]
     >>> print(classes_to_dict(classes))
@@ -194,7 +196,7 @@ def split_by_breaks(values, breaks):
     >>> values = np.arange(10)
     >>> breaks = [0.5, 5, 7.5]
     >>> classes = split_by_breaks(values, breaks)
-    >>> print(classes)
+    >>> print_rounded(classes)
     [0 1 1 1 1 2 2 2 3 3]
 
     """
@@ -266,13 +268,13 @@ def majority(classes, empty_value=-1):
     dog
 
     >>> classes =[1, 8, 9, 0, 0, 2, 4, 2, 4, 3, 2, 3, 5, 6]
-    >>> print(majority(classes))
+    >>> print_rounded(majority(classes))
     2
 
     No decision possible.
 
     >>> classes =[1, 2, 3, 4, 4, 3]
-    >>> print(majority(classes))
+    >>> print_rounded(majority(classes))
     -1
 
     """

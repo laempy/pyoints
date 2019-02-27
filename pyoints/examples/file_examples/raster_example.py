@@ -24,6 +24,8 @@
 ...     transformation,
 ...     projection,
 ... )
+>>> from pyoints.misc import print_rounded
+
 
 Create input and output path.
 
@@ -39,7 +41,7 @@ Load an image file.
 >>> rasterHandler = storage.RasterReader(infile, proj=proj)
 >>> raster = rasterHandler.load()
 
->>> print(raster.shape)
+>>> print_rounded(raster.shape)
 (96, 250)
 >>> print(sorted(raster.dtype.descr))
 [('bands', '<i8', (3,)), ('coords', '<f8', (2,))]
@@ -59,15 +61,15 @@ the output image using a Geographic Information System (GIS).
 Load image again and check characteristics.
 
 >>> rasterHandler = storage.RasterReader(outfile, proj=projection.Proj())
->>> print(rasterHandler.t.origin)
-[ 332575. 5513229.]
+>>> print_rounded(rasterHandler.t.origin)
+[  332575.  5513229.]
 
 
 >>> raster = rasterHandler.load()
 
->>> print(raster.t.origin)
-[ 332575. 5513229.]
->>> print(raster.shape)
+>>> print_rounded(raster.t.origin)
+[  332575.  5513229.]
+>>> print_rounded(raster.shape)
 (96, 250)
 >>> print(sorted(raster.dtype.descr))
 [('bands', '<i8', (3,)), ('coords', '<f8', (2,))]

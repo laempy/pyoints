@@ -48,8 +48,8 @@ def norm(coords):
     --------
 
     >>> coords = [(3, 4), (0, 1), (4, 3), (0, 0), (8, 6)]
-    >>> print(norm(coords))
-    [ 5.  1.  5.  0. 10.]
+    >>> print_rounded(norm(coords))
+    [  5.   1.   5.   0.  10.]
 
     """
     return np.sqrt(snorm(coords))
@@ -76,7 +76,7 @@ def snorm(coords):
     --------
 
     >>> coords = [(3, 4), (0, 1), (4, 3), (0, 0), (8, 6)]
-    >>> print(snorm(coords))
+    >>> print_rounded(snorm(coords))
     [ 25   1  25   0 100]
 
     """
@@ -114,15 +114,15 @@ def dist(p, coords):
 
     >>> p = (1, 2)
     >>> coords = [(2, 2), (1, 1), (1, 2), (9, 8)]
-    >>> print(dist(p, coords))
-    [ 1.  1.  0. 10.]
+    >>> print_rounded(dist(p, coords))
+    [  1.   1.   0.  10.]
 
     Points to points distance.
 
     >>> A = [(2, 2), (1, 1), (1, 2)]
     >>> B = [(4, 2), (2, 1), (9, 8)]
-    >>> print(dist(A, B))
-    [ 2.  1. 10.]
+    >>> print_rounded(dist(A, B))
+    [  2.   1.  10.]
 
     """
     return np.sqrt(sdist(p, coords))
@@ -154,14 +154,14 @@ def sdist(p, coords):
 
     >>> p = (1, 2)
     >>> coords = [(2, 4), (1, 1), (1, 2), (9, 8)]
-    >>> print(sdist(p, coords))
+    >>> print_rounded(sdist(p, coords))
     [  5   1   0 100]
 
     Squared points to points distance.
 
     >>> A = [(2, 2), (1, 1), (1, 2)]
     >>> B = [(4, 2), (2, 1), (9, 8)]
-    >>> print(sdist(A, B))
+    >>> print_rounded(sdist(A, B))
     [  4   1 100]
 
     """
@@ -225,11 +225,11 @@ def idw(dists, p=2):
 
     >>> dists = [0, 1, 4]
 
-    >>> print(idw(dists))
-    [1.   0.25 0.04]
+    >>> print_rounded(idw(dists))
+    [ 1.    0.25  0.04]
 
-    >>> print(idw(dists, p=1))
-    [1.  0.5 0.2]
+    >>> print_rounded(idw(dists, p=1))
+    [ 1.   0.5  0.2]
 
     """
     dists = assertion.ensure_numvector(dists)

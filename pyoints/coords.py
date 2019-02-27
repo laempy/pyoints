@@ -27,6 +27,8 @@ from . import (
     transformation,
 )
 
+from .misc import print_rounded
+
 
 class Coords(np.ndarray, object):
     """Class to represent coordinates. It provides a spatial index to
@@ -54,7 +56,7 @@ class Coords(np.ndarray, object):
     Create some 2D points.
 
     >>> coords = Coords([(0, 1), (2, 1), (2, 3), (0, -1)])
-    >>> print(coords)
+    >>> print_rounded(coords)
     [[ 0  1]
      [ 2  1]
      [ 2  3]
@@ -62,9 +64,9 @@ class Coords(np.ndarray, object):
 
     Get Extent.
 
-    >>> print(coords.extent())
+    >>> print_rounded(coords.extent())
     [ 0 -1  2  3]
-    >>> print(coords.extent(dim=1))
+    >>> print_rounded(coords.extent(dim=1))
     [0 2]
 
     Use IndexKD, which updates automatically, if a coordinate has changed.
@@ -124,7 +126,7 @@ class Coords(np.ndarray, object):
 
         >>> coords = Coords(
         ...             [[(2, 3), (2, 4), (3, 2)], [(0, 0), (3, 5), (9, 4)]])
-        >>> print(coords)
+        >>> print_rounded(coords)
         [[[2 3]
           [2 4]
           [3 2]]
@@ -135,14 +137,14 @@ class Coords(np.ndarray, object):
 
         >>> T = transformation.matrix(t=[10, 20], s=[0.5, 1])
         >>> tcoords = coords.transform(T)
-        >>> print(tcoords)
-        [[[11.  23. ]
-          [11.  24. ]
-          [11.5 22. ]]
+        >>> print_rounded(tcoords)
+        [[[ 11.   23. ]
+          [ 11.   24. ]
+          [ 11.5  22. ]]
         <BLANKLINE>
-         [[10.  20. ]
-          [11.5 25. ]
-          [14.5 24. ]]]
+         [[ 10.   20. ]
+          [ 11.5  25. ]
+          [ 14.5  24. ]]]
 
         """
         T = assertion.ensure_tmatrix(T, dim=self.dim)
@@ -176,9 +178,9 @@ class Coords(np.ndarray, object):
         --------
 
         >>> coords = Coords([(2, 3, 1), (3, 2, 3), (0, 1, 0), (9, 5, 4)])
-        >>> print(coords.indexKD().dim)
+        >>> print_rounded(coords.indexKD().dim)
         3
-        >>> print(coords.indexKD(dim=2).dim)
+        >>> print_rounded(coords.indexKD(dim=2).dim)
         2
 
         """
@@ -224,11 +226,11 @@ class Coords(np.ndarray, object):
         --------
 
         >>> coords = Coords([(2, 3), (3, 2), (0, 1), (-1, 2.2), (9, 5)])
-        >>> print(coords.extent())
+        >>> print_rounded(coords.extent())
         [-1.  1.  9.  5.]
-        >>> print(coords.extent(dim=1))
+        >>> print_rounded(coords.extent(dim=1))
         [-1.  9.]
-        >>> print(coords.indexKD().ball([0, 0], 2))
+        >>> print_rounded(coords.indexKD().ball([0, 0], 2))
         [2]
 
         """
