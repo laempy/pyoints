@@ -23,6 +23,8 @@ import numpy as np
 
 from . import assertion
 
+from . misc import print_rounded
+
 
 class Extent(np.recarray, object):
     """Specifies spatial extent (or bounding box) of coordinates in `k`
@@ -54,7 +56,7 @@ class Extent(np.recarray, object):
     >>> points = [(0, 0), (1, 4), (0, 1), (1, 0.5), (0.5, 0.7)]
     >>> ext = Extent(points)
     >>> print(ext)
-    [0. 0. 1. 4.]
+    [ 0.  0.  1.  4.]
 
     Create a extent based on minimum and maximum values.
 
@@ -64,17 +66,17 @@ class Extent(np.recarray, object):
 
     Get some properties.
 
-    >>> print(ext.dim)
+    >>> print_rounded(ext.dim)
     2
-    >>> print(ext.min_corner)
+    >>> print_rounded(ext.min_corner)
     [-1  0]
-    >>> print(ext.max_corner)
+    >>> print_rounded(ext.max_corner)
     [1 4]
-    >>> print(ext.ranges)
+    >>> print_rounded(ext.ranges)
     [2 4]
     >>> print(ext.center)
-    [0. 2.]
-    >>> print(ext.corners)
+    [ 0.  2.]
+    >>> print_rounded(ext.corners)
     [[-1  0]
      [ 1  0]
      [ 1  4]
@@ -148,7 +150,7 @@ class Extent(np.recarray, object):
         Two dimensional case.
 
         >>> ext = Extent([-1, -2, 1, 2])
-        >>> print(ext.corners)
+        >>> print_rounded(ext.corners)
         [[-1 -2]
          [ 1 -2]
          [ 1  2]
@@ -157,12 +159,11 @@ class Extent(np.recarray, object):
         Three dimensional case.
 
         >>> ext = Extent([-1, -2, -3, 1, 2, 3])
-        >>> print(ext.corners)
+        >>> print_rounded(ext.corners)
         [[-1 -2 -3]
          [ 1 -2 -3]
          [ 1  2 -3]
-         [-1  2 -3]
-         [-1  2  3]
+         ..., 
          [ 1  2  3]
          [ 1 -2  3]
          [-1 -2  3]]
@@ -213,12 +214,12 @@ class Extent(np.recarray, object):
 
         Points within extent?
 
-        >>> print(ext.intersection([(1, 2), (-1, 1), (0.5, 1)]))
+        >>> print_rounded(ext.intersection([(1, 2), (-1, 1), (0.5, 1)]))
         [0 2]
 
         Corners are located within the extent.
 
-        >>> print(ext.intersection(ext.corners))
+        >>> print_rounded(ext.intersection(ext.corners))
         [0 1 2 3]
 
         """

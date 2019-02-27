@@ -200,7 +200,7 @@ def corners_to_transform(corners, scale=None):
     >>> T = transformation.matrix(t=[3, 5], s=[10, 20], r=np.pi/2)
     >>> coords = Extent([np.zeros(2), np.ones(2)]).corners
     >>> corners = transformation.transform(coords, T)
-    >>> print(corners)
+    >>> print_rounded(corners)
     [[  3.   5.]
      [  3.  15.]
      [-17.  15.]
@@ -213,7 +213,7 @@ def corners_to_transform(corners, scale=None):
     [[ 0. -1.  3.]
      [ 1.  0.  5.]
      [ 0.  0.  1.]]
-    >>> print(shape)
+    >>> print_rounded(shape)
     [20 10]
 
     Create transformation matrix with a scale.
@@ -223,7 +223,7 @@ def corners_to_transform(corners, scale=None):
     [[ 0.  -2.   3. ]
      [ 0.5  0.   5. ]
      [ 0.   0.   1. ]]
-    >>> print(shape)
+    >>> print_rounded(shape)
     [10 20]
 
     """
@@ -266,17 +266,17 @@ def transform_to_corners(T, shape):
 
     >>> T = transformation.matrix(t=[10, 20], s=[0.5, 2])
     >>> print_rounded(T)
-    [[ 0.5  0.  10. ]
-     [ 0.   2.  20. ]
-     [ 0.   0.   1. ]]
+    [[  0.5   0.   10. ]
+     [  0.    2.   20. ]
+     [  0.    0.    1. ]]
 
     >>> corners = transform_to_corners(T, (100, 200))
     >>> print_rounded(corners)
-    [[ 10.  20.]
-     [110.  20.]
-     [110. 220.]
-     [ 10. 220.]]
-    >>> print(coords_to_keys(T, corners))
+    [[  10.   20.]
+     [ 110.   20.]
+     [ 110.  220.]
+     [  10.  220.]]
+    >>> print_rounded(coords_to_keys(T, corners))
     [[  0   0]
      [  0 200]
      [100 200]
@@ -315,13 +315,13 @@ def extentinfo(T, extent):
     >>> T = transformation.matrix(t=[100, 200], s=[2, -2])
     >>> ext = Extent([150, 250, 200, 300])
     >>> M, min_corner_key, shape = extentinfo(T, ext)
-    >>> print(M)
-    [[  2.   0. 150.]
-     [  0.  -2. 300.]
-     [  0.   0.   1.]]
-    >>> print(min_corner_key)
+    >>> print_rounded(M)
+    [[   2.    0.  150.]
+     [   0.   -2.  300.]
+     [   0.    0.    1.]]
+    >>> print_rounded(min_corner_key)
     [-50  25]
-    >>> print(shape)
+    >>> print_rounded(shape)
     [26 26]
 
     """

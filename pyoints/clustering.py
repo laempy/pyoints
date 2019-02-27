@@ -24,12 +24,13 @@ from numbers import Number
 from collections import defaultdict
 from sklearn.cluster import DBSCAN
 
-
 from . import (
     assertion,
     classification,
 )
 from .indexkd import IndexKD
+
+from .misc import print_rounded
 
 
 def clustering(indexKD,
@@ -134,7 +135,7 @@ def majority_clusters(indexKD, r, **kwargs):
 
     >>> coords = [(0, 0), (1, 1), (2, 1), (3, 3), (0, 1), (2, 3), (3, 4)]
     >>> clusters = majority_clusters(IndexKD(coords), 2)
-    >>> print(clusters)
+    >>> print_rounded(clusters)
     [ 1  1 -1  0  1  0  0]
 
     """
@@ -167,7 +168,7 @@ def weight_clusters(indexKD, r, weights=None, **kwargs):
     >>> initial_clusters = np.arange(len(coords), dtype=int)
 
     >>> clusters = weight_clusters(indexKD, 1.5, clusters=initial_clusters)
-    >>> print(clusters)
+    >>> print_rounded(clusters)
     [0 0 4 3 6 5 5]
 
     Clustering with differing weights.
@@ -179,7 +180,7 @@ def weight_clusters(indexKD, r, weights=None, **kwargs):
     ...     weights=weights,
     ...     clusters=initial_clusters
     ... )
-    >>> print(clusters)
+    >>> print_rounded(clusters)
     [3 6 6 3 5 5 5]
 
     See Also
@@ -251,19 +252,19 @@ def dbscan(
     User defined epsilon.
 
     >>> clusters = dbscan(indexKD, 1, epsilon=1)
-    >>> print(clusters)
+    >>> print_rounded(clusters)
     [0 0 0 0 1 1 2]
 
     Automatic epsilon estimation for outlier removal.
 
     >>> clusters = dbscan(indexKD, 2)
-    >>> print(clusters)
+    >>> print_rounded(clusters)
     [ 0  0  0  0  0  0 -1]
 
     Adjust automatic epsilon estimation to achieve small clusters.
 
     >>> clusters = dbscan(indexKD, 1, quantile=0.7, factor=1)
-    >>> print(clusters)
+    >>> print_rounded(clusters)
     [0 0 1 0 2 2 3]
 
     """

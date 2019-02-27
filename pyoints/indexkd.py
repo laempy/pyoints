@@ -32,6 +32,7 @@ from . import (
     transformation,
 )
 
+from .misc import print_rounded
 
 class IndexKD(object):
     """Wrapper class for several spatial indices to speed up spatial queries
@@ -86,9 +87,9 @@ class IndexKD(object):
     Query points within a sphere.
 
     >>> nids = indexKD.ball([0, 0], 1.1)
-    >>> print(nids)
-    [0, 1, 10]
-    >>> print(indexKD.coords[nids, :])
+    >>> print_rounded(nids)
+    [ 0  1 10]
+    >>> print_rounded(indexKD.coords[nids, :])
     [[0 0]
      [0 1]
      [1 0]]
@@ -100,14 +101,14 @@ class IndexKD(object):
     >>> indexKD = IndexKD(coords, T)
 
     >>> nids = indexKD.ball([0, 0], 1.1)
-    >>> print(nids)
-    [0, 1, 20, 10, 11]
-    >>> print(indexKD.coords[nids, :])
-    [[0.  0. ]
-     [0.  0.8]
-     [1.  0. ]
-     [0.5 0. ]
-     [0.5 0.8]]
+    >>> print_rounded(nids)
+    [ 0  1 20 10 11]
+    >>> print_rounded(indexKD.coords[nids, :])
+    [[ 0.   0. ]
+     [ 0.   0.8]
+     [ 1.   0. ]
+     [ 0.5  0. ]
+     [ 0.5  0.8]]
 
     """
 
@@ -349,11 +350,11 @@ class IndexKD(object):
         >>> indexKD = IndexKD(coords)
 
         >>> counts = indexKD.ball_count(1)
-        >>> print(counts)
+        >>> print_rounded(counts)
         [2 4 5 2 3 4]
 
         >>> counts = indexKD.ball_count(1, coords=[0.5, 0.5])
-        >>> print(counts)
+        >>> print_rounded(counts)
         5
 
         """
@@ -424,11 +425,11 @@ class IndexKD(object):
 
         >>> coords = np.indices((5, 10)).reshape((2, 50)).T
         >>> indexKD = IndexKD(coords)
-        >>> print(indexKD.ball((3, 3), 1))
-        [32, 34, 33, 43, 23]
-        >>> print(indexKD.ball((3, 3), 1.5))
-        [22, 42, 32, 34, 33, 43, 44, 23, 24]
-        >>> print(indexKD.sphere((3, 3), 1, 1.5))
+        >>> print_rounded(indexKD.ball((3, 3), 1))
+        [32 34 33 43 23]
+        >>> print_rounded(indexKD.ball((3, 3), 1.5))
+        [22 42 32 34 33 43 44 23 24]
+        >>> print_rounded(indexKD.sphere((3, 3), 1, 1.5))
         [23 32 33 34 43]
 
         """
@@ -469,22 +470,22 @@ class IndexKD(object):
         >>> indexKD = IndexKD(coords)
 
         >>> dists, nids = indexKD.knn((0.5, 1), 2)
-        >>> print(dists)
-        [0.  0.5]
-        >>> print(nids)
+        >>> print_rounded(dists)
+        [ 0.   0.5]
+        >>> print_rounded(nids)
         [5 2]
 
         >>> dists, nids = indexKD.knn([(0.5, 1), (1.5, 1)], 2)
-        >>> print(dists)
-        [[0.  0.5]
-         [0.5 0.5]]
-        >>> print(nids)
+        >>> print_rounded(dists)
+        [[ 0.   0.5]
+         [ 0.5  0.5]]
+        >>> print_rounded(nids)
         [[5 2]
          [3 2]]
 
         >>> dists, nids = indexKD.knn([(0.5, 1), (1.5, 1), (1, 1)], [3, 1, 2])
         >>> print(dists)
-        (array([0. , 0.5, 0.5]), array([0.5]), array([0. , 0.5]))
+        (array([ 0. ,  0.5,  0.5]), array([ 0.5]), array([ 0. ,  0.5]))
         >>> print(nids)
         (array([5, 1, 2]), array([2]), array([2, 4]))
 
@@ -606,7 +607,7 @@ class IndexKD(object):
         >>> indexKD = IndexKD(coords)
         >>> indexKD.closest(3)
         (1.0, 4)
-        >>> print(indexKD.closest([0, 2, 5, 3])[1])
+        >>> print_rounded(indexKD.closest([0, 2, 5, 3])[1])
         [1 1 6 4]
 
         """

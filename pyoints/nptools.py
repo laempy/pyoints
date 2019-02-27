@@ -22,6 +22,7 @@
 import numpy as np
 from numbers import Number
 
+from .misc import print_rounded
 
 NUMERIC_DTYPES = [
     np.uint8,
@@ -438,15 +439,15 @@ def fuse(*recarrays):
     ['a', 'b', 'c1', 'c2']
     >>> print(D.shape)
     (2, 2)
-    >>> print(D.a)
+    >>> print_rounded(D.a)
     [[0 1]
      [2 3]]
     >>> print(D.c1)
     [['c1' 'c2']
      ['c3' 'c4']]
-    >>> print(D.c2)
-    [[0.1 0.2]
-     [0.3 0.3]]
+    >>> print_rounded(D.c2)
+    [[ 0.1  0.2]
+     [ 0.3  0.3]]
 
     """
     shape = None
@@ -666,8 +667,8 @@ def unnest(arr, deep=False):
     ... ]
     >>> rec = np.ones(2, dtype=dtype).view(np.recarray)
     >>> print(rec.nested.child2)
-    [[1. 1.]
-     [1. 1.]]
+    [[ 1.  1.]
+     [ 1.  1.]]
 
     >>> unnested = unnest(rec)
     >>> print(unnested[0])
@@ -675,8 +676,8 @@ def unnest(arr, deep=False):
     >>> print(unnested[1])
     ['' '']
     >>> print(unnested[2])
-    [[1. 1.]
-     [1. 1.]]
+    [[ 1.  1.]
+     [ 1.  1.]]
 
     """
     if not isinstance(arr, (np.recarray, np.ndarray)):
@@ -783,16 +784,16 @@ def apply_function(arr, func, dtype=None):
 
     >>> func = lambda record: (record.a + record.b, record.a ** record.b)
     >>> print(apply_function(arr, func, dtype=[('c', float), ('d', int)]))
-    [[(1.,  0) (3.,  1)]
-     [(5.,  8) (7., 81)]]
+    [[( 1.,  0) ( 3.,  1)]
+     [( 5.,  8) ( 7., 81)]]
 
     Specify a multi-dimensional output data type.
 
     >>> func = lambda record: (record.a + 2, [record.a ** 2, record.b * 3])
     >>> print(apply_function(arr, func, dtype=[('c', float), ('d', int, 2)]))
-    [[(2., [ 0,  3]) (3., [ 1,  6])]
-     [(4., [ 4,  9]) (5., [ 9, 12])]]
-
+    [[( 2., [ 0,  3]) ( 3., [ 1,  6])]
+     [( 4., [ 4,  9]) ( 5., [ 9, 12])]]
+    
     >>> func = lambda record: ([record.a ** 2, record.b * 3],)
     >>> print(apply_function(arr, func, dtype=[('d', int, 2)]))
     [[([ 0,  3],) ([ 1,  6],)]
@@ -870,12 +871,7 @@ def indices(shape, flatten=False):
     [[0 0]
      [0 1]
      [0 2]
-     [0 3]
-     [1 0]
-     [1 1]
-     [1 2]
-     [1 3]
-     [2 0]
+     ..., 
      [2 1]
      [2 2]
      [2 3]]
@@ -939,13 +935,13 @@ def range_filter(arr, min_value=-np.inf, max_value=np.inf):
     >>> print(idx)
     ((2, 3, 3, 4, 5), (0, 0, 1, 1, 1))
     >>> print(np.array(a)[idx])
-    [3. 4. 2. 9. 2.]
+    [ 3.  4.  2.  9.  2.]
 
     >>> idx = range_filter(a, min_value=2, max_value=5)
     >>> print(idx)
     ((2, 3, 3, 5), (0, 0, 1, 1))
     >>> print(np.array(a)[idx])
-    [3. 4. 2. 2.]
+    [ 3.  4.  2.  2.]
 
     """
     if not isnumeric(arr):
@@ -1002,7 +998,7 @@ def max_value_range(dtype):
 
     >>> value_range = max_value_range(np.dtype(np.float16))
     >>> print(value_range)
-    (-65500.0, 65500.0)
+    (-65504.0, 65504.0)
 
     """
     dtype = np.dtype(dtype)

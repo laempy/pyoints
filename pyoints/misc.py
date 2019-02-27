@@ -140,14 +140,15 @@ def print_rounded(values, decimals=2):
     Sets negative values close to zero to zero.
 
     """
-
     if isinstance(values, Number):
         rounded = np.round(values, decimals=decimals)
         if np.isclose(rounded, 0):
             rounded = rounded * 0
-    else:
+    elif isinstance(values, (np.ndarray, list, tuple)):
         rounded = np.round(values, decimals=decimals)
         rounded[np.isclose(rounded, 0)] = 0
+    else:
+        raise ValueError("Data type '%s' not supported" % type(values))
         
     if isinstance(values, tuple):
         rounded = tuple(rounded)

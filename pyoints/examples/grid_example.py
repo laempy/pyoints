@@ -31,6 +31,7 @@
 ...     filters,
 ...     Surface,
 ... )
+>>> from pyoints.misc import print_rounded
 
 
 First, we define input and output paths.
@@ -65,6 +66,15 @@ object
 11473
 >>> print(sorted(raster[0, 0].dtype.descr))
 [('classification', '|u1'), ('coords', '<f8', (3,)), ('intensity', '|u1')]
+>>> print(sorted(raster[0, 0].dtype.names))
+['classification', 'coords', 'intensity']
+>>> print(raster[0, 0].dtype.type)
+<class 'numpy.record'>
+>>> print(raster[0, 0].dtype.flags)
+16
+>>> print(raster[0, 0].dtype.str)
+|V26
+
 
 We can save the points of specific cells individually.
 
@@ -117,7 +127,7 @@ Now, let's create a three dimensional voxel space.
 >>> voxels = grid.voxelize(las, T, agg_func=aggregate_function, dtype=dtype)
 >>> voxels = Grid(las.proj, voxels, T)
 
->>> print(voxels.shape)
+>>> print_rounded(voxels.shape)
 (61, 18, 18)
 >>> print(sorted(voxels.dtype.descr))
 [('cell_count', '<i8'), ('coords', '<f8', (3,)), ('intensity', '<i8')]
