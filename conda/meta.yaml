@@ -14,12 +14,9 @@ build:
     skip: True  # [not py3k]
 
 requirements:
-    build:
-        - python {{ python }}
-        - pip
-        - setuptools
     host:
         - python {{ python }}
+        - pip
         - gdal  # pygdal is not able to detect gdal version
         - numpy>=1.15
     run:
