@@ -19,6 +19,7 @@
 """Functions to ensure the properties of frequently used data structures.
 """
 
+import json
 import numpy as np
 from numbers import Number
 
@@ -430,3 +431,31 @@ def ensure_tmatrix(T, dim=None, min_dim=2, max_dim=np.inf):
     ensure_dim(T.shape[0] - 1, dim, min_dim, max_dim)
 
     return T
+
+
+def ensure_json(js):
+    """Ensures the properties of a serializable json object.
+
+    Parameters
+    ----------
+    js : dict
+        Dictionary to convert to a serializable json object.
+
+    Returns
+    -------
+    dict
+        Serializable json object.
+
+    """
+    class JsonEncoder(json.JSONEncoder):
+        def default(self, obj):
+            if isinstance(obj, np.recarray):
+                return {key: obj[key].tolist() for key in obj.dtype.names}
+            if isinstance(obj, np.ndarray):
+                return obj.tolist()
+            if isinstance(obj, np.int64):
+                return int(obj)
+            if isinstance(obj, np.float32):
+                return float(obj)
+            return json.JSONEncoder.default(self, obj)
+    return json.loads(json.dumps(js, cls=JsonEncoder))

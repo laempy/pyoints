@@ -16,12 +16,46 @@
 # You should have received a copy of the GNU General Public License
 # along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
 # END OF LICENSE NOTE
-"""Examples to explain how files can be saved and loaded."""
-from . import (
-    csv_example,
-    dump_example,
-    las_example,
-    ply_example,
-    raster_example,
-    structured_example
-)
+"""Reading and writing of common structured file types.
+"""
+import os
+import json
+
+from .. import assertion
+
+
+def loadJson(infile):
+    """Loads a JSON file from disc.
+
+    Parameters
+    ----------
+    infile : str
+        Input file.
+
+    Returns
+    -------
+    dict
+        File data.
+
+    """
+    if not os.path.isfile(infile):
+        raise IOError('file "%s" not found' % infile)
+    with open(infile, 'r') as f:
+        js = json.load(f)
+    return js
+
+
+def writeJson(data, outfile):
+    """Writes a JSON file to disk.
+
+    Parameters
+    ----------
+    data : dict
+        JSON compatible data to store.
+    outfile : str
+        Output JSON file.
+
+    """
+    data = assertion.ensure_json(data)
+    with open(outfile, 'w') as f:
+        json.dump(data, f, indent=4)
