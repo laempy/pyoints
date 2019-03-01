@@ -51,7 +51,6 @@ Some text
 >>> print(type(data['my_ndarray']))
 <class 'numpy.ndarray'>
 >>> print(type(data['my_recarray']))
-[(1, 'text 1') (6, 'text 2') (2, 'text 3')
 <class 'numpy.recarray'>
 
 Save as a .json-file.
