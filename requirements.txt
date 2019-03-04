@@ -3,7 +3,6 @@
 #rtree
 #pyproj
 laspy
-liblas
 scipy
 scikit-learn
 dill
