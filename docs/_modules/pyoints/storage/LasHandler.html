@@ -68,7 +68,7 @@
 <span class="k">try</span><span class="p">:</span>
     <span class="c1"># use liblas to provide full spatial reference support (workaround)</span>
     <span class="kn">import</span> <span class="nn">liblas</span>
-<span class="k">except</span> <span class="n">ModuleNotFoundError</span><span class="p">:</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="k">pass</span>
 
 <span class="kn">from</span> <span class="nn">..extent</span> <span class="k">import</span> <span class="n">Extent</span>
