@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
 # END OF LICENSE NOTE
-__version__ = '0.2rc1'
+__version__ = '0.2.0rc2'
 """Pyoints: A Python package for point cloud, voxel and raster processing."""
 
 from .indexkd import IndexKD
