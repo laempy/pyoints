@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyoints.examples package &#8212; Pyoints version 0.2.0rc1 documentation</title>
+    <title>pyoints.examples package &#8212; Pyoints version 0.2.0rc2 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="pyoints.html" title="pyoints package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Pyoints version 0.2.0rc1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Pyoints version 0.2.0rc2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyoints</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyoints.html" accesskey="U">pyoints package</a> &#187;</li> 
       </ul>
@@ -336,8 +336,8 @@ manner.</p>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">raster</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="go">(24, 24)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">raster</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">descr</span><span class="p">))</span>
-<span class="go">[(&#39;cell_count&#39;, &#39;&lt;i8&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (2,)), (&#39;z&#39;, &#39;&lt;f8&#39;, (3,))]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">raster</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">))</span>
+<span class="go">[&#39;cell_count&#39;, &#39;coords&#39;, &#39;z&#39;]</span>
 </pre></div>
 </div>
 <p>We save the fields as individual raster images.</p>
@@ -367,8 +367,8 @@ manner.</p>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">voxels</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="go">(61, 18, 18)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">voxels</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">descr</span><span class="p">))</span>
-<span class="go">[(&#39;cell_count&#39;, &#39;&lt;i8&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;&lt;i8&#39;)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">voxels</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">))</span>
+<span class="go">[&#39;cell_count&#39;, &#39;coords&#39;, &#39;intensity&#39;]</span>
 </pre></div>
 </div>
 <p>Finally, we save only the non-empty voxel cells.</p>
@@ -625,7 +625,7 @@ digital elevation model.</p>
         <li class="right" >
           <a href="pyoints.html" title="pyoints package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Pyoints version 0.2.0rc1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Pyoints version 0.2.0rc2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyoints</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyoints.html" >pyoints package</a> &#187;</li> 
       </ul>
