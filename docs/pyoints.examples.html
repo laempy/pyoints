@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyoints.examples package &#8212; Pyoints verson 0.2.1 beta documentation</title>
+    <title>pyoints.examples package &#8212; Pyoints version 0.2.0rc1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -14,6 +14,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -35,7 +36,7 @@
         <li class="right" >
           <a href="pyoints.html" title="pyoints package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Pyoints verson 0.2.1 beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Pyoints version 0.2.0rc1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyoints</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyoints.html" accesskey="U">pyoints package</a> &#187;</li> 
       </ul>
@@ -59,6 +60,7 @@
 <li class="toctree-l2"><a class="reference internal" href="pyoints.examples.file_examples.html#module-pyoints.examples.file_examples.las_example">pyoints.examples.file_examples.las_example module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.examples.file_examples.html#module-pyoints.examples.file_examples.ply_example">pyoints.examples.file_examples.ply_example module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.examples.file_examples.html#module-pyoints.examples.file_examples.raster_example">pyoints.examples.file_examples.raster_example module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyoints.examples.file_examples.html#module-pyoints.examples.file_examples.structured_example">pyoints.examples.file_examples.structured_example module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyoints.examples.file_examples.html#module-pyoints.examples.file_examples">Module contents</a></li>
 </ul>
 </li>
@@ -81,6 +83,7 @@
 <span class="gp">... </span>    <span class="n">transformation</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">IndexKD</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyoints.misc</span> <span class="k">import</span> <span class="n">print_rounded</span>
 </pre></div>
 </div>
 <p>Then we define input and output paths.</p>
@@ -96,8 +99,10 @@
 </pre></div>
 </div>
 <p>We get the origin of the point cloud.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">lasReader</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
-<span class="go">[364187.98, 5509577.71, -1.58]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">lasReader</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">[  364187.98  5509577.71       -1.58]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">lasReader</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+<span class="go">2018</span>
 </pre></div>
 </div>
 <p>Then, we get the projection of the point cloud…</p>
@@ -111,8 +116,8 @@
 </pre></div>
 </div>
 <p>We get the spatial extent in 3D.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">lasReader</span><span class="o">.</span><span class="n">extent</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
-<span class="go">[364187.98, 5509577.71, -1.58, 364194.95, 5509584.71, 28.78]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">lasReader</span><span class="o">.</span><span class="n">extent</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">[  364187.98  5509577.71       -1.58   364194.95  5509584.71       28.78]</span>
 </pre></div>
 </div>
 <p>Now, we load the point cloud data from the disc. We receive an instance
@@ -122,6 +127,8 @@ of <cite>GeoRecords</cite>, which is an extension of a numpy record array.</p>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">las</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="go">(482981,)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">las</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+<span class="go">2018</span>
 </pre></div>
 </div>
 <p>We get some information on the attributes of the points…</p>
@@ -129,40 +136,39 @@ of <cite>GeoRecords</cite>, which is an extension of a numpy record array.</p>
 <span class="go">[(&#39;classification&#39;, &#39;|u1&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;|u1&#39;)]</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">las</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span><span class="o">.</span><span class="n">intensity</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">las</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span><span class="o">.</span><span class="n">intensity</span><span class="p">)</span>
 <span class="go">[216 213 214 199 214 183 198 209 200 199]</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">las</span><span class="o">.</span><span class="n">classification</span><span class="p">))</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">las</span><span class="o">.</span><span class="n">classification</span><span class="p">))</span>
 <span class="go">[2 5]</span>
 </pre></div>
 </div>
 <p>… and take a look at the extent in 2D and 3D.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">las</span><span class="o">.</span><span class="n">extent</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
-<span class="go">[364187.98, 5509577.71, 364194.95, 5509584.71]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">las</span><span class="o">.</span><span class="n">extent</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
-<span class="go">[364187.98, 5509577.71, -1.58, 364194.95, 5509584.71, 28.78]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">las</span><span class="o">.</span><span class="n">extent</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">[  364187.98  5509577.71   364194.95  5509584.71]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">las</span><span class="o">.</span><span class="n">extent</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">[  364187.98  5509577.71       -1.58   364194.95  5509584.71       28.78]</span>
 </pre></div>
 </div>
 <p>Now we take a closer look at the spatial index. We begin with selecting all
 points close to the corners of the point cloud’s extent.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">radius</span> <span class="o">=</span> <span class="mf">1.0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">corners</span> <span class="o">=</span> <span class="n">las</span><span class="o">.</span><span class="n">extent</span><span class="p">()</span><span class="o">.</span><span class="n">corners</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">corners</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
-<span class="go">[[ 364188 5509578      -2]</span>
-<span class="go"> [ 364195 5509578      -2]</span>
-<span class="go"> [ 364195 5509585      -2]</span>
-<span class="go"> [ 364188 5509585      -2]</span>
-<span class="go"> [ 364188 5509585      29]</span>
-<span class="go"> [ 364195 5509585      29]</span>
-<span class="go"> [ 364195 5509578      29]</span>
-<span class="go"> [ 364188 5509578      29]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">corners</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">[[  364188.   5509577.7       -1.6]</span>
+<span class="go"> [  364194.9  5509577.7       -1.6]</span>
+<span class="go"> [  364194.9  5509584.7       -1.6]</span>
+<span class="go"> ...,</span>
+<span class="go"> [  364194.9  5509584.7       28.8]</span>
+<span class="go"> [  364194.9  5509577.7       28.8]</span>
+<span class="go"> [  364188.   5509577.7       28.8]]</span>
 </pre></div>
 </div>
 <p>But before we select the points, we count  the number of neighbors within the
 radius.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">count</span> <span class="o">=</span> <span class="n">las</span><span class="o">.</span><span class="n">indexKD</span><span class="p">()</span><span class="o">.</span><span class="n">ball_count</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="n">corners</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
 <span class="go">[2502 1984 4027  475    0    0    0    0]</span>
 </pre></div>
 </div>
@@ -188,16 +194,16 @@ the resulting subset as a point cloud.</p>
 </pre></div>
 </div>
 <p>We receive a matrix of distances and a matrix of indices.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">dists</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-<span class="go">[[0.3  0.3 ]</span>
-<span class="go"> [0.02 0.04]</span>
-<span class="go"> [0.49 0.49]</span>
-<span class="go"> [0.62 0.62]</span>
-<span class="go"> [3.95 3.97]</span>
-<span class="go"> [5.71 5.73]</span>
-<span class="go"> [1.26 1.27]</span>
-<span class="go"> [1.65 1.66]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">n_ids</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">dists</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">[[ 0.3   0.3 ]</span>
+<span class="go"> [ 0.02  0.04]</span>
+<span class="go"> [ 0.49  0.49]</span>
+<span class="go"> [ 0.62  0.62]</span>
+<span class="go"> [ 3.95  3.97]</span>
+<span class="go"> [ 5.71  5.73]</span>
+<span class="go"> [ 1.26  1.27]</span>
+<span class="go"> [ 1.65  1.66]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">n_ids</span><span class="p">)</span>
 <span class="go">[[     6  16742]</span>
 <span class="go"> [ 92767  92763]</span>
 <span class="go"> [320695 321128]</span>
@@ -227,15 +233,14 @@ scaled spatial index. Doing so, each coordinate axis is scaled individually.</p>
 <p>Again, we select neighboring points using the <cite>ball</cite> query. But here, we need
 to scale the input coordinates beforehand.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s_corners</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">to_local</span><span class="p">(</span><span class="n">corners</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">s_corners</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
-<span class="go">[[ 546282 4958620      -1]</span>
-<span class="go"> [ 546292 4958620      -1]</span>
-<span class="go"> [ 546292 4958626      -1]</span>
-<span class="go"> [ 546282 4958626      -1]</span>
-<span class="go"> [ 546282 4958626      14]</span>
-<span class="go"> [ 546292 4958626      14]</span>
-<span class="go"> [ 546292 4958620      14]</span>
-<span class="go"> [ 546282 4958620      14]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">s_corners</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">[[  546282.   4958619.9       -0.8]</span>
+<span class="go"> [  546292.4  4958619.9       -0.8]</span>
+<span class="go"> [  546292.4  4958626.2       -0.8]</span>
+<span class="go"> ...,</span>
+<span class="go"> [  546292.4  4958626.2       14.4]</span>
+<span class="go"> [  546292.4  4958619.9       14.4]</span>
+<span class="go"> [  546282.   4958619.9       14.4]]</span>
 </pre></div>
 </div>
 <p>Finally, we apply the query and save the subset.</p>
@@ -266,6 +271,7 @@ to scale the input coordinates beforehand.</p>
 <span class="gp">... </span>    <span class="n">filters</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">Surface</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyoints.misc</span> <span class="k">import</span> <span class="n">print_rounded</span>
 </pre></div>
 </div>
 <p>First, we define input and output paths.</p>
@@ -296,6 +302,14 @@ are grouped to an individual point cloud.</p>
 <span class="go">11473</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">raster</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">descr</span><span class="p">))</span>
 <span class="go">[(&#39;classification&#39;, &#39;|u1&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;|u1&#39;)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">raster</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">))</span>
+<span class="go">[&#39;classification&#39;, &#39;coords&#39;, &#39;intensity&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">raster</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+<span class="go">&lt;class &#39;numpy.record&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">raster</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">flags</span><span class="p">)</span>
+<span class="go">16</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">raster</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">str</span><span class="p">)</span>
+<span class="go">|V26</span>
 </pre></div>
 </div>
 <p>We can save the points of specific cells individually.</p>
@@ -351,7 +365,7 @@ manner.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">voxels</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">las</span><span class="o">.</span><span class="n">proj</span><span class="p">,</span> <span class="n">voxels</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">voxels</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">voxels</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="go">(61, 18, 18)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">voxels</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">descr</span><span class="p">))</span>
 <span class="go">[(&#39;cell_count&#39;, &#39;&lt;i8&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;&lt;i8&#39;)]</span>
@@ -385,6 +399,7 @@ should be inspected with software like CloudCompare.</p>
 <span class="gp">... </span>    <span class="n">GeoRecords</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">interpolate</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyoints.misc</span> <span class="k">import</span> <span class="n">print_rounded</span>
 </pre></div>
 </div>
 <p>First, we define an input and an output path.</p>
@@ -410,7 +425,7 @@ deriving the lowest z-coordinate of each cell.</p>
 <span class="gp">... </span>    <span class="k">return</span> <span class="n">las</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="n">ids</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dtype</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">)]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dem_grid</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">voxelize</span><span class="p">(</span><span class="n">las</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">agg_func</span><span class="o">=</span><span class="n">aggregate_function</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">dem_grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">dem_grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="go">(9, 9)</span>
 </pre></div>
 </div>
@@ -489,7 +504,7 @@ stems by clustering the points.</p>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cluster_indices</span><span class="p">))</span>
 <span class="go">84</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">cluster_indices</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">cluster_indices</span><span class="p">))</span>
 <span class="go">[-1  0  1  2  3  4  5]</span>
 </pre></div>
 </div>
@@ -498,8 +513,8 @@ stems by clustering the points.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cluster_indices</span> <span class="o">=</span> <span class="n">classification</span><span class="o">.</span><span class="n">dict_to_classes</span><span class="p">(</span><span class="n">cluster_dict</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">las</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">cluster_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
-<span class="go">[0, 1, 3, 5]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">cluster_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+<span class="go">[0 1 3 5]</span>
 </pre></div>
 </div>
 <p>We add an additional field to the point cloud to store the tree number.</p>
@@ -610,14 +625,14 @@ digital elevation model.</p>
         <li class="right" >
           <a href="pyoints.html" title="pyoints package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Pyoints verson 0.2.1 beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Pyoints version 0.2.0rc1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyoints</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyoints.html" >pyoints package</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Sebastian Lamprecht.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
     </div>
   </body>
 </html>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyoints.vector &#8212; Pyoints verson 0.2.1 beta documentation</title>
+    <title>pyoints.vector &#8212; Pyoints version 0.2.0rc1 documentation</title>
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -14,6 +14,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -27,7 +28,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">Pyoints verson 0.2.1 beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Pyoints version 0.2.0rc1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -92,8 +93,8 @@
 
 <span class="sd">    &gt;&gt;&gt; rad_to_deg(0.5*np.pi)</span>
 <span class="sd">    90.0</span>
-<span class="sd">    &gt;&gt;&gt; print(rad_to_deg([0, np.pi/4, np.pi, 2*np.pi]))</span>
-<span class="sd">    [  0.  45. 180. 360.]</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(rad_to_deg([0, np.pi/4, np.pi, 2*np.pi]))</span>
+<span class="sd">    [   0.   45.  180.  360.]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">nptools</span><span class="o">.</span><span class="n">isarray</span><span class="p">(</span><span class="n">rad</span><span class="p">):</span>
@@ -127,7 +128,7 @@
 <span class="sd">    1.571</span>
 <span class="sd">    &gt;&gt;&gt; rad = deg_to_rad([0, 45, 180, 360])</span>
 <span class="sd">    &gt;&gt;&gt; print_rounded(rad, 3)</span>
-<span class="sd">    [0.    0.785 3.142 6.283]</span>
+<span class="sd">    [ 0.     0.785  3.142  6.283]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">nptools</span><span class="o">.</span><span class="n">isarray</span><span class="p">(</span><span class="n">deg</span><span class="p">):</span>
@@ -177,8 +178,8 @@
 
 <span class="sd">    Multiple vectors at once.</span>
 
-<span class="sd">    &gt;&gt;&gt; print(angle([[0, 1], [1, 1]], [[1, 0], [2, 0]], deg=True))</span>
-<span class="sd">    [90. 45.]</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(angle([[0, 1], [1, 1]], [[1, 0], [2, 0]], deg=True))</span>
+<span class="sd">    [ 90.  45.]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">deg</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
@@ -226,12 +227,12 @@
 <span class="sd">    --------</span>
 
 <span class="sd">    &gt;&gt;&gt; v = [1, 1]</span>
-<span class="sd">    &gt;&gt;&gt; print(axes_angles(v, deg=True))</span>
-<span class="sd">    [45. 45.]</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(axes_angles(v, deg=True))</span>
+<span class="sd">    [ 45.  45.]</span>
 
 <span class="sd">    &gt;&gt;&gt; v = [0, 1, 0]</span>
-<span class="sd">    &gt;&gt;&gt; print(axes_angles(v, deg=True))</span>
-<span class="sd">    [90.  0. 90.]</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(axes_angles(v, deg=True))</span>
+<span class="sd">    [ 90.   0.  90.]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numvector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
@@ -259,12 +260,12 @@
 <span class="sd">    --------</span>
 
 <span class="sd">    &gt;&gt;&gt; v = [0, 1]</span>
-<span class="sd">    &gt;&gt;&gt; print(direction(v, deg=True))</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(direction(v, deg=True))</span>
 <span class="sd">    90.0</span>
 
 <span class="sd">    &gt;&gt;&gt; v = [0, 1, 1]</span>
-<span class="sd">    &gt;&gt;&gt; print(direction(v, deg=True))</span>
-<span class="sd">    [90. 45.]</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(direction(v, deg=True))</span>
+<span class="sd">    [ 90.  45.]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numvector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
@@ -318,7 +319,7 @@
 
 <span class="sd">    &gt;&gt;&gt; v = [(0, 0), (1, 0), (0, 1), (1, 1)]</span>
 <span class="sd">    &gt;&gt;&gt; print_rounded(zenith(v, deg=True))</span>
-<span class="sd">    [nan 90.  0. 45.]</span>
+<span class="sd">    [ nan  90.   0.  45.]</span>
 
 <span class="sd">    &gt;&gt;&gt; v = [1, 0, 1]</span>
 <span class="sd">    &gt;&gt;&gt; print_rounded(zenith([1, 0, 1], axis=2, deg=True))</span>
@@ -370,16 +371,16 @@
 <span class="sd">    --------</span>
 
 <span class="sd">    &gt;&gt;&gt; v = [1, 1]</span>
-<span class="sd">    &gt;&gt;&gt; print(azimuth(v, deg=True))</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(azimuth(v, deg=True))</span>
 <span class="sd">    45.0</span>
 
 <span class="sd">    &gt;&gt;&gt; v = [1, 1, 5]</span>
-<span class="sd">    &gt;&gt;&gt; print(azimuth(v, deg=True))</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(azimuth(v, deg=True))</span>
 <span class="sd">    45.0</span>
 
 <span class="sd">    &gt;&gt;&gt; v = [(0, 0), (0, 1), (1, 1), (1, 0), (2, -2), (0, -1), (-1, 1)]</span>
-<span class="sd">    &gt;&gt;&gt; print(azimuth(v, deg=True))</span>
-<span class="sd">    [ nan   0.  45.  90. 135. 180. 315.]</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(azimuth(v, deg=True))</span>
+<span class="sd">    [  nan    0.   45.   90.  135.  180.  315.]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_numarray</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
@@ -488,13 +489,13 @@
 <span class="sd">    Flip the basic axes.</span>
 
 <span class="sd">    &gt;&gt;&gt; b = basis([0, 1])</span>
-<span class="sd">    &gt;&gt;&gt; print(b)</span>
-<span class="sd">    [[0. 1. 0.]</span>
-<span class="sd">     [1. 0. 0.]</span>
-<span class="sd">     [0. 0. 1.]]</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(b)</span>
+<span class="sd">    [[ 0.  1.  0.]</span>
+<span class="sd">     [ 1.  0.  0.]</span>
+<span class="sd">     [ 0.  0.  1.]]</span>
 
 <span class="sd">    &gt;&gt;&gt; local_coords = transformation.transform(coords, b)</span>
-<span class="sd">    &gt;&gt;&gt; print(local_coords)</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(local_coords)</span>
 <span class="sd">    [[ 0.   0. ]</span>
 <span class="sd">     [ 1.   0. ]</span>
 <span class="sd">     [ 0.   1. ]</span>
@@ -510,7 +511,7 @@
 <span class="sd">     [ 0.  1. -3.]</span>
 <span class="sd">     [ 0.  0.  1.]]</span>
 <span class="sd">    &gt;&gt;&gt; local_coords = transformation.transform(coords, b)</span>
-<span class="sd">    &gt;&gt;&gt; print(local_coords)</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(local_coords)</span>
 <span class="sd">    [[-2.  -3. ]</span>
 <span class="sd">     [-2.  -2. ]</span>
 <span class="sd">     [-1.  -3. ]</span>
@@ -521,12 +522,12 @@
 <span class="sd">    Use a diagonal basis.</span>
 
 <span class="sd">    &gt;&gt;&gt; b = basis([3, 4])</span>
-<span class="sd">    &gt;&gt;&gt; print(b)</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(b)</span>
 <span class="sd">    [[ 0.6  0.8  0. ]</span>
 <span class="sd">     [-0.8  0.6  0. ]</span>
 <span class="sd">     [ 0.   0.   1. ]]</span>
 <span class="sd">    &gt;&gt;&gt; local_coords = transformation.transform(coords, b)</span>
-<span class="sd">    &gt;&gt;&gt; print(local_coords)</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(local_coords)</span>
 <span class="sd">    [[ 0.   0. ]</span>
 <span class="sd">     [ 0.8  0.6]</span>
 <span class="sd">     [ 0.6 -0.8]</span>
@@ -537,7 +538,7 @@
 <span class="sd">    Three dimensional case.</span>
 
 <span class="sd">    &gt;&gt;&gt; b = basis([3, -4, 0], origin=[1, 2, 3])</span>
-<span class="sd">    &gt;&gt;&gt; print(b)</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(b)</span>
 <span class="sd">    [[-0.6  0.8  0.  -1. ]</span>
 <span class="sd">     [ 0.   0.   1.  -3. ]</span>
 <span class="sd">     [-0.8 -0.6  0.   2. ]</span>
@@ -581,9 +582,9 @@
 <span class="sd">    &gt;&gt;&gt; v = Vector((5, 7), (3, 4))</span>
 <span class="sd">    &gt;&gt;&gt; print(v)</span>
 <span class="sd">    origin: [5 7]; vec: [3 4]</span>
-<span class="sd">    &gt;&gt;&gt; print(v.target)</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(v.target)</span>
 <span class="sd">    [ 8 11]</span>
-<span class="sd">    &gt;&gt;&gt; print(v.length)</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(v.length)</span>
 <span class="sd">    5.0</span>
 
 <span class="sd">    Three dimensional case.</span>
@@ -591,7 +592,7 @@
 <span class="sd">    &gt;&gt;&gt; v = Vector((1, 1, 1), (2, 3, 4))</span>
 <span class="sd">    &gt;&gt;&gt; print(v)</span>
 <span class="sd">    origin: [1 1 1]; vec: [2 3 4]</span>
-<span class="sd">    &gt;&gt;&gt; print(v.target)</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(v.target)</span>
 <span class="sd">    [3 4 5]</span>
 
 <span class="sd">    Edit the vector.</span>
@@ -644,8 +645,8 @@
 
 <span class="sd">        &gt;&gt;&gt; v = Vector.from_coords([(1, 1), (1, 2), (1, 6)])</span>
 <span class="sd">        &gt;&gt;&gt; print(v)</span>
-<span class="sd">        origin: [1. 3.]; vec: [0. 3.]</span>
-<span class="sd">        &gt;&gt;&gt; print(v.t)</span>
+<span class="sd">        origin: [ 1.  3.]; vec: [ 0.  3.]</span>
+<span class="sd">        &gt;&gt;&gt; print_rounded(v.t)</span>
 <span class="sd">        [[ 0.  1. -3.]</span>
 <span class="sd">         [ 1.  0. -1.]</span>
 <span class="sd">         [ 0.  0.  1.]]</span>
@@ -761,9 +762,9 @@
 
 <span class="sd">        &gt;&gt;&gt; vec = vec.transform(T)</span>
 <span class="sd">        &gt;&gt;&gt; print_rounded(vec.origin)</span>
-<span class="sd">        [1.   3.41]</span>
+<span class="sd">        [ 1.    3.41]</span>
 <span class="sd">        &gt;&gt;&gt; print_rounded(vec.vec)</span>
-<span class="sd">        [0.71 0.71]</span>
+<span class="sd">        [ 0.71  0.71]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">T</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_tmatrix</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
@@ -823,7 +824,7 @@
 
 <span class="sd">        &gt;&gt;&gt; v = Vector((1, 1, 1), (2, 3, 4))</span>
 <span class="sd">        &gt;&gt;&gt; print(v / 2.0)</span>
-<span class="sd">        origin: [1 1 1]; vec: [1.  1.5 2. ]</span>
+<span class="sd">        origin: [1 1 1]; vec: [ 1.   1.5  2. ]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__truediv__</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
@@ -886,9 +887,9 @@
 <span class="sd">        --------</span>
 
 <span class="sd">        &gt;&gt;&gt; v = Vector((1, 1, 1), (2, 3, 4))</span>
-<span class="sd">        &gt;&gt;&gt; print(v(2))</span>
+<span class="sd">        &gt;&gt;&gt; print_rounded(v(2))</span>
 <span class="sd">        [5 7 9]</span>
-<span class="sd">        &gt;&gt;&gt; print(v([0, 1, -2, 3]))</span>
+<span class="sd">        &gt;&gt;&gt; print_rounded(v([0, 1, -2, 3]))</span>
 <span class="sd">        [[ 1  1  1]</span>
 <span class="sd">         [ 3  4  5]</span>
 <span class="sd">         [-3 -5 -7]</span>
@@ -922,7 +923,7 @@
 <span class="sd">        &gt;&gt;&gt; v = Vector((1, 1, 1), (2, 3, 4))</span>
 <span class="sd">        &gt;&gt;&gt; angles = v.angles(deg=True)</span>
 <span class="sd">        &gt;&gt;&gt; print_rounded(angles, 3)</span>
-<span class="sd">        [68.199 56.145 42.031]</span>
+<span class="sd">        [ 68.199  56.145  42.031]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">zenith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vec</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="n">deg</span><span class="p">)</span>
@@ -947,11 +948,11 @@
 <span class="sd">        &gt;&gt;&gt; v = Vector((1, -1), (1, 2))</span>
 <span class="sd">        &gt;&gt;&gt; dist = v.distance([(1, -1), (0, -3), (2, 1), (2, -2), (0, 0)])</span>
 <span class="sd">        &gt;&gt;&gt; print_rounded(dist, 3)</span>
-<span class="sd">        [0.    0.    0.    1.342 1.342]</span>
+<span class="sd">        [ 0.     0.     0.     1.342  1.342]</span>
 <span class="sd">        &gt;&gt;&gt; print_rounded(np.linalg.inv(v.t).origin)</span>
 <span class="sd">        [ 1. -1.]</span>
 <span class="sd">        &gt;&gt;&gt; print_rounded(v.t.pc(1) * v.length)</span>
-<span class="sd">        [1. 2.]</span>
+<span class="sd">        [ 1.  2.]</span>
 <span class="sd">        &gt;&gt;&gt; print_rounded(v.t.pc(2) * v.length)</span>
 <span class="sd">        [-2.  1.]</span>
 
@@ -1004,15 +1005,15 @@
 
 <span class="sd">    Get some properties.</span>
 
-<span class="sd">    &gt;&gt;&gt; print(plane.dim)</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(plane.dim)</span>
 <span class="sd">    3</span>
-<span class="sd">    &gt;&gt;&gt; print(plane.t.inv)</span>
-<span class="sd">    [[0. 1. 0. 1.]</span>
-<span class="sd">     [0. 0. 1. 2.]</span>
-<span class="sd">     [1. 0. 0. 3.]</span>
-<span class="sd">     [0. 0. 0. 1.]]</span>
-<span class="sd">    &gt;&gt;&gt; print(plane.t.eigen_values)</span>
-<span class="sd">    [8. 2. 0.]</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(plane.t.inv)</span>
+<span class="sd">    [[ 0.  1.  0.  1.]</span>
+<span class="sd">     [ 0.  0.  1.  2.]</span>
+<span class="sd">     [ 1.  0.  0.  3.]</span>
+<span class="sd">     [ 0.  0.  0.  1.]]</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(plane.t.eigen_values)</span>
+<span class="sd">    [ 8.  2.  0.]</span>
 
 <span class="sd">    Transformation of global coordinates to the plane coordinate system.</span>
 
@@ -1023,7 +1024,7 @@
 <span class="sd">    ...     plane.vec[0, :] - 3,</span>
 <span class="sd">    ...     plane.origin + 2 * plane.vec[0, :] + 3 * plane.vec[1, :]</span>
 <span class="sd">    ... ]</span>
-<span class="sd">    &gt;&gt;&gt; print(np.array(global_coords))</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(np.array(global_coords))</span>
 <span class="sd">    [[ 1  2  3]</span>
 <span class="sd">     [ 1  2  5]</span>
 <span class="sd">     [-1  0  0]</span>
@@ -1047,7 +1048,7 @@
 <span class="sd">    Calculation of the distance of the global points to the plane.</span>
 
 <span class="sd">    &gt;&gt;&gt; print_rounded(plane.distance(global_coords))</span>
-<span class="sd">    [0. 0. 2. 5. 0.]</span>
+<span class="sd">    [ 0.  0.  2.  5.  0.]</span>
 
 <span class="sd">    Creation of the special case of a line in a two dimensional space.</span>
 
@@ -1055,13 +1056,13 @@
 <span class="sd">    &gt;&gt;&gt; print(plane)</span>
 <span class="sd">    origin: [1 2]; vec: [3 4]</span>
 
-<span class="sd">    &gt;&gt;&gt; print(plane.t.inv)</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(plane.t.inv)</span>
 <span class="sd">    [[ 0.6 -0.8  1. ]</span>
 <span class="sd">     [ 0.8  0.6  2. ]</span>
 <span class="sd">     [ 0.   0.   1. ]]</span>
 <span class="sd">    &gt;&gt;&gt; print_rounded(plane.t.eigen_values)</span>
-<span class="sd">    [50.  0.]</span>
-<span class="sd">    &gt;&gt;&gt; print(plane.dim)</span>
+<span class="sd">    [ 50.   0.]</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(plane.dim)</span>
 <span class="sd">    2</span>
 
 <span class="sd">    Transformation of global coordinates to the plane coordinate system.</span>
@@ -1080,20 +1081,20 @@
 
 <span class="sd">    &gt;&gt;&gt; local_coords = plane.t.to_local(global_coords)</span>
 <span class="sd">    &gt;&gt;&gt; print_rounded(local_coords)</span>
-<span class="sd">    [[ 0.   0. ]</span>
-<span class="sd">     [ 5.   0. ]</span>
-<span class="sd">     [-1.4  0.2]</span>
-<span class="sd">     [10.   0. ]]</span>
+<span class="sd">    [[  0.    0. ]</span>
+<span class="sd">     [  5.    0. ]</span>
+<span class="sd">     [ -1.4   0.2]</span>
+<span class="sd">     [ 10.    0. ]]</span>
 <span class="sd">    &gt;&gt;&gt; print_rounded(plane.t.to_global(local_coords))</span>
-<span class="sd">    [[ 1.  2.]</span>
-<span class="sd">     [ 4.  6.]</span>
-<span class="sd">     [ 0.  1.]</span>
-<span class="sd">     [ 7. 10.]]</span>
+<span class="sd">    [[  1.   2.]</span>
+<span class="sd">     [  4.   6.]</span>
+<span class="sd">     [  0.   1.]</span>
+<span class="sd">     [  7.  10.]]</span>
 
 <span class="sd">    Calculation of the distance of the global points to the plane.</span>
 
 <span class="sd">    &gt;&gt;&gt; print_rounded(plane.distance(global_coords))</span>
-<span class="sd">    [0.  0.  0.2 0. ]</span>
+<span class="sd">    [ 0.   0.   0.2  0. ]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1202,13 +1203,13 @@
 
 <span class="sd">        &gt;&gt;&gt; plane = Plane((1, 2, 3), (5, 9, 2), (2, 3, 4))</span>
 <span class="sd">        &gt;&gt;&gt; print(plane / [5, 2])</span>
-<span class="sd">        origin: [1 2 3]; vec: [1.  1.8 0.4], [1.  1.5 2. ]</span>
+<span class="sd">        origin: [1 2 3]; vec: [ 1.   1.8  0.4], [ 1.   1.5  2. ]</span>
 
 <span class="sd">        Two dimensional case (line).</span>
 
 <span class="sd">        &gt;&gt;&gt; plane = Plane((1, 2), (5, 9))</span>
 <span class="sd">        &gt;&gt;&gt; print(plane / 2)</span>
-<span class="sd">        origin: [1 2]; vec: [2.5 4.5]</span>
+<span class="sd">        origin: [1 2]; vec: [ 2.5  4.5]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__truediv__</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
@@ -1261,9 +1262,9 @@
 <span class="sd">        Three dimensional case.</span>
 
 <span class="sd">        &gt;&gt;&gt; plane = Plane((1, 2, 3), (1, 0, 2), (0, 3, 0))</span>
-<span class="sd">        &gt;&gt;&gt; print(plane([1, 2]))</span>
+<span class="sd">        &gt;&gt;&gt; print_rounded(plane([1, 2]))</span>
 <span class="sd">        [2 8 5]</span>
-<span class="sd">        &gt;&gt;&gt; print(plane([(0, 0), (1, 0), (0, 1), (-2, 3)]))</span>
+<span class="sd">        &gt;&gt;&gt; print_rounded(plane([(0, 0), (1, 0), (0, 1), (-2, 3)]))</span>
 <span class="sd">        [[ 1  2  3]</span>
 <span class="sd">         [ 2  2  5]</span>
 <span class="sd">         [ 1  5  3]</span>
@@ -1272,9 +1273,9 @@
 <span class="sd">        Two dimensional case (line).</span>
 
 <span class="sd">        &gt;&gt;&gt; plane = Plane((1, 2), (5, 9))</span>
-<span class="sd">        &gt;&gt;&gt; print(plane(0.5))</span>
-<span class="sd">        [3.5 6.5]</span>
-<span class="sd">        &gt;&gt;&gt; print(plane([1, 2]))</span>
+<span class="sd">        &gt;&gt;&gt; print_rounded(plane(0.5))</span>
+<span class="sd">        [ 3.5  6.5]</span>
+<span class="sd">        &gt;&gt;&gt; print_rounded(plane([1, 2]))</span>
 <span class="sd">        [[ 6 11]</span>
 <span class="sd">         [11 20]]</span>
 
@@ -1314,9 +1315,9 @@
 <span class="sd">        Create a plane and a tranformation matrix.</span>
 
 <span class="sd">        &gt;&gt;&gt; plane = Plane([1, 1], [1, 0])</span>
-<span class="sd">        &gt;&gt;&gt; print(plane.origin)</span>
+<span class="sd">        &gt;&gt;&gt; print_rounded(plane.origin)</span>
 <span class="sd">        [1 1]</span>
-<span class="sd">        &gt;&gt;&gt; print(plane.vec)</span>
+<span class="sd">        &gt;&gt;&gt; print_rounded(plane.vec)</span>
 <span class="sd">        [[1 0]]</span>
 
 <span class="sd">        &gt;&gt;&gt; r = 45 * np.pi / 180.0</span>
@@ -1329,9 +1330,9 @@
 
 <span class="sd">        &gt;&gt;&gt; plane = plane.transform(T)</span>
 <span class="sd">        &gt;&gt;&gt; print_rounded(plane.origin)</span>
-<span class="sd">        [1.   3.41]</span>
+<span class="sd">        [ 1.    3.41]</span>
 <span class="sd">        &gt;&gt;&gt; print_rounded(plane.vec)</span>
-<span class="sd">        [[0.71 0.71]]</span>
+<span class="sd">        [[ 0.71  0.71]]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">T</span> <span class="o">=</span> <span class="n">assertion</span><span class="o">.</span><span class="n">ensure_tmatrix</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
@@ -1378,8 +1379,8 @@
 
 <span class="sd">    Calculate the intersection point.</span>
 
-<span class="sd">    &gt;&gt;&gt; print(vector_surface_intersection(vec, surface))</span>
-<span class="sd">    [1. 1. 2.]</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(vector_surface_intersection(vec, surface))</span>
+<span class="sd">    [ 1.  1.  2.]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">Vector</span><span class="p">):</span>
@@ -1441,9 +1442,9 @@
 
 <span class="sd">    &gt;&gt;&gt; intersection = vector_plane_intersection(vec, plane)</span>
 <span class="sd">    &gt;&gt;&gt; print(intersection)</span>
-<span class="sd">    [1. 1. 9.]</span>
-<span class="sd">    &gt;&gt;&gt; print(vec.distance([intersection]))</span>
-<span class="sd">    [0.]</span>
+<span class="sd">    [ 1.  1.  9.]</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(vec.distance([intersection]))</span>
+<span class="sd">    [ 0.]</span>
 
 <span class="sd">    Create a plane and a vector in two dimensional space and calculate the</span>
 <span class="sd">    intersection point.</span>
@@ -1452,10 +1453,10 @@
 <span class="sd">    &gt;&gt;&gt; plane = Plane((-1, 5), (0, 1))</span>
 
 <span class="sd">    &gt;&gt;&gt; intersection = vector_plane_intersection(vec, plane)</span>
-<span class="sd">    &gt;&gt;&gt; print(intersection)</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(intersection)</span>
 <span class="sd">    [-1. -3.]</span>
-<span class="sd">    &gt;&gt;&gt; print(vec.distance([intersection]))</span>
-<span class="sd">    [0.]</span>
+<span class="sd">    &gt;&gt;&gt; print_rounded(vec.distance([intersection]))</span>
+<span class="sd">    [ 0.]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">Vector</span><span class="p">):</span>
@@ -1513,13 +1514,13 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">Pyoints verson 0.2.1 beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Pyoints version 0.2.0rc1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Sebastian Lamprecht.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
     </div>
   </body>
 </html>
