@@ -360,8 +360,8 @@ def add_fields(arr, dtypes, data=None):
 
     >>> A = recarray({'a': [0, 1, 2, 3]})
     >>> C = add_fields(A, [('b', float, 2), ('c', int)])
-    >>> print(sorted(C.dtype.descr))
-    [('a', '<i8'), ('b', '<f8', (2,)), ('c', '<i8')]
+    >>> print(sorted(C.dtype.names))
+    ['a', 'b', 'c']
 
     >>> D = add_fields(A, [('d', int), ('e', str)], data=[[1, 2, 3, 4], None])
     >>> print(D)
@@ -600,14 +600,14 @@ def flatten_dtypes(np_dtypes):
     --------
 
     >>> dtype = np.dtype([
-    ...     ('simple', int),
-    ...     ('multidimensional', float, 3),
+    ...     ('simple', np.int8),
+    ...     ('multidimensional', np.float32, 3),
     ... ])
     >>> names, dtypes, shapes = flatten_dtypes(dtype)
     >>> names
     ['simple', 'multidimensional']
     >>> dtypes
-    [dtype('int64'), dtype('float64')]
+    [dtype('int8'), dtype('float32')]
     >>> shapes
     [0, 3]
 
@@ -1031,9 +1031,9 @@ def minimum_numeric_dtype(arr):
 
     Find minimum data type for integer arrays.
 
-    >>> arr = np.array([0, 255])
+    >>> arr = np.array([0, 255], dtype=np.int32)
     >>> print(arr.dtype)
-    int64
+    int32
     >>> print(minimum_numeric_dtype(arr))
     uint8
 

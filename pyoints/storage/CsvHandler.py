@@ -79,7 +79,7 @@ def loadCsv(
     if header and flat_names is None:
         with open(infile, 'r') as f:
             line = f.readline().replace(os.linesep, '').replace(ignore, '')
-            flat_names = line.split(sep)
+            flat_names = line.replace('\n', '').split(sep)
 
     # laod using pandas
     df = pandas.read_csv(
