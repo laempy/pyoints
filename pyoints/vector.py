@@ -52,8 +52,8 @@ def rad_to_deg(rad):
 
     >>> rad_to_deg(0.5*np.pi)
     90.0
-    >>> print(rad_to_deg([0, np.pi/4, np.pi, 2*np.pi]))
-    [  0.  45. 180. 360.]
+    >>> print_rounded(rad_to_deg([0, np.pi/4, np.pi, 2*np.pi]))
+    [   0.   45.  180.  360.]
 
     """
     if nptools.isarray(rad):
@@ -87,7 +87,7 @@ def deg_to_rad(deg):
     1.571
     >>> rad = deg_to_rad([0, 45, 180, 360])
     >>> print_rounded(rad, 3)
-    [0.    0.785 3.142 6.283]
+    [ 0.     0.785  3.142  6.283]
 
     """
     if nptools.isarray(deg):
@@ -137,8 +137,8 @@ def angle(v, w, deg=False):
 
     Multiple vectors at once.
 
-    >>> print(angle([[0, 1], [1, 1]], [[1, 0], [2, 0]], deg=True))
-    [90. 45.]
+    >>> print_rounded(angle([[0, 1], [1, 1]], [[1, 0], [2, 0]], deg=True))
+    [ 90.  45.]
 
     """
     if not isinstance(deg, bool):
@@ -186,12 +186,12 @@ def axes_angles(v, deg=False):
     --------
 
     >>> v = [1, 1]
-    >>> print(axes_angles(v, deg=True))
-    [45. 45.]
+    >>> print_rounded(axes_angles(v, deg=True))
+    [ 45.  45.]
 
     >>> v = [0, 1, 0]
-    >>> print(axes_angles(v, deg=True))
-    [90.  0. 90.]
+    >>> print_rounded(axes_angles(v, deg=True))
+    [ 90.   0.  90.]
 
     """
     v = assertion.ensure_numvector(v)
@@ -219,12 +219,12 @@ def direction(v, deg=False):
     --------
 
     >>> v = [0, 1]
-    >>> print(direction(v, deg=True))
+    >>> print_rounded(direction(v, deg=True))
     90.0
 
     >>> v = [0, 1, 1]
-    >>> print(direction(v, deg=True))
-    [90. 45.]
+    >>> print_rounded(direction(v, deg=True))
+    [ 90.  45.]
 
     """
     v = assertion.ensure_numvector(v)
@@ -278,7 +278,7 @@ def zenith(v, axis=-1, deg=False):
 
     >>> v = [(0, 0), (1, 0), (0, 1), (1, 1)]
     >>> print_rounded(zenith(v, deg=True))
-    [nan 90.  0. 45.]
+    [ nan  90.   0.  45.]
 
     >>> v = [1, 0, 1]
     >>> print_rounded(zenith([1, 0, 1], axis=2, deg=True))
@@ -330,16 +330,16 @@ def azimuth(v, deg=False):
     --------
 
     >>> v = [1, 1]
-    >>> print(azimuth(v, deg=True))
+    >>> print_rounded(azimuth(v, deg=True))
     45.0
 
     >>> v = [1, 1, 5]
-    >>> print(azimuth(v, deg=True))
+    >>> print_rounded(azimuth(v, deg=True))
     45.0
 
     >>> v = [(0, 0), (0, 1), (1, 1), (1, 0), (2, -2), (0, -1), (-1, 1)]
-    >>> print(azimuth(v, deg=True))
-    [ nan   0.  45.  90. 135. 180. 315.]
+    >>> print_rounded(azimuth(v, deg=True))
+    [  nan    0.   45.   90.  135.  180.  315.]
 
     """
     v = assertion.ensure_numarray(v)
@@ -448,13 +448,13 @@ def basis(vec, origin=None):
     Flip the basic axes.
 
     >>> b = basis([0, 1])
-    >>> print(b)
-    [[0. 1. 0.]
-     [1. 0. 0.]
-     [0. 0. 1.]]
+    >>> print_rounded(b)
+    [[ 0.  1.  0.]
+     [ 1.  0.  0.]
+     [ 0.  0.  1.]]
 
     >>> local_coords = transformation.transform(coords, b)
-    >>> print(local_coords)
+    >>> print_rounded(local_coords)
     [[ 0.   0. ]
      [ 1.   0. ]
      [ 0.   1. ]
@@ -470,7 +470,7 @@ def basis(vec, origin=None):
      [ 0.  1. -3.]
      [ 0.  0.  1.]]
     >>> local_coords = transformation.transform(coords, b)
-    >>> print(local_coords)
+    >>> print_rounded(local_coords)
     [[-2.  -3. ]
      [-2.  -2. ]
      [-1.  -3. ]
@@ -481,12 +481,12 @@ def basis(vec, origin=None):
     Use a diagonal basis.
 
     >>> b = basis([3, 4])
-    >>> print(b)
+    >>> print_rounded(b)
     [[ 0.6  0.8  0. ]
      [-0.8  0.6  0. ]
      [ 0.   0.   1. ]]
     >>> local_coords = transformation.transform(coords, b)
-    >>> print(local_coords)
+    >>> print_rounded(local_coords)
     [[ 0.   0. ]
      [ 0.8  0.6]
      [ 0.6 -0.8]
@@ -497,7 +497,7 @@ def basis(vec, origin=None):
     Three dimensional case.
 
     >>> b = basis([3, -4, 0], origin=[1, 2, 3])
-    >>> print(b)
+    >>> print_rounded(b)
     [[-0.6  0.8  0.  -1. ]
      [ 0.   0.   1.  -3. ]
      [-0.8 -0.6  0.   2. ]
@@ -541,9 +541,9 @@ class Vector(object):
     >>> v = Vector((5, 7), (3, 4))
     >>> print(v)
     origin: [5 7]; vec: [3 4]
-    >>> print(v.target)
+    >>> print_rounded(v.target)
     [ 8 11]
-    >>> print(v.length)
+    >>> print_rounded(v.length)
     5.0
 
     Three dimensional case.
@@ -551,7 +551,7 @@ class Vector(object):
     >>> v = Vector((1, 1, 1), (2, 3, 4))
     >>> print(v)
     origin: [1 1 1]; vec: [2 3 4]
-    >>> print(v.target)
+    >>> print_rounded(v.target)
     [3 4 5]
 
     Edit the vector.
@@ -604,8 +604,8 @@ class Vector(object):
 
         >>> v = Vector.from_coords([(1, 1), (1, 2), (1, 6)])
         >>> print(v)
-        origin: [1. 3.]; vec: [0. 3.]
-        >>> print(v.t)
+        origin: [ 1.  3.]; vec: [ 0.  3.]
+        >>> print_rounded(v.t)
         [[ 0.  1. -3.]
          [ 1.  0. -1.]
          [ 0.  0.  1.]]
@@ -721,9 +721,9 @@ class Vector(object):
 
         >>> vec = vec.transform(T)
         >>> print_rounded(vec.origin)
-        [1.   3.41]
+        [ 1.    3.41]
         >>> print_rounded(vec.vec)
-        [0.71 0.71]
+        [ 0.71  0.71]
 
         """
         T = assertion.ensure_tmatrix(T, self.dim)
@@ -783,7 +783,7 @@ class Vector(object):
 
         >>> v = Vector((1, 1, 1), (2, 3, 4))
         >>> print(v / 2.0)
-        origin: [1 1 1]; vec: [1.  1.5 2. ]
+        origin: [1 1 1]; vec: [ 1.   1.5  2. ]
 
         """
         return self.__truediv__(s)
@@ -846,9 +846,9 @@ class Vector(object):
         --------
 
         >>> v = Vector((1, 1, 1), (2, 3, 4))
-        >>> print(v(2))
+        >>> print_rounded(v(2))
         [5 7 9]
-        >>> print(v([0, 1, -2, 3]))
+        >>> print_rounded(v([0, 1, -2, 3]))
         [[ 1  1  1]
          [ 3  4  5]
          [-3 -5 -7]
@@ -882,7 +882,7 @@ class Vector(object):
         >>> v = Vector((1, 1, 1), (2, 3, 4))
         >>> angles = v.angles(deg=True)
         >>> print_rounded(angles, 3)
-        [68.199 56.145 42.031]
+        [ 68.199  56.145  42.031]
 
         """
         return np.array([zenith(self.vec, axis=i, deg=deg)
@@ -907,11 +907,11 @@ class Vector(object):
         >>> v = Vector((1, -1), (1, 2))
         >>> dist = v.distance([(1, -1), (0, -3), (2, 1), (2, -2), (0, 0)])
         >>> print_rounded(dist, 3)
-        [0.    0.    0.    1.342 1.342]
+        [ 0.     0.     0.     1.342  1.342]
         >>> print_rounded(np.linalg.inv(v.t).origin)
         [ 1. -1.]
         >>> print_rounded(v.t.pc(1) * v.length)
-        [1. 2.]
+        [ 1.  2.]
         >>> print_rounded(v.t.pc(2) * v.length)
         [-2.  1.]
 
@@ -964,15 +964,15 @@ class Plane(object):
 
     Get some properties.
 
-    >>> print(plane.dim)
+    >>> print_rounded(plane.dim)
     3
-    >>> print(plane.t.inv)
-    [[0. 1. 0. 1.]
-     [0. 0. 1. 2.]
-     [1. 0. 0. 3.]
-     [0. 0. 0. 1.]]
-    >>> print(plane.t.eigen_values)
-    [8. 2. 0.]
+    >>> print_rounded(plane.t.inv)
+    [[ 0.  1.  0.  1.]
+     [ 0.  0.  1.  2.]
+     [ 1.  0.  0.  3.]
+     [ 0.  0.  0.  1.]]
+    >>> print_rounded(plane.t.eigen_values)
+    [ 8.  2.  0.]
 
     Transformation of global coordinates to the plane coordinate system.
 
@@ -983,7 +983,7 @@ class Plane(object):
     ...     plane.vec[0, :] - 3,
     ...     plane.origin + 2 * plane.vec[0, :] + 3 * plane.vec[1, :]
     ... ]
-    >>> print(np.array(global_coords))
+    >>> print_rounded(np.array(global_coords))
     [[ 1  2  3]
      [ 1  2  5]
      [-1  0  0]
@@ -1007,7 +1007,7 @@ class Plane(object):
     Calculation of the distance of the global points to the plane.
 
     >>> print_rounded(plane.distance(global_coords))
-    [0. 0. 2. 5. 0.]
+    [ 0.  0.  2.  5.  0.]
 
     Creation of the special case of a line in a two dimensional space.
 
@@ -1015,13 +1015,13 @@ class Plane(object):
     >>> print(plane)
     origin: [1 2]; vec: [3 4]
 
-    >>> print(plane.t.inv)
+    >>> print_rounded(plane.t.inv)
     [[ 0.6 -0.8  1. ]
      [ 0.8  0.6  2. ]
      [ 0.   0.   1. ]]
     >>> print_rounded(plane.t.eigen_values)
-    [50.  0.]
-    >>> print(plane.dim)
+    [ 50.   0.]
+    >>> print_rounded(plane.dim)
     2
 
     Transformation of global coordinates to the plane coordinate system.
@@ -1040,20 +1040,20 @@ class Plane(object):
 
     >>> local_coords = plane.t.to_local(global_coords)
     >>> print_rounded(local_coords)
-    [[ 0.   0. ]
-     [ 5.   0. ]
-     [-1.4  0.2]
-     [10.   0. ]]
+    [[  0.    0. ]
+     [  5.    0. ]
+     [ -1.4   0.2]
+     [ 10.    0. ]]
     >>> print_rounded(plane.t.to_global(local_coords))
-    [[ 1.  2.]
-     [ 4.  6.]
-     [ 0.  1.]
-     [ 7. 10.]]
+    [[  1.   2.]
+     [  4.   6.]
+     [  0.   1.]
+     [  7.  10.]]
 
     Calculation of the distance of the global points to the plane.
 
     >>> print_rounded(plane.distance(global_coords))
-    [0.  0.  0.2 0. ]
+    [ 0.   0.   0.2  0. ]
 
     """
 
@@ -1162,13 +1162,13 @@ class Plane(object):
 
         >>> plane = Plane((1, 2, 3), (5, 9, 2), (2, 3, 4))
         >>> print(plane / [5, 2])
-        origin: [1 2 3]; vec: [1.  1.8 0.4], [1.  1.5 2. ]
+        origin: [1 2 3]; vec: [ 1.   1.8  0.4], [ 1.   1.5  2. ]
 
         Two dimensional case (line).
 
         >>> plane = Plane((1, 2), (5, 9))
         >>> print(plane / 2)
-        origin: [1 2]; vec: [2.5 4.5]
+        origin: [1 2]; vec: [ 2.5  4.5]
 
         """
         return self.__truediv__(s)
@@ -1221,9 +1221,9 @@ class Plane(object):
         Three dimensional case.
 
         >>> plane = Plane((1, 2, 3), (1, 0, 2), (0, 3, 0))
-        >>> print(plane([1, 2]))
+        >>> print_rounded(plane([1, 2]))
         [2 8 5]
-        >>> print(plane([(0, 0), (1, 0), (0, 1), (-2, 3)]))
+        >>> print_rounded(plane([(0, 0), (1, 0), (0, 1), (-2, 3)]))
         [[ 1  2  3]
          [ 2  2  5]
          [ 1  5  3]
@@ -1232,9 +1232,9 @@ class Plane(object):
         Two dimensional case (line).
 
         >>> plane = Plane((1, 2), (5, 9))
-        >>> print(plane(0.5))
-        [3.5 6.5]
-        >>> print(plane([1, 2]))
+        >>> print_rounded(plane(0.5))
+        [ 3.5  6.5]
+        >>> print_rounded(plane([1, 2]))
         [[ 6 11]
          [11 20]]
 
@@ -1274,9 +1274,9 @@ class Plane(object):
         Create a plane and a tranformation matrix.
 
         >>> plane = Plane([1, 1], [1, 0])
-        >>> print(plane.origin)
+        >>> print_rounded(plane.origin)
         [1 1]
-        >>> print(plane.vec)
+        >>> print_rounded(plane.vec)
         [[1 0]]
 
         >>> r = 45 * np.pi / 180.0
@@ -1289,9 +1289,9 @@ class Plane(object):
 
         >>> plane = plane.transform(T)
         >>> print_rounded(plane.origin)
-        [1.   3.41]
+        [ 1.    3.41]
         >>> print_rounded(plane.vec)
-        [[0.71 0.71]]
+        [[ 0.71  0.71]]
 
         """
         T = assertion.ensure_tmatrix(T, self.dim)
@@ -1338,8 +1338,8 @@ def vector_surface_intersection(vec, surface, eps=0.001, max_iter=20):
 
     Calculate the intersection point.
 
-    >>> print(vector_surface_intersection(vec, surface))
-    [1. 1. 2.]
+    >>> print_rounded(vector_surface_intersection(vec, surface))
+    [ 1.  1.  2.]
 
     """
     if not isinstance(vec, Vector):
@@ -1401,9 +1401,9 @@ def vector_plane_intersection(vec, plane):
 
     >>> intersection = vector_plane_intersection(vec, plane)
     >>> print(intersection)
-    [1. 1. 9.]
-    >>> print(vec.distance([intersection]))
-    [0.]
+    [ 1.  1.  9.]
+    >>> print_rounded(vec.distance([intersection]))
+    [ 0.]
 
     Create a plane and a vector in two dimensional space and calculate the
     intersection point.
@@ -1412,10 +1412,10 @@ def vector_plane_intersection(vec, plane):
     >>> plane = Plane((-1, 5), (0, 1))
 
     >>> intersection = vector_plane_intersection(vec, plane)
-    >>> print(intersection)
+    >>> print_rounded(intersection)
     [-1. -3.]
-    >>> print(vec.distance([intersection]))
-    [0.]
+    >>> print_rounded(vec.distance([intersection]))
+    [ 0.]
 
     """
     if not isinstance(vec, Vector):

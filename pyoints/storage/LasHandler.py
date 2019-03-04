@@ -20,8 +20,15 @@
 """
 
 import os
+import sys
 import numpy as np
+
 import laspy
+try:
+    # use liblas to provide full spatial reference support (workaround)
+    import liblas
+except ImportError:
+    pass
 
 from ..extent import Extent
 from ..georecords import (
@@ -37,6 +44,9 @@ from .. import (
 
 from .BaseGeoHandler import GeoFile
 from .dtype_converters import numpy_to_laspy_dtype
+
+
+SUPPORTED_FORMATS = [0, 1, 2, 3, 4, 5]
 
 
 class LasReader(GeoFile):
@@ -61,14 +71,35 @@ class LasReader(GeoFile):
 
         lasFile = laspy.file.File(self.file, mode='r')
 
-        # try to read projection from WKT
+        # try to read projection from file
         if proj is None:
-            for vlr in lasFile.header.vlrs:
-                if vlr.record_id == 2112:
-                    wkt = str(vlr.VLR_body.decode('utf-8'))
+            if 'liblas' in sys.modules:
+                reader = liblas.file.File(self.file, mode='r')
+                wkt = reader.header.srs.get_wkt().decode('utf-8')
+                if not wkt == '':
                     proj = projection.Proj.from_wkt(wkt)
-                    break
+                reader.close()
+            else:
+                for vlr in lasFile.header.vlrs:
+                    if vlr.record_id == 2112:
+                        # Spatial reference in well known text format
+                        wkt = str(vlr.VLR_body.decode('utf-8'))
+                        proj = projection.Proj.from_wkt(wkt)
+                    elif vlr.record_id == 34735:
+                        # GeoTIFF GeoKeyDirectoryTag
+                        # not supported yet
+                        pass
+                    elif vlr.record_id == 34736:
+                        # GeoTIFF GeoDoubleParamsTag
+                        # not supported yet
+                        pass
+                    elif vlr.record_id == 34737:
+                        # GeoTIFF GeoAsciiParamsTag
+                        # not supported yet
+                        pass
+
         self.proj = proj
+        self.date = lasFile.header.date
 
         self.t = transformation.t_matrix(lasFile.header.offset)
         self._extent = Extent((lasFile.header.min, lasFile.header.max))
@@ -93,13 +124,13 @@ class LasReader(GeoFile):
         lasFile = laspy.file.File(self.file, mode='r')
 
         # check point formats
-        supported_formats = [0, 1, 2, 3, 4, 5]
-        if lasFile.header.data_format_id not in supported_formats:
+        if lasFile.header.data_format_id not in SUPPORTED_FORMATS:
             m = "Only point formats %s supported yet, got %"
             raise ValueError(
                 m %
-                (supported_formats, lasFile.header.data_format_id))
+                (SUPPORTED_FORMATS, lasFile.header.data_format_id))
 
+        date = lasFile.header.date
         scale = np.array(lasFile.header.scale, dtype=np.float64)
         offset = np.array(lasFile.header.offset, dtype=np.float64)
         las_fields = [
@@ -172,10 +203,10 @@ class LasReader(GeoFile):
             t = np.eye(4)
         else:
             t = transformation.t_matrix(offset)
-        return LasRecords(self.proj, data, T=t)
+        return LasRecords(self.proj, data, T=t, date=date)
 
 
-def writeLas(geoRecords, outfile):
+def writeLas(geoRecords, outfile, point_format=3):
     """ Write a LAS file to disc.
 
     Parameters
@@ -184,6 +215,8 @@ def writeLas(geoRecords, outfile):
         Points to store to disk.
     outfile : String
         Desired output file.
+    point_format : optional, positive int
+        Desired LAS point format. See LAS specification for details.
 
     """
     # validate input
@@ -192,28 +225,48 @@ def writeLas(geoRecords, outfile):
     if not os.access(os.path.dirname(outfile), os.W_OK):
         raise IOError('File %s is not writable' % outfile)
 
+    if point_format not in SUPPORTED_FORMATS:
+        raise ValueError("'point_format' %s not supported" % str(point_format))
+
     records = geoRecords.records()
 
     # Create file header
-    header = laspy.header.Header(file_version=1.3, point_format=3)
+    header = laspy.header.Header(file_version=1.3, point_format=point_format)
     header.file_sig = 'LASF'
-    #header.format = 1.3
-    #header.data_format_id = 7
 
     # Open file in write mode
     lasFile = laspy.file.File(outfile, mode='w', header=header)
 
-    # create projection VLR using WKT
-    proj_vlr = laspy.header.VLR(
-        user_id="LASF_Projection",
-        record_id=2112,
-        VLR_body=str.encode(geoRecords.proj.wkt),
-        description="OGC Coordinate System WKT"
-    )
-    proj_vlr.parse_data()
+    # create VLR records
+    vlrs = []
+    if 'liblas' in sys.modules:
+        # use liblas to create spatial reference
+        srs = liblas.srs.SRS()
+        srs.set_wkt(str.encode(geoRecords.proj.wkt))
+        for i in range(srs.vlr_count()):
+            vlr = laspy.header.VLR(
+                user_id="LASF_Projection",
+                record_id=srs.GetVLR(i).recordid,
+                VLR_body=srs.GetVLR(i).data,
+                description="OGC Coordinate System GeoTIFF"
+            )
+            vlr.parse_data()
+            vlrs.append(vlr)
+    else:
+        # create wkt record only
+        vlr = laspy.header.VLR(
+            user_id="LASF_Projection",
+            record_id=2112,
+            VLR_body=str.encode(geoRecords.proj.wkt),
+            description="OGC Coordinate System WKT"
+        )
+        vlrs.append(vlr)
 
     # set VLRs
-    lasFile.header.set_vlrs([proj_vlr])
+    lasFile.header.set_vlrs(vlrs)
+
+    if point_format > 5:
+        lasFile.header.wkt = 1
 
     dim = min(geoRecords.dim, 3)
 
@@ -228,8 +281,9 @@ def writeLas(geoRecords, outfile):
     scale[:dim] = max_values / max_digits
     scale[np.isclose(scale, 0)] = 1 / max_digits
 
-    lasFile.header.scale = scale
-    lasFile.header.offset = offset
+    lasFile.date = geoRecords.date
+    lasFile.header.scale = scale.copy()
+    lasFile.header.offset = offset.copy()
 
     # get default fields
     las_fields = [field.name for field in lasFile.point_format]
@@ -252,7 +306,7 @@ def writeLas(geoRecords, outfile):
 
     # initialize
     flag_byte = np.zeros(len(records), dtype=np.uint)
-    raw_classification = np.zeros(len(records), dtype=np.uint)
+    raw_classification = np.zeros(len(records), dtype=np.uint8)
 
     # set fields
     for name in field_names:
@@ -292,8 +346,10 @@ def writeLas(geoRecords, outfile):
         elif name not in omit:
             lasFile._writer.set_dimension(name, records[name])
 
-    lasFile.set_flag_byte(flag_byte)
-    lasFile.set_raw_classification(raw_classification)
+    if point_format > 5:
+        lasFile.set_classification(raw_classification)
+    else:
+        lasFile.set_raw_classification(raw_classification)
 
     # close file
     lasFile.header.update_min_max()

@@ -97,7 +97,6 @@ class test_pyoints(unittest.TestCase):
 
     def test_version(self):
         self.assertTrue(hasattr(pyoints, '__version__'))
-        self.assertTrue(float(pyoints.__version__) > 0)
 
 
 print('Run doctests for Pyoints')

@@ -26,7 +26,7 @@ author = u'Sebastian Lamprecht'
 # The short X.Y version
 version = u'0.2'
 # The full version, including alpha/beta/rc tags
-release = u'verson 0.2.1 beta'
+release = u'version 0.2.0rc1'
 
 
 # -- General configuration ---------------------------------------------------

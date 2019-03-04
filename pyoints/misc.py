@@ -142,9 +142,25 @@ def print_rounded(values, decimals=2):
     """
     if isinstance(values, Number):
         rounded = np.round(values, decimals=decimals)
-        if np.isclose(values, 0):
-            rounded = values * 0
-    else:
+        if np.isclose(rounded, 0):
+            rounded = rounded * 0
+    elif isinstance(values, (np.ndarray, list, tuple)):
         rounded = np.round(values, decimals=decimals)
-        rounded[np.isclose(values, 0)] = 0
+        rounded[np.isclose(rounded, 0)] = 0
+    else:
+        raise ValueError("Data type '%s' not supported" % type(values))
+        
+    if isinstance(values, tuple):
+        rounded = tuple(rounded)
+        
+    np.set_printoptions(
+        linewidth=75,
+        precision=decimals,
+        suppress=True,
+        threshold=20,
+        sign=' ',
+        floatmode='unique',
+        legacy='1.13'
+    )
     print(rounded)
+

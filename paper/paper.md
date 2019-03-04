@@ -39,7 +39,7 @@ on 3D point cloud processing. Each of these software packages provide an API
 specially designed to solve the problems of their field efficiently. When
 developing algorithms for automated processing of various types of input data,
 the differing APIs and programming languages of these software packages become
-a drawback. To supportfast  algorithm development and a short familiarization,
+a drawback. To support fast algorithm development and a short familiarization,
 a unified API would be desirable.
 
 *Pyoints* is a python package to conveniently process and analyze point
@@ -65,19 +65,18 @@ API for loading and saving commonly used geo-data formats.
 
 *Pyoints* was designed to support research activities and algorithm
 development in the field of geoinformatis and remote sensing. Early versions of
-the software have been used for [@Lamprecht_2017a] and some pre-studies at
-Trier University. *Pyoints* is also used in the PANTHEON project [@PANTHEON] to
-monitor hazelnut orchards.
+the software have been used for some pre-studies at Trier University 
+[@Lamprecht_2015a; @Lamprecht_2017a]. *Pyoints* is also used in the PANTHEON project [@PANTHEON] 
+to monitor hazelnut orchards.
 
-The source code of *Pyoints* has been archived to GitHub [@Pyoints_GitHub] and
-PyPI [@Pyoints_PyPI]. The documentation can be found on GitHub Pages
-[@Pyoints_docs].
+The source code of *Pyoints* has been archived to GitHub [@Pyoints_GitHub]. The
+documentation can be found on GitHub Pages [@Pyoints_docs].
 
 
 # Acknowledgements
 
-This work was supported by the PANTHEON project which is funded by the European
-Community Horizon 2020 programme under grant agreement 774571.
+This work has been supported by the European Commission under the grant
+agreement number 774571 Project PANTHEON.
 
 
 # References

@@ -68,6 +68,14 @@ pyoints.storage.misc module
     :undoc-members:
     :show-inheritance:
 
+pyoints.storage.structured module
+---------------------------------
+
+.. automodule:: pyoints.storage.structured
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------

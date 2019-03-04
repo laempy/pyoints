@@ -19,10 +19,13 @@
 """Functions to ensure the properties of frequently used data structures.
 """
 
+import json
 import numpy as np
 from numbers import Number
 
 from . import nptools
+
+from .misc import print_rounded
 
 
 def ensure_dim(value, dim=None, min_dim=2, max_dim=np.inf):
@@ -193,9 +196,9 @@ def ensure_numarray(arr, shape=None):
     Examples
     --------
 
-    >>> print(ensure_numarray([0,1,2]))
+    >>> print_rounded(ensure_numarray([0,1,2]))
     [0 1 2]
-    >>> print(ensure_numarray((-4,-5)))
+    >>> print_rounded(ensure_numarray((-4,-5)))
     [-4 -5]
 
     """
@@ -234,7 +237,7 @@ def ensure_numvector(v, length=None, min_length=1, max_length=np.inf):
 
     >>> v = (3, 2, 4, 4)
     >>> v = ensure_numvector(v)
-    >>> print(v)
+    >>> print_rounded(v)
     [3 2 4 4]
 
     Vector of insufficient length.
@@ -320,7 +323,7 @@ def ensure_coords(coords, by_col=False, dim=None, min_dim=2, max_dim=np.inf):
     >>> coords = ensure_coords([(3, 2), (2, 4), (-1, 2), (9, 3)])
     >>> print(isinstance(coords, np.ndarray))
     True
-    >>> print(coords)
+    >>> print_rounded(coords)
     [[ 3  2]
      [ 2  4]
      [-1  2]
@@ -329,7 +332,7 @@ def ensure_coords(coords, by_col=False, dim=None, min_dim=2, max_dim=np.inf):
     Coordinates provided column by column.
 
     >>> coords = ensure_coords([(3, 2, -1, 9), (2, 4, 2, 3)], by_col=True)
-    >>> print(coords)
+    >>> print_rounded(coords)
     [[ 3  2]
      [ 2  4]
      [-1  2]
@@ -428,3 +431,31 @@ def ensure_tmatrix(T, dim=None, min_dim=2, max_dim=np.inf):
     ensure_dim(T.shape[0] - 1, dim, min_dim, max_dim)
 
     return T
+
+
+def ensure_json(js):
+    """Ensures the properties of a serializable json object.
+
+    Parameters
+    ----------
+    js : dict
+        Dictionary to convert to a serializable json object.
+
+    Returns
+    -------
+    dict
+        Serializable json object.
+
+    """
+    class JsonEncoder(json.JSONEncoder):
+        def default(self, obj):
+            if isinstance(obj, np.recarray):
+                return {key: obj[key].tolist() for key in obj.dtype.names}
+            if isinstance(obj, np.ndarray):
+                return obj.tolist()
+            if isinstance(obj, np.int64):
+                return int(obj)
+            if isinstance(obj, np.float32):
+                return float(obj)
+            return json.JSONEncoder.default(self, obj)
+    return json.loads(json.dumps(js, cls=JsonEncoder))

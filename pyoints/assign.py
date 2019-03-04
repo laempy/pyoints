@@ -26,6 +26,7 @@ from . import (
     IndexKD,
 )
 
+from .misc import print_rounded
 
 class Matcher:
     """Base class to simplify point matching. Points of a reference point set
@@ -88,10 +89,10 @@ class PairMatcher(Matcher):
 
     >>> matcher = PairMatcher(A, [0.3, 0.2])
     >>> pairs = matcher(B)
-    >>> print(pairs)
+    >>> print_rounded(pairs)
     [[4 0]
      [0 1]]
-    >>> print(A[pairs[:, 0], :] - B[pairs[:, 1], :])
+    >>> print_rounded(A[pairs[:, 0], :] - B[pairs[:, 1], :])
     [[ 0.1  0.1]
      [-0.2  0. ]]
 
@@ -143,11 +144,11 @@ class SphereMatcher(Matcher):
 
     >>> matcher = SphereMatcher(A, [0.3, 0.2])
     >>> pairs = matcher(B)
-    >>> print(pairs)
+    >>> print_rounded(pairs)
     [[4 0]
      [0 1]
      [1 1]]
-    >>> print(A[pairs[:, 0], :] - B[pairs[:, 1], :])
+    >>> print_rounded(A[pairs[:, 0], :] - B[pairs[:, 1], :])
     [[ 0.1  0.1]
      [-0.2  0. ]
      [-0.2  0.1]]
@@ -187,14 +188,14 @@ class KnnMatcher(Matcher):
     Try to assign one neighbour.
 
     >>> pairs = matcher(B)
-    >>> print(pairs)
+    >>> print_rounded(pairs)
     [[4 0]
      [0 1]]
 
     Try to assign two neighbours.
 
     >>> pairs = matcher(B, k=2)
-    >>> print(pairs)
+    >>> print_rounded(pairs)
     [[4 0]
      [0 1]
      [1 1]]

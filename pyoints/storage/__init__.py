@@ -23,5 +23,6 @@ from .RasterHandler import *
 from .CsvHandler import *
 from .DumpHandler import *
 from .PlyHandler import *
+from .structured import *
 from . import dtype_converters
 from . import misc

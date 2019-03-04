@@ -90,32 +90,32 @@ def normalize(vectors, dim=None, n=None):
     >>> vectors = [(3, 4), (8, 6), (2, 0), (0, 0)]
     >>> normals = normalize(vectors)
 
-    >>> print(normals)
-    [[0.6 0.8]
-     [0.8 0.6]
-     [1.  0. ]
-     [0.  0. ]]
-    >>> print(distance.norm(normals))
-    [1. 1. 1. 0.]
+    >>> print_rounded(normals)
+    [[ 0.6  0.8]
+     [ 0.8  0.6]
+     [ 1.   0. ]
+     [ 0.   0. ]]
+    >>> print_rounded(distance.norm(normals))
+    [ 1.  1.  1.  0.]
 
     Normalize three dimensional vectors.
 
     >>> vectors = [(3, 0, 4), (2, 0, 0), (0, 0, 0)]
     >>> normals = normalize(vectors)
 
-    >>> print(normals)
-    [[0.6 0.  0.8]
-     [1.  0.  0. ]
-     [0.  0.  0. ]]
-    >>> print(distance.norm(normals))
-    [1. 1. 0.]
+    >>> print_rounded(normals)
+    [[ 0.6  0.   0.8]
+     [ 1.   0.   0. ]
+     [ 0.   0.   0. ]]
+    >>> print_rounded(distance.norm(normals))
+    [ 1.  1.  0.]
 
     Normalize individual vectors.
 
-    >>> print(normalize([3, 4]))
-    [0.6 0.8]
-    >>> print(normalize((3, 0, 4)))
-    [0.6 0.  0.8]
+    >>> print_rounded(normalize([3, 4]))
+    [ 0.6  0.8]
+    >>> print_rounded(normalize((3, 0, 4)))
+    [ 0.6  0.   0.8]
 
     """
     vectors = assertion.ensure_numarray(vectors)

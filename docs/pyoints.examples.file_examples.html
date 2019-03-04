@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyoints.examples.file_examples package &#8212; Pyoints verson 0.2.1 beta documentation</title>
+    <title>pyoints.examples.file_examples package &#8212; Pyoints version 0.2.0rc1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -14,6 +14,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -35,7 +36,7 @@
         <li class="right" >
           <a href="pyoints.examples.html" title="pyoints.examples package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Pyoints verson 0.2.1 beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Pyoints version 0.2.0rc1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyoints</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyoints.html" >pyoints package</a> &#187;</li>
           <li class="nav-item nav-item-3"><a href="pyoints.examples.html" accesskey="U">pyoints.examples package</a> &#187;</li> 
@@ -133,6 +134,7 @@
 <p>Learn how to save and load LAS-files.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyoints</span> <span class="k">import</span> <span class="n">storage</span>
 </pre></div>
 </div>
@@ -150,6 +152,14 @@
 <span class="go">[(&#39;classification&#39;, &#39;&lt;u8&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (3,)), (&#39;intensity&#39;, &#39;&lt;u8&#39;), (&#39;keypoint&#39;, &#39;|b1&#39;), (&#39;synthetic&#39;, &#39;|b1&#39;), (&#39;values&#39;, &#39;&lt;f8&#39;), (&#39;withheld&#39;, &#39;|b1&#39;)]</span>
 </pre></div>
 </div>
+<p>Set the capturing date.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">date</span><span class="p">)</span>
+<span class="go">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">geoRecords</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2019</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+<span class="go">2019</span>
+</pre></div>
+</div>
 <p>Save as LAS-file.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">outfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outpath</span><span class="p">,</span> <span class="s1">&#39;test.las&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">writeLas</span><span class="p">(</span><span class="n">geoRecords</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
@@ -159,6 +169,8 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lasReader</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">LasReader</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lasReader</span><span class="p">))</span>
 <span class="go">1000</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">lasReader</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">month</span><span class="p">)</span>
+<span class="go">3</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">las</span> <span class="o">=</span> <span class="n">lasReader</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
@@ -179,6 +191,8 @@
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">intensity</span> <span class="o">==</span> <span class="n">las</span><span class="o">.</span><span class="n">intensity</span><span class="p">)</span>
 <span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">geoRecords</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">day</span><span class="p">)</span>
+<span class="go">4</span>
 </pre></div>
 </div>
 </div>
@@ -226,6 +240,7 @@
 <span class="gp">... </span>    <span class="n">transformation</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">projection</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyoints.misc</span> <span class="k">import</span> <span class="n">print_rounded</span>
 </pre></div>
 </div>
 <p>Create input and output path.</p>
@@ -242,7 +257,7 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="n">raster</span> <span class="o">=</span> <span class="n">rasterHandler</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">raster</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">raster</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="go">(96, 250)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">raster</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">descr</span><span class="p">))</span>
 <span class="go">[(&#39;bands&#39;, &#39;&lt;i8&#39;, (3,)), (&#39;coords&#39;, &#39;&lt;f8&#39;, (2,))]</span>
@@ -262,19 +277,77 @@ the output image using a Geographic Information System (GIS).</p>
 </div>
 <p>Load image again and check characteristics.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rasterHandler</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">RasterReader</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="n">projection</span><span class="o">.</span><span class="n">Proj</span><span class="p">())</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">rasterHandler</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
-<span class="go">[ 332575. 5513229.]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">rasterHandler</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
+<span class="go">[  332575.  5513229.]</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">raster</span> <span class="o">=</span> <span class="n">rasterHandler</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">raster</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
-<span class="go">[ 332575. 5513229.]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">raster</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">raster</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
+<span class="go">[  332575.  5513229.]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_rounded</span><span class="p">(</span><span class="n">raster</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="go">(96, 250)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">raster</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">descr</span><span class="p">))</span>
 <span class="go">[(&#39;bands&#39;, &#39;&lt;i8&#39;, (3,)), (&#39;coords&#39;, &#39;&lt;f8&#39;, (2,))]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="module-pyoints.examples.file_examples.structured_example">
+<span id="pyoints-examples-file-examples-structured-example-module"></span><h2>pyoints.examples.file_examples.structured_example module<a class="headerlink" href="#module-pyoints.examples.file_examples.structured_example" title="Permalink to this headline">¶</a></h2>
+<p>Learn how to save and load structured files.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyoints</span> <span class="k">import</span> <span class="n">storage</span>
+</pre></div>
+</div>
+<p>Create output path.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">outpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+<span class="gp">... </span>            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create structured data from scratch.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s1">&#39;my_text&#39;</span><span class="p">:</span> <span class="s1">&#39;Some text&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s1">&#39;my_integer&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s1">&#39;my_list&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="s1">&#39;my_bool&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s1">&#39;my_ndarray&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]),</span>
+<span class="gp">... </span>    <span class="s1">&#39;nested&#39;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>        <span class="s1">&#39;my_text&#39;</span><span class="p">:</span> <span class="s1">&#39;Nested text.&#39;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s1">&#39;my_float&#39;</span><span class="p">:</span> <span class="mf">3.5</span>
+<span class="gp">... </span>    <span class="p">},</span>
+<span class="gp">... </span>    <span class="s1">&#39;my_recarray&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;text 1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;text 2&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;text 3&#39;</span><span class="p">)],</span>
+<span class="gp">... </span>        <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="nb">object</span><span class="p">)]</span>
+<span class="gp">... </span>     <span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">recarray</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;my_text&#39;</span><span class="p">])</span>
+<span class="go">Some text</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nested&#39;</span><span class="p">])</span>
+<span class="go">{&#39;my_text&#39;: &#39;Nested text.&#39;, &#39;my_float&#39;: 3.5}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;my_ndarray&#39;</span><span class="p">]))</span>
+<span class="go">&lt;class &#39;numpy.ndarray&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;my_recarray&#39;</span><span class="p">]))</span>
+<span class="go">&lt;class &#39;numpy.recarray&#39;&gt;</span>
+</pre></div>
+</div>
+<p>Save as a .json-file.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">outfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outpath</span><span class="p">,</span> <span class="s1">&#39;test.json&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">writeJson</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Load the a .json-file again. Be carefull, since some data types might have been
+changed.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">loadJson</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;my_text&#39;</span><span class="p">])</span>
+<span class="go">Some text</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nested&#39;</span><span class="p">])</span>
+<span class="go">{&#39;my_text&#39;: &#39;Nested text.&#39;, &#39;my_float&#39;: 3.5}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;my_ndarray&#39;</span><span class="p">]))</span>
+<span class="go">&lt;class &#39;list&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;my_recarray&#39;</span><span class="p">]))</span>
+<span class="go">&lt;class &#39;dict&#39;&gt;</span>
 </pre></div>
 </div>
 </div>
@@ -302,6 +375,7 @@ the output image using a Geographic Information System (GIS).</p>
 <li><a class="reference internal" href="#module-pyoints.examples.file_examples.las_example">pyoints.examples.file_examples.las_example module</a></li>
 <li><a class="reference internal" href="#module-pyoints.examples.file_examples.ply_example">pyoints.examples.file_examples.ply_example module</a></li>
 <li><a class="reference internal" href="#module-pyoints.examples.file_examples.raster_example">pyoints.examples.file_examples.raster_example module</a></li>
+<li><a class="reference internal" href="#module-pyoints.examples.file_examples.structured_example">pyoints.examples.file_examples.structured_example module</a></li>
 <li><a class="reference internal" href="#module-pyoints.examples.file_examples">Module contents</a></li>
 </ul>
 </li>
@@ -351,7 +425,7 @@ the output image using a Geographic Information System (GIS).</p>
         <li class="right" >
           <a href="pyoints.examples.html" title="pyoints.examples package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Pyoints verson 0.2.1 beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Pyoints version 0.2.0rc1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyoints</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyoints.html" >pyoints package</a> &#187;</li>
           <li class="nav-item nav-item-3"><a href="pyoints.examples.html" >pyoints.examples package</a> &#187;</li> 
@@ -359,7 +433,7 @@ the output image using a Geographic Information System (GIS).</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Sebastian Lamprecht.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
     </div>
   </body>
 </html>

@@ -81,15 +81,42 @@ Conda installation is recommended. To install *Pyoints* with
 conda install -c laempy pyoints
 ```
 
-Currently Linux (64 bit) and Windows (64 bit) have been packaged.
+Currently only Linux (64 bit) has been packaged with Python 3.5, 3.6 and 3.7.
+
+To enable full LAS support (spatial reference system definition), you need to 
+install *liblas* and its python bindings manually.
+
+```
+pip install liblas
+```
+
+
+### Installation from source
+
+We recommend to use a virtual environment (like Conda) to install *Pyoints*.
+
+Installation of the external dependencies:
+```
+conda install gdal pyproj numpy>=1.15 rtree
+```
+
+Cloning of the repository:
+```
+git clone https://github.com/laempy/pyoints.git
+cd pyoints
+```
+
+Installation of the python dependencies via *pip*.
+```
+pip install -e .
+```
 
 
 ### Conda Build
 
 If your system is not supported yet, you might build and install it using the
 [conda reciepe](conda/meta.yaml) specifying your desired Python version.
-Currently Linux (64 bit) and Windows (64 bit) have been tested successfully
-with Python 3.5, 3.6 and 3.7.
+
 
 #### Build
 
@@ -113,6 +140,7 @@ conda activate pyoints_env
 conda install pyoints
 ```
 
+
 #### Tests
 
 Test the package by running the provided doctests:
@@ -120,30 +148,6 @@ Test the package by running the provided doctests:
 ```
 python /path/to/pyoints/tests/test_pyoints.py
 ```
-
-
-### Installation from source
-
-We recommend to use a virtual environment (like Conda) to install *Pyoints*.
-
-Installation of the external dependencies:
-```
-conda install gdal, pyproj, numpy, rtree
-```
-
-Cloning of the repository:
-```
-git clone https://github.com/laempy/pyoints.git
-cd pyoints
-```
-
-Installation of the python packages via *pip*.
-```
-pip install pygdal==$(gdal-config --version).* -e .
-```
-Unfortunately, the gdal version is not detected automatically by *pygdal*.
-Thus, we have to specify the gdal version expicilely with
-`gdal-config --version`.
 
 
 ## Documentation
@@ -166,23 +170,12 @@ License v3 or later (GPLv3+). See [LICENSE](LICENSE) for details.
 
 ## Citing
 
-Please cite `Pyoints` as:
+Please cite *Pyoints* as follows:
 
-Sebastian Lamprecht (2018):
-"Pyoints: A Python package for point cloud, voxel and raster processing.",
-URL [https://github.com/laempy/pyoints](https://github.com/laempy/pyoints),
-\[Online; accessed date\].
+S. Lamprecht (2019):
+"Pyoints: A Python package for point cloud, voxel and raster processing".
+[![DOI](https://zenodo.org/badge/144562205.svg)](https://zenodo.org/badge/latestdoi/144562205)
 
-```
-@Misc{lamprecht_2018,
-  author = {Sebastian Lamprecht},
-  organization = {Trier University},
-  title = {{Pyoints}: A Python package for point cloud, voxel and raster processing.},
-  year = {2018},
-  url = "https://github.com/laempy/pyoints",
-  note = {[Online; accessed <today>]}
-}
-```
 
 
 ## Contributing
@@ -196,9 +189,9 @@ Any conribution to the *pyoints* project is welcome. See
 
 ### Funding
 
-This work was supported by the [PANTHEON](http://www.project-pantheon.eu)
-project which is funded by the European Community Horizon 2020 programme
-under grant agreement 774571.
+This work has been supported by the European Commission under the grant
+agreement number 774571 Project [PANTHEON](http://www.project-pantheon.eu).
+
 
 ### Datasets
 
@@ -245,6 +238,14 @@ Grant Brown and Howard Butler
 * [PyPI](https://pypi.org/project/laspy/)
 * [homepage](https://github.com/laspy/laspy)
 * [2-Clause BSD license](https://github.com/laspy/laspy/blob/master/LICENSE.txt)
+
+
+#### liblas
+
+Romulo Goncalves
+* [PyPI](https://pypi.org/project/libLAS/)
+* [homepage](https://liblas.org/)
+* [3-Clause BSD license](https://liblas.org/copyright.html#license)
 
 
 #### networkx

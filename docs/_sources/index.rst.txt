@@ -1,5 +1,5 @@
-Pyoints
-=======
+Pyoints Documentation
+=====================
 
 
 ********
@@ -15,7 +15,7 @@ Overview
 
 .. toctree::
    :titlesonly:
-   
+
    license
 
 

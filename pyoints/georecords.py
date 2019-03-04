@@ -21,8 +21,7 @@
 
 import warnings
 import numpy as np
-
-from .coords import Coords
+from datetime import datetime
 
 from . import (
     transformation,
@@ -30,6 +29,9 @@ from . import (
     assertion,
     nptools,
 )
+from .coords import Coords
+
+from .misc import print_rounded
 
 
 class GeoRecords(np.recarray, object):
@@ -64,6 +66,8 @@ class GeoRecords(np.recarray, object):
         of a point cloud or number of cells of a raster.
     keys : np.ndarray(int, shape=self.shape)
         Keys or indices of the data structure.
+    date : datetime
+        Date of capture.
 
     Examples
     --------
@@ -73,9 +77,9 @@ class GeoRecords(np.recarray, object):
     ...    'values': [1, 3, 4, 0, 6]
     ... }
     >>> geo = GeoRecords(projection.Proj(), data)
-    >>> print(geo.values)
+    >>> print_rounded(geo.values)
     [1 3 4 0 6]
-    >>> print(geo.coords)
+    >>> print_rounded(geo.coords)
     [[ 2.   3. ]
      [ 3.   2. ]
      [ 0.   1. ]
@@ -85,7 +89,7 @@ class GeoRecords(np.recarray, object):
     Set new coordinates.
 
     >>> geo['coords'] = [(1, 2), (9, 2), (8, 2), (-7, 3), (7, 8)]
-    >>> print(geo.coords)
+    >>> print_rounded(geo.coords)
     [[ 1.  2.]
      [ 9.  2.]
      [ 8.  2.]
@@ -104,9 +108,9 @@ class GeoRecords(np.recarray, object):
     ... }
     >>> data = nptools.recarray(data,dim=2)
     >>> geo = GeoRecords(None, data)
-    >>> print(geo.shape)
+    >>> print_rounded(geo.shape)
     (3, 2)
-    >>> print(geo.coords)
+    >>> print_rounded(geo.coords)
     [[[ 2.   3.2]
       [-3.   2.2]]
     <BLANKLINE>
@@ -118,13 +122,15 @@ class GeoRecords(np.recarray, object):
 
     """
 
-    def __init__(self, proj, rec, T=None):
-        self.proj = proj    # validated by setter
+    def __init__(self, proj, rec, T=None, date=None):
         if T is None:
             T = transformation.t_matrix(self.extent().min_corner)
-        self.t = T    # validated by setter
+        # validated by setter
+        self.proj = proj
+        self.t = T
+        self.date = date
 
-    def __new__(cls, proj, rec, T=None):
+    def __new__(cls, proj, rec, T=None, date=None):
         if isinstance(rec, dict):
             rec = nptools.recarray(rec)
         elif not isinstance(rec, np.recarray):
@@ -141,28 +147,26 @@ class GeoRecords(np.recarray, object):
     def dim(self):
         return self.dtype['coords'].shape[0]
 
-
     @property
     def coords(self):
         #return self['coords'].view(Coords)
         if not hasattr(self, '_coords'):
-        #    # copy required for garbadge collection
+            # copy required for garbadge collection
             self._coords = self['coords'].copy().view(Coords)
         return self._coords
-    
-        
+
     def _clear_cache(self):
         if hasattr(self, '_coords'):
             del self._coords
 
     def __setattr__(self, attr, value):
         np.recarray.__setattr__(self, attr, value)
-        if attr is 'coords':
+        if attr == 'coords':
             self._clear_cache()
 
     def __setitem__(self, key, value):
         np.recarray.__setitem__(self, key, value)
-        if key is 'coords':
+        if key == 'coords':
             self._clear_cache()
 
     def extent(self, *args, **kwargs):
@@ -176,6 +180,7 @@ class GeoRecords(np.recarray, object):
             return
         self._t = getattr(obj, '_t', None)
         self._proj = getattr(obj, '_proj', None)
+        self._date = getattr(obj, '__date', None)
 
     # def __array_wrap__(self, out_arr, context=None):
     #     return np.ndarray.__array_wrap__(self, out_arr, context)
@@ -209,6 +214,17 @@ class GeoRecords(np.recarray, object):
     def count(self):
         return np.product(self.shape)
 
+    @property
+    def date(self):
+        return self._date
+
+    @date.setter
+    def date(self, date):
+        if (date is not None) and (not isinstance(date, datetime)):
+            m = "'date' needs to be of type 'datetime', got %s" % type(date)
+            raise TypeError(m)
+        self._date = date
+
     def records(self):
         """Provides the flattened data records. Useful if structured data
         (like matrices) are used.
@@ -230,9 +246,9 @@ class GeoRecords(np.recarray, object):
         ... }
         >>> data = nptools.recarray(data, dim=2)
         >>> geo = GeoRecords(None, data)
-        >>> print(geo.shape)
+        >>> print_rounded(geo.shape)
         (3, 2)
-        >>> print(geo.records().coords)
+        >>> print_rounded(geo.records().coords)
         [[ 2.   3.2]
          [-3.   2.2]
          [ 0.   1.1]
@@ -265,7 +281,7 @@ class GeoRecords(np.recarray, object):
         ...    'values': [1, 3, 4, 0]
         ... }
         >>> geo = GeoRecords(None, data)
-        >>> print(geo.keys)
+        >>> print_rounded(geo.keys)
         [[0]
          [1]
          [2]
@@ -276,7 +292,7 @@ class GeoRecords(np.recarray, object):
         >>> data = np.ones(
         ...         (4,3), dtype=[('coords', float, 2)]).view(np.recarray)
         >>> geo = GeoRecords(None, data)
-        >>> print(geo.keys)
+        >>> print_rounded(geo.keys)
         [[[0 0]
           [0 1]
           [0 2]]
@@ -323,7 +339,7 @@ class GeoRecords(np.recarray, object):
 
         >>> T = transformation.matrix(t=[10, 20], s=[0.5, 1])
         >>> _ = geo.transform(T)
-        >>> print(geo.coords)
+        >>> print_rounded(geo.coords)
         [[11 23]
          [11 22]
          [10 21]
@@ -395,7 +411,7 @@ class GeoRecords(np.recarray, object):
         """
 
         records = nptools.add_fields(self, dtypes, data=data)
-        return self.__class__(self.proj, records, T=self.t)
+        return self.__class__(self.proj, records, T=self.t, date=self.date)
 
     def merge(self, rec):
         """Merges a record array with the georecords.
@@ -416,7 +432,7 @@ class GeoRecords(np.recarray, object):
 
         """
         data = nptools.merge((self, rec))
-        return self.__class__(self.proj, data, T=self.t)
+        return self.__class__(self.proj, data, T=self.t, date=self.date)
 
     def apply_function(self, func, dtypes=[object]):
         """Applies or maps a function to each element of the data array.
@@ -439,7 +455,7 @@ class GeoRecords(np.recarray, object):
 
         """
         data = nptools.apply_function(self, func, dtypes=dtypes)
-        return self.__class__(self.proj, data, T=self.t)
+        return self.__class__(self.proj, data, T=self.t, date=self.date)
 
 
 class LasRecords(GeoRecords):

@@ -31,6 +31,7 @@ from . import (
     vector,
 )
 
+from .misc import print_rounded
 
 def extrema(indexKD, attributes, r, inverse=False):
     """Finds local maxima or minima of given point set.
@@ -61,17 +62,17 @@ def extrema(indexKD, attributes, r, inverse=False):
     >>> indexKD = IndexKD([(0, 0), (0, 1), (1, 1), (1, 0), (0.5, 0.5) ])
     >>> attributes = [2, 0.1, 1, 0, 0.5]
     >>> fIds = list(extrema(indexKD, attributes, 1.1))
-    >>> print(fIds)
-    [0, 2]
+    >>> print_rounded(fIds)
+    [0 2]
 
     Find local minima.
 
     >>> fIds = list(extrema(indexKD, attributes, 1.1, inverse=True))
-    >>> print(fIds)
-    [3, 1]
+    >>> print_rounded(fIds)
+    [3 1]
 
     >>> fIds = list(extrema(indexKD, attributes, 1.5, inverse=True))
-    >>> print(fIds)
+    >>> print_rounded(fIds)
     [3]
 
     """
@@ -171,8 +172,8 @@ def has_neighbour(indexKD, r):
 
     >>> coords = [(0, 0), (0.5, 0.5), (0, 1), (0.7, 0.5), (-1, -1)]
     >>> indexKD = IndexKD(coords)
-    >>> print(list(has_neighbour(indexKD, 0.7)))
-    [1, 3]
+    >>> print_rounded(list(has_neighbour(indexKD, 0.7)))
+    [1 3]
 
     """
     if not isinstance(indexKD, IndexKD):
@@ -217,8 +218,8 @@ def is_isolated(indexKD, r):
 
     >>> coords = [(0, 0), (0.5, 0.5), (0, 1), (0.7, 0.5), (-1, -1)]
     >>> indexKD = IndexKD(coords)
-    >>> print(list(is_isolated(indexKD, 0.7)))
-    [0, 2, 4]
+    >>> print_rounded(list(is_isolated(indexKD, 0.7)))
+    [0 2 4]
 
     """
     if not isinstance(indexKD, IndexKD):

@@ -23,4 +23,5 @@ from . import (
     las_example,
     ply_example,
     raster_example,
+    structured_example
 )
