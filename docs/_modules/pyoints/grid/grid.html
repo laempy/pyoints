@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyoints.grid.grid &#8212; Pyoints version 0.2.0rc1 documentation</title>
+    <title>pyoints.grid.grid &#8212; Pyoints version 0.2.0rc2 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Pyoints version 0.2.0rc1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Pyoints version 0.2.0rc2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -114,8 +114,8 @@
 <span class="sd">    &gt;&gt;&gt; T = transformation.matrix(t=[10, 20], s=[0.5, 0.4], order=&#39;rst&#39;)</span>
 
 <span class="sd">    &gt;&gt;&gt; raster = Grid(proj, data, T)</span>
-<span class="sd">    &gt;&gt;&gt; print(raster.dtype.descr)</span>
-<span class="sd">    [(&#39;values&#39;, &#39;&lt;i8&#39;), (&#39;coords&#39;, &#39;&lt;f8&#39;, (2,))]</span>
+<span class="sd">    &gt;&gt;&gt; print(sorted(raster.dtype.names))</span>
+<span class="sd">    [&#39;coords&#39;, &#39;values&#39;]</span>
 <span class="sd">    &gt;&gt;&gt; print_rounded(raster.shape)</span>
 <span class="sd">    (4, 3)</span>
 <span class="sd">    &gt;&gt;&gt; print_rounded(raster.dim)</span>
@@ -669,8 +669,8 @@
 <span class="sd">    &gt;&gt;&gt; agg_func = lambda ids: (rec[ids], len(ids))</span>
 <span class="sd">    &gt;&gt;&gt; grid = voxelize(rec, T, agg_func=agg_func, dtype=dtype)</span>
 
-<span class="sd">    &gt;&gt;&gt; print(grid.dtype.descr)</span>
-<span class="sd">    [(&#39;points&#39;, &#39;|O&#39;), (&#39;count&#39;, &#39;&lt;i8&#39;)]</span>
+<span class="sd">    &gt;&gt;&gt; print(sorted(grid.dtype.names))</span>
+<span class="sd">    [&#39;count&#39;, &#39;points&#39;]</span>
 <span class="sd">    &gt;&gt;&gt; print_rounded(grid.shape)</span>
 <span class="sd">    (3, 2)</span>
 <span class="sd">    &gt;&gt;&gt; print_rounded(grid.count)</span>
@@ -781,7 +781,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Pyoints version 0.2.0rc1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Pyoints version 0.2.0rc2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
