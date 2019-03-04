@@ -165,7 +165,7 @@ class Grid(GeoRecords):
     GeoRecords
 
     """
-    def __new__(cls, proj, rec, T):
+    def __new__(cls, proj, rec, T, date=None):
 
         if not isinstance(proj, projection.Proj):
             m = "'proj' needs to be of type 'Proj', got %s" % type(proj)
@@ -182,8 +182,8 @@ class Grid(GeoRecords):
             dtype = [('coords', float, len(rec.shape))]
             rec = nptools.add_fields(rec, dtype, data=[coords])
 
-        grid = GeoRecords(proj, rec, T=T).reshape(rec.shape).view(cls)
-        return grid
+        grid = GeoRecords(proj, rec, T=T, date=date)
+        return grid.reshape(rec.shape).view(cls)
 
     @classmethod
     def from_corners(cls, proj, corners, scale):
@@ -253,7 +253,7 @@ class Grid(GeoRecords):
          [  4.   2.]
          [  4.  10.]
          [  1.  10.]]
-    
+
         Example with inverted axes.
 
         >>> from pyoints import transformation
@@ -621,7 +621,7 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
     [[ 0.   0. ]
      [ 1.   0.5]
      [ 2.   2. ]]
-    
+
     Voxelize with aggregation function.
 
     >>> dtype = [('points', type(rec)), ('count', int)]
@@ -702,6 +702,6 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
         raise ValueError(m)
 
     if isinstance(rec, GeoRecords) and isinstance(res, np.recarray):
-        res = Grid(rec.proj, res, T)
+        res = Grid(rec.proj, res, T, date=rec.date)
 
     return res
