@@ -113,6 +113,14 @@ conda activate pyoints_env
 conda install pyoints
 ```
 
+To enable full LAS support (spatial reference system definition), you need to 
+install *liblas* and its python bindings manually.
+
+```
+pip install liblas
+```
+
+
 #### Tests
 
 Test the package by running the provided doctests:
