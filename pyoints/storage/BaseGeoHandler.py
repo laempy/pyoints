@@ -25,6 +25,7 @@ from .. import (
     projection
 )
 import warnings
+from datetime import datetime
 
 
 class GeoFile:
@@ -48,10 +49,10 @@ class GeoFile:
         Coordinate projection system.
     extent : Extent(Number, shape=(2 * k))
         Defines the spatial extent of the points.
-    corners : np.ndarray(Number, shape=(2\*\*k, k))
+    corners : np.ndarray(Number, shape=(2**k, k))
         Corners of the extent.
-    date : Date
-        Capturing date.
+    date : datetime
+        Date of capture.
 
     See Also
     --------
@@ -82,6 +83,17 @@ class GeoFile:
         self._t = t
 
     @property
+    def date(self):
+        return self._date
+
+    @date.setter
+    def date(self, date):
+        if (date is not None) and (not isinstance(date, datetime)):
+            m = "'date' needs to be of type 'datetime', got %s" % type(date)
+            raise TypeError(m)
+        self._date = date
+
+    @property
     def proj(self):
         return self._proj
 
@@ -102,10 +114,6 @@ class GeoFile:
     @property
     def corners(self):
         raise NotImplementedError()
-
-    @property
-    def date(self):
-        return None
 
     def __len__():
         """Return the number of points.

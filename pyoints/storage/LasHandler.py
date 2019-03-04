@@ -20,9 +20,15 @@
 """
 
 import os
+import sys
 import numpy as np
+
 import laspy
-import liblas
+try:
+    # use liblas to provide full spatial reference support (workaround)
+    import liblas
+except ModuleNotFoundError:
+    pass
 
 from ..extent import Extent
 from ..georecords import (
@@ -67,13 +73,33 @@ class LasReader(GeoFile):
 
         # try to read projection from file
         if proj is None:
-            reader = liblas.file.File(self.file, mode='r')
-            wkt = reader.header.srs.get_wkt().decode('utf-8')
-            if not wkt == '':
-                proj = projection.Proj.from_wkt(wkt)
-            reader.close()
+            if 'liblas' in sys.modules:
+                reader = liblas.file.File(self.file, mode='r')
+                wkt = reader.header.srs.get_wkt().decode('utf-8')
+                if not wkt == '':
+                    proj = projection.Proj.from_wkt(wkt)
+                reader.close()
+            else:
+                for vlr in lasFile.header.vlrs:
+                    if vlr.record_id == 2112:
+                        # Spatial reference in well known text format
+                        wkt = str(vlr.VLR_body.decode('utf-8'))
+                        proj = projection.Proj.from_wkt(wkt)
+                    elif vlr.record_id == 34735:
+                        # GeoTIFF GeoKeyDirectoryTag
+                        # not supported yet
+                        pass
+                    elif vlr.record_id == 34736:
+                        # GeoTIFF GeoDoubleParamsTag
+                        # not supported yet
+                        pass
+                    elif vlr.record_id == 34737:
+                        # GeoTIFF GeoAsciiParamsTag
+                        # not supported yet
+                        pass
 
         self.proj = proj
+        self.date = lasFile.header.date
 
         self.t = transformation.t_matrix(lasFile.header.offset)
         self._extent = Extent((lasFile.header.min, lasFile.header.max))
@@ -98,13 +124,13 @@ class LasReader(GeoFile):
         lasFile = laspy.file.File(self.file, mode='r')
 
         # check point formats
-
         if lasFile.header.data_format_id not in SUPPORTED_FORMATS:
             m = "Only point formats %s supported yet, got %"
             raise ValueError(
                 m %
                 (SUPPORTED_FORMATS, lasFile.header.data_format_id))
 
+        date = lasFile.header.date
         scale = np.array(lasFile.header.scale, dtype=np.float64)
         offset = np.array(lasFile.header.offset, dtype=np.float64)
         las_fields = [
@@ -177,7 +203,7 @@ class LasReader(GeoFile):
             t = np.eye(4)
         else:
             t = transformation.t_matrix(offset)
-        return LasRecords(self.proj, data, T=t)
+        return LasRecords(self.proj, data, T=t, date=date)
 
 
 def writeLas(geoRecords, outfile, point_format=3):
@@ -211,18 +237,29 @@ def writeLas(geoRecords, outfile, point_format=3):
     # Open file in write mode
     lasFile = laspy.file.File(outfile, mode='w', header=header)
 
-    # create VLR records of spatial reference system using liblas
-    srs = liblas.srs.SRS()
-    srs.set_wkt(str.encode(geoRecords.proj.wkt))
+    # create VLR records
     vlrs = []
-    for i in range(srs.vlr_count()):
+    if 'liblas' in sys.modules:
+        # use liblas to create spatial reference
+        srs = liblas.srs.SRS()
+        srs.set_wkt(str.encode(geoRecords.proj.wkt))
+        for i in range(srs.vlr_count()):
+            vlr = laspy.header.VLR(
+                user_id="LASF_Projection",
+                record_id=srs.GetVLR(i).recordid,
+                VLR_body=srs.GetVLR(i).data,
+                description="OGC Coordinate System GeoTIFF"
+            )
+            vlr.parse_data()
+            vlrs.append(vlr)
+    else:
+        # create wkt record only
         vlr = laspy.header.VLR(
             user_id="LASF_Projection",
-            record_id=srs.GetVLR(i).recordid,
-            VLR_body=srs.GetVLR(i).data,
-            description="OGC Coordinate System GeoTIFF"
+            record_id=2112,
+            VLR_body=str.encode(geoRecords.proj.wkt),
+            description="OGC Coordinate System WKT"
         )
-        vlr.parse_data()
         vlrs.append(vlr)
 
     # set VLRs
@@ -244,6 +281,7 @@ def writeLas(geoRecords, outfile, point_format=3):
     scale[:dim] = max_values / max_digits
     scale[np.isclose(scale, 0)] = 1 / max_digits
 
+    lasFile.date = geoRecords.date
     lasFile.header.scale = scale.copy()
     lasFile.header.offset = offset.copy()
 

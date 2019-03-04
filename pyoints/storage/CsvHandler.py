@@ -137,9 +137,10 @@ def loadCsv(
             dt = dtype[key]
             if len(dt.shape) > 0:
                 data_dict[key] = np.array(df.iloc[:, i:i + dt.shape[0]])
+                i = i + dt.shape[0]
             else:
                 data_dict[key] = np.array(df.iloc[:, i], dtype=dt)
-            i = i + 1
+                i = i + 1
         records = nptools.recarray(data_dict, dtype=dtype)
 
     return records
