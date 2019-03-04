@@ -20,6 +20,7 @@
 
 >>> import os
 >>> import numpy as np
+>>> from datetime import datetime
 >>> from pyoints import storage
 
 Create an output path.
@@ -36,6 +37,13 @@ Create GeoRecords from scratch.
 >>> print(sorted(geoRecords.dtype.descr))
 [('classification', '<u8'), ('coords', '<f8', (3,)), ('intensity', '<u8'), ('keypoint', '|b1'), ('synthetic', '|b1'), ('values', '<f8'), ('withheld', '|b1')]
 
+Set the capturing date.
+
+>>> print(geoRecords.date)
+None
+>>> geoRecords.date = datetime(year=2019, month=3, day=4)
+>>> print(geoRecords.date.year)
+2019
 
 Save as LAS-file.
 
@@ -47,6 +55,8 @@ Load LAS-file again and check the characteristics.
 >>> lasReader = storage.LasReader(outfile)
 >>> print(len(lasReader))
 1000
+>>> print(lasReader.date.month)
+3
 
 >>> las = lasReader.load()
 >>> print(las.shape)
@@ -66,5 +76,7 @@ True
 True
 >>> np.all(geoRecords.intensity == las.intensity)
 True
+>>> print(geoRecords.date.day)
+4
 
 """

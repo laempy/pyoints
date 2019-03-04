@@ -50,7 +50,8 @@ We get the origin of the point cloud.
 
 >>> print_rounded(lasReader.t.origin, 2)
 [  364187.98  5509577.71       -1.58]
-
+>>> print(lasReader.date.year)
+2018
 
 Then, we get the projection of the point cloud...
 
@@ -77,7 +78,8 @@ of `GeoRecords`, which is an extension of a numpy record array.
 
 >>> print(las.shape)
 (482981,)
-
+>>> print(las.date.year)
+2018
 
 We get some information on the attributes of the points...
 
