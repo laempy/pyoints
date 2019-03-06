@@ -1,13 +1,12 @@
 import os
 import setuptools
 
-
 # get path of script
 script_path = os.path.dirname(os.path.abspath(__file__))
 
 # get long description from README
-with open(os.path.join(script_path, "README.md"), "r") as fh:
-    long_description = fh.read()
+with open(os.path.join(script_path, "README.md"), "r") as f:
+    long_description = f.read()
 
 # get requirements
 with open(os.path.join(script_path, 'requirements.txt'), "r") as f:
@@ -16,17 +15,22 @@ with open(os.path.join(script_path, 'requirements.txt'), "r") as f:
         pkgname = line.partition('#')[0].rstrip()
         if pkgname is not '':
             install_requires.append(pkgname)
+            
+# get package meta data
+with open(os.path.join(script_path, 'pyoints', 'about.py')) as f:
+    about = {}
+    exec(f.read(), about)
 
 
 setuptools.setup(
-    name="pyoints",
-    version="0.2.0rc2",
-    author="Sebastian Lamprecht",
-    author_email="lamprecht@uni-trier.de",
-    description="A Python package for point cloud, voxel and raster processing.",
+    name=about['__title__'],
+    version=about['__version__'],
+    author=about['__author__'],
+    author_email=about['__email__'],
+    description=about['__summary__'],
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/laempy/pyoints",
+    url=about['__uri__'],
     project_urls={
         'Documentation': 'https://laempy.github.io/pyoints',
         'GitHub': 'https://github.com/laempy/pyoints',
@@ -43,6 +47,6 @@ setuptools.setup(
         "Development Status :: 5 - Production/Stable",
     ),
     python_requires='>=3.5',
-    license='GPLv3+',
+    license=about['__license__'],
     include_package_data=True,
 )

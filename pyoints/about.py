@@ -16,45 +16,26 @@
 # You should have received a copy of the GNU General Public License
 # along with Pyoints. If not, see <https://www.gnu.org/licenses/>.
 # END OF LICENSE NOTE
-"""Pyoints: A Python package for point cloud, voxel and raster processing."""
+__version__ = '0.2.0rc3'
 
-from .about import *
-from .indexkd import IndexKD
-from .coords import Coords
-from .extent import Extent
-from .projection import Proj
-from .grid import Grid
-from .surface import Surface
-from .georecords import (
-    GeoRecords,
-    LasRecords,
-)
-from . import (
-    version,
-    assertion,
-    assign,
-    classification,
-    clustering,
-    coords,
-    distance,
-    examples,
-    extent,
-    filters,
-    fit,
-    georecords,
-    grid,
-    indexkd,
-    interpolate,
-    misc,
-    normals,
-    nptools,
-    polar,
-    projection,
-    registration,
-    smoothing,
-    storage,
-    surface,
-    transformation,
-    vector,
-)
-from .misc import print_rounded
+__title__ = "Pyoints"
+__summary__ = "A Python package for point cloud, voxel and raster processing."
+__uri__ = "https://github.com/laempy/pyoints"
+
+__author__ = "Sebastian Lamprecht"
+__email__ = "lamprecht@uni-trier.de"
+
+__license__ = "GPLv3+"
+__copyright__ = "2019 %s" % __author__
+
+
+def version():
+    """Get the version of pyoints.
+    
+    Returns
+    -------
+    str
+        Version specification.
+    
+    """
+    return __version__
