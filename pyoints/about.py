@@ -38,7 +38,7 @@ __author__ = "Sebastian Lamprecht"
 __email__ = "lamprecht@uni-trier.de"
 
 __license__ = "GPLv3+"
-__copyright__ = "2019 %s" % __author__
+__copyright__ = "2019, %s" % __author__
 
 
 def version():
