@@ -482,8 +482,9 @@ class LasRecords(GeoRecords):
     STANDARD_FIELDS = [
         ('user_data', np.uint8),
         ('intensity', np.uint8),
-        ('pt_src_id', np.uint8),
+        ('pt_src_id', np.uint16),
         ('gps_time', np.float64),
+        ('scan_angle_rank', np.uint8),
         ('red', np.uint8),
         ('green', np.uint8),
         ('blue', np.uint8),
@@ -497,6 +498,8 @@ class LasRecords(GeoRecords):
         ('synthetic', np.bool),
         ('keypoint', np.bool),
         ('withheld', np.bool),
+        ('scan_direction_flag', np.bool),
+        ('edge_of_flight_line', np.bool),
     ]
     EXTRA_FIELDS = [
         ('normals', np.float, 3),

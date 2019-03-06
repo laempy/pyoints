@@ -168,11 +168,21 @@ class LasReader(GeoFile):
         dtypes = []
         dataDict = {'coords': coords}
         for name in las_fields:
+            
             if name == 'flag_byte':
                 values = points.flag_byte
                 if np.any(values):
-                    dataDict['num_returns'] = values // 8  # last three bits
-                    dataDict['return_num'] = values % 8  # first three bits
+                    dataDict['return_num'] = values %  8 # bits 0, 1, 2
+                    values = values // 8
+                if np.any(values):
+                    dataDict['num_returns'] = values % 8 # bits 3, 4, 5
+                    values = values // 8
+                if np.any(values):
+                    dataDict['scan_direction_flag'] = values % 2  # bit 6
+                    values = values // 2
+                if np.any(values):
+                    dataDict['edge_of_flight_line'] = values  # bit 7
+            
             elif name == 'raw_classification':
                 values = points.raw_classification
                 if np.any(values):
@@ -186,7 +196,7 @@ class LasReader(GeoFile):
                     values = values // 2
                 if np.any(values):
                     dataDict['withheld'] = values  # bit 7
-
+                    
             elif name not in omit:
                 values = points[name]
                 if np.any(values):
@@ -288,12 +298,12 @@ def writeLas(geoRecords, outfile, point_format=3):
     lasFile.header.scale = scale.copy()
     lasFile.header.offset = offset.copy()
 
-    # get default fields
+    # get fields
     las_fields = [field.name for field in lasFile.point_format]
     field_names = records.dtype.names
 
     # Fields to omit
-    omit = []
+    omit = ['X', 'Y', 'Z', 'flag_byte', 'raw_classification']
     omit.extend(las_fields)
     omit.extend(np.dtype(LasRecords.CUSTOM_FIELDS).names)
 
@@ -313,45 +323,39 @@ def writeLas(geoRecords, outfile, point_format=3):
 
     # set fields
     for name in field_names:
+
         if name == 'coords':
             lasFile.set_x_scaled(records.coords[:, 0])
             lasFile.set_y_scaled(records.coords[:, 1])
             if records.dim > 2:
                 lasFile.set_z_scaled(records.coords[:, 2])
-        elif name == 'classification':  # classification bits 0 to 4
+                
+        elif name == 'classification':  # bits 0, 1, 2, 3, 4
             raw_classification += records.classification
-        elif name == 'synthetic':  # classification bit 5
+        elif name == 'synthetic':  # bit 5
             raw_classification += records.synthetic.astype(np.uint8) * 32
-        elif name == 'keypoint':  # classification bit 6
+        elif name == 'keypoint':  # bit 6
             raw_classification += records.keypoint.astype(np.uint8) * 64
-        elif name == 'withheld':  # classification bit 7
+        elif name == 'withheld':  # bit 7
             raw_classification += records.withheld.astype(np.uint8) * 128
-        elif name == 'return_num':
-            flag_byte = flag_byte + records.return_num
-        elif name == 'num_returns':
-            flag_byte = flag_byte + records.num_returns * 8
-        elif name == 'intensity':
-            lasFile.set_intensity(records.intensity)
-        elif name == 'user_data':
-            lasFile.set_user_data(records.user_data)
-        elif name == 'red':
-            lasFile.set_red(records.red)
-        elif name == 'green':
-            lasFile.set_green(records.green)
-        elif name == 'blue':
-            lasFile.set_blue(records.blue)
-        elif name == 'nir':
-            lasFile.set_blue(records.nir)
-        elif name == 'pt_src_id':
-            lasFile.set_pt_src_id(records.pt_src_id)
-        elif name == 'gps_time':
-            lasFile.set_gps_time(records.gps_time)
-        elif name not in omit:
-            lasFile._writer.set_dimension(name, records[name])
+            
+        elif name == 'return_num':  # bits 0, 1, 2
+            flag_byte += records.return_num 
+        elif name == 'num_returns':  # bits 3, 4, 5
+            flag_byte += records.num_returns * 8 
+        elif name == 'scan_direction_flag':  # bit 6
+            flag_byte += records.scan_direction_flag.astype(np.uint8) * 64 
+        elif name == 'edge_of_flight_line':  # bit 7
+            flag_byte += records.edge_of_flight_line.astype(np.uint8) * 128 
 
-    if point_format > 5:
-        lasFile.set_classification(raw_classification)
-    else:
+        elif name in las_fields or name not in omit:
+            if np.any(records[name]):
+                #lasFile[name] = records[name]
+                lasFile._writer.set_dimension(name, records[name])
+
+    if np.any(flag_byte):
+        lasFile.set_flag_byte(flag_byte)
+    if np.any(raw_classification):
         lasFile.set_raw_classification(raw_classification)
 
     # close file
