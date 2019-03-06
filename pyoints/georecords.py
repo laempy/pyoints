@@ -470,6 +470,9 @@ class LasRecords(GeoRecords):
         Array indicating if a point is a first return point.
     only_return : np.ndarray(bool)
         Array indicating if a point is the only returned point.
+    total_gps_seconds : np.ndarray(np.float32) or None
+        Total gps time in seconds. Requires the fields 'gps_time' and 'date' to
+        be set.
 
     See Also
     --------
@@ -480,7 +483,7 @@ class LasRecords(GeoRecords):
         ('user_data', np.uint8),
         ('intensity', np.uint8),
         ('pt_src_id', np.uint8),
-        ('gps_time', np.float),
+        ('gps_time', np.float64),
         ('red', np.uint8),
         ('green', np.uint8),
         ('blue', np.uint8),
@@ -510,6 +513,14 @@ class LasRecords(GeoRecords):
     @property
     def only_return(self):
         return self.num_returns == 1
+
+    @property
+    def total_gps_seconds(self):
+        # gps time in seconds
+        if hasattr(self, 'gps_time') and self.date is not None:
+            week = self.date.isocalendar()[1]
+            return week * 604800 + self.gps_time
+        return None
 
     @staticmethod
     def available_fields():

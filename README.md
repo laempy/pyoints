@@ -83,7 +83,7 @@ conda install -c laempy pyoints
 
 Currently only Linux (64 bit) has been packaged with Python 3.5, 3.6 and 3.7.
 
-To enable full LAS support (spatial reference system definition), you need to 
+To enable full LAS support (spatial reference system definition), you need to
 install *liblas* and its python bindings manually.
 
 ```
