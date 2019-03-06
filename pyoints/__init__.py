@@ -30,7 +30,6 @@ from .georecords import (
     LasRecords,
 )
 from . import (
-    version,
     assertion,
     assign,
     classification,
