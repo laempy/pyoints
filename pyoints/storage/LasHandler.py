@@ -146,12 +146,15 @@ class LasReader(GeoFile):
         # filter by extent (before scaling)
         if extent is not None:
             ext = Extent(extent)
+            if ext.dim == 2:
+                ecoords = np.vstack([points.X, points.Y])
+            else:
+                ecoords = np.vstack([points.X, points.Y, points.Z])
             iext = Extent([
-                (ext.min_corner - offset) / scale,
-                (ext.max_corner - offset) / scale
+                (ext.min_corner - offset[:ext.dim]) / scale[:ext.dim],
+                (ext.max_corner - offset[:ext.dim]) / scale[:ext.dim]
             ])
-            sids = iext.intersection(
-                    np.vstack([points.X, points.Y, points.Z]).T)
+            sids = iext.intersection(ecoords.T)
             points = points[sids]
 
         # much faster than accessing lasFile.x
