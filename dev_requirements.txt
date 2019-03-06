@@ -5,12 +5,9 @@ twine
 autopep8
 pycodestyle
 matplotlib
-Sphinx
-sphinxcontrib-napoleon
 ipykernel
 cloudpickle
-unittest
-doctest
-pkgutil
 m2r
+Sphinx
+sphinxcontrib-napoleon
 nbsphinx

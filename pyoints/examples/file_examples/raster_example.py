@@ -43,8 +43,8 @@ Load an image file.
 
 >>> print_rounded(raster.shape)
 (96, 250)
->>> print(sorted(raster.dtype.descr))
-[('bands', '<i8', (3,)), ('coords', '<f8', (2,))]
+>>> print(sorted(raster.dtype.names))
+['bands', 'coords']
 
 Apply a transformation to the matrix to get a propper spatial reference.
 
@@ -71,7 +71,7 @@ Load image again and check characteristics.
 [  332575.  5513229.]
 >>> print_rounded(raster.shape)
 (96, 250)
->>> print(sorted(raster.dtype.descr))
-[('bands', '<i8', (3,)), ('coords', '<f8', (2,))]
+>>> print(sorted(raster.dtype.names))
+['bands', 'coords']
 
 """

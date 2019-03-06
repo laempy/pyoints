@@ -27,7 +27,7 @@ import laspy
 try:
     # use liblas to provide full spatial reference support (workaround)
     import liblas
-except ModuleNotFoundError:
+except ImportError:
     pass
 
 from ..extent import Extent

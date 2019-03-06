@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyoints.storage package &#8212; Pyoints verson 0.2.1 beta documentation</title>
+    <title>pyoints.storage package &#8212; Pyoints version 0.2.0rc2 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -14,6 +14,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -31,7 +32,7 @@
         <li class="right" >
           <a href="pyoints.registration.html" title="pyoints.registration package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Pyoints verson 0.2.1 beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Pyoints version 0.2.0rc2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyoints</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyoints.html" accesskey="U">pyoints package</a> &#187;</li> 
       </ul>
@@ -71,7 +72,7 @@ this matrix defines the origin of a local coordinate system.</li>
 <li><strong>proj</strong> (<a class="reference internal" href="pyoints.html#pyoints.projection.Proj" title="pyoints.projection.Proj"><em>Proj</em></a>) – Coordinate projection system.</li>
 <li><strong>extent</strong> (<a class="reference internal" href="pyoints.html#pyoints.extent.Extent" title="pyoints.extent.Extent"><em>Extent</em></a><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>2 * k</em><em>)</em><em>)</em>) – Defines the spatial extent of the points.</li>
 <li><strong>corners</strong> (<em>np.ndarray</em><em>(</em><em>Number</em><em>, </em><em>shape=</em><em>(</em><em>2**k</em><em>, </em><em>k</em><em>)</em><em>)</em>) – Corners of the extent.</li>
-<li><strong>date</strong> (<em>Date</em>) – Capturing date.</li>
+<li><strong>date</strong> (<em>datetime</em>) – Date of capture.</li>
 </ul>
 </td>
 </tr>
@@ -385,7 +386,7 @@ reference of the file has not be set yet.</li>
 
 <dl class="function">
 <dt id="pyoints.storage.LasHandler.writeLas">
-<code class="descclassname">pyoints.storage.LasHandler.</code><code class="descname">writeLas</code><span class="sig-paren">(</span><em>geoRecords</em>, <em>outfile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/LasHandler.html#writeLas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.LasHandler.writeLas" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyoints.storage.LasHandler.</code><code class="descname">writeLas</code><span class="sig-paren">(</span><em>geoRecords</em>, <em>outfile</em>, <em>point_format=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/LasHandler.html#writeLas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.LasHandler.writeLas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a LAS file to disc.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -394,6 +395,7 @@ reference of the file has not be set yet.</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>geoRecords</strong> (<a class="reference internal" href="pyoints.html#pyoints.georecords.GeoRecords" title="pyoints.georecords.GeoRecords"><em>GeoRecords</em></a>) – Points to store to disk.</li>
 <li><strong>outfile</strong> (<em>String</em>) – Desired output file.</li>
+<li><strong>point_format</strong> (<em>optional</em><em>, </em><em>positive int</em>) – Desired LAS point format. See LAS specification for details.</li>
 </ul>
 </td>
 </tr>
@@ -655,6 +657,46 @@ reference has not been set yet.</li>
 <dd></dd></dl>
 
 </div>
+<div class="section" id="module-pyoints.storage.structured">
+<span id="pyoints-storage-structured-module"></span><h2>pyoints.storage.structured module<a class="headerlink" href="#module-pyoints.storage.structured" title="Permalink to this headline">¶</a></h2>
+<p>Reading and writing of common structured file types.</p>
+<dl class="function">
+<dt id="pyoints.storage.structured.loadJson">
+<code class="descclassname">pyoints.storage.structured.</code><code class="descname">loadJson</code><span class="sig-paren">(</span><em>infile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/structured.html#loadJson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.structured.loadJson" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads a JSON file from disc.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>infile</strong> (<em>str</em>) – Input file.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">File data.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyoints.storage.structured.writeJson">
+<code class="descclassname">pyoints.storage.structured.</code><code class="descname">writeJson</code><span class="sig-paren">(</span><em>data</em>, <em>outfile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyoints/storage/structured.html#writeJson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyoints.storage.structured.writeJson" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes a JSON file to disk.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>dict</em>) – JSON compatible data to store.</li>
+<li><strong>outfile</strong> (<em>str</em>) – Output JSON file.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 <div class="section" id="module-pyoints.storage">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyoints.storage" title="Permalink to this headline">¶</a></h2>
 <p>Loading and saving of files.</p>
@@ -682,6 +724,7 @@ reference has not been set yet.</li>
 <li><a class="reference internal" href="#module-pyoints.storage.RasterHandler">pyoints.storage.RasterHandler module</a></li>
 <li><a class="reference internal" href="#module-pyoints.storage.dtype_converters">pyoints.storage.dtype_converters module</a></li>
 <li><a class="reference internal" href="#module-pyoints.storage.misc">pyoints.storage.misc module</a></li>
+<li><a class="reference internal" href="#module-pyoints.storage.structured">pyoints.storage.structured module</a></li>
 <li><a class="reference internal" href="#module-pyoints.storage">Module contents</a></li>
 </ul>
 </li>
@@ -725,14 +768,14 @@ reference has not been set yet.</li>
         <li class="right" >
           <a href="pyoints.registration.html" title="pyoints.registration package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Pyoints verson 0.2.1 beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Pyoints version 0.2.0rc2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyoints</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyoints.html" >pyoints package</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Sebastian Lamprecht.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
     </div>
   </body>
 </html>

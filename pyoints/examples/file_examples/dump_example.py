@@ -33,8 +33,8 @@ Create GeoRecords from scratch.
 ...                     center=[332592.88, 5513244.80, 120], epsg=25832)
 >>> print(geoRecords.shape)
 (1000,)
->>> print(sorted(geoRecords.dtype.descr))
-[('classification', '<u8'), ('coords', '<f8', (3,)), ('intensity', '<u8'), ('keypoint', '|b1'), ('synthetic', '|b1'), ('values', '<f8'), ('withheld', '|b1')]
+>>> print(sorted(geoRecords.dtype.names))
+['classification', 'coords', 'intensity', 'keypoint', 'synthetic', 'values', 'withheld']
 
 Save as a DUMP-file.
 
@@ -48,7 +48,7 @@ Load the DUMP-file again and check the characteristics.
 
 >>> print(geoRecords.shape)
 (1000,)
->>> print(sorted(geoRecords.dtype.descr))
-[('classification', '<u8'), ('coords', '<f8', (3,)), ('intensity', '<u8'), ('keypoint', '|b1'), ('synthetic', '|b1'), ('values', '<f8'), ('withheld', '|b1')]
+>>> print(sorted(geoRecords.dtype.names))
+['classification', 'coords', 'intensity', 'keypoint', 'synthetic', 'values', 'withheld']
 
 """

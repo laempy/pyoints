@@ -33,8 +33,8 @@ Create GeoRecords from scratch.
 
 >>> print(geoRecords.shape)
 (1000,)
->>> print(sorted(geoRecords.dtype.descr))
-[('classification', '<u8'), ('coords', '<f8', (3,)), ('intensity', '<u8'), ('keypoint', '|b1'), ('synthetic', '|b1'), ('values', '<f8'), ('withheld', '|b1')]
+>>> print(sorted(geoRecords.dtype.names))
+['classification', 'coords', 'intensity', 'keypoint', 'synthetic', 'values', 'withheld']
 
 Save as a .csv-file.
 
@@ -46,7 +46,7 @@ Load the .csv-file again and check the characteristics.
 >>> geoRecords = storage.loadCsv(outfile, header=True)
 >>> print(geoRecords.shape)
 (1000,)
->>> print(sorted(geoRecords.dtype.descr))
-[('classification', '<f8'), ('coords', '<f8', (3,)), ('index', '<i8'), ('intensity', '<f8'), ('keypoint', '<f8'), ('synthetic', '<f8'), ('values', '<f8'), ('withheld', '<f8')]
+>>> print(sorted(geoRecords.dtype.names))
+['classification', 'coords', 'index', 'intensity', 'keypoint', 'synthetic', 'values', 'withheld']
 
 """

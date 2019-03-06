@@ -73,8 +73,8 @@ class Grid(GeoRecords):
     >>> T = transformation.matrix(t=[10, 20], s=[0.5, 0.4], order='rst')
 
     >>> raster = Grid(proj, data, T)
-    >>> print(raster.dtype.descr)
-    [('values', '<i8'), ('coords', '<f8', (2,))]
+    >>> print(sorted(raster.dtype.names))
+    ['coords', 'values']
     >>> print_rounded(raster.shape)
     (4, 3)
     >>> print_rounded(raster.dim)
@@ -628,8 +628,8 @@ def voxelize(rec, T, shape=None, agg_func=None, dtype=None):
     >>> agg_func = lambda ids: (rec[ids], len(ids))
     >>> grid = voxelize(rec, T, agg_func=agg_func, dtype=dtype)
 
-    >>> print(grid.dtype.descr)
-    [('points', '|O'), ('count', '<i8')]
+    >>> print(sorted(grid.dtype.names))
+    ['count', 'points']
     >>> print_rounded(grid.shape)
     (3, 2)
     >>> print_rounded(grid.count)

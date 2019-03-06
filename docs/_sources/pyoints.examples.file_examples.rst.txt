@@ -44,6 +44,14 @@ pyoints.examples.file\_examples.raster\_example module
     :undoc-members:
     :show-inheritance:
 
+pyoints.examples.file\_examples.structured\_example module
+----------------------------------------------------------
+
+.. automodule:: pyoints.examples.file_examples.structured_example
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------

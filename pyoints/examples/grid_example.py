@@ -100,8 +100,8 @@ manner.
 
 >>> print(raster.shape)
 (24, 24)
->>> print(sorted(raster.dtype.descr))
-[('cell_count', '<i8'), ('coords', '<f8', (2,)), ('z', '<f8', (3,))]
+>>> print(sorted(raster.dtype.names))
+['cell_count', 'coords', 'z']
 
 
 We save the fields as individual raster images.
@@ -129,8 +129,8 @@ Now, let's create a three dimensional voxel space.
 
 >>> print_rounded(voxels.shape)
 (61, 18, 18)
->>> print(sorted(voxels.dtype.descr))
-[('cell_count', '<i8'), ('coords', '<f8', (3,)), ('intensity', '<i8')]
+>>> print(sorted(voxels.dtype.names))
+['cell_count', 'coords', 'intensity']
 
 
 Finally, we save only the non-empty voxel cells.
