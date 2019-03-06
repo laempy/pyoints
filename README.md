@@ -97,7 +97,7 @@ We recommend to use a virtual environment (like Conda) to install *Pyoints*.
 
 Installation of the external dependencies:
 ```
-conda install gdal pyproj numpy>=1.15 rtree
+conda install gdal pyproj "numpy>=1.15" rtree
 ```
 
 Cloning of the repository:
