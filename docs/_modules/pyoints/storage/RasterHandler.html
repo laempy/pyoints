@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyoints.storage.RasterHandler &#8212; Pyoints version 0.2.0rc2 documentation</title>
+    <title>pyoints.storage.RasterHandler &#8212; Pyoints 0.2.0rc3 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Pyoints version 0.2.0rc2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Pyoints 0.2.0rc3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -148,10 +148,10 @@
 
 <div class="viewcode-block" id="RasterReader.load"><a class="viewcode-back" href="../../../pyoints.storage.html#pyoints.storage.RasterHandler.RasterReader.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">bands</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">proj</span> <span class="o">=</span> <span class="n">load_gdal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">proj</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">)</span>
-
         <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">bands</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bands</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">attr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">recarray</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;bands&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">bands</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])])</span>
-
+        <span class="n">num_bands</span> <span class="o">=</span> <span class="n">bands</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bands</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="mi">1</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">recarray</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;bands&#39;</span><span class="p">,</span> <span class="n">bands</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">num_bands</span><span class="p">)])</span>
+        <span class="n">attr</span><span class="o">.</span><span class="n">bands</span> <span class="o">=</span> <span class="n">bands</span>
         <span class="k">return</span> <span class="n">grid</span><span class="o">.</span><span class="n">Grid</span><span class="p">(</span><span class="n">proj</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span></div></div>
 
 
@@ -370,7 +370,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Pyoints version 0.2.0rc2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Pyoints 0.2.0rc3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

@@ -15,18 +15,23 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../'))
-
+script_path = os.path.dirname(os.path.abspath(__file__))
 
 # -- Project information -----------------------------------------------------
 
-project = u'Pyoints'
-copyright = u'2019, Sebastian Lamprecht'
-author = u'Sebastian Lamprecht'
+# get package meta data
+with open(os.path.join(script_path, '..', 'pyoints', 'about.py')) as f:
+    about = {}
+    exec(f.read(), about)
+
+project = u'%s' % about['__title__']
+copyright = u'%s' % about['__copyright__']
+author = u'%s' % about['__author__']
 
 # The short X.Y version
-version = u'0.2'
+version = u'%s' % about['__version__']
 # The full version, including alpha/beta/rc tags
-release = u'version 0.2.0rc2'
+release = u'%s' % about['__version__']
 
 
 # -- General configuration ---------------------------------------------------
@@ -117,7 +122,7 @@ html_static_path = []
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Pyointsdoc'
+htmlhelp_basename = '%s_doc' % about['__title__']
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -144,8 +149,13 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'Pyoints.tex', u'Pyoints Documentation',
-     u'Sebastian Lamprecht', 'manual'),
+    (
+        master_doc,
+        '%s.tex', about['__title__'],
+        u'%s Documentation' % about['__title__'],
+        u'%s' % about['__author__'],
+        'manual'
+    ),
 ]
 
 
@@ -154,8 +164,13 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'Pyoints', u'Pyoints Documentation',
-     [author], 1)
+    (
+         master_doc,
+         '%s', about['__title__'],
+         u'%s Documentation' % about['__title__'],
+         [author],
+         1
+    )
 ]
 
 
@@ -165,10 +180,16 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'Pyoints', u'Pyoints Documentation',
-     author, 'Pyoints', 'One line description of project.',
-     'Miscellaneous'),
+    (
+         master_doc,
+         about['__title__'],
+         u'Pyoints Documentation',
+         author,
+         about['__title__'],
+         about['__summary__'],
+         'Miscellaneous'
+    ),
 ]
 
 
-html_logo = '../figures/logo_pyoints.png'
+html_logo = os.path.join(script_path,  '..', 'figures', 'logo_pyoints.png')

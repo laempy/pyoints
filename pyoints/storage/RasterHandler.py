@@ -107,10 +107,10 @@ class RasterReader(GeoFile):
 
     def load(self, extent=None):
         bands, T, proj = load_gdal(self.file, proj=self.proj, extent=extent)
-
         shape = (bands.shape[0], bands.shape[1])
-        attr = np.recarray(shape, dtype=[('bands', int, bands.shape[2])])
-
+        num_bands = bands.shape[2] if len(bands.shape) > 2 else 1
+        attr = np.recarray(shape, dtype=[('bands', bands.dtype, num_bands)])
+        attr.bands = bands
         return grid.Grid(proj, attr, T)
 
 

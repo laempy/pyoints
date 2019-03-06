@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyoints.georecords &#8212; Pyoints version 0.2.0rc2 documentation</title>
+    <title>pyoints.georecords &#8212; Pyoints 0.2.0rc3 documentation</title>
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">Pyoints version 0.2.0rc2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Pyoints 0.2.0rc3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -511,6 +511,9 @@
 <span class="sd">        Array indicating if a point is a first return point.</span>
 <span class="sd">    only_return : np.ndarray(bool)</span>
 <span class="sd">        Array indicating if a point is the only returned point.</span>
+<span class="sd">    total_gps_seconds : np.ndarray(np.float32) or None</span>
+<span class="sd">        Total gps time in seconds. Requires the fields &#39;gps_time&#39; and &#39;date&#39; to</span>
+<span class="sd">        be set.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -521,7 +524,7 @@
         <span class="p">(</span><span class="s1">&#39;user_data&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
         <span class="p">(</span><span class="s1">&#39;intensity&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
         <span class="p">(</span><span class="s1">&#39;pt_src_id&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;gps_time&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;gps_time&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
         <span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
         <span class="p">(</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
         <span class="p">(</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
@@ -551,6 +554,14 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">only_return</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_returns</span> <span class="o">==</span> <span class="mi">1</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">total_gps_seconds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># gps time in seconds</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;gps_time&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">date</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">week</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">isocalendar</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">week</span> <span class="o">*</span> <span class="mi">604800</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">gps_time</span>
+        <span class="k">return</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="LasRecords.available_fields"><a class="viewcode-back" href="../../pyoints.html#pyoints.georecords.LasRecords.available_fields">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">available_fields</span><span class="p">():</span>
@@ -652,7 +663,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">Pyoints version 0.2.0rc2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Pyoints 0.2.0rc3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

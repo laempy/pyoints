@@ -95,9 +95,15 @@ def load_tests(loader, tests, ignore):
 
 class test_pyoints(unittest.TestCase):
 
-    def test_version(self):
+    def test_about(self):
         self.assertTrue(hasattr(pyoints, '__version__'))
+        self.assertTrue(hasattr(pyoints, '__title__'))
+        self.assertTrue(hasattr(pyoints, '__summary__'))
+        self.assertTrue(hasattr(pyoints, '__uri__'))
+        self.assertTrue(hasattr(pyoints, '__author__'))
+        self.assertTrue(hasattr(pyoints, '__email__'))
+        self.assertTrue(hasattr(pyoints, '__license__'))
+        self.assertTrue(hasattr(pyoints, '__copyright__'))
 
-
-print('Run doctests for Pyoints')
+print('Run doctests for Pyoints %s' % pyoints.__version__)
 unittest.main()

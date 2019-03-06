@@ -46,8 +46,8 @@ Create structured data from scratch.
 ... }
 >>> print(data['my_text'])
 Some text
->>> print(data['nested'])
-{'my_text': 'Nested text.', 'my_float': 3.5}
+>>> print(data['nested']['my_text'])
+Nested text.
 >>> print(type(data['my_ndarray']))
 <class 'numpy.ndarray'>
 >>> print(type(data['my_recarray']))
@@ -64,8 +64,8 @@ changed.
 >>> data = storage.loadJson(outfile)
 >>> print(data['my_text'])
 Some text
->>> print(data['nested'])
-{'my_text': 'Nested text.', 'my_float': 3.5}
+>>> print(data['nested']['my_float'])
+3.5
 >>> print(type(data['my_ndarray']))
 <class 'list'>
 >>> print(type(data['my_recarray']))
