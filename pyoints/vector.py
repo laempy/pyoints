@@ -259,6 +259,8 @@ def zenith(v, axis=-1, deg=False):
     axis : optional, int
         Defines which axis to compare the vector with. If not provided, the
         last dimension is used.
+    deg : optional, bool
+        Provide the angle in degree.
 
     Returns
     -------
