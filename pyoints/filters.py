@@ -370,7 +370,8 @@ def surface(indexKD, r, order=None, inverse=False, axis=-1):
         order = order[::-1]
     inverseOrder = np.argsort(order)
 
-    not_classified = np.ones(len(order), dtype=np.bool)
+    not_classified = np.zeros(len(indexKD), dtype=np.bool)
+    not_classified[order] = True
     for pId in order:
         if not_classified[pId]:
             nIds = np.array(indexKD.ball(coords[pId, :], r))

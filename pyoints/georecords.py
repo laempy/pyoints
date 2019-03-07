@@ -484,7 +484,7 @@ class LasRecords(GeoRecords):
         ('intensity', np.uint8),
         ('pt_src_id', np.uint16),
         ('gps_time', np.float64),
-        ('scan_angle_rank', np.uint8),
+        ('scan_angle_rank', np.int8),
         ('red', np.uint8),
         ('green', np.uint8),
         ('blue', np.uint8),
