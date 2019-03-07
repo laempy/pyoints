@@ -122,13 +122,13 @@ class GeoRecords(np.recarray, object):
 
     """
 
-    def __init__(self, proj, rec, T=None, date=None):
+    """def __init__(self, proj, rec, T=None, date=None):
         if T is None:
             T = transformation.t_matrix(self.extent().min_corner)
         # validated by setter
         self.proj = proj
         self.t = T
-        self.date = date
+        self.date = date"""
 
     def __new__(cls, proj, rec, T=None, date=None):
         if isinstance(rec, dict):
@@ -141,7 +141,15 @@ class GeoRecords(np.recarray, object):
             raise ValueError("malformed coordinate shape")
         if not rec.dtype['coords'].shape[0] >= 2:
             raise ValueError("at least two coordinate dimensions needed")
-        return rec.view(cls)
+        rec = rec.view(cls)
+
+        if T is None:
+            T = transformation.t_matrix(rec.extent().min_corner)
+        # validated by setter
+        rec.proj = proj
+        rec.t = T
+        rec.date = date
+        return rec
 
     @property
     def dim(self):
@@ -180,7 +188,7 @@ class GeoRecords(np.recarray, object):
             return
         self._t = getattr(obj, '_t', None)
         self._proj = getattr(obj, '_proj', None)
-        self._date = getattr(obj, '__date', None)
+        self._date = getattr(obj, '_date', None)
 
     # def __array_wrap__(self, out_arr, context=None):
     #     return np.ndarray.__array_wrap__(self, out_arr, context)

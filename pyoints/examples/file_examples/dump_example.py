@@ -36,10 +36,14 @@ Create GeoRecords from scratch.
 >>> print(sorted(geoRecords.dtype.names))
 ['classification', 'coords', 'intensity', 'keypoint', 'synthetic', 'values', 'withheld']
 
+>>> print(hasattr(geoRecords, 'proj'))
+True
+
 Save as a DUMP-file.
 
 >>> outfile = os.path.join(outpath, 'test.pydump')
 >>> storage.writeDump(geoRecords, outfile)
+
 
 Load the DUMP-file again and check the characteristics.
 
@@ -50,5 +54,18 @@ Load the DUMP-file again and check the characteristics.
 (1000,)
 >>> print(sorted(geoRecords.dtype.names))
 ['classification', 'coords', 'intensity', 'keypoint', 'synthetic', 'values', 'withheld']
+
+>>> print(hasattr(geoRecords, 'proj'))
+True
+
+Working with DUMP-strings.
+
+>>> dumpstr = storage.dumpstring_from_object(geoRecords)
+>>> print(isinstance(dumpstr, str))
+True
+
+>>> geoRecords = storage.dumpstring_to_object(dumpstr)
+>>> print(hasattr(geoRecords, 'proj'))
+True
 
 """
