@@ -367,6 +367,11 @@ class GeoRecords(np.recarray, object):
         proj : Proj
             Desired output projection system.
 
+        Returns
+        -------
+        geo : self.__class__
+            New GeoRecords with updated spatial reference.
+
         See Also
         --------
         Proj
@@ -378,6 +383,7 @@ class GeoRecords(np.recarray, object):
         """
         self.coords = projection.project(self.coords, self.proj, proj)
         self.proj = proj
+        return self
 
     def add_fields(self, dtypes, data=None):
         """Adds data fields to the georecords.
