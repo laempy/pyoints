@@ -82,7 +82,7 @@ class Proj:
     """
 
     def __init__(self, proj4=WGS84):
-        if proj4 is None or not isinstance(proj4, str) or proj4 is '':
+        if proj4 is None or not isinstance(proj4, str) or proj4 == '':
             raise ValueError("proj4 not defined")
         self._proj4 = proj4.rstrip()
 
@@ -128,7 +128,7 @@ class Proj:
         if not isinstance(wkt, str):
             raise TypeError("'wkt' needs to be a string")
         proj4 = osr.SpatialReference(wkt=wkt).ExportToProj4()
-        if proj4 is '':
+        if proj4 == '':
             raise ValueError("WKT unknown")
         return Proj.from_proj4(proj4)
 
@@ -147,7 +147,7 @@ class Proj:
         sr = osr.SpatialReference()
         sr.ImportFromEPSG(epsg)
         proj4 = sr.ExportToProj4()
-        if proj4 is '':
+        if proj4 == '':
             raise ValueError("epsg code '%i' unknown" % epsg)
         return Proj.from_proj4(proj4)
 
@@ -271,3 +271,28 @@ class GeoTransform:
             tCoords[:, 0:2] = t_xy
 
         return tCoords
+
+
+def project(coords, from_proj, to_proj):
+    """Applies the coordinate transformation.
+
+    Parameters
+    ----------
+    coords : array_like(Number, shape=(n, k))
+        Represents `n` points of `k` dimensions to transform.
+    from_proj,to_proj : `Proj`
+        Define the coordinate transformation from the origin projection system
+        `from_proj` to the target projection system `to_proj`.
+
+    See Also
+    --------
+    GeoTransform
+
+    Returns
+    -------
+    np.ndarray(Number, shape=(n, k))
+        Transformed coordinates.
+
+    """
+    geoTransform = GeoTransform(from_proj, to_proj)
+    return geoTransform(coords)
