@@ -113,6 +113,12 @@ We save the fields as individual raster images.
 >>> storage.writeRaster(raster, outfile, field='z')
 
 
+Test, if the projection has been set.
+
+>>> handler = storage.RasterReader(outfile)
+>>> raster.proj.wkt == handler.proj.wkt
+True
+
 Now, let's create a three dimensional voxel space.
 
 >>> T = transformation.matrix(t=las.t.origin, s=[0.4, 0.4, 0.5])

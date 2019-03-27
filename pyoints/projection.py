@@ -100,6 +100,12 @@ class Proj:
     def pyproj(self):
         return pyproj.Proj(self.proj4)
 
+    @property
+    def osr(self):
+        srs =  osr.SpatialReference()
+        srs.ImportFromProj4(self.proj4)
+        return srs
+
     def __str__(self):
         return 'proj4: %s' % str(self.proj4)
 
