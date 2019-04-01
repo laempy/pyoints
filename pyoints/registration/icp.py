@@ -235,7 +235,7 @@ class ICP:
         max_change = distance.norm(self._radii[:dim]) * self._max_change_ratio
 
         # ICP algorithm
-        report = {'RMSE': [], 'T':[]}
+        report = {'RMSE': [], 'T': []}
         for num_iter in range(self._max_iter):
 
             # assign pairs

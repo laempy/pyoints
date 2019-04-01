@@ -105,5 +105,6 @@ class test_pyoints(unittest.TestCase):
         self.assertTrue(hasattr(pyoints, '__license__'))
         self.assertTrue(hasattr(pyoints, '__copyright__'))
 
+
 print('Run doctests for Pyoints %s' % pyoints.__version__)
 unittest.main()

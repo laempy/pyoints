@@ -157,7 +157,7 @@ class GeoRecords(np.recarray, object):
 
     @property
     def coords(self):
-        #return self['coords'].view(Coords)
+        # return self['coords'].view(Coords)
         if not hasattr(self, '_coords'):
             # copy required for garbadge collection
             self._coords = self['coords'].copy().view(Coords)

@@ -102,7 +102,7 @@ class Proj:
 
     @property
     def osr(self):
-        srs =  osr.SpatialReference()
+        srs = osr.SpatialReference()
         srs.ImportFromProj4(self.proj4)
         return srs
 

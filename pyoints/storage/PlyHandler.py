@@ -29,6 +29,7 @@ from ..projection import Proj
 from ..misc import *
 import warnings
 
+
 def loadPly(infile, proj=Proj()):
     """Loads a .ply file.
 

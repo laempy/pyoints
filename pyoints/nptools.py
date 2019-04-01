@@ -793,7 +793,7 @@ def apply_function(arr, func, dtype=None):
     >>> print(apply_function(arr, func, dtype=[('c', float), ('d', int, 2)]))
     [[( 2., [ 0,  3]) ( 3., [ 1,  6])]
      [( 4., [ 4,  9]) ( 5., [ 9, 12])]]
-    
+
     >>> func = lambda record: ([record.a ** 2, record.b * 3],)
     >>> print(apply_function(arr, func, dtype=[('d', int, 2)]))
     [[([ 0,  3],) ([ 1,  6],)]

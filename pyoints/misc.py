@@ -149,10 +149,10 @@ def print_rounded(values, decimals=2):
         rounded[np.isclose(rounded, 0)] = 0
     else:
         raise ValueError("Data type '%s' not supported" % type(values))
-        
+
     if isinstance(values, tuple):
         rounded = tuple(rounded)
-        
+
     np.set_printoptions(
         linewidth=75,
         precision=decimals,
@@ -163,4 +163,3 @@ def print_rounded(values, decimals=2):
         legacy='1.13'
     )
     print(rounded)
-

@@ -43,11 +43,11 @@ __copyright__ = "2019, %s" % __author__
 
 def version():
     """Get the version of pyoints.
-    
+
     Returns
     -------
     str
         Version specification.
-    
+
     """
     return __version__

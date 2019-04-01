@@ -33,6 +33,7 @@ from . import (
 
 from .misc import print_rounded
 
+
 def extrema(indexKD, attributes, r, inverse=False):
     """Finds local maxima or minima of given point set.
 

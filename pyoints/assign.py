@@ -28,6 +28,7 @@ from . import (
 
 from .misc import print_rounded
 
+
 class Matcher:
     """Base class to simplify point matching. Points of a reference point set
     `A` are assigned to points of a point set `B`.

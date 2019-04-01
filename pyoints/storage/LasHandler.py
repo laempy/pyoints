@@ -168,21 +168,21 @@ class LasReader(GeoFile):
         dtypes = []
         dataDict = {'coords': coords}
         for name in las_fields:
-            
+
             if name == 'flag_byte':
                 values = points.flag_byte
                 if np.any(values):
-                    dataDict['return_num'] = values %  8 # bits 0, 1, 2
+                    dataDict['return_num'] = values % 8  # bits 0, 1, 2
                     values = values // 8
                 if np.any(values):
-                    dataDict['num_returns'] = values % 8 # bits 3, 4, 5
+                    dataDict['num_returns'] = values % 8  # bits 3, 4, 5
                     values = values // 8
                 if np.any(values):
                     dataDict['scan_direction_flag'] = values % 2  # bit 6
                     values = values // 2
                 if np.any(values):
                     dataDict['edge_of_flight_line'] = values  # bit 7
-            
+
             elif name == 'raw_classification':
                 values = points.raw_classification
                 if np.any(values):
@@ -196,7 +196,7 @@ class LasReader(GeoFile):
                     values = values // 2
                 if np.any(values):
                     dataDict['withheld'] = values  # bit 7
-                    
+
             elif name not in omit:
                 values = points[name]
                 if np.any(values):
@@ -330,7 +330,7 @@ def writeLas(geoRecords, outfile, point_format=3):
             lasFile.set_y_scaled(records.coords[:, 1])
             if records.dim > 2:
                 lasFile.set_z_scaled(records.coords[:, 2])
-                
+
         elif name == 'classification':  # bits 0, 1, 2, 3, 4
             raw_classification += records.classification
         elif name == 'synthetic':  # bit 5
@@ -339,15 +339,15 @@ def writeLas(geoRecords, outfile, point_format=3):
             raw_classification += records.keypoint.astype(np.uint8) * 64
         elif name == 'withheld':  # bit 7
             raw_classification += records.withheld.astype(np.uint8) * 128
-            
+
         elif name == 'return_num':  # bits 0, 1, 2
-            flag_byte += records.return_num 
+            flag_byte += records.return_num
         elif name == 'num_returns':  # bits 3, 4, 5
-            flag_byte += records.num_returns * 8 
+            flag_byte += records.num_returns * 8
         elif name == 'scan_direction_flag':  # bit 6
-            flag_byte += records.scan_direction_flag.astype(np.uint8) * 64 
+            flag_byte += records.scan_direction_flag.astype(np.uint8) * 64
         elif name == 'edge_of_flight_line':  # bit 7
-            flag_byte += records.edge_of_flight_line.astype(np.uint8) * 128 
+            flag_byte += records.edge_of_flight_line.astype(np.uint8) * 128
 
         elif name in las_fields or name not in omit:
             if np.any(records[name]):
