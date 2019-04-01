@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyoints.projection &#8212; Pyoints 0.2.0rc3 documentation</title>
+    <title>pyoints.projection &#8212; Pyoints 0.2.0 documentation</title>
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -14,7 +14,6 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -28,7 +27,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">Pyoints 0.2.0rc3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Pyoints 0.2.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -123,7 +122,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proj4</span><span class="o">=</span><span class="n">WGS84</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">proj4</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">proj4</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="n">proj4</span> <span class="ow">is</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">proj4</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">proj4</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="n">proj4</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;proj4 not defined&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_proj4</span> <span class="o">=</span> <span class="n">proj4</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
 
@@ -140,6 +139,12 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">pyproj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">pyproj</span><span class="o">.</span><span class="n">Proj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proj4</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">osr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">srs</span> <span class="o">=</span> <span class="n">osr</span><span class="o">.</span><span class="n">SpatialReference</span><span class="p">()</span>
+        <span class="n">srs</span><span class="o">.</span><span class="n">ImportFromProj4</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proj4</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">srs</span>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;proj4: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proj4</span><span class="p">)</span>
@@ -169,7 +174,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">wkt</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;wkt&#39; needs to be a string&quot;</span><span class="p">)</span>
         <span class="n">proj4</span> <span class="o">=</span> <span class="n">osr</span><span class="o">.</span><span class="n">SpatialReference</span><span class="p">(</span><span class="n">wkt</span><span class="o">=</span><span class="n">wkt</span><span class="p">)</span><span class="o">.</span><span class="n">ExportToProj4</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">proj4</span> <span class="ow">is</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">proj4</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;WKT unknown&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Proj</span><span class="o">.</span><span class="n">from_proj4</span><span class="p">(</span><span class="n">proj4</span><span class="p">)</span></div>
 
@@ -188,7 +193,7 @@
         <span class="n">sr</span> <span class="o">=</span> <span class="n">osr</span><span class="o">.</span><span class="n">SpatialReference</span><span class="p">()</span>
         <span class="n">sr</span><span class="o">.</span><span class="n">ImportFromEPSG</span><span class="p">(</span><span class="n">epsg</span><span class="p">)</span>
         <span class="n">proj4</span> <span class="o">=</span> <span class="n">sr</span><span class="o">.</span><span class="n">ExportToProj4</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">proj4</span> <span class="ow">is</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">proj4</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;epsg code &#39;</span><span class="si">%i</span><span class="s2">&#39; unknown&quot;</span> <span class="o">%</span> <span class="n">epsg</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Proj</span><span class="o">.</span><span class="n">from_proj4</span><span class="p">(</span><span class="n">proj4</span><span class="p">)</span></div></div>
 
@@ -312,6 +317,31 @@
             <span class="n">tCoords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_xy</span>
 
         <span class="k">return</span> <span class="n">tCoords</span></div>
+
+
+<div class="viewcode-block" id="project"><a class="viewcode-back" href="../../pyoints.html#pyoints.projection.project">[docs]</a><span class="k">def</span> <span class="nf">project</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">from_proj</span><span class="p">,</span> <span class="n">to_proj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Applies the coordinate transformation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coords : array_like(Number, shape=(n, k))</span>
+<span class="sd">        Represents `n` points of `k` dimensions to transform.</span>
+<span class="sd">    from_proj,to_proj : `Proj`</span>
+<span class="sd">        Define the coordinate transformation from the origin projection system</span>
+<span class="sd">        `from_proj` to the target projection system `to_proj`.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    GeoTransform</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray(Number, shape=(n, k))</span>
+<span class="sd">        Transformed coordinates.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">geoTransform</span> <span class="o">=</span> <span class="n">GeoTransform</span><span class="p">(</span><span class="n">from_proj</span><span class="p">,</span> <span class="n">to_proj</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">geoTransform</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
@@ -347,13 +377,13 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">Pyoints 0.2.0rc3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Pyoints 0.2.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Sebastian Lamprecht.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
     </div>
   </body>
 </html>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyoints.storage.LasHandler &#8212; Pyoints 0.2.0rc3 documentation</title>
+    <title>pyoints.storage.LasHandler &#8212; Pyoints 0.2.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -14,7 +14,6 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../../_static/language_data.js"></script>
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -28,7 +27,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Pyoints 0.2.0rc3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Pyoints 0.2.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -209,11 +208,21 @@
         <span class="n">dtypes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">dataDict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;coords&#39;</span><span class="p">:</span> <span class="n">coords</span><span class="p">}</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">las_fields</span><span class="p">:</span>
+
             <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;flag_byte&#39;</span><span class="p">:</span>
                 <span class="n">values</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">flag_byte</span>
                 <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
-                    <span class="n">dataDict</span><span class="p">[</span><span class="s1">&#39;num_returns&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span> <span class="o">//</span> <span class="mi">8</span>  <span class="c1"># last three bits</span>
-                    <span class="n">dataDict</span><span class="p">[</span><span class="s1">&#39;return_num&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span> <span class="o">%</span> <span class="mi">8</span>  <span class="c1"># first three bits</span>
+                    <span class="n">dataDict</span><span class="p">[</span><span class="s1">&#39;return_num&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span> <span class="o">%</span> <span class="mi">8</span>  <span class="c1"># bits 0, 1, 2</span>
+                    <span class="n">values</span> <span class="o">=</span> <span class="n">values</span> <span class="o">//</span> <span class="mi">8</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+                    <span class="n">dataDict</span><span class="p">[</span><span class="s1">&#39;num_returns&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span> <span class="o">%</span> <span class="mi">8</span>  <span class="c1"># bits 3, 4, 5</span>
+                    <span class="n">values</span> <span class="o">=</span> <span class="n">values</span> <span class="o">//</span> <span class="mi">8</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+                    <span class="n">dataDict</span><span class="p">[</span><span class="s1">&#39;scan_direction_flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span> <span class="o">%</span> <span class="mi">2</span>  <span class="c1"># bit 6</span>
+                    <span class="n">values</span> <span class="o">=</span> <span class="n">values</span> <span class="o">//</span> <span class="mi">2</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+                    <span class="n">dataDict</span><span class="p">[</span><span class="s1">&#39;edge_of_flight_line&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span>  <span class="c1"># bit 7</span>
+
             <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;raw_classification&#39;</span><span class="p">:</span>
                 <span class="n">values</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">raw_classification</span>
                 <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
@@ -325,16 +334,17 @@
     <span class="n">scale</span><span class="p">[:</span><span class="n">dim</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_values</span> <span class="o">/</span> <span class="n">max_digits</span>
     <span class="n">scale</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">max_digits</span>
 
-    <span class="n">lasFile</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">geoRecords</span><span class="o">.</span><span class="n">date</span>
+    <span class="k">if</span> <span class="n">geoRecords</span><span class="o">.</span><span class="n">date</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">lasFile</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">geoRecords</span><span class="o">.</span><span class="n">date</span>
     <span class="n">lasFile</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">scale</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">lasFile</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="n">offset</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-    <span class="c1"># get default fields</span>
+    <span class="c1"># get fields</span>
     <span class="n">las_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">lasFile</span><span class="o">.</span><span class="n">point_format</span><span class="p">]</span>
     <span class="n">field_names</span> <span class="o">=</span> <span class="n">records</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span>
 
     <span class="c1"># Fields to omit</span>
-    <span class="n">omit</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">omit</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_byte&#39;</span><span class="p">,</span> <span class="s1">&#39;raw_classification&#39;</span><span class="p">]</span>
     <span class="n">omit</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">las_fields</span><span class="p">)</span>
     <span class="n">omit</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">LasRecords</span><span class="o">.</span><span class="n">CUSTOM_FIELDS</span><span class="p">)</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
 
@@ -354,45 +364,39 @@
 
     <span class="c1"># set fields</span>
     <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">field_names</span><span class="p">:</span>
+
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;coords&#39;</span><span class="p">:</span>
             <span class="n">lasFile</span><span class="o">.</span><span class="n">set_x_scaled</span><span class="p">(</span><span class="n">records</span><span class="o">.</span><span class="n">coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
             <span class="n">lasFile</span><span class="o">.</span><span class="n">set_y_scaled</span><span class="p">(</span><span class="n">records</span><span class="o">.</span><span class="n">coords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
             <span class="k">if</span> <span class="n">records</span><span class="o">.</span><span class="n">dim</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="n">lasFile</span><span class="o">.</span><span class="n">set_z_scaled</span><span class="p">(</span><span class="n">records</span><span class="o">.</span><span class="n">coords</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span>
-        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;classification&#39;</span><span class="p">:</span>  <span class="c1"># classification bits 0 to 4</span>
-            <span class="n">raw_classification</span> <span class="o">+=</span> <span class="n">records</span><span class="o">.</span><span class="n">classification</span>
-        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;synthetic&#39;</span><span class="p">:</span>  <span class="c1"># classification bit 5</span>
-            <span class="n">raw_classification</span> <span class="o">+=</span> <span class="n">records</span><span class="o">.</span><span class="n">synthetic</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span> <span class="o">*</span> <span class="mi">32</span>
-        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;keypoint&#39;</span><span class="p">:</span>  <span class="c1"># classification bit 6</span>
-            <span class="n">raw_classification</span> <span class="o">+=</span> <span class="n">records</span><span class="o">.</span><span class="n">keypoint</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span> <span class="o">*</span> <span class="mi">64</span>
-        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;withheld&#39;</span><span class="p">:</span>  <span class="c1"># classification bit 7</span>
-            <span class="n">raw_classification</span> <span class="o">+=</span> <span class="n">records</span><span class="o">.</span><span class="n">withheld</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span> <span class="o">*</span> <span class="mi">128</span>
-        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;return_num&#39;</span><span class="p">:</span>
-            <span class="n">flag_byte</span> <span class="o">=</span> <span class="n">flag_byte</span> <span class="o">+</span> <span class="n">records</span><span class="o">.</span><span class="n">return_num</span>
-        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;num_returns&#39;</span><span class="p">:</span>
-            <span class="n">flag_byte</span> <span class="o">=</span> <span class="n">flag_byte</span> <span class="o">+</span> <span class="n">records</span><span class="o">.</span><span class="n">num_returns</span> <span class="o">*</span> <span class="mi">8</span>
-        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;intensity&#39;</span><span class="p">:</span>
-            <span class="n">lasFile</span><span class="o">.</span><span class="n">set_intensity</span><span class="p">(</span><span class="n">records</span><span class="o">.</span><span class="n">intensity</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;user_data&#39;</span><span class="p">:</span>
-            <span class="n">lasFile</span><span class="o">.</span><span class="n">set_user_data</span><span class="p">(</span><span class="n">records</span><span class="o">.</span><span class="n">user_data</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;red&#39;</span><span class="p">:</span>
-            <span class="n">lasFile</span><span class="o">.</span><span class="n">set_red</span><span class="p">(</span><span class="n">records</span><span class="o">.</span><span class="n">red</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;green&#39;</span><span class="p">:</span>
-            <span class="n">lasFile</span><span class="o">.</span><span class="n">set_green</span><span class="p">(</span><span class="n">records</span><span class="o">.</span><span class="n">green</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;blue&#39;</span><span class="p">:</span>
-            <span class="n">lasFile</span><span class="o">.</span><span class="n">set_blue</span><span class="p">(</span><span class="n">records</span><span class="o">.</span><span class="n">blue</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;nir&#39;</span><span class="p">:</span>
-            <span class="n">lasFile</span><span class="o">.</span><span class="n">set_blue</span><span class="p">(</span><span class="n">records</span><span class="o">.</span><span class="n">nir</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;pt_src_id&#39;</span><span class="p">:</span>
-            <span class="n">lasFile</span><span class="o">.</span><span class="n">set_pt_src_id</span><span class="p">(</span><span class="n">records</span><span class="o">.</span><span class="n">pt_src_id</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;gps_time&#39;</span><span class="p">:</span>
-            <span class="n">lasFile</span><span class="o">.</span><span class="n">set_gps_time</span><span class="p">(</span><span class="n">records</span><span class="o">.</span><span class="n">gps_time</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">omit</span><span class="p">:</span>
-            <span class="n">lasFile</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">set_dimension</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">records</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
 
-    <span class="k">if</span> <span class="n">point_format</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span>
-        <span class="n">lasFile</span><span class="o">.</span><span class="n">set_classification</span><span class="p">(</span><span class="n">raw_classification</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;classification&#39;</span><span class="p">:</span>  <span class="c1"># bits 0, 1, 2, 3, 4</span>
+            <span class="n">raw_classification</span> <span class="o">+=</span> <span class="n">records</span><span class="o">.</span><span class="n">classification</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;synthetic&#39;</span><span class="p">:</span>  <span class="c1"># bit 5</span>
+            <span class="n">raw_classification</span> <span class="o">+=</span> <span class="n">records</span><span class="o">.</span><span class="n">synthetic</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span> <span class="o">*</span> <span class="mi">32</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;keypoint&#39;</span><span class="p">:</span>  <span class="c1"># bit 6</span>
+            <span class="n">raw_classification</span> <span class="o">+=</span> <span class="n">records</span><span class="o">.</span><span class="n">keypoint</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span> <span class="o">*</span> <span class="mi">64</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;withheld&#39;</span><span class="p">:</span>  <span class="c1"># bit 7</span>
+            <span class="n">raw_classification</span> <span class="o">+=</span> <span class="n">records</span><span class="o">.</span><span class="n">withheld</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span> <span class="o">*</span> <span class="mi">128</span>
+
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;return_num&#39;</span><span class="p">:</span>  <span class="c1"># bits 0, 1, 2</span>
+            <span class="n">flag_byte</span> <span class="o">+=</span> <span class="n">records</span><span class="o">.</span><span class="n">return_num</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;num_returns&#39;</span><span class="p">:</span>  <span class="c1"># bits 3, 4, 5</span>
+            <span class="n">flag_byte</span> <span class="o">+=</span> <span class="n">records</span><span class="o">.</span><span class="n">num_returns</span> <span class="o">*</span> <span class="mi">8</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;scan_direction_flag&#39;</span><span class="p">:</span>  <span class="c1"># bit 6</span>
+            <span class="n">flag_byte</span> <span class="o">+=</span> <span class="n">records</span><span class="o">.</span><span class="n">scan_direction_flag</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span> <span class="o">*</span> <span class="mi">64</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;edge_of_flight_line&#39;</span><span class="p">:</span>  <span class="c1"># bit 7</span>
+            <span class="n">flag_byte</span> <span class="o">+=</span> <span class="n">records</span><span class="o">.</span><span class="n">edge_of_flight_line</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span> <span class="o">*</span> <span class="mi">128</span>
+
+        <span class="k">elif</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">las_fields</span> <span class="ow">or</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">omit</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">records</span><span class="p">[</span><span class="n">name</span><span class="p">]):</span>
+                <span class="c1">#lasFile[name] = records[name]</span>
+                <span class="n">lasFile</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">set_dimension</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">records</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">flag_byte</span><span class="p">):</span>
+        <span class="n">lasFile</span><span class="o">.</span><span class="n">set_flag_byte</span><span class="p">(</span><span class="n">flag_byte</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">raw_classification</span><span class="p">):</span>
         <span class="n">lasFile</span><span class="o">.</span><span class="n">set_raw_classification</span><span class="p">(</span><span class="n">raw_classification</span><span class="p">)</span>
 
     <span class="c1"># close file</span>
@@ -494,13 +498,13 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Pyoints 0.2.0rc3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Pyoints 0.2.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Sebastian Lamprecht.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
     </div>
   </body>
 </html>
