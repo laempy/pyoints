@@ -294,7 +294,8 @@ def writeLas(geoRecords, outfile, point_format=3):
     scale[:dim] = max_values / max_digits
     scale[np.isclose(scale, 0)] = 1 / max_digits
 
-    lasFile.date = geoRecords.date
+    if geoRecords.date is not None:
+        lasFile.header.date = geoRecords.date
     lasFile.header.scale = scale.copy()
     lasFile.header.offset = offset.copy()
 
