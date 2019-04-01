@@ -28,7 +28,7 @@ __all__ = [
     "__copyright__",
 ]
 
-__version__ = '0.2.0rc3'
+__version__ = '0.2.0'
 
 __title__ = "Pyoints"
 __summary__ = "A Python package for point cloud, voxel and raster processing."
