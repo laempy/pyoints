@@ -505,18 +505,18 @@ class LasRecords(GeoRecords):
         ('nir', np.uint8),
     ]
     CUSTOM_FIELDS = [
-        ('coords', np.float, 3),
+        ('coords', np.float64, 3),
         ('classification', np.uint8),
         ('num_returns', np.uint8),
         ('return_num', np.uint8),
-        ('synthetic', np.bool),
-        ('keypoint', np.bool),
-        ('withheld', np.bool),
-        ('scan_direction_flag', np.bool),
-        ('edge_of_flight_line', np.bool),
+        ('synthetic', np.bool_),
+        ('keypoint', np.bool_),
+        ('withheld', np.bool_),
+        ('scan_direction_flag', np.bool_),
+        ('edge_of_flight_line', np.bool_),
     ]
     EXTRA_FIELDS = [
-        ('normals', np.float, 3),
+        ('normals', np.float64, 3),
     ]
 
     @property
